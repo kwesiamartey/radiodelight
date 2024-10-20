@@ -57,11 +57,14 @@
             transform: translateX(-100%);
         }
 
-        /* Middle column: Radio station list */
+        /* Middle column: Station list */
         .station-list {
             flex: 1;
             padding: 10px;
             overflow-y: auto;
+        }
+
+        .station-grid {
             display: grid; /* Enable grid layout */
             grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Responsive columns */
             gap: 10px; /* Space between grid items */
@@ -162,10 +165,10 @@
             </ul>
         </div>
 
-        <!-- Middle column: Radio station list -->
+        <!-- Middle column: Station list -->
         <div class="station-list">
             <h2>Radio Stations</h2>
-            <div id="stationList">Select a country to see its radio stations.</div>
+            <div id="stationList" class="station-grid">Select a country to see its radio stations.</div>
         </div>
     </div>
 
@@ -224,7 +227,7 @@
 
             const stationList = stationsData[country] || [];
             const stationListContainer = document.getElementById('stationList');
-            stationListContainer.innerHTML = '';
+            stationListContainer.innerHTML = ''; // Clear previous stations
 
             stationList.forEach(station => {
                 const stationItem = document.createElement('div');
@@ -257,7 +260,7 @@
         // Function to play the selected station
         function playStation(station) {
             const audioPlayer = document.getElementById('audioPlayer');
-            audioPlayer.src = `https://example.com/stream/${station}.mp3`;
+            audioPlayer.src = `https://example.com/stream/${station}.mp3`; // Replace with actual stream URL
             audioPlayer.play();
         }
 
