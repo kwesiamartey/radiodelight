@@ -52,11 +52,6 @@
             background-color: #e0e0e0;
         }
 
-        /* Hidden Sidebar for mobile view */
-        .country-list.mobile-hidden {
-            transform: translateX(-100%);
-        }
-
         /* Middle column: Radio station list */
         .station-list {
             flex: 1;
@@ -112,12 +107,21 @@
             margin-top: 10px;
         }
 
-        .logo, .play-button, .progress-bar, .volume-control {
-            margin: 5px;
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 10px;
         }
 
         .play-button {
             cursor: pointer;
+            font-size: 24px;
+            margin: 0 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            margin: 0 10px;
         }
 
         /* Responsive Design */
@@ -191,15 +195,13 @@
     <!-- Bottom row: Player -->
     <div class="player-container">
         <div class="logo">
-            <img src="https://via.placeholder.com/80" alt="Station Logo" />
+            <img src="https://via.placeholder.com/80" alt="Station Logo" id="playerLogo" />
         </div>
         <div class="player-controls">
             <div class="play-button" onclick="togglePlay()">&#9658;</div>
-            <input type="range" class="progress-bar" id="progressBar" value="0" max="100">
+            <input type="range" class="progress-bar" id="progressBar" value="0" max="100" onchange="setProgress(this.value)">
         </div>
-        <div class="volume-control">
-            <input type="range" min="0" max="1" step="0.1" onchange="setVolume(this.value)">
-        </div>
+        <input type="range" min="0" max="1" step="0.1" onchange="setVolume(this.value)">
     </div>
 
     <script>
@@ -221,7 +223,7 @@
                     { name: 'Hot 97', image: 'https://via.placeholder.com/80' },
                     { name: 'Z100', image: 'https://via.placeholder.com/80' }
                 ],
-                // Other countries...
+                // Additional countries and stations can be added here...
             };
 
             const stationList = document.getElementById('stationList');
@@ -230,7 +232,7 @@
                 const stationCard = document.createElement('div');
                 stationCard.className = 'station-card';
                 stationCard.innerHTML = `<img src="${station.image}" class="station-image" alt="${station.name}"><br>${station.name}`;
-                stationCard.onclick = () => playAudio(`https://example.com/stream/${station.name}.m3u8`);
+                stationCard.onclick = () => playAudio(`https://example.com/stream/${station.name}.m3u8`, station.image);
                 stationList.appendChild(stationCard);
             });
         }
@@ -240,9 +242,14 @@
 
         // Player control functions
         let audio = new Audio();
-        function playAudio(url) {
+        
+        function playAudio(url, logo) {
             audio.src = url;
             audio.play();
+            document.getElementById('playerLogo').src = logo;  // Update the logo based on the selected station
+            audio.onended = () => {
+                document.getElementById('playerLogo').src = 'https://via.placeholder.com/80';  // Reset logo when playback ends
+            };
         }
 
         function togglePlay() {
@@ -256,6 +263,15 @@
         function setVolume(value) {
             audio.volume = value;
         }
+
+        function setProgress(value) {
+            audio.currentTime = (audio.duration * value) / 100;
+        }
+
+        audio.addEventListener('timeupdate', () => {
+            const progressBar = document.getElementById('progressBar');
+            progressBar.value = (audio.currentTime / audio.duration) * 100;
+        });
     </script>
 </body>
 </html>
