@@ -69,6 +69,9 @@
         }
 
         .station-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             padding: 8px;
             border-bottom: 1px solid #ddd;
             cursor: pointer;
@@ -77,6 +80,12 @@
 
         .station-item:hover {
             background-color: #f4f4f4;
+        }
+
+        .station-item img {
+            width: 100px; /* Adjust the width of the image as needed */
+            height: auto; /* Maintain aspect ratio */
+            margin-bottom: 5px; /* Space between image and name */
         }
 
         /* Bottom row: Player */
@@ -186,11 +195,31 @@
         // Function to load radio stations based on the country selected
         function loadStations(country) {
             const stationsData = {
-                'Ghana': ['Adom FM', 'Peace FM', 'Joy FM'],
-                'USA': ['Kiss FM', 'Hot 97', 'Z100'],
-                'Finland': ['Radio Suomi', 'YleX', 'Radio Rock'],
-                'Singapore': ['Class 95', 'Kiss92', 'Gold 905'],
-                'Turkey': ['Power FM', 'Metro FM', 'Virgin Radio Turkey']
+                'Ghana': [
+                    { name: 'Adom FM', image: 'https://via.placeholder.com/100' },
+                    { name: 'Peace FM', image: 'https://via.placeholder.com/100' },
+                    { name: 'Joy FM', image: 'https://via.placeholder.com/100' }
+                ],
+                'USA': [
+                    { name: 'Kiss FM', image: 'https://via.placeholder.com/100' },
+                    { name: 'Hot 97', image: 'https://via.placeholder.com/100' },
+                    { name: 'Z100', image: 'https://via.placeholder.com/100' }
+                ],
+                'Finland': [
+                    { name: 'Radio Suomi', image: 'https://via.placeholder.com/100' },
+                    { name: 'YleX', image: 'https://via.placeholder.com/100' },
+                    { name: 'Radio Rock', image: 'https://via.placeholder.com/100' }
+                ],
+                'Singapore': [
+                    { name: 'Class 95', image: 'https://via.placeholder.com/100' },
+                    { name: 'Kiss92', image: 'https://via.placeholder.com/100' },
+                    { name: 'Gold 905', image: 'https://via.placeholder.com/100' }
+                ],
+                'Turkey': [
+                    { name: 'Power FM', image: 'https://via.placeholder.com/100' },
+                    { name: 'Metro FM', image: 'https://via.placeholder.com/100' },
+                    { name: 'Virgin Radio Turkey', image: 'https://via.placeholder.com/100' }
+                ]
             };
 
             const stationList = stationsData[country] || [];
@@ -200,8 +229,20 @@
             stationList.forEach(station => {
                 const stationItem = document.createElement('div');
                 stationItem.className = 'station-item';
-                stationItem.textContent = station;
-                stationItem.onclick = () => playStation(station);
+                stationItem.onclick = () => playStation(station.name);
+
+                // Create image element
+                const img = document.createElement('img');
+                img.src = station.image; // Set image source
+                img.alt = station.name; // Set alt text
+
+                // Create station name element
+                const name = document.createElement('div');
+                name.textContent = station.name;
+
+                // Append image and name to the station item
+                stationItem.appendChild(img);
+                stationItem.appendChild(name);
                 stationListContainer.appendChild(stationItem);
             });
 
@@ -220,10 +261,12 @@
             audioPlayer.play();
         }
 
-        // Load default station list on page load
-        document.addEventListener('DOMContentLoaded', () => {
+        // Load USA stations by default when the page loads
+        window.onload = function() {
             loadStations('USA');
-        });
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.add('active'); // Show sidebar on load
+        };
     </script>
 
 </body>
