@@ -12,6 +12,7 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
+            overflow-x: hidden; /* Prevent horizontal scroll on mobile */
         }
 
         /* Main container */
@@ -22,13 +23,20 @@
             height: 100%;
         }
 
-        /* Left column: Country list */
+        /* Left column: Country list (Drawer menu) */
         .country-list {
             width: 20%;
             background-color: #f4f4f4;
             border-right: 1px solid #ddd;
             overflow-y: auto;
             padding: 10px;
+            position: relative;
+            transition: transform 0.3s ease; /* For drawer animation */
+        }
+
+        /* Hidden state for the drawer menu on mobile */
+        .country-list.closed {
+            transform: translateX(-100%);
         }
 
         .country-list h2 {
@@ -85,6 +93,20 @@
             width: 80%;
         }
 
+        /* Menu button for mobile view */
+        .menu-button {
+            display: none; /* Hidden by default */
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10; /* Ensure it's above other content */
+        }
+
         /* Responsive Design */
         @media screen and (max-width: 768px) {
             .main-container {
@@ -92,9 +114,14 @@
             }
 
             .country-list {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid #ddd;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 70%;
+                height: 100%;
+                z-index: 9; /* Layer above main content */
+                background-color: #f4f4f4;
+                transform: translateX(-100%);
             }
 
             .station-list {
@@ -105,28 +132,21 @@
             .audio-player {
                 width: 90%;
             }
-        }
 
-        @media screen and (max-width: 480px) {
-            .country-list h2, .station-list h2, .player-container h3 {
-                font-size: 1rem;
-            }
-
-            .country-list li, .station-item {
-                padding: 6px;
-            }
-
-            .player-container {
-                padding: 10px;
+            .menu-button {
+                display: block; /* Show the menu button on mobile */
             }
         }
     </style>
 </head>
 <body>
 
+    <!-- Menu button for mobile view -->
+    <button class="menu-button" onclick="toggleMenu()">☰ Menu</button>
+
     <div class="main-container">
-        <!-- Left column: List of countries -->
-        <div class="country-list">
+        <!-- Left column: List of countries (Drawer) -->
+        <div class="country-list closed" id="countryDrawer">
             <h2>Countries</h2>
             <ul id="countryList">
                 <li onclick="loadStations('Ghana')">Ghana</li>
@@ -154,6 +174,12 @@
     </div>
 
     <script>
+        // Function to toggle the drawer menu
+        function toggleMenu() {
+            const drawer = document.getElementById('countryDrawer');
+            drawer.classList.toggle('closed');
+        }
+
         // Function to load radio stations based on the country selected
         function loadStations(country) {
             const stationsData = {
@@ -175,6 +201,9 @@
                 stationItem.onclick = () => playStation(station);
                 stationListContainer.appendChild(stationItem);
             });
+
+            // Close the menu when a country is selected on mobile
+            toggleMenu();
         }
 
         // Function to play the selected station
