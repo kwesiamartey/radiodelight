@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Custom Audio Player</title>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script> <!-- HLS.js library -->
+    <title>Responsive Radio Station Website</title>
     <style>
         body, html {
             margin: 0;
@@ -15,6 +14,7 @@
             height: 100vh;
         }
 
+        /* Main container */
         .main-container {
             display: flex;
             flex: 1;
@@ -22,33 +22,55 @@
             height: 100%;
         }
 
+        /* Sidebar (Country list) */
         .country-list {
             width: 20%;
             background-color: #f4f4f4;
             border-right: 1px solid #ddd;
             overflow-y: auto;
             padding: 10px;
+            position: relative;
+            transition: transform 0.3s ease;
         }
 
+        .country-list h2 {
+            margin: 10px 0;
+        }
+
+        .country-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .country-list li {
+            padding: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .country-list li:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* Hidden Sidebar for mobile view */
+        .country-list.mobile-hidden {
+            transform: translateX(-100%);
+        }
+
+        /* Middle column: Radio station list */
         .station-list {
             flex: 1;
             padding: 10px;
             overflow-y: auto;
         }
 
-        .station-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 10px;
+        .station-list h2 {
+            margin: 10px 0;
         }
 
         .station-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            border-bottom: 1px solid #ddd;
             cursor: pointer;
             transition: background-color 0.2s;
         }
@@ -57,168 +79,256 @@
             background-color: #f4f4f4;
         }
 
-        .station-item img {
-            width: 100px;
-            height: auto;
-            margin-bottom: 5px;
+        /* Radio station grid */
+        .station-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
         }
 
-        /* Custom Audio Player */
-        .custom-player-container {
-            width: 100%;
+        .station-card {
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 10px;
+            transition: background-color 0.2s;
+        }
+
+        .station-card:hover {
+            background-color: #f4f4f4;
+        }
+
+        .station-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+        }
+
+        /* Bottom row: Custom Player */
+        .player-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background-color: #333;
             color: white;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .custom-player {
-            display: flex;
-            align-items: center;
-            width: 80%;
-            justify-content: space-between;
+            padding: 10px;
         }
 
         .player-logo {
             width: 50px;
             height: 50px;
+            margin-right: 10px;
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            width: 80%;
+        }
+
+        .play-button {
+            font-size: 24px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: white;
+            margin-right: 15px;
         }
 
         .progress-bar {
             flex: 1;
-            margin: 0 15px;
+            height: 5px;
             background-color: #555;
-            height: 8px;
             cursor: pointer;
+            margin-right: 15px;
             position: relative;
         }
 
-        .progress-bar-fill {
-            background-color: #f1c40f;
-            width: 0;
+        .progress-filled {
             height: 100%;
+            background-color: #f90;
+            width: 0;
         }
 
-        .play-button, .volume-button {
-            background-color: #444;
-            border: none;
-            color: white;
-            cursor: pointer;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
+        .volume-slider {
+            width: 100px;
         }
 
-        .volume-control {
-            margin-top: 10px;
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            /* Menu button for mobile view */
+            .menu-button {
+                display: block;
+                background-color: #333;
+                color: white;
+                padding: 10px;
+                text-align: center;
+                cursor: pointer;
+            }
+
+            /* Hide the sidebar by default on mobile */
+            .country-list {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 250px;
+                height: 100%;
+                z-index: 1000;
+                background-color: #f4f4f4;
+                transform: translateX(-100%);
+                box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+            }
+
+            /* Show the sidebar when active */
+            .country-list.active {
+                transform: translateX(0);
+            }
+        }
+
+        @media screen and (min-width: 769px) {
+            /* Hide the menu button on larger screens */
+            .menu-button {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
 
+    <!-- Menu button for mobile view -->
+    <div class="menu-button" onclick="toggleSidebar()">☰ Menu</div>
+
     <div class="main-container">
-        <div class="country-list">
+        <!-- Sidebar (Country list) -->
+        <div class="country-list" id="sidebar">
             <h2>Countries</h2>
-            <ul>
-                <li onclick="loadStations('Ghana')">Ghana</li>
+            <ul id="countryList">
                 <li onclick="loadStations('USA')">USA</li>
+                <li onclick="loadStations('Ghana')">Ghana</li>
                 <li onclick="loadStations('Finland')">Finland</li>
+                <li onclick="loadStations('Singapore')">Singapore</li>
+                <li onclick="loadStations('Turkey')">Turkey</li>
             </ul>
         </div>
 
+        <!-- Middle column: Radio station list -->
         <div class="station-list">
             <h2>Radio Stations</h2>
             <div id="stationList" class="station-grid">Select a country to see its radio stations.</div>
         </div>
     </div>
 
-    <div class="custom-player-container">
-        <div class="custom-player">
-            <img src="https://via.placeholder.com/50" alt="Logo" class="player-logo">
-            <button class="play-button" onclick="togglePlayPause()">▶</button>
-            <div class="progress-bar" onclick="seek(event)">
-                <div class="progress-bar-fill"></div>
+    <!-- Bottom row: Custom Player -->
+    <div class="player-container">
+        <img src="https://via.placeholder.com/50" class="player-logo" alt="Station Logo">
+        <div class="player-controls">
+            <button class="play-button" id="playButton">▶️</button>
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-filled" id="progressFilled"></div>
             </div>
-            <button class="volume-button" onclick="toggleMute()">🔊</button>
+            <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.1" value="0.5">
         </div>
-        <input type="range" min="0" max="1" step="0.1" value="1" class="volume-control" onchange="setVolume(this.value)">
     </div>
 
-    <audio id="audioPlayer"></audio>
-
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
-        let audioPlayer = document.getElementById('audioPlayer');
-        let progressBar = document.querySelector('.progress-bar-fill');
-        let playButton = document.querySelector('.play-button');
+        let audio = new Audio();
         let isPlaying = false;
 
-        // Load the radio stations dynamically
+        // Function to play audio and handle .m3u8 or other formats
+        function playAudio(url) {
+            if (Hls.isSupported() && url.endsWith('.m3u8')) {
+                const hls = new Hls();
+                hls.loadSource(url);
+                hls.attachMedia(audio);
+                hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                    audio.play();
+                });
+            } else {
+                audio.src = url;
+                audio.play();
+            }
+            isPlaying = true;
+            document.getElementById('playButton').textContent = '⏸️';
+        }
+
+        // Toggle play/pause functionality
+        document.getElementById('playButton').onclick = function () {
+            if (isPlaying) {
+                audio.pause();
+                this.textContent = '▶️';
+                isPlaying = false;
+            } else {
+                audio.play();
+                this.textContent = '⏸️';
+                isPlaying = true;
+            }
+        };
+
+        // Update the progress bar
+        audio.addEventListener('timeupdate', function () {
+            const progress = (audio.currentTime / audio.duration) * 100;
+            document.getElementById('progressFilled').style.width = `${progress}%`;
+        });
+
+        // Handle progress bar click
+        document.getElementById('progressBar').onclick = function (e) {
+            const clickPosition = (e.offsetX / this.offsetWidth) * audio.duration;
+            audio.currentTime = clickPosition;
+        };
+
+        // Handle volume change
+        document.getElementById('volumeSlider').oninput = function () {
+            audio.volume = this.value;
+        };
+
+        // Function to load and play a station
         function loadStations(country) {
-            const stations = {
-                'Ghana': [{ name: 'Adom FM', stream: 'https://example.com/adom.m3u8' }],
-                'USA': [{ name: 'Kiss FM', stream: 'https://example.com/kissfm.aac' }],
-                'Finland': [{ name: 'Radio Suomi', stream: 'https://example.com/radiosuomi.mp3' }]
+            const stationsData = {
+                'USA': [
+                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80' },
+                    { name: 'Hot 97', image: 'https://via.placeholder.com/80' },
+                    { name: 'Z100', image: 'https://via.placeholder.com/80' }
+                ],
+                'Ghana': [
+                    { name: 'Adom FM', image: 'https://via.placeholder.com/80' },
+                    { name: 'Peace FM', image: 'https://via.placeholder.com/80' },
+                    { name: 'Joy FM', image: 'https://via.placeholder.com/80' }
+                ],
+                'Finland': [
+                    { name: 'Radio Suomi', image: 'https://via.placeholder.com/80' },
+                    { name: 'YleX', image: 'https://via.placeholder.com/80' },
+                    { name: 'Radio Nova', image: 'https://via.placeholder.com/80' }
+                ],
+                'Singapore': [
+                    { name: '987 FM', image: 'https://via.placeholder.com/80' },
+                    { name: 'Class 95', image: 'https://via.placeholder.com/80' },
+                    { name: 'Gold 90.5', image: 'https://via.placeholder.com/80' }
+                ],
+                'Turkey': [
+                    { name: 'Power Türk', image: 'https://via.placeholder.com/80' },
+                    { name: 'Kral FM', image: 'https://via.placeholder.com/80' },
+                    { name: 'Süper FM', image: 'https://via.placeholder.com/80' }
+                ]
             };
 
-            let stationList = document.getElementById('stationList');
+            const stationList = document.getElementById('stationList');
             stationList.innerHTML = '';
-
-            stations[country].forEach(station => {
-                let stationItem = document.createElement('div');
-                stationItem.className = 'station-item';
-                stationItem.innerHTML = `<img src="https://via.placeholder.com/100" alt="${station.name}"><div>${station.name}</div>`;
-                stationItem.onclick = () => playStation(station.stream);
-                stationList.appendChild(stationItem);
+            stationsData[country].forEach(station => {
+                const stationCard = document.createElement('div');
+                stationCard.className = 'station-card';
+                stationCard.innerHTML = `<img src="${station.image}" class="station-image" alt="${station.name}"><br>${station.name}`;
+                stationCard.onclick = () => playAudio(`https://example.com/stream/${station.name}.m3u8`);
+                stationList.appendChild(stationCard);
             });
         }
 
-        // Function to play a station's stream
-        function playStation(url) {
-            if (Hls.isSupported() && url.endsWith('.m3u8')) {
-                let hls = new Hls();
-                hls.loadSource(url);
-                hls.attachMedia(audioPlayer);
-            } else {
-                audioPlayer.src = url;
-            }
-            audioPlayer.play();
-            isPlaying = true;
-            playButton.textContent = '⏸'; // Change to pause icon
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
         }
-
-        function togglePlayPause() {
-            if (isPlaying) {
-                audioPlayer.pause();
-                playButton.textContent = '▶'; // Change to play icon
-            } else {
-                audioPlayer.play();
-                playButton.textContent = '⏸'; // Change to pause icon
-            }
-            isPlaying = !isPlaying;
-        }
-
-        function updateProgressBar() {
-            const percentage = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-            progressBar.style.width = `${percentage}%`;
-        }
-
-        function seek(event) {
-            const percent = event.offsetX / event.target.clientWidth;
-            audioPlayer.currentTime = percent * audioPlayer.duration;
-        }
-
-        function toggleMute() {
-            audioPlayer.muted = !audioPlayer.muted;
-        }
-
-        function setVolume(value) {
-            audioPlayer.volume = value;
-        }
-
-        audioPlayer.addEventListener('timeupdate', updateProgressBar);
     </script>
-
 </body>
 </html>
