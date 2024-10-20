@@ -140,6 +140,19 @@
             margin-top: 10px;
         }
 
+        /* Selected station name */
+        .now-playing {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        /* Loading indicator */
+        .loading {
+            display: none;
+            font-size: 14px;
+            color: #ff6347;
+        }
+
         /* Responsive Design */
         @media screen and (max-width: 768px) {
             .main-container {
@@ -217,6 +230,8 @@
             </svg>
             <div class="play-button" onclick="togglePlay()">&#9658;</div>
         </div>
+        <div class="now-playing" id="nowPlaying">Now Playing: <span id="stationName">None</span></div>
+        <div class="loading" id="loadingIndicator">Loading...</div>
         <div class="volume-control">
             <input type="range" min="0" max="1" step="0.1" onchange="setVolume(this.value)">
         </div>
@@ -241,7 +256,21 @@
                     { name: 'Hot 97', image: 'https://via.placeholder.com/80' },
                     { name: 'Z100', image: 'https://via.placeholder.com/80' }
                 ],
-                // Additional countries and stations can be added here...
+                'Finland': [
+                    { name: 'Radio Suomi', image: 'https://via.placeholder.com/80' },
+                    { name: 'YleX', image: 'https://via.placeholder.com/80' },
+                    { name: 'Radio Rock', image: 'https://via.placeholder.com/80' }
+                ],
+                'Singapore': [
+                    { name: 'Class 95', image: 'https://via.placeholder.com/80' },
+                    { name: 'Kiss92', image: 'https://via.placeholder.com/80' },
+                    { name: 'Gold 905', image: 'https://via.placeholder.com/80' }
+                ],
+                'Turkey': [
+                    { name: 'Power FM', image: 'https://via.placeholder.com/80' },
+                    { name: 'Metro FM', image: 'https://via.placeholder.com/80' },
+                    { name: 'Virgin Radio Turkey', image: 'https://via.placeholder.com/80' }
+                ]
             };
 
             const stationList = document.getElementById('stationList');
@@ -250,51 +279,78 @@
                 const stationCard = document.createElement('div');
                 stationCard.className = 'station-card';
                 stationCard.innerHTML = `<img src="${station.image}" class="station-image" alt="${station.name}"><br>${station.name}`;
-                stationCard.onclick = () => playAudio(`https://example.com/stream/${station.name}.m3u8`, station.image);
+                stationCard.onclick = () => playStation(station.name, station.image);
                 stationList.appendChild(stationCard);
             });
-        }
 
-        // Load the default country (USA) stations when the page loads
-        window.onload = () => loadStations('USA');
-
-        // Player control functions
-        let audio = new Audio();
-        let isPlaying = false;
-
-        function playAudio(url, logo) {
-            audio.src = url;
-            audio.play();
-            isPlaying = true;
-
-            audio.onended = () => {
-                isPlaying = false;
-                document.getElementById('progressCircle').style.strokeDasharray = '0 100'; // Reset progress
-            };
-
-            // Update circular progress
-            audio.addEventListener('timeupdate', () => {
-                const progressCircle = document.getElementById('progressCircle');
-                const percentage = (audio.currentTime / audio.duration) * 100;
-                const dashoffset = 100 - percentage; // Calculate dash offset
-                progressCircle.style.strokeDasharray = `${percentage} 100`;
-                progressCircle.style.strokeDashoffset = dashoffset; // Set dash offset
-            });
-        }
-
-        function togglePlay() {
-            if (isPlaying) {
-                audio.pause();
-                isPlaying = false;
-            } else {
-                audio.play();
-                isPlaying = true;
+            // Automatically load USA stations on initial load
+            if (country === 'USA') {
+                loadStations('USA');
             }
         }
 
-        function setVolume(value) {
-            audio.volume = value;
+        // Function to play the selected station
+        function playStation(station, image) {
+            const audioPlayer = document.createElement('audio');
+            audioPlayer.src = `https://example.com/stream/${station}.mp3`; // Replace with actual URL
+            audioPlayer.load();
+            document.getElementById('stationName').textContent = station;
+            document.getElementById('loadingIndicator').style.display = 'block';
+            const progressCircle = document.getElementById('progressCircle');
+
+            // Setup the progress circle
+            const radius = 36;
+            const circumference = 2 * Math.PI * radius;
+            progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+            progressCircle.style.strokeDashoffset = `${circumference}`;
+
+            audioPlayer.onwaiting = () => {
+                document.getElementById('loadingIndicator').style.display = 'block';
+            };
+
+            audioPlayer.onplaying = () => {
+                document.getElementById('loadingIndicator').style.display = 'none';
+                updateProgress();
+            };
+
+            audioPlayer.onended = () => {
+                document.getElementById('loadingIndicator').style.display = 'none';
+                progressCircle.style.strokeDashoffset = `${circumference}`;
+            };
+
+            audioPlayer.play();
+
+            function updateProgress() {
+                const progress = (audioPlayer.currentTime / audioPlayer.duration) * circumference;
+                progressCircle.style.strokeDashoffset = circumference - progress;
+
+                if (!audioPlayer.paused) {
+                    requestAnimationFrame(updateProgress);
+                }
+            }
         }
+
+        // Function to toggle play/pause
+        function togglePlay() {
+            const audioPlayer = document.querySelector('audio');
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+            } else {
+                audioPlayer.pause();
+            }
+        }
+
+        // Function to set volume
+        function setVolume(value) {
+            const audioPlayer = document.querySelector('audio');
+            audioPlayer.volume = value;
+        }
+
+        // Load USA stations by default on initial page load
+        window.onload = function() {
+            loadStations('USA');
+        };
     </script>
+
 </body>
 </html>
