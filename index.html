@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio Station Website</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Main container */
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+
+        /* Left column: Country list */
+        .country-list {
+            width: 20%;
+            background-color: #f4f4f4;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .country-list h2 {
+            margin: 10px 0;
+        }
+
+        .country-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .country-list li {
+            padding: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .country-list li:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* Middle column: Radio station list */
+        .station-list {
+            width: 80%;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .station-list h2 {
+            margin: 10px 0;
+        }
+
+        .station-item {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .station-item:hover {
+            background-color: #f4f4f4;
+        }
+
+        /* Bottom row: Player */
+        .player-container {
+            width: 100%;
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        .audio-player {
+            width: 80%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <!-- Left column: List of countries -->
+        <div class="country-list">
+            <h2>Countries</h2>
+            <ul id="countryList">
+                <li onclick="loadStations('Ghana')">Ghana</li>
+                <li onclick="loadStations('USA')">USA</li>
+                <li onclick="loadStations('Finland')">Finland</li>
+                <li onclick="loadStations('Singapore')">Singapore</li>
+                <li onclick="loadStations('Turkey')">Turkey</li>
+                <!-- Add more countries as needed -->
+            </ul>
+        </div>
+
+        <!-- Middle column: List of radio stations -->
+        <div class="station-list">
+            <h2>Radio Stations</h2>
+            <div id="stationList">Select a country to see its radio stations.</div>
+        </div>
+    </div>
+
+    <!-- Bottom row: Player -->
+    <div class="player-container">
+        <h3>Now Playing</h3>
+        <audio class="audio-player" id="audioPlayer" controls>
+            <source src="" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+
+    <script>
+        // Function to load radio stations based on the country selected
+        function loadStations(country) {
+            // Example JSON data based on the country selected
+            const stationsData = {
+                'Ghana': ['Adom FM', 'Peace FM', 'Joy FM'],
+                'USA': ['Kiss FM', 'Hot 97', 'Z100'],
+                'Finland': ['Radio Suomi', 'YleX', 'Radio Rock'],
+                'Singapore': ['Class 95', 'Kiss92', 'Gold 905'],
+                'Turkey': ['Power FM', 'Metro FM', 'Virgin Radio Turkey']
+            };
+
+            // Get the station list for the selected country
+            const stationList = stationsData[country] || [];
+            const stationListContainer = document.getElementById('stationList');
+            stationListContainer.innerHTML = '';
+
+            // Display the list of stations
+            stationList.forEach(station => {
+                const stationItem = document.createElement('div');
+                stationItem.className = 'station-item';
+                stationItem.textContent = station;
+                stationItem.onclick = () => playStation(station); // Set up the player
+                stationListContainer.appendChild(stationItem);
+            });
+        }
+
+        // Function to play the selected station
+        function playStation(station) {
+            const audioPlayer = document.getElementById('audioPlayer');
+            // Set the audio source URL based on the station (example URL for demo)
+            audioPlayer.src = `https://example.com/stream/${station}.mp3`;
+            audioPlayer.play();
+        }
+    </script>
+
+</body>
+</html>
