@@ -52,6 +52,11 @@
             background-color: #e0e0e0;
         }
 
+        /* Hidden Sidebar for mobile view */
+        .country-list.mobile-hidden {
+            transform: translateX(-100%);
+        }
+
         /* Middle column: Radio station list */
         .station-list {
             flex: 1;
@@ -64,73 +69,82 @@
         }
 
         .station-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            display: grid;
+            grid-template-columns: 1fr;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
             cursor: pointer;
             transition: background-color 0.2s;
         }
 
-        .station-item img {
-            width: 80px;
-            height: 80px;
-            border-radius: 5px;
-            margin-bottom: 5px;
+        .station-item:hover {
+            background-color: #f4f4f4;
         }
 
         /* Bottom row: Player */
         .player-container {
+            display: flex;
             width: 100%;
+            padding: 15px;
             background-color: #333;
             color: white;
-            padding: 15px;
-            text-align: center;
-            position: relative;
+            align-items: center;
         }
 
-        .audio-player {
-            width: 80%;
+        .station-image {
+            width: 80px; /* Adjust the size as needed */
+            height: 80px;
+            border-radius: 5px;
+            margin-right: 15px;
+        }
+
+        .player {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .play-button {
+            background-color: #fff;
+            color: #333;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
         }
 
         .progress-container {
-            position: relative;
             width: 100%;
             height: 5px;
-            background: #444;
+            background: #555;
             border-radius: 5px;
+            position: relative;
             overflow: hidden;
-            margin: 10px 0;
+            display: none; /* Hidden by default */
         }
 
         .progress {
             height: 100%;
-            background: #f00;
+            background: #4caf50;
             width: 0;
-            transition: width 0.1s;
+            transition: width 0.1s ease;
         }
 
-        .controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 10px;
-        }
-
-        .controls button {
-            background-color: #555;
-            border: none;
-            color: white;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin: 0 5px;
-        }
-
+        /* Volume control */
         .volume-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 100%;
             margin-top: 10px;
+        }
+
+        .volume-slider {
+            width: 100%;
         }
 
         /* Responsive Design */
@@ -203,23 +217,27 @@
 
     <!-- Bottom row: Player -->
     <div class="player-container">
+        <img id="stationLogo" class="station-image" src="" alt="Station Logo" style="display:none;">
+        <div class="player">
+            <div class="play-button" onclick="togglePlay()">▶</div>
+            <div class="progress-container" id="progressContainer">
+                <div class="progress" id="progress"></div>
+            </div>
+            <div class="volume-container">
+                <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.5" onchange="setVolume(this.value)">
+            </div>
+        </div>
         <div class="now-playing">
-            <img id="stationLogo" src="" alt="Station Logo" style="display: none; float: left; margin-right: 10px;">
-            <span id="nowPlayingText" style="line-height: 80px;">Now Playing: <span id="currentStation">None</span></span>
-        </div>
-        <div class="progress-container">
-            <div class="progress" id="progress"></div>
-        </div>
-        <div class="controls">
-            <button onclick="togglePlay()">Play</button>
-        </div>
-        <div class="volume-container">
-            <label for="volume">Volume:</label>
-            <input type="range" id="volume" min="0" max="1" step="0.1" value="0.5" onchange="setVolume(this.value)">
+            <div id="nowPlayingText" style="display: flex; flex-direction: column;">
+                <span id="currentStation">Now Playing: </span>
+                <span id="currentStationName" style="font-weight: bold;"></span>
+            </div>
         </div>
     </div>
 
     <script>
+        let currentAudio = null;
+
         // Function to toggle the sidebar on mobile
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -230,114 +248,126 @@
         function loadStations(country) {
             const stationsData = {
                 'Ghana': [
-                    { name: 'Adom FM', image: 'https://via.placeholder.com/80' },
-                    { name: 'Peace FM', image: 'https://via.placeholder.com/80' },
-                    { name: 'Joy FM', image: 'https://via.placeholder.com/80' }
+                    { name: 'Adom FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+                    { name: 'Peace FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+                    { name: 'Joy FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }
                 ],
                 'USA': [
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80' }
+                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }
                 ],
                 'Finland': [
-                    { name: 'Radio Suomi', image: 'https://via.placeholder.com/80' },
-                    { name: 'YleX', image: 'https://via.placeholder.com/80' },
-                    { name: 'Radio Rock', image: 'https://via.placeholder.com/80' }
+                    { name: 'Radio Suomi', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+                    { name: 'YleX', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+                    { name: 'Radio Rock', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }
                 ],
                 'Singapore': [
-                    { name: 'Class 95', image: 'https://via.placeholder.com/80' },
-                    { name: 'Kiss92', image: 'https://via.placeholder.com/80' },
-                    { name: 'Gold 905', image: 'https://via.placeholder.com/80' }
+                    { name: 'Class 95', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+                    { name: '987FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+                    { name: 'Kiss92', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }
                 ],
                 'Turkey': [
-                    { name: 'Power FM', image: 'https://via.placeholder.com/80' },
-                    { name: 'Metro FM', image: 'https://via.placeholder.com/80' },
-                    { name: 'Virgin Radio Turkey', image: 'https://via.placeholder.com/80' }
+                    { name: 'Kral FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+                    { name: 'Power Türk', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+                    { name: 'Number One', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }
                 ]
             };
 
-            const stationList = stationsData[country] || [];
-            const stationListContainer = document.getElementById('stationList');
-            stationListContainer.innerHTML = '';
+            const stationList = document.getElementById('stationList');
+            stationList.innerHTML = '';
 
-            stationList.forEach(station => {
+            stationsData[country].forEach(station => {
                 const stationItem = document.createElement('div');
                 stationItem.className = 'station-item';
-                stationItem.onclick = () => playStation(station.name, station.image);
-                
-                const stationImage = document.createElement('img');
-                stationImage.src = station.image;
-                stationItem.appendChild(stationImage);
-                
-                const stationName = document.createElement('span');
-                stationName.textContent = station.name;
-                stationItem.appendChild(stationName);
-                
-                stationListContainer.appendChild(stationItem);
+                stationItem.innerHTML = `
+                    <img src="${station.image}" alt="${station.name}" style="width: 80px; height: 80px; border-radius: 5px;">
+                    <span>${station.name}</span>
+                `;
+                stationItem.onclick = () => playStation(station);
+                stationList.appendChild(stationItem);
             });
+
+            // Load default station if country is USA
+            if (country === 'USA') {
+                playStation(stationsData['USA'][0]);
+            }
         }
 
-        // Function to play the selected station
-        function playStation(station, image) {
-            const audioPlayer = document.querySelector('.audio-player');
-            const nowPlayingText = document.getElementById('nowPlayingText');
-            const currentStationText = document.getElementById('currentStation');
+        // Function to play the selected radio station
+        function playStation(station) {
             const stationLogo = document.getElementById('stationLogo');
+            const nowPlayingText = document.getElementById('nowPlayingText');
+            const currentStationName = document.getElementById('currentStationName');
+            const progressContainer = document.getElementById('progressContainer');
             const progress = document.getElementById('progress');
 
-            nowPlayingText.style.display = 'flex';
-            stationLogo.src = image;
+            // Update logo and station name
+            stationLogo.src = station.image;
             stationLogo.style.display = 'block';
-            currentStationText.textContent = station;
+            nowPlayingText.style.display = 'block';
+            currentStationName.innerText = station.name;
 
-            // Simulate loading and playing
-            let loadingInterval = setInterval(() => {
-                progress.style.width = Math.min(parseFloat(progress.style.width) + 10, 100) + '%';
-            }, 100);
+            // If an audio is already playing, stop it
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
 
-            // Simulate the audio is ready to play after 3 seconds
-            setTimeout(() => {
-                clearInterval(loadingInterval);
-                progress.style.width = '100%'; // Complete loading
+            // Create new audio element
+            currentAudio = new Audio(station.url);
+            currentAudio.volume = document.getElementById('volumeSlider').value;
 
-                // Simulate playing audio
-                const audio = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'); // Replace with actual stream URL
-                audio.volume = 0.5;
-                audio.play();
-                
-                audio.onended = () => {
+            // Show progress bar when station is clicked
+            progressContainer.style.display = 'block';
+            progress.style.width = '0%';
+
+            // Play audio
+            currentAudio.play();
+
+            // Update progress bar
+            const interval = setInterval(() => {
+                if (currentAudio.ended) {
+                    clearInterval(interval);
                     progress.style.width = '0%'; // Reset progress when audio ends
-                };
+                    progressContainer.style.display = 'none'; // Hide progress when finished
+                } else {
+                    const percent = (currentAudio.currentTime / currentAudio.duration) * 100;
+                    progress.style.width = `${percent}%`;
+                }
+            }, 1000);
 
-                // Update progress as audio plays
-                const progressInterval = setInterval(() => {
-                    if (audio.currentTime >= audio.duration) {
-                        clearInterval(progressInterval);
-                        progress.style.width = '0%'; // Reset progress when audio ends
-                    } else {
-                        progress.style.width = (audio.currentTime / audio.duration) * 100 + '%';
-                    }
-                }, 1000);
-
-                // Stop loading animation
-                clearInterval(loadingInterval);
-            }, 3000); // Simulate loading time
+            // Hide progress bar after some time if audio is playing
+            currentAudio.addEventListener('playing', () => {
+                progressContainer.style.display = 'block'; // Show the progress bar when audio is playing
+            });
         }
 
         // Function to toggle play and pause
         function togglePlay() {
-            // Implement play/pause functionality here
+            if (currentAudio) {
+                if (currentAudio.paused) {
+                    currentAudio.play();
+                    document.querySelector('.play-button').innerText = '❚❚'; // Change to pause icon
+                } else {
+                    currentAudio.pause();
+                    document.querySelector('.play-button').innerText = '▶'; // Change to play icon
+                }
+            }
         }
 
         // Function to set volume
         function setVolume(value) {
-            // Implement volume control here
+            if (currentAudio) {
+                currentAudio.volume = value;
+            }
         }
 
-        // Load default stations for the USA when the page loads
+        // Load stations for default country on page load
         window.onload = function() {
             loadStations('USA');
-        };
+        }
     </script>
+
 </body>
 </html>
