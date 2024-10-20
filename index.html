@@ -68,33 +68,24 @@
             margin: 10px 0;
         }
 
-        .station-item {
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .station-item:hover {
-            background-color: #f4f4f4;
-        }
-
-        /* Radio station grid */
         .station-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             gap: 10px;
         }
 
         .station-card {
             text-align: center;
-            border: 1px solid #ddd;
             padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            cursor: pointer;
             transition: background-color 0.2s;
         }
 
         .station-card:hover {
-            background-color: #f4f4f4;
+            background-color: #e0e0e0;
         }
 
         .station-image {
@@ -103,54 +94,30 @@
             object-fit: cover;
         }
 
-        /* Bottom row: Custom Player */
+        /* Bottom row: Player */
         .player-container {
+            width: 100%;
+            background-color: #333;
+            color: white;
+            padding: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #333;
-            color: white;
-            padding: 10px;
-        }
-
-        .player-logo {
-            width: 50px;
-            height: 50px;
-            margin-right: 10px;
+            flex-direction: column;
         }
 
         .player-controls {
             display: flex;
             align-items: center;
-            width: 80%;
+            margin-top: 10px;
+        }
+
+        .logo, .play-button, .progress-bar, .volume-control {
+            margin: 5px;
         }
 
         .play-button {
-            font-size: 24px;
             cursor: pointer;
-            background: none;
-            border: none;
-            color: white;
-            margin-right: 15px;
-        }
-
-        .progress-bar {
-            flex: 1;
-            height: 5px;
-            background-color: #555;
-            cursor: pointer;
-            margin-right: 15px;
-            position: relative;
-        }
-
-        .progress-filled {
-            height: 100%;
-            background-color: #f90;
-            width: 0;
-        }
-
-        .volume-slider {
-            width: 100px;
         }
 
         /* Responsive Design */
@@ -205,9 +172,9 @@
         <!-- Sidebar (Country list) -->
         <div class="country-list" id="sidebar">
             <h2>Countries</h2>
-            <ul id="countryList">
-                <li onclick="loadStations('USA')">USA</li>
+            <ul>
                 <li onclick="loadStations('Ghana')">Ghana</li>
+                <li onclick="loadStations('USA')">USA</li>
                 <li onclick="loadStations('Finland')">Finland</li>
                 <li onclick="loadStations('Singapore')">Singapore</li>
                 <li onclick="loadStations('Turkey')">Turkey</li>
@@ -221,98 +188,40 @@
         </div>
     </div>
 
-    <!-- Bottom row: Custom Player -->
+    <!-- Bottom row: Player -->
     <div class="player-container">
-        <img src="https://via.placeholder.com/50" class="player-logo" alt="Station Logo">
+        <div class="logo">
+            <img src="https://via.placeholder.com/80" alt="Station Logo" />
+        </div>
         <div class="player-controls">
-            <button class="play-button" id="playButton">▶️</button>
-            <div class="progress-bar" id="progressBar">
-                <div class="progress-filled" id="progressFilled"></div>
-            </div>
-            <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.1" value="0.5">
+            <div class="play-button" onclick="togglePlay()">&#9658;</div>
+            <input type="range" class="progress-bar" id="progressBar" value="0" max="100">
+        </div>
+        <div class="volume-control">
+            <input type="range" min="0" max="1" step="0.1" onchange="setVolume(this.value)">
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
-        let audio = new Audio();
-        let isPlaying = false;
-
-        // Function to play audio and handle .m3u8 or other formats
-        function playAudio(url) {
-            if (Hls.isSupported() && url.endsWith('.m3u8')) {
-                const hls = new Hls();
-                hls.loadSource(url);
-                hls.attachMedia(audio);
-                hls.on(Hls.Events.MANIFEST_PARSED, function () {
-                    audio.play();
-                });
-            } else {
-                audio.src = url;
-                audio.play();
-            }
-            isPlaying = true;
-            document.getElementById('playButton').textContent = '⏸️';
+        // Function to toggle the sidebar on mobile
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
         }
 
-        // Toggle play/pause functionality
-        document.getElementById('playButton').onclick = function () {
-            if (isPlaying) {
-                audio.pause();
-                this.textContent = '▶️';
-                isPlaying = false;
-            } else {
-                audio.play();
-                this.textContent = '⏸️';
-                isPlaying = true;
-            }
-        };
-
-        // Update the progress bar
-        audio.addEventListener('timeupdate', function () {
-            const progress = (audio.currentTime / audio.duration) * 100;
-            document.getElementById('progressFilled').style.width = `${progress}%`;
-        });
-
-        // Handle progress bar click
-        document.getElementById('progressBar').onclick = function (e) {
-            const clickPosition = (e.offsetX / this.offsetWidth) * audio.duration;
-            audio.currentTime = clickPosition;
-        };
-
-        // Handle volume change
-        document.getElementById('volumeSlider').oninput = function () {
-            audio.volume = this.value;
-        };
-
-        // Function to load and play a station
+        // Function to load radio stations based on the country selected
         function loadStations(country) {
             const stationsData = {
-                'USA': [
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80' }
-                ],
                 'Ghana': [
                     { name: 'Adom FM', image: 'https://via.placeholder.com/80' },
                     { name: 'Peace FM', image: 'https://via.placeholder.com/80' },
                     { name: 'Joy FM', image: 'https://via.placeholder.com/80' }
                 ],
-                'Finland': [
-                    { name: 'Radio Suomi', image: 'https://via.placeholder.com/80' },
-                    { name: 'YleX', image: 'https://via.placeholder.com/80' },
-                    { name: 'Radio Nova', image: 'https://via.placeholder.com/80' }
+                'USA': [
+                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80' },
+                    { name: 'Hot 97', image: 'https://via.placeholder.com/80' },
+                    { name: 'Z100', image: 'https://via.placeholder.com/80' }
                 ],
-                'Singapore': [
-                    { name: '987 FM', image: 'https://via.placeholder.com/80' },
-                    { name: 'Class 95', image: 'https://via.placeholder.com/80' },
-                    { name: 'Gold 90.5', image: 'https://via.placeholder.com/80' }
-                ],
-                'Turkey': [
-                    { name: 'Power Türk', image: 'https://via.placeholder.com/80' },
-                    { name: 'Kral FM', image: 'https://via.placeholder.com/80' },
-                    { name: 'Süper FM', image: 'https://via.placeholder.com/80' }
-                ]
+                // Other countries...
             };
 
             const stationList = document.getElementById('stationList');
@@ -326,8 +235,26 @@
             });
         }
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
+        // Load the default country (USA) stations when the page loads
+        window.onload = () => loadStations('USA');
+
+        // Player control functions
+        let audio = new Audio();
+        function playAudio(url) {
+            audio.src = url;
+            audio.play();
+        }
+
+        function togglePlay() {
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
+
+        function setVolume(value) {
+            audio.volume = value;
         }
     </script>
 </body>
