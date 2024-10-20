@@ -104,13 +104,15 @@
         .player-controls {
             display: flex;
             align-items: center;
-            margin-top: 10px;
+            justify-content: center;
+            position: relative;
         }
 
         .logo {
             width: 80px;
             height: 80px;
-            margin-bottom: 10px;
+            position: absolute;
+            left: 10px;
         }
 
         .play-button {
@@ -119,9 +121,38 @@
             margin: 0 10px;
         }
 
-        .progress-bar {
-            width: 100%;
-            margin: 0 10px;
+        /* Circular Progress Bar */
+        .progress-ring {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-ring svg {
+            position: absolute;
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring circle {
+            stroke: #ddd;
+            stroke-width: 8;
+            fill: none;
+        }
+
+        .progress-ring .progress {
+            stroke: #ff6347; /* Change to desired progress color */
+            stroke-width: 8;
+            fill: none;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        /* Volume Control */
+        .volume-control {
+            margin-top: 10px;
         }
 
         /* Responsive Design */
@@ -194,14 +225,19 @@
 
     <!-- Bottom row: Player -->
     <div class="player-container">
-        <div class="logo">
-            <img src="https://via.placeholder.com/80" alt="Station Logo" id="playerLogo" />
-        </div>
+        <img src="https://via.placeholder.com/80" alt="Station Logo" class="logo" id="playerLogo" />
         <div class="player-controls">
+            <div class="progress-ring">
+                <svg width="80" height="80">
+                    <circle cx="40" cy="40" r="36"></circle>
+                    <circle cx="40" cy="40" r="36" class="progress" id="progressCircle"></circle>
+                </svg>
+            </div>
             <div class="play-button" onclick="togglePlay()">&#9658;</div>
-            <input type="range" class="progress-bar" id="progressBar" value="0" max="100" onchange="setProgress(this.value)">
         </div>
-        <input type="range" min="0" max="1" step="0.1" onchange="setVolume(this.value)">
+        <div class="volume-control">
+            <input type="range" min="0" max="1" step="0.1" onchange="setVolume(this.value)">
+        </div>
     </div>
 
     <script>
@@ -242,36 +278,42 @@
 
         // Player control functions
         let audio = new Audio();
-        
+        let isPlaying = false;
+
         function playAudio(url, logo) {
             audio.src = url;
             audio.play();
+            isPlaying = true;
             document.getElementById('playerLogo').src = logo;  // Update the logo based on the selected station
+
             audio.onended = () => {
-                document.getElementById('playerLogo').src = 'https://via.placeholder.com/80';  // Reset logo when playback ends
+                isPlaying = false;
+                document.getElementById('progressCircle').style.strokeDasharray = '0 100'; // Reset progress
             };
+
+            // Update circular progress
+            audio.addEventListener('timeupdate', () => {
+                const progressCircle = document.getElementById('progressCircle');
+                const percentage = (audio.currentTime / audio.duration) * 100;
+                const dashoffset = 100 - percentage; // Calculate dash offset
+                progressCircle.style.strokeDasharray = `${percentage} 100`;
+                progressCircle.style.strokeDashoffset = dashoffset; // Set dash offset
+            });
         }
 
         function togglePlay() {
-            if (audio.paused) {
-                audio.play();
-            } else {
+            if (isPlaying) {
                 audio.pause();
+                isPlaying = false;
+            } else {
+                audio.play();
+                isPlaying = true;
             }
         }
 
         function setVolume(value) {
             audio.volume = value;
         }
-
-        function setProgress(value) {
-            audio.currentTime = (audio.duration * value) / 100;
-        }
-
-        audio.addEventListener('timeupdate', () => {
-            const progressBar = document.getElementById('progressBar');
-            progressBar.value = (audio.currentTime / audio.duration) * 100;
-        });
     </script>
 </body>
 </html>
