@@ -18,6 +18,8 @@
         .main-container {
             display: flex;
             flex: 1;
+            flex-direction: row;
+            height: 100%;
         }
 
         /* Left column: Country list */
@@ -50,7 +52,7 @@
 
         /* Middle column: Radio station list */
         .station-list {
-            width: 80%;
+            flex: 1;
             padding: 10px;
             overflow-y: auto;
         }
@@ -77,11 +79,46 @@
             color: white;
             padding: 15px;
             text-align: center;
-            position: relative;
         }
 
         .audio-player {
             width: 80%;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .country-list {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .station-list {
+                width: 100%;
+                padding: 10px;
+            }
+
+            .audio-player {
+                width: 90%;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .country-list h2, .station-list h2, .player-container h3 {
+                font-size: 1rem;
+            }
+
+            .country-list li, .station-item {
+                padding: 6px;
+            }
+
+            .player-container {
+                padding: 10px;
+            }
         }
     </style>
 </head>
@@ -97,7 +134,6 @@
                 <li onclick="loadStations('Finland')">Finland</li>
                 <li onclick="loadStations('Singapore')">Singapore</li>
                 <li onclick="loadStations('Turkey')">Turkey</li>
-                <!-- Add more countries as needed -->
             </ul>
         </div>
 
@@ -120,7 +156,6 @@
     <script>
         // Function to load radio stations based on the country selected
         function loadStations(country) {
-            // Example JSON data based on the country selected
             const stationsData = {
                 'Ghana': ['Adom FM', 'Peace FM', 'Joy FM'],
                 'USA': ['Kiss FM', 'Hot 97', 'Z100'],
@@ -129,17 +164,15 @@
                 'Turkey': ['Power FM', 'Metro FM', 'Virgin Radio Turkey']
             };
 
-            // Get the station list for the selected country
             const stationList = stationsData[country] || [];
             const stationListContainer = document.getElementById('stationList');
             stationListContainer.innerHTML = '';
 
-            // Display the list of stations
             stationList.forEach(station => {
                 const stationItem = document.createElement('div');
                 stationItem.className = 'station-item';
                 stationItem.textContent = station;
-                stationItem.onclick = () => playStation(station); // Set up the player
+                stationItem.onclick = () => playStation(station);
                 stationListContainer.appendChild(stationItem);
             });
         }
@@ -147,7 +180,6 @@
         // Function to play the selected station
         function playStation(station) {
             const audioPlayer = document.getElementById('audioPlayer');
-            // Set the audio source URL based on the station (example URL for demo)
             audioPlayer.src = `https://example.com/stream/${station}.mp3`;
             audioPlayer.play();
         }
