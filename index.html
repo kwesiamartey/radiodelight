@@ -1,211 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Radio Station Website</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
+<script>
+    // Function to toggle the sidebar on mobile
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('active');
+    }
 
-        /* Main container */
-        .main-container {
-            display: flex;
-            flex: 1;
-            flex-direction: row;
-            height: 100%;
-        }
+    // Function to load radio stations based on the country selected
+    function loadStations(country) {
+        const stationsData = {
+            'Ghana': ['Adom FM', 'Peace FM', 'Joy FM'],
+            'USA': ['Kiss FM', 'Hot 97', 'Z100'],
+            'Finland': ['Radio Suomi', 'YleX', 'Radio Rock'],
+            'Singapore': ['Class 95', 'Kiss92', 'Gold 905'],
+            'Turkey': ['Power FM', 'Metro FM', 'Virgin Radio Turkey']
+        };
 
-        /* Sidebar (Country list) */
-        .country-list {
-            width: 20%;
-            background-color: #f4f4f4;
-            border-right: 1px solid #ddd;
-            overflow-y: auto;
-            padding: 10px;
-            position: relative;
-            transition: transform 0.3s ease;
-        }
+        const stationList = stationsData[country] || [];
+        const stationListContainer = document.getElementById('stationList');
+        stationListContainer.innerHTML = '';
 
-        .country-list h2 {
-            margin: 10px 0;
-        }
-
-        .country-list ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .country-list li {
-            padding: 8px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .country-list li:hover {
-            background-color: #e0e0e0;
-        }
-
-        /* Hidden Sidebar for mobile view */
-        .country-list.mobile-hidden {
-            transform: translateX(-100%);
-        }
-
-        /* Middle column: Radio station list */
-        .station-list {
-            flex: 1;
-            padding: 10px;
-            overflow-y: auto;
-        }
-
-        .station-list h2 {
-            margin: 10px 0;
-        }
-
-        .station-item {
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .station-item:hover {
-            background-color: #f4f4f4;
-        }
-
-        /* Bottom row: Player */
-        .player-container {
-            width: 100%;
-            background-color: #333;
-            color: white;
-            padding: 15px;
-            text-align: center;
-        }
-
-        .audio-player {
-            width: 80%;
-        }
-
-        /* Responsive Design */
-        @media screen and (max-width: 768px) {
-            .main-container {
-                flex-direction: column;
-            }
-
-            /* Menu button for mobile view */
-            .menu-button {
-                display: block;
-                background-color: #333;
-                color: white;
-                padding: 10px;
-                text-align: center;
-                cursor: pointer;
-            }
-
-            /* Hide the sidebar by default on mobile */
-            .country-list {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 250px;
-                height: 100%;
-                z-index: 1000;
-                background-color: #f4f4f4;
-                transform: translateX(-100%);
-                box-shadow: 2px 0 5px rgba(0,0,0,0.2);
-            }
-
-            /* Show the sidebar when active */
-            .country-list.active {
-                transform: translateX(0);
-            }
-        }
-
-        @media screen and (min-width: 769px) {
-            /* Hide the menu button on larger screens */
-            .menu-button {
-                display: none;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Menu button for mobile view -->
-    <div class="menu-button" onclick="toggleSidebar()">☰ Menu</div>
-
-    <div class="main-container">
-        <!-- Sidebar (Country list) -->
-        <div class="country-list" id="sidebar">
-            <h2>Countries</h2>
-            <ul id="countryList">
-                <li onclick="loadStations('Ghana')">Ghana</li>
-                <li onclick="loadStations('USA')">USA</li>
-                <li onclick="loadStations('Finland')">Finland</li>
-                <li onclick="loadStations('Singapore')">Singapore</li>
-                <li onclick="loadStations('Turkey')">Turkey</li>
-            </ul>
-        </div>
-
-        <!-- Middle column: Radio station list -->
-        <div class="station-list">
-            <h2>Radio Stations</h2>
-            <div id="stationList">Select a country to see its radio stations.</div>
-        </div>
-    </div>
-
-    <!-- Bottom row: Player -->
-    <div class="player-container">
-        <h3>Now Playing</h3>
-        <audio class="audio-player" id="audioPlayer" controls>
-            <source src="" type="audio/mpeg">
-            Your browser does not support the audio element.
-        </audio>
-    </div>
-
-    <script>
-        // Function to toggle the sidebar on mobile
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('active');
-        }
-
-        // Function to load radio stations based on the country selected
-        function loadStations(country) {
-            const stationsData = {
-                'Ghana': ['Adom FM', 'Peace FM', 'Joy FM'],
-                'USA': ['Kiss FM', 'Hot 97', 'Z100'],
-                'Finland': ['Radio Suomi', 'YleX', 'Radio Rock'],
-                'Singapore': ['Class 95', 'Kiss92', 'Gold 905'],
-                'Turkey': ['Power FM', 'Metro FM', 'Virgin Radio Turkey']
+        stationList.forEach(station => {
+            const stationItem = document.createElement('div');
+            stationItem.className = 'station-item';
+            stationItem.textContent = station;
+            stationItem.onclick = () => {
+                playStation(station);
+                closeSidebar();
             };
+            stationListContainer.appendChild(stationItem);
+        });
+    }
 
-            const stationList = stationsData[country] || [];
-            const stationListContainer = document.getElementById('stationList');
-            stationListContainer.innerHTML = '';
+    // Function to play the selected station
+    function playStation(station) {
+        const audioPlayer = document.getElementById('audioPlayer');
+        const stationUrls = {
+            'Adom FM': 'https://example.com/stream/adomfm.mp3',
+            'Peace FM': 'https://example.com/stream/peacefm.mp3',
+            'Joy FM': 'https://example.com/stream/joyfm.mp3',
+            'Kiss FM': 'https://example.com/stream/kissfm.mp3',
+            'Hot 97': 'https://example.com/stream/hot97.mp3',
+            'Z100': 'https://example.com/stream/z100.mp3',
+            'Radio Suomi': 'https://example.com/stream/radiosuomi.mp3',
+            'YleX': 'https://example.com/stream/ylex.mp3',
+            'Radio Rock': 'https://example.com/stream/radiorock.mp3',
+            'Class 95': 'https://example.com/stream/class95.mp3',
+            'Kiss92': 'https://example.com/stream/kiss92.mp3',
+            'Gold 905': 'https://example.com/stream/gold905.mp3',
+            'Power FM': 'https://example.com/stream/powerfm.mp3',
+            'Metro FM': 'https://example.com/stream/metrofm.mp3',
+            'Virgin Radio Turkey': 'https://example.com/stream/virginradioturkey.mp3'
+        };
+        audioPlayer.src = stationUrls[station] || '';
+        audioPlayer.play();
+    }
 
-            stationList.forEach(station => {
-                const stationItem = document.createElement('div');
-                stationItem.className = 'station-item';
-                stationItem.textContent = station;
-                stationItem.onclick = () => playStation(station);
-                stationListContainer.appendChild(stationItem);
-            });
-        }
-
-        // Function to play the selected station
-        function playStation(station) {
-            const audioPlayer = document.getElementById('audioPlayer');
-            audioPlayer.src = `https://example.com/stream/${station}.mp3`;
-            audioPlayer.play();
-        }
-    </script>
-
-</body>
-</html>
+    // Function to close the sidebar
+    function closeSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.remove('active');
+    }
+</script>
