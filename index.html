@@ -96,6 +96,9 @@
             color: white;
             padding: 15px;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         /* Responsive Design */
@@ -139,6 +142,19 @@
                 display: none;
             }
         }
+
+        /* Style for the progress circle */
+        #progressCircle {
+            margin: 10px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Style for the play button and volume control */
+        #playButton, #volumeControl {
+            margin: 5px;
+        }
     </style>
 </head>
 <body>
@@ -177,8 +193,8 @@
             <circle cx="40" cy="40" r="36" fill="none" stroke="#ccc" stroke-width="8" />
             <circle id="progressBar" cx="40" cy="40" r="36" fill="none" stroke="#76c7c0" stroke-width="8" stroke-dasharray="226" stroke-dashoffset="226" />
         </svg>
-        <button onclick="togglePlay()">Play/Pause</button>
-        <input type="range" min="0" max="1" step="0.1" onchange="setVolume(this.value)" value="1"/>
+        <button id="playButton" onclick="togglePlay()">Play/Pause</button>
+        <input type="range" id="volumeControl" min="0" max="1" step="0.1" onchange="setVolume(this.value)" value="1"/>
     </div>
 
     <script>
@@ -242,18 +258,20 @@
             audioPlayer.src = `https://example.com/stream/${station}.mp3`; // Replace with actual URL
             audioPlayer.load();
             document.getElementById('stationName').textContent = `Now Playing: ${station}`;
-            document.getElementById('stationImage').src = image; // Set station image
-            document.getElementById('loadingIndicator').style.display = 'block';
-            const progressCircle = document.getElementById('progressBar');
+            document.getElementById('stationImage').src = image;
 
-            // Setup the progress circle
-            const radius = 36;
-            const circumference = 2 * Math.PI * radius;
-            progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+            const progressCircle = document.getElementById('progressBar');
+            const circumference = Math.PI * (progressCircle.r.baseVal.value * 2);
+            progressCircle.style.strokeDasharray = `${circumference}`;
             progressCircle.style.strokeDashoffset = `${circumference}`;
 
-            audioPlayer.onwaiting = () => {
-                document.getElementById('loadingIndicator').style.display = 'block';
+            // Show loading indicator
+            document.getElementById('loadingIndicator').style.display = 'block';
+
+            audioPlayer.oncanplay = () => {
+                audioPlayer.play();
+                document.getElementById('loadingIndicator').style.display = 'none';
+                updateProgress();
             };
 
             audioPlayer.onplaying = () => {
@@ -262,11 +280,8 @@
             };
 
             audioPlayer.onended = () => {
-                document.getElementById('loadingIndicator').style.display = 'none';
                 progressCircle.style.strokeDashoffset = `${circumference}`;
             };
-
-            audioPlayer.play();
 
             function updateProgress() {
                 const progress = (audioPlayer.currentTime / audioPlayer.duration) * circumference;
