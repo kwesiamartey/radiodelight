@@ -101,35 +101,10 @@
             flex-direction: column;
         }
 
-        .player-controls {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .logo {
-            width: 80px;
-            height: 80px;
-            position: absolute;
-            left: 10px;
-        }
-
-        .play-button {
-            cursor: pointer;
-            font-size: 24px;
-            margin: 0 10px;
-        }
-
-        /* Circular Progress Bar */
         .progress-ring {
             position: relative;
             width: 80px;
             height: 80px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .progress-ring svg {
@@ -148,6 +123,16 @@
             stroke-width: 8;
             fill: none;
             transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .play-button {
+            cursor: pointer;
+            font-size: 24px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1; /* Ensures the play button is above the progress ring */
         }
 
         /* Volume Control */
@@ -225,14 +210,11 @@
 
     <!-- Bottom row: Player -->
     <div class="player-container">
-        <img src="https://via.placeholder.com/80" alt="Station Logo" class="logo" id="playerLogo" />
-        <div class="player-controls">
-            <div class="progress-ring">
-                <svg width="80" height="80">
-                    <circle cx="40" cy="40" r="36"></circle>
-                    <circle cx="40" cy="40" r="36" class="progress" id="progressCircle"></circle>
-                </svg>
-            </div>
+        <div class="progress-ring">
+            <svg width="80" height="80">
+                <circle cx="40" cy="40" r="36"></circle>
+                <circle cx="40" cy="40" r="36" class="progress" id="progressCircle"></circle>
+            </svg>
             <div class="play-button" onclick="togglePlay()">&#9658;</div>
         </div>
         <div class="volume-control">
@@ -284,7 +266,6 @@
             audio.src = url;
             audio.play();
             isPlaying = true;
-            document.getElementById('playerLogo').src = logo;  // Update the logo based on the selected station
 
             audio.onended = () => {
                 isPlaying = false;
