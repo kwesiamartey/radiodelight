@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Radio Station Website</title>
+    <title>Responsive Radio Station Website</title>
     <style>
         body, html {
             margin: 0;
@@ -12,7 +12,6 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            overflow-x: hidden; /* Prevent horizontal scroll on mobile */
         }
 
         /* Main container */
@@ -23,7 +22,7 @@
             height: 100%;
         }
 
-        /* Left column: Country list (Drawer menu) */
+        /* Sidebar (Country list) */
         .country-list {
             width: 20%;
             background-color: #f4f4f4;
@@ -31,12 +30,7 @@
             overflow-y: auto;
             padding: 10px;
             position: relative;
-            transition: transform 0.3s ease; /* For drawer animation */
-        }
-
-        /* Hidden state for the drawer menu on mobile */
-        .country-list.closed {
-            transform: translateX(-100%);
+            transition: transform 0.3s ease;
         }
 
         .country-list h2 {
@@ -56,6 +50,11 @@
 
         .country-list li:hover {
             background-color: #e0e0e0;
+        }
+
+        /* Hidden Sidebar for mobile view */
+        .country-list.mobile-hidden {
+            transform: translateX(-100%);
         }
 
         /* Middle column: Radio station list */
@@ -93,48 +92,45 @@
             width: 80%;
         }
 
-        /* Menu button for mobile view */
-        .menu-button {
-            display: none; /* Hidden by default */
-            background-color: #333;
-            color: white;
-            padding: 10px;
-            border: none;
-            cursor: pointer;
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 10; /* Ensure it's above other content */
-        }
-
         /* Responsive Design */
         @media screen and (max-width: 768px) {
             .main-container {
                 flex-direction: column;
             }
 
+            /* Menu button for mobile view */
+            .menu-button {
+                display: block;
+                background-color: #333;
+                color: white;
+                padding: 10px;
+                text-align: center;
+                cursor: pointer;
+            }
+
+            /* Hide the sidebar by default on mobile */
             .country-list {
                 position: absolute;
                 top: 0;
                 left: 0;
-                width: 70%;
+                width: 250px;
                 height: 100%;
-                z-index: 9; /* Layer above main content */
+                z-index: 1000;
                 background-color: #f4f4f4;
                 transform: translateX(-100%);
+                box-shadow: 2px 0 5px rgba(0,0,0,0.2);
             }
 
-            .station-list {
-                width: 100%;
-                padding: 10px;
+            /* Show the sidebar when active */
+            .country-list.active {
+                transform: translateX(0);
             }
+        }
 
-            .audio-player {
-                width: 90%;
-            }
-
+        @media screen and (min-width: 769px) {
+            /* Hide the menu button on larger screens */
             .menu-button {
-                display: block; /* Show the menu button on mobile */
+                display: none;
             }
         }
     </style>
@@ -142,11 +138,11 @@
 <body>
 
     <!-- Menu button for mobile view -->
-    <button class="menu-button" onclick="toggleMenu()">☰ Menu</button>
+    <div class="menu-button" onclick="toggleSidebar()">☰ Menu</div>
 
     <div class="main-container">
-        <!-- Left column: List of countries (Drawer) -->
-        <div class="country-list closed" id="countryDrawer">
+        <!-- Sidebar (Country list) -->
+        <div class="country-list" id="sidebar">
             <h2>Countries</h2>
             <ul id="countryList">
                 <li onclick="loadStations('Ghana')">Ghana</li>
@@ -157,7 +153,7 @@
             </ul>
         </div>
 
-        <!-- Middle column: List of radio stations -->
+        <!-- Middle column: Radio station list -->
         <div class="station-list">
             <h2>Radio Stations</h2>
             <div id="stationList">Select a country to see its radio stations.</div>
@@ -174,10 +170,10 @@
     </div>
 
     <script>
-        // Function to toggle the drawer menu
-        function toggleMenu() {
-            const drawer = document.getElementById('countryDrawer');
-            drawer.classList.toggle('closed');
+        // Function to toggle the sidebar on mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
         }
 
         // Function to load radio stations based on the country selected
@@ -201,9 +197,6 @@
                 stationItem.onclick = () => playStation(station);
                 stationListContainer.appendChild(stationItem);
             });
-
-            // Close the menu when a country is selected on mobile
-            toggleMenu();
         }
 
         // Function to play the selected station
