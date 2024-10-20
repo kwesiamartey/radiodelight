@@ -52,41 +52,31 @@
             background-color: #e0e0e0;
         }
 
+        /* Hidden Sidebar for mobile view */
+        .country-list.mobile-hidden {
+            transform: translateX(-100%);
+        }
+
         /* Middle column: Radio station list */
         .station-list {
             flex: 1;
             padding: 10px;
             overflow-y: auto;
-        }
-
-        .station-list h2 {
-            margin: 10px 0;
-        }
-
-        .station-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 10px;
         }
 
         .station-card {
-            text-align: center;
-            padding: 10px;
+            padding: 8px;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
+            text-align: center;
             cursor: pointer;
             transition: background-color 0.2s;
         }
 
         .station-card:hover {
-            background-color: #e0e0e0;
-        }
-
-        .station-image {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
+            background-color: #f4f4f4;
         }
 
         /* Bottom row: Player */
@@ -95,62 +85,45 @@
             background-color: #333;
             color: white;
             padding: 15px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .audio-player {
+            width: 80%;
+        }
+
+        /* Progress Circle */
+        .progress-container {
+            position: relative;
+            width: 60px;
+            height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
         }
 
-        .progress-ring {
-            position: relative;
-            width: 80px;
-            height: 80px;
-        }
-
-        .progress-ring svg {
+        .progress-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: transparent;
             position: absolute;
-            transform: rotate(-90deg);
+            border: 5px solid #ddd;
+            border-top-color: #4caf50;
+            animation: spin 1s linear infinite;
+            z-index: 1;
         }
 
-        .progress-ring circle {
-            stroke: #ddd;
-            stroke-width: 8;
-            fill: none;
-        }
-
-        .progress-ring .progress {
-            stroke: #ff6347; /* Change to desired progress color */
-            stroke-width: 8;
-            fill: none;
-            transition: stroke-dashoffset 0.5s ease;
-        }
-
-        .play-button {
-            cursor: pointer;
-            font-size: 24px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1; /* Ensures the play button is above the progress ring */
-        }
-
-        /* Volume Control */
-        .volume-control {
-            margin-top: 10px;
-        }
-
-        /* Selected station name */
-        .now-playing {
-            margin-top: 10px;
-            font-size: 18px;
-        }
-
-        /* Loading indicator */
-        .loading {
+        .progress-circle.hide {
             display: none;
-            font-size: 14px;
-            color: #ff6347;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* Responsive Design */
@@ -205,7 +178,7 @@
         <!-- Sidebar (Country list) -->
         <div class="country-list" id="sidebar">
             <h2>Countries</h2>
-            <ul>
+            <ul id="countryList">
                 <li onclick="loadStations('Ghana')">Ghana</li>
                 <li onclick="loadStations('USA')">USA</li>
                 <li onclick="loadStations('Finland')">Finland</li>
@@ -215,32 +188,33 @@
         </div>
 
         <!-- Middle column: Radio station list -->
-        <div class="station-list">
+        <div class="station-list" id="stationList">
             <h2>Radio Stations</h2>
-            <div id="stationList" class="station-grid">Select a country to see its radio stations.</div>
+            <div>Select a country to see its radio stations.</div>
         </div>
     </div>
 
     <!-- Bottom row: Player -->
     <div class="player-container">
-        <div class="progress-ring">
-            <svg width="80" height="80">
-                <circle cx="40" cy="40" r="36"></circle>
-                <circle cx="40" cy="40" r="36" class="progress" id="progressCircle"></circle>
-            </svg>
-            <div class="play-button" onclick="togglePlay()">&#9658;</div>
+        <div class="progress-container">
+            <div class="progress-circle" id="progressCircle"></div>
+            <div id="loadingIndicator" style="display: none; color: white;">Loading...</div>
         </div>
-        <div class="now-playing" id="nowPlaying">Now Playing: <span id="stationName">None</span></div>
-        <div class="loading" id="loadingIndicator">Loading...</div>
-        <div class="volume-control">
-            <input type="range" min="0" max="1" step="0.1" onchange="setVolume(this.value)">
+        <div>
+            <img id="stationImage" src="" alt="Station Logo" style="width: 50px; display: none; margin-right: 10px;">
+            <span id="stationName">Now Playing: Station</span>
         </div>
+        <audio class="audio-player" id="audioPlayer" controls>
+            <source src="" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
     </div>
 
     <script>
         // Function to toggle the sidebar on mobile
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
         }
 
         // Function to load radio stations based on the country selected
@@ -249,38 +223,40 @@
                 'Ghana': [
                     { name: 'Adom FM', image: 'https://via.placeholder.com/80' },
                     { name: 'Peace FM', image: 'https://via.placeholder.com/80' },
-                    { name: 'Joy FM', image: 'https://via.placeholder.com/80' }
+                    { name: 'Joy FM', image: 'https://via.placeholder.com/80' },
                 ],
                 'USA': [
                     { name: 'Kiss FM', image: 'https://via.placeholder.com/80' },
                     { name: 'Hot 97', image: 'https://via.placeholder.com/80' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80' }
+                    { name: 'Z100', image: 'https://via.placeholder.com/80' },
                 ],
                 'Finland': [
                     { name: 'Radio Suomi', image: 'https://via.placeholder.com/80' },
                     { name: 'YleX', image: 'https://via.placeholder.com/80' },
-                    { name: 'Radio Rock', image: 'https://via.placeholder.com/80' }
+                    { name: 'Radio Rock', image: 'https://via.placeholder.com/80' },
                 ],
                 'Singapore': [
                     { name: 'Class 95', image: 'https://via.placeholder.com/80' },
                     { name: 'Kiss92', image: 'https://via.placeholder.com/80' },
-                    { name: 'Gold 905', image: 'https://via.placeholder.com/80' }
+                    { name: 'Gold 905', image: 'https://via.placeholder.com/80' },
                 ],
                 'Turkey': [
                     { name: 'Power FM', image: 'https://via.placeholder.com/80' },
                     { name: 'Metro FM', image: 'https://via.placeholder.com/80' },
-                    { name: 'Virgin Radio Turkey', image: 'https://via.placeholder.com/80' }
+                    { name: 'Virgin Radio Turkey', image: 'https://via.placeholder.com/80' },
                 ]
             };
 
-            const stationList = document.getElementById('stationList');
-            stationList.innerHTML = '';
-            stationsData[country].forEach(station => {
+            const stationList = stationsData[country] || [];
+            const stationListContainer = document.getElementById('stationList');
+            stationListContainer.innerHTML = '';
+
+            stationList.forEach(station => {
                 const stationCard = document.createElement('div');
                 stationCard.className = 'station-card';
-                stationCard.innerHTML = `<img src="${station.image}" class="station-image" alt="${station.name}"><br>${station.name}`;
+                stationCard.innerHTML = `<img src="${station.image}" alt="${station.name}"><br>${station.name}`;
                 stationCard.onclick = () => playStation(station.name, station.image);
-                stationList.appendChild(stationCard);
+                stationListContainer.appendChild(stationCard);
             });
 
             // Automatically load USA stations on initial load
@@ -291,65 +267,37 @@
 
         // Function to play the selected station
         function playStation(station, image) {
-            const audioPlayer = document.createElement('audio');
+            const audioPlayer = document.getElementById('audioPlayer');
             audioPlayer.src = `https://example.com/stream/${station}.mp3`; // Replace with actual URL
             audioPlayer.load();
-            document.getElementById('stationName').textContent = station;
+            document.getElementById('stationName').textContent = `Now Playing: ${station}`;
+            document.getElementById('stationImage').src = image;
+            document.getElementById('stationImage').style.display = 'inline';
             document.getElementById('loadingIndicator').style.display = 'block';
+
             const progressCircle = document.getElementById('progressCircle');
-
-            // Setup the progress circle
-            const radius = 36;
-            const circumference = 2 * Math.PI * radius;
-            progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
-            progressCircle.style.strokeDashoffset = `${circumference}`;
-
-            audioPlayer.onwaiting = () => {
-                document.getElementById('loadingIndicator').style.display = 'block';
-            };
-
-            audioPlayer.onplaying = () => {
+            progressCircle.classList.remove('hide');
+            
+            audioPlayer.onplaying = function() {
                 document.getElementById('loadingIndicator').style.display = 'none';
-                updateProgress();
+                progressCircle.classList.add('hide');
             };
 
-            audioPlayer.onended = () => {
-                document.getElementById('loadingIndicator').style.display = 'none';
-                progressCircle.style.strokeDashoffset = `${circumference}`;
+            // Simulate progress bar loading
+            const updateProgress = () => {
+                if (!audioPlayer.paused) {
+                    const percentage = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                    progressCircle.style.background = `conic-gradient(#4caf50 ${percentage}%, #ddd ${percentage}%)`;
+                }
+                requestAnimationFrame(updateProgress);
             };
+            updateProgress();
 
             audioPlayer.play();
-
-            function updateProgress() {
-                const progress = (audioPlayer.currentTime / audioPlayer.duration) * circumference;
-                progressCircle.style.strokeDashoffset = circumference - progress;
-
-                if (!audioPlayer.paused) {
-                    requestAnimationFrame(updateProgress);
-                }
-            }
         }
 
-        // Function to toggle play/pause
-        function togglePlay() {
-            const audioPlayer = document.querySelector('audio');
-            if (audioPlayer.paused) {
-                audioPlayer.play();
-            } else {
-                audioPlayer.pause();
-            }
-        }
-
-        // Function to set volume
-        function setVolume(value) {
-            const audioPlayer = document.querySelector('audio');
-            audioPlayer.volume = value;
-        }
-
-        // Load USA stations by default on initial page load
-        window.onload = function() {
-            loadStations('USA');
-        };
+        // Automatically load USA stations on initial load
+        window.onload = () => loadStations('USA');
     </script>
 
 </body>
