@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Radio Delight</title>
-    <style>
+  <style>
         body, html {
             margin: 0;
             padding: 0;
@@ -183,6 +183,29 @@
 
         /* Responsive styles */
         @media screen and (max-width: 768px) {
+               .country-list {
+        display: none; /* Hide by default on mobile */
+        position: fixed; /* Fix sidebar position */
+        left: -100%; /* Start hidden off the left side */
+        top: 0;
+        height: 100%;
+        width: 250px; /* Define width for the sidebar */
+        z-index: 1000;
+        transition: transform 0.3s ease; /* Smooth sliding */
+        background-color: #f4f4f4; /* Consistent background */
+        border-right: 1px solid #ddd;
+    }
+
+    .country-list.active {
+        transform: translateX(100%); /* Slide in */
+    }
+
+    .menu-icon {
+        display: block; /* Ensure the menu icon is visible */
+    }
+
+
+            
             .player-container {
                 flex-direction: row; /* Keep elements in a row */
                 justify-content: space-between; /* Space out elements */
@@ -226,30 +249,6 @@
         .menu-icon {
             display: none; /* Default hidden */
             cursor: pointer;
-        }
-
-        @media screen and (max-width: 768px) {
-              .country-list {
-        display: none; /* Hide by default on mobile */
-        position: fixed; /* Fix sidebar position */
-        left: -100%; /* Start hidden off the left side */
-        top: 0;
-        height: 100%;
-        width: 250px; /* Define width for the sidebar */
-        z-index: 1000;
-        transition: transform 0.3s ease; /* Smooth sliding */
-        background-color: #f4f4f4; /* Consistent background */
-        border-right: 1px solid #ddd;
-    }
-
-    .country-list.active {
-        transform: translateX(100%); /* Slide in */
-    }
-
-    .menu-icon {
-        display: block; /* Ensure the menu icon is visible */
-    }
-            
         }
     </style>
 </head>
