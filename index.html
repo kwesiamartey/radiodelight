@@ -229,55 +229,28 @@
         }
 
         @media screen and (max-width: 768px) {
-            .menu-icon {
-                display: block; /* Show only on mobile */
-                position: absolute;
-                top: 10px;
-                left: 10px;
-                z-index: 1001; /* Ensure it stays on top */
-                font-size: 24px; /* Adjust size */
-                background: #007bff;
-                color: white;
-                border: none;
-                border-radius: 5px;
-                padding: 5px 10px;
-            }
-            
+              .country-list {
+        display: none; /* Hide by default on mobile */
+        position: fixed; /* Fix sidebar position */
+        left: -100%; /* Start hidden off the left side */
+        top: 0;
+        height: 100%;
+        width: 250px; /* Define width for the sidebar */
+        z-index: 1000;
+        transition: transform 0.3s ease; /* Smooth sliding */
+        background-color: #f4f4f4; /* Consistent background */
+        border-right: 1px solid #ddd;
+    }
 
-            .station-list {
-            flex: 1;
-            padding: 20px 10px 10px 10px;
-            overflow-y: auto;
-            }
+    .country-list.active {
+        transform: translateX(100%); /* Slide in */
+    }
+
+    .menu-icon {
+        display: block; /* Ensure the menu icon is visible */
+    }
             
         }
-
-         @media screen and (max-width: 508px) {
-            .menu-icon {
-                display: block; /* Show only on mobile */
-                position: absolute;
-                top: 10px;
-                left: 10px;
-                z-index: 1001; /* Ensure it stays on top */
-                font-size: 24px; /* Adjust size */
-                background: #007bff;
-                color: white;
-                border: none;
-                border-radius: 5px;
-                padding: 5px 10px;
-            }
-    
-         
-            .sideBarcountryTitle{
-                font-size:16px;
-            }
-            .station-image {
-            width: 50px;
-            height: 50px;
-            border-radius: 5px;
-            margin-right: 20px; /* Margin for spacing */
-           }
-    }
     </style>
 </head>
 <body>
@@ -325,7 +298,11 @@
 
         function toggleMenu() {
             const countryList = document.getElementById('countryList');
-            countryList.classList.toggle('active'); // Toggle sidebar visibility
+            if (countryList.style.transform === "translateX(100%)") {
+                countryList.style.transform = "translateX(-100%)"; // Hide it
+            } else {
+                countryList.style.transform = "translateX(100%)"; // Show it
+            }
         }
         
         function loadStations(country) {
