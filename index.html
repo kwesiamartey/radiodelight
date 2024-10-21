@@ -105,6 +105,28 @@
             align-items: center;
         }
 
+        /* Circle progress around play button */
+        .progress-container {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(76, 175, 80, 0.5);
+            border-radius: 50%;
+            clip-path: circle(0%); /* Start with 0% visibility */
+            transition: clip-path 0.5s ease;
+        }
+
         .play-button {
             background-color: #fff;
             color: #333;
@@ -117,24 +139,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .progress-container {
-            width: 100%;
-            height: 5px;
-            background: #555;
-            border-radius: 5px;
-            position: relative;
-            overflow: hidden;
-            display: none; /* Hidden by default */
-        }
-
-        .progress {
-            height: 100%;
-            background: #4caf50;
-            width: 0;
-            transition: width 0.1s ease;
+            position: absolute; /* Positioning for overlay */
+            z-index: 1;
         }
 
         /* Volume control */
@@ -219,15 +225,20 @@
     <div class="player-container">
         <img id="stationLogo" class="station-image" src="" alt="Station Logo" style="display:none;">
         <div class="player">
-            <div class="play-button" onclick="togglePlay()">▶</div>
             <div class="progress-container" id="progressContainer">
                 <div class="progress" id="progress"></div>
+                <button class="play-button" onclick="togglePlay()">▶</button>
             </div>
             <div class="volume-container">
                 <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.5" onchange="setVolume(this.value)">
             </div>
         </div>
- 
+        <div class="now-playing">
+            <div id="nowPlayingText" style="display: flex; flex-direction: column;">
+                <span id="currentStation">Now Playing: </span>
+                <span id="currentStationName" style="font-weight: bold;"></span>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -255,7 +266,7 @@
                 'Finland': [
                     { name: 'Radio Suomi', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
                     { name: 'YleX', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Radio Rock', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }
+                    { name: 'Radio Nova', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }
                 ],
                 'Singapore': [
                     { name: 'Class 95', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
@@ -296,6 +307,7 @@
             const currentStationName = document.getElementById('currentStationName');
             const progressContainer = document.getElementById('progressContainer');
             const progress = document.getElementById('progress');
+            const playButton = document.querySelector('.play-button');
 
             // Update logo and station name
             stationLogo.src = station.image;
@@ -314,8 +326,8 @@
             currentAudio.volume = document.getElementById('volumeSlider').value;
 
             // Show progress bar when station is clicked
-            progressContainer.style.display = 'block';
-            progress.style.width = '0%';
+            progress.style.clipPath = 'circle(100%)'; // Show the circular progress
+            playButton.innerText = '⏸'; // Change to pause icon
 
             // Play audio
             currentAudio.play();
@@ -324,17 +336,24 @@
             const interval = setInterval(() => {
                 if (currentAudio.ended) {
                     clearInterval(interval);
-                    progress.style.width = '0%'; // Reset progress when audio ends
-                    progressContainer.style.display = 'none'; // Hide progress when finished
+                    progress.style.clipPath = 'circle(0%)'; // Reset progress when audio ends
+                    playButton.innerText = '▶'; // Reset play button
                 } else {
                     const percent = (currentAudio.currentTime / currentAudio.duration) * 100;
-                    progress.style.width = `${percent}%`;
+                    progress.style.clipPath = `circle(${percent}%)`;
                 }
             }, 1000);
 
+            // Show loading indicator until audio is ready to play
+            currentAudio.addEventListener('waiting', () => {
+                progress.style.clipPath = 'circle(100%)'; // Show full progress when loading
+            });
+
             // Hide progress bar after some time if audio is playing
             currentAudio.addEventListener('playing', () => {
-                progressContainer.style.display = 'block'; // Show the progress bar when audio is playing
+                setTimeout(() => {
+                    progress.style.clipPath = 'circle(0%)'; // Hide progress when ready
+                }, 1000);
             });
         }
 
@@ -343,7 +362,7 @@
             if (currentAudio) {
                 if (currentAudio.paused) {
                     currentAudio.play();
-                    document.querySelector('.play-button').innerText = '❚❚'; // Change to pause icon
+                    document.querySelector('.play-button').innerText = '⏸'; // Change to pause icon
                 } else {
                     currentAudio.pause();
                     document.querySelector('.play-button').innerText = '▶'; // Change to play icon
