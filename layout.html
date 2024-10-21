@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Layout Design</title>
+    <title>Responsive Layout Design</title>
     <style>
         body {
             margin: 0;
@@ -66,6 +66,48 @@
             position: fixed;
             width: 100%;
             bottom: 0;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 1200px) {
+            /* Adjust for medium screens */
+            .sidebar {
+                width: 15%;
+            }
+            .main-container {
+                margin-left: 15%;
+                margin-right: 250px; /* Slightly reduce the right sidebar */
+            }
+            .right-sidebar {
+                width: 250px;
+            }
+        }
+
+        @media screen and (max-width: 992px) {
+            /* Adjust for tablets */
+            .sidebar {
+                width: 25%;
+            }
+            .main-container {
+                margin-left: 25%;
+                margin-right: 200px; /* Reduce the right sidebar */
+            }
+            .right-sidebar {
+                width: 200px;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            /* Adjust for small screens (mobiles) */
+            .sidebar, .right-sidebar {
+                width: 100%; /* Full width for both sidebars */
+                height: auto;
+                position: relative;
+            }
+            .main-container {
+                margin: 0; /* No margins for small screens */
+                padding: 10px;
+            }
         }
     </style>
 </head>
