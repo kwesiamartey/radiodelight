@@ -164,14 +164,6 @@
 
         /* Responsive styles */
         @media screen and (max-width: 768px) {
-            .country-list {
-                display: none; /* Hide sidebar on mobile */
-            }
-
-            .drawer {
-                display: block; /* Show drawer button */
-            }
-
             .player-container {
                 flex-direction: row; /* Keep elements in a row */
                 justify-content: space-between; /* Space out elements */
@@ -202,20 +194,27 @@
             }
         }
 
-        /* Drawer button styles */
-        .drawer {
-            display: none; /* Hidden by default */
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            z-index: 1000; /* Ensure it stays on top */
+        /* Hide the sidebar for mobile only */
+        @media screen and (max-width: 768px) {
+            .country-list {
+                display: none; /* Hide on mobile */
+            }
+            .toggle-button {
+                display: block; /* Show toggle button on mobile */
+                margin: 10px;
+            }
         }
 
+        /* Show the toggle button on mobile */
+        .toggle-button {
+            display: none; /* Hidden by default */
+            cursor: pointer;
+        }
+
+        /* Show menu icon on mobile */
         @media screen and (max-width: 768px) {
-            .drawer {
-                display: block; /* Show drawer button on mobile */
+            .menu-icon {
+                display: block; /* Show menu icon */
             }
         }
     </style>
@@ -223,7 +222,7 @@
 <body>
     <div class="main-container">
         <!-- Sidebar (Country list) -->
-        <div class="country-list" id="countryList">
+        <div class="country-list">
             <h2>Countries</h2>
             <ul>
                 <li onclick="loadStations('USA')">USA</li>
@@ -258,9 +257,6 @@
         </div>
     </div>
 
-    <!-- Drawer Button -->
-    <button class="drawer" onclick="toggleDrawer()">☰</button>
-
     <script>
         let currentAudio = null;
 
@@ -274,80 +270,67 @@
                 'Ghana': [
                     { name: 'Adom FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
                     { name: 'Peace FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' }
+                ],
+                'Finland': [
+                    { name: 'Yle Radio 1', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3' }
+                ],
+                'Singapore': [
+                    { name: 'Radio 1', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3' }
+                ],
+                'Turkey': [
+                    { name: 'Kral FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3' }
                 ]
             };
 
-            const stationList = document.getElementById('stationListContent');
-            const countryTitle = document.getElementById('countryTitle');
-            const countryList = document.getElementById('countryList');
+            const stations = stationsData[country] || [];
+            const stationListContent = document.getElementById('stationListContent');
+            stationListContent.innerHTML = '';
 
-            stationList.innerHTML = '';
-            countryTitle.innerText = `Radio Stations - ${country}`;
-
-            stationsData[country].forEach(station => {
-                const stationItem = document.createElement('div');
-                stationItem.className = 'station-item';
-                stationItem.innerHTML = `<img src="${station.image}" alt="${station.name} Logo"><br>${station.name}`;
-                stationItem.onclick = () => playStation(station.url, station.image);
-                stationList.appendChild(stationItem);
+            stations.forEach(station => {
+                const stationDiv = document.createElement('div');
+                stationDiv.className = 'station-item';
+                stationDiv.innerHTML = `<img src="${station.image}" alt="${station.name}"><p>${station.name}</p>`;
+                stationDiv.onclick = () => playStation(station.url, station.image);
+                stationListContent.appendChild(stationDiv);
             });
+
+            document.getElementById('countryTitle').innerText = `Now Playing: ${country}`;
+            document.querySelector('.country-list').style.display = 'none'; // Hide sidebar after selection
         }
 
-        function playStation(url, image) {
-            const stationLogo = document.getElementById('stationLogo');
-            stationLogo.src = image;
-            stationLogo.style.display = 'block';
-
+        function playStation(url, logo) {
             if (currentAudio) {
                 currentAudio.pause();
             }
-            currentAudio = new Audio(url);
-            currentAudio.volume = document.getElementById('volumeSlider').value;
-            currentAudio.play();
-            updatePlayButton('pause');
-            showProgress(true);
 
-            currentAudio.onended = () => {
-                updatePlayButton('play');
-                showProgress(false);
-            };
+            currentAudio = new Audio(url);
+            currentAudio.volume = 1; // Set volume to maximum
+            currentAudio.play();
+
+            document.getElementById('stationLogo').src = logo;
+            document.getElementById('stationLogo').style.display = 'block';
+            document.querySelector('.progress-ring').style.display = 'block'; // Show loading indicator
+
+            // Show progress animation
+            document.querySelector('.progress-ring').classList.add('spin');
         }
 
         function togglePlay() {
             if (currentAudio) {
                 if (currentAudio.paused) {
                     currentAudio.play();
-                    updatePlayButton('pause');
-                    showProgress(true);
+                    document.querySelector('.play-button').innerText = '❚❚'; // Change to pause symbol
                 } else {
                     currentAudio.pause();
-                    updatePlayButton('play');
+                    document.querySelector('.play-button').innerText = '▶'; // Change to play symbol
                 }
-            }
-        }
-
-        function updatePlayButton(action) {
-            const playButton = document.querySelector('.play-button');
-            playButton.innerText = action === 'play' ? '▶' : '❚❚';
-        }
-
-        function showProgress(show) {
-            const progressRing = document.getElementById('progress');
-            progressRing.style.display = show ? 'block' : 'none';
-            if (show) {
-                progressRing.style.animation = 'spin 1s linear infinite';
             }
         }
 
         function setVolume(value) {
             if (currentAudio) {
-                currentAudio.volume = value;
+                currentAudio.volume = value; // Set volume based on slider
             }
-        }
-
-        function toggleDrawer() {
-            const countryList = document.getElementById('countryList');
-            countryList.style.display = countryList.style.display === 'block' ? 'none' : 'block';
         }
     </script>
 </body>
