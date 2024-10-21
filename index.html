@@ -351,6 +351,11 @@
                 currentAudio.volume = volume;
             }
         }
+
+           // Load default country stations on page load
+        window.onload = function() {
+            loadStations('USA'); // Set default country
+        };
     </script>
 </body>
 </html>
