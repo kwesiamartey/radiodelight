@@ -120,8 +120,14 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-        <h2>Sidebar</h2>
-        <p>This is the sidebar content</p>
+        <h2 id="sideBarcountryTitle">Countries</h2>
+            <ul>
+                <li onclick="loadStations('USA')">USA</li>
+                <li onclick="loadStations('Ghana')">Ghana</li>
+                <li onclick="loadStations('Finland')">Finland</li>
+                <li onclick="loadStations('Singapore')">Singapore</li>
+                <li onclick="loadStations('Turkey')">Turkey</li>
+            </ul>
     </div>
 
     <!-- Right Sidebar -->
@@ -143,7 +149,19 @@
 
     <!-- Bottom row -->
     <div class="bottom-row">
-        <p>Bottom Row</p>
+        <!-- First column: Station Image -->
+        <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: none;">
+
+        <!-- Second column: Play button and progress ring -->
+        <div class="play-control">
+            <div class="progress-ring" id="progress"></div>
+            <button class="play-button" onclick="togglePlay()">▶</button>
+        </div>
+
+        <!-- Third column: Volume control -->
+        <div class="volume-control">
+            <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
+        </div>
     </div>
 
 </body>
