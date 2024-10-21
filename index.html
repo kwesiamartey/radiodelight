@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Radio Delight</title>
-        <style>
+         <style>
         body, html {
             margin: 0;
             padding: 0;
@@ -23,7 +23,7 @@
             height: 100%;
         }
 
-         /* Sidebar (Country list) */
+        /* Sidebar (Country list) */
         .country-list {
             width: 15%;
             background-color: #f4f4f4;
@@ -32,9 +32,23 @@
             padding: 10px;
             display: block; /* Default visible on desktop/tablet */
         }
-        .country-list.active {
-            display: block; /* Show when active */
-            transform: translateX(0); /* Slide in */
+
+        /* Hide sidebar in mobile view */
+        @media screen and (max-width: 768px) {
+            .country-list {
+                display: none; /* Hide by default on mobile */
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                z-index: 1000; /* Ensure it stays on top */
+                transition: transform 0.3s ease; /* For slide effect */
+            }
+
+            .country-list.active {
+                display: block; /* Show when active */
+                transform: translateX(0); /* Slide in */
+            }
         }
 
         .country-list h2 {
@@ -145,7 +159,7 @@
             animation: spin 1s linear infinite;
             display: none; /* Hidden by default */
             margin-left: 20px;
-            margin-right: 20px; /* Margin to separate from the image */
+            margin-right: 20px;/* Margin to separate from the image */
         }
 
         @keyframes spin {
@@ -167,59 +181,42 @@
             margin-left: 14px;
         }
 
-        /* Responsive styles */
-        @media screen and (max-width: 768px) {
-            .player-container {
-                flex-direction: row; /* Keep elements in a row */
-                justify-content: space-between; /* Space out elements */
-            }
 
-            .station-image {
-                width: 60px;
-                height: 60px;
-                margin-right: 20px;
-            }
-
-            .play-button {
-                width: 50px;
-                height: 50px;
-                font-size: 18px; /* Reduce button size */
-            }
-
-            .progress-ring {
-                width: 50px;
-                height: 50px;
-                margin-left: 20px;
-                margin-right: 20px;
-            }
-
-            .volume-control {
-                width: 100%; /* Full width on small screens */
-                margin-left: 14px;
-            }
-
-            .menu-icon {
-                display: block; /* Show only on mobile */
-                position: absolute;
-                top: 10px;
-                left: 10px;
-                z-index: 1001; /* Ensure it stays on top */
-                font-size: 24px; /* Adjust size */
-                background: #007bff;
-                color: white;
-                border: none;
-                border-radius: 5px;
-                padding: 5px 10px;
-            }
+        /* Drawable menu icon */
+        .menu-icon {
+            display: none; /* Default hidden */
+            cursor: pointer;
+        }
+               /* Sidebar styles */
+        #sidebar {
+            display: block; /* Always show on larger screens */
+            width: 250px; /* Fixed width for sidebar */
+            background-color: #333; /* Sidebar background */
+            color: white; /* Text color */
+            position: fixed; /* Keep it fixed on the left */
+            top: 0; /* Align to the top */
+            left: 0; /* Align to the left */
+            height: 100%; /* Full height */
+            overflow-y: auto; /* Scroll if needed */
+            transition: transform 0.3s; /* Transition effect */
         }
 
-        @media screen and (max-width: 508px) {
-            .station-image {
-                width: 50px;
-                height: 50px;
+        /* Main content styles */
+        #main {
+            margin-left: 250px; /* Space for sidebar */
+            padding: 20px;
+            width: calc(100% - 250px); /* Adjust for sidebar */
+        }
+
+             
+              /* For smaller screens, hide the sidebar */
+        @media (max-width: 768px) {
+            #sidebar {
+                display: none; /* Hide on small screens */
             }
-            .sideBarcountryTitle {
-                font-size: 16px;
+            #main {
+                margin-left: 0; /* No margin on small screens */
+                width: 100%; /* Full width for main content */
             }
         }
     </style>
@@ -229,16 +226,15 @@
 
     <div class="main-container">
         <!-- Sidebar (Country list) -->
-        <div class="country-list" id="countryList">
-            <h2 id="sideBarcountryTitle">Countries</h2>
-            <ul>
-                <li onclick="loadStations('USA')">USA</li>
-                <li onclick="loadStations('Ghana')">Ghana</li>
-                <li onclick="loadStations('Finland')">Finland</li>
-                <li onclick="loadStations('Singapore')">Singapore</li>
-                <li onclick="loadStations('Turkey')">Turkey</li>
-            </ul>
-        </div>
+    <div id="sidebar">
+        <h2>Radio Stations</h2>
+        <ul>
+            <li><a href="#" onclick="loadStations('USA')">USA</a></li>
+            <li><a href="#" onclick="loadStations('Finland')">Finland</a></li>
+            <li><a href="#" onclick="loadStations('Singapore')">Singapore</a></li>
+            <li><a href="#" onclick="loadStations('Turkey')">Turkey</a></li>
+        </ul>
+    </div>
 
         <!-- Middle column: Radio station list -->
         <div class="station-list">
