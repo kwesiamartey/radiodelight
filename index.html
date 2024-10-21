@@ -277,9 +277,13 @@
 
             .station-list {
             flex: 1;
-            padding: 200px 10px 10px 10px;
+            padding: 10px 200px 10px 10px;
             overflow-y: auto;
         }
+             .sideBarcountryTitle{
+                font-size:16px;
+             
+             }
     }
     </style>
 </head>
@@ -289,7 +293,7 @@
     <div class="main-container">
         <!-- Sidebar (Country list) -->
         <div class="country-list" id="countryList">
-            <h2>Countries</h2>
+            <h2 id="sideBarcountryTitle">Countries</h2>
             <ul>
                 <li onclick="loadStations('USA')">USA</li>
                 <li onclick="loadStations('Ghana')">Ghana</li>
