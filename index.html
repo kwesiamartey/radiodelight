@@ -21,11 +21,12 @@
             flex: 1;
             flex-direction: row;
             height: 100%;
+            position: relative; /* To position the sidebar correctly */
         }
 
         /* Sidebar (Country list) */
         .country-list {
-            width: 80%; /* Adjusted for drawable */
+            width: 80%; /* Adjust for drawer effect */
             background-color: #f4f4f4;
             border-right: 1px solid #ddd;
             overflow-y: auto;
@@ -44,8 +45,8 @@
 
         .country-list h2 {
             margin: 10px 0;
+            position: relative; /* Ensure title is above icon */
             z-index: 11; /* Ensure the title stays above */
-            position: relative; /* Position relative to stay above the icon */
         }
 
         .country-list ul {
