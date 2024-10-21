@@ -30,7 +30,7 @@
             border-right: 1px solid #ddd;
             overflow-y: auto;
             padding: 10px;
-            display: none; /* Initially hide on mobile */
+            display: block; /* Always show on desktop and tablet */
         }
 
         .country-list h2 {
@@ -141,7 +141,7 @@
             animation: spin 1s linear infinite;
             display: none; /* Hidden by default */
             margin-left: 20px;
-            margin-right: 20px;/* Margin to separate from the image */
+            margin-right: 20px; /* Margin to separate from the image */
         }
 
         @keyframes spin {
@@ -166,12 +166,7 @@
         /* Responsive styles */
         @media screen and (max-width: 768px) {
             .country-list {
-                display: block; /* Show on mobile */
-                position: absolute; /* Overlay effect */
-                z-index: 100; /* Ensure it is on top */
-                width: 100%;
-                height: 100%;
-                overflow-y: auto;
+                display: none; /* Hide sidebar in mobile view */
             }
 
             .player-container {
@@ -195,29 +190,12 @@
                 width: 50px;
                 height: 50px;
                 margin-left: 20px;
-                 margin-right: 20px;
+                margin-right: 20px;
             }
 
             .volume-control {
                 width: 100%; /* Full width on small screens */
                 margin-left: 14px;
-            }
-        }
-
-        @media screen and (min-width: 769px) {
-            .country-list {
-                display: block; /* Always show on larger screens */
-            }
-        }
-
-        /* Responsive font sizes */
-        h2 {
-            font-size: 1.5em; /* Responsive heading size */
-        }
-
-        @media (max-width: 768px) {
-            h2 {
-                font-size: 1.2em; /* Smaller size on mobile */
             }
         }
     </style>
@@ -238,7 +216,7 @@
 
         <!-- Middle column: Radio station list -->
         <div class="station-list">
-            <h2 id="stationListTitle">Radio Stations in USA</h2>
+            <h2 id="stationTitle">Radio Stations - USA</h2>
             <div id="stationListContent" class="station-grid"></div>
         </div>
     </div>
@@ -273,68 +251,58 @@
                 'Ghana': [
                     { name: 'Adom FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
                     { name: 'Peace FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' }
-                ],
-                'Finland': [
-                    { name: 'Yle Radio 1', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3' }
-                ],
-                'Singapore': [
-                    { name: 'Gold 905', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3' }
-                ],
-                'Turkey': [
-                    { name: 'Kral FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3' }
                 ]
             };
 
-            const stations = stationsData[country] || [];
-            const stationListContent = document.getElementById('stationListContent');
-            stationListContent.innerHTML = '';
+            const stationList = document.getElementById('stationListContent');
+            stationList.innerHTML = '';
 
-            stations.forEach(station => {
+            stationsData[country].forEach(station => {
                 const stationItem = document.createElement('div');
                 stationItem.className = 'station-item';
+                stationItem.innerHTML = `
+                    <img src="${station.image}" alt="${station.name}">
+                    <span>${station.name}</span>
+                `;
                 stationItem.onclick = () => playStation(station);
-                stationItem.innerHTML = `<img src="${station.image}" alt="${station.name}"><br>${station.name}`;
-                stationListContent.appendChild(stationItem);
+                stationList.appendChild(stationItem);
             });
 
-            // Update title and hide sidebar on country selection
-            document.getElementById('stationListTitle').innerText = `Radio Stations in ${country}`;
-            document.getElementById('countryList').style.display = 'none'; // Hide sidebar after selection
+            // Update title and hide sidebar if on desktop/tablet
+            const stationTitle = document.getElementById('stationTitle');
+            stationTitle.innerText = `Radio Stations - ${country}`;
+            document.getElementById('countryList').style.display = 'none'; // Hide sidebar on selection
+
+            if (country === 'USA') {
+                document.getElementById('countryList').style.display = 'block'; // Show sidebar for USA
+            }
         }
 
         function playStation(station) {
             if (currentAudio) {
                 currentAudio.pause();
+                document.querySelector('.play-button').innerText = '▶'; // Set play button text to play
             }
 
-            const stationLogo = document.getElementById('stationLogo');
-            stationLogo.src = station.image;
-            stationLogo.style.display = 'block';
-
             currentAudio = new Audio(station.url);
-            currentAudio.volume = document.getElementById('volumeSlider').value;
-
+            document.getElementById('stationLogo').src = station.image;
+            document.getElementById('stationLogo').style.display = 'block'; // Show station logo
+            currentAudio.play();
+            document.querySelector('.play-button').innerText = '❚❚'; // Set play button text to pause
             document.getElementById('progress').style.display = 'block'; // Show progress ring
-            togglePlay(); // Start playing
-
             currentAudio.onended = () => {
-                document.querySelector('.play-button').innerText = '▶'; // Reset button to play
-                document.getElementById('progress').style.display = 'none'; // Hide progress ring
+                document.querySelector('.play-button').innerText = '▶'; // Reset button to play when audio ends
             };
         }
 
         function togglePlay() {
-            const playButton = document.querySelector('.play-button');
-
-            if (currentAudio && !currentAudio.paused) {
-                currentAudio.pause();
-                playButton.innerText = '▶'; // Change to play icon
-                document.getElementById('progress').style.display = 'none'; // Hide progress ring
-            } else {
-                if (currentAudio) {
+            if (currentAudio) {
+                if (currentAudio.paused) {
                     currentAudio.play();
-                    playButton.innerText = '❚❚'; // Change to pause icon
-                    document.getElementById('progress').style.display = 'block'; // Show progress ring
+                    document.querySelector('.play-button').innerText = '❚❚'; // Set play button text to pause
+                } else {
+                    currentAudio.pause();
+                    document.querySelector('.play-button').innerText = '▶'; // Set play button text to play
                 }
             }
         }
@@ -345,8 +313,10 @@
             }
         }
 
-        // Load default stations
-        loadStations('USA');
+        // Load default stations for the USA on page load
+        window.onload = function() {
+            loadStations('USA');
+        };
     </script>
 </body>
 </html>
