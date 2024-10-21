@@ -20,8 +20,7 @@
             display: flex;
             flex: 1;
             flex-direction: row;
-            padding-bottom: 60px; /* Space for the player */
-            box-sizing: border-box; /* Include padding in height calculation */
+            height: 100%;
         }
 
         /* Sidebar (Country list) */
@@ -129,7 +128,6 @@
             font-size: 24px;
             cursor: pointer;
             z-index: 1;
-            margin-left: 10px; /* Margin for spacing */
         }
 
         .progress-ring {
@@ -163,8 +161,8 @@
         /* Responsive styles */
         @media screen and (max-width: 768px) {
             .player-container {
-                flex-direction: column; /* Stack elements vertically on small screens */
-                align-items: flex-start; /* Align items to the start */
+                flex-direction: row; /* Keep elements in a row */
+                justify-content: space-between; /* Space out elements */
             }
 
             .station-image {
