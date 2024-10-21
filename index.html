@@ -36,7 +36,7 @@
         /* Hide sidebar in mobile view */
         @media screen and (max-width: 768px) {
             .country-list {
-                display: none; /* Hide by default on mobile */
+                transform: translateX(-100%); /* Hide off-screen */
                 position: absolute;
                 left: 0;
                 top: 0;
@@ -46,7 +46,6 @@
             }
 
             .country-list.active {
-                display: block; /* Show when active */
                 transform: translateX(0); /* Slide in */
             }
         }
@@ -159,7 +158,7 @@
             animation: spin 1s linear infinite;
             display: none; /* Hidden by default */
             margin-left: 20px;
-            margin-right: 20px;/* Margin to separate from the image */
+            margin-right: 20px; /* Margin to separate from the image */
         }
 
         @keyframes spin {
@@ -234,30 +233,6 @@
                 padding: 5px 10px;
             }
         }
-
-        @media screen and (max-width: 508px) {
-            .menu-icon {
-                display: block; /* Show only on mobile */
-                position: absolute;
-                top: 10px;
-                left: 10px;
-                z-index: 1001; /* Ensure it stays on top */
-                font-size: 24px; /* Adjust size */
-                background: #007bff;
-                color: white;
-                border: none;
-                border-radius: 5px;
-                padding: 5px 10px;
-            }
-            .country-list {
-                width: 180px;
-            }
-
-            .station-image {
-                width: 50px;
-                height: 50px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -266,7 +241,7 @@
     <div class="main-container">
         <!-- Sidebar (Country list) -->
         <div class="country-list" id="countryList">
-            <h2>Countries</h2>
+            <h2 id="sideBarcountryTitle">Countries</h2>
             <ul>
                 <li onclick="loadStations('USA')">USA</li>
                 <li onclick="loadStations('Ghana')">Ghana</li>
@@ -278,7 +253,7 @@
 
         <!-- Middle column: Radio station list -->
         <div class="station-list">
-            <h2>Radio Stations</h2>
+            <h2 id="countryTitle">Radio Stations</h2>
             <div id="stationListContent" class="station-grid"></div>
         </div>
     </div>
@@ -311,52 +286,62 @@
         function loadStations(country) {
             const stationsData = {
                 'USA': [
-                    { name: 'Station 1', logo: 'https://via.placeholder.com/60', url: 'http://example.com/station1' },
-                    { name: 'Station 2', logo: 'https://via.placeholder.com/60', url: 'http://example.com/station2' }
+                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' }
                 ],
-                'Ghana': [
-                    { name: 'Station A', logo: 'https://via.placeholder.com/60', url: 'http://example.com/stationA' }
-                ]
+                // Add more countries and stations as needed
             };
 
-            const stationListContent = document.getElementById('stationListContent');
-            stationListContent.innerHTML = ''; // Clear existing content
+            document.getElementById('countryTitle').textContent = country;
+            const stationList = document.getElementById('stationListContent');
+            stationList.innerHTML = ''; // Clear previous stations
 
             if (stationsData[country]) {
                 stationsData[country].forEach(station => {
-                    const stationItem = document.createElement('div');
-                    stationItem.classList.add('station-item');
-                    stationItem.innerHTML = `
-                        <img src="${station.logo}" alt="${station.name}">
-                        <p>${station.name}</p>
-                    `;
-                    stationItem.onclick = () => playStation(station);
-                    stationListContent.appendChild(stationItem);
+                    const stationDiv = document.createElement('div');
+                    stationDiv.className = 'station-item';
+                    stationDiv.onclick = () => playStation(station.name, station.image, station.url);
+
+                    const img = document.createElement('img');
+                    img.src = station.image;
+                    stationDiv.appendChild(img);
+
+                    const stationName = document.createElement('p');
+                    stationName.textContent = station.name;
+                    stationDiv.appendChild(stationName);
+
+                    stationList.appendChild(stationDiv);
                 });
             }
         }
 
-        function playStation(station) {
-            const audioUrl = station.url;
-            const stationLogo = document.getElementById('stationLogo');
-            stationLogo.src = station.logo;
-            stationLogo.style.display = 'block';
-
+        function playStation(name, image, url) {
             if (currentAudio) {
                 currentAudio.pause();
-                currentAudio = null;
             }
 
-            currentAudio = new Audio(audioUrl);
+            currentAudio = new Audio(url);
             currentAudio.play();
+            document.getElementById('stationLogo').src = image;
+            document.getElementById('stationLogo').style.display = 'block';
+
+            const playButton = document.querySelector('.play-button');
+            playButton.textContent = '⏸'; // Show pause icon
+
+            currentAudio.onended = () => {
+                playButton.textContent = '▶'; // Reset to play icon when finished
+            };
         }
 
         function togglePlay() {
             if (currentAudio) {
                 if (currentAudio.paused) {
                     currentAudio.play();
+                    document.querySelector('.play-button').textContent = '⏸'; // Pause icon
                 } else {
                     currentAudio.pause();
+                    document.querySelector('.play-button').textContent = '▶'; // Play icon
                 }
             }
         }
