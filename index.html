@@ -21,32 +21,38 @@
             flex: 1;
             flex-direction: row;
             height: 100%;
-            position: relative; /* To position the sidebar correctly */
         }
 
         /* Sidebar (Country list) */
         .country-list {
-            width: 80%; /* Adjust for drawer effect */
+            width: 20%;
             background-color: #f4f4f4;
             border-right: 1px solid #ddd;
             overflow-y: auto;
             padding: 10px;
-            position: absolute; /* Use absolute positioning for drawer effect */
-            top: 0;
-            left: 0;
-            height: 100%; /* Full height */
-            z-index: 10; /* Ensure it stays above other content */
-            display: none; /* Hide by default */
+            display: block; /* Default visible on desktop/tablet */
         }
 
-        .country-list.active {
-            display: block; /* Show when active */
+        /* Hide sidebar in mobile view */
+        @media screen and (max-width: 768px) {
+            .country-list {
+                display: none; /* Hide by default on mobile */
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                z-index: 1000; /* Ensure it stays on top */
+                transition: transform 0.3s ease; /* For slide effect */
+            }
+
+            .country-list.active {
+                display: block; /* Show when active */
+                transform: translateX(0); /* Slide in */
+            }
         }
 
         .country-list h2 {
             margin: 10px 0;
-            position: relative; /* Ensure title is above icon */
-            z-index: 11; /* Ensure the title stays above */
         }
 
         .country-list ul {
@@ -153,7 +159,7 @@
             animation: spin 1s linear infinite;
             display: none; /* Hidden by default */
             margin-left: 20px;
-            margin-right: 20px; /* Margin to separate from the image */
+            margin-right: 20px;/* Margin to separate from the image */
         }
 
         @keyframes spin {
@@ -207,30 +213,35 @@
             }
         }
 
-        /* Menu Icon */
+        /* Drawable menu icon */
         .menu-icon {
-            display: none; /* Hide by default */
+            display: none; /* Default hidden */
             cursor: pointer;
-            padding: 10px;
-            font-size: 24px;
         }
 
         @media screen and (max-width: 768px) {
             .menu-icon {
-                display: block; /* Show on mobile */
-            }
-
-            .country-list {
-                width: 80%; /* Adjust width for mobile */
+                display: block; /* Show only on mobile */
+                position: absolute;
+                top: 10px;
+                left: 10px;
+                z-index: 1001; /* Ensure it stays on top */
+                font-size: 24px; /* Adjust size */
+                background: #007bff;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                padding: 5px 10px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="menu-icon" onclick="toggleMenu()">☰</div> <!-- Menu icon for mobile -->
+    <button class="menu-icon" onclick="toggleMenu()">☰</button> <!-- Menu icon for mobile -->
+
     <div class="main-container">
         <!-- Sidebar (Country list) -->
-        <div class="country-list">
+        <div class="country-list" id="countryList">
             <h2>Countries</h2>
             <ul>
                 <li onclick="loadStations('USA')">USA</li>
@@ -269,8 +280,8 @@
         let currentAudio = null;
 
         function toggleMenu() {
-            const countryList = document.querySelector('.country-list');
-            countryList.classList.toggle('active'); // Toggle visibility
+            const countryList = document.getElementById('countryList');
+            countryList.classList.toggle('active'); // Toggle sidebar visibility
         }
 
         function loadStations(country) {
@@ -281,66 +292,61 @@
                     { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' }
                 ],
                 'Ghana': [
-                    { name: 'Adom FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
-                    { name: 'Peace FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' }
+                    { name: 'Adom FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }
                 ],
                 'Finland': [
-                    { name: 'Yle Radio Suomi', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3' }
+                    { name: 'Yle Radio Suomi', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' }
                 ],
                 'Singapore': [
-                    { name: 'Radio 100.3', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3' }
+                    { name: 'Radio Singapore', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' }
                 ],
                 'Turkey': [
-                    { name: 'Radyo D', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3' }
+                    { name: 'Radyo 7', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }
                 ]
             };
 
-            const stations = stationsData[country] || [];
-            const stationListContent = document.getElementById('stationListContent');
-            stationListContent.innerHTML = '';
+            const stationList = document.getElementById('stationListContent');
+            stationList.innerHTML = ''; // Clear previous stations
 
-            stations.forEach(station => {
-                const stationItem = document.createElement('div');
-                stationItem.className = 'station-item';
-                stationItem.innerHTML = `<img src="${station.image}" alt="${station.name}"><p>${station.name}</p>`;
-                stationItem.onclick = () => playStation(station.url, station.image);
-                stationListContent.appendChild(stationItem);
+            stationsData[country].forEach(station => {
+                const stationDiv = document.createElement('div');
+                stationDiv.classList.add('station-item');
+                stationDiv.innerHTML = `<img src="${station.image}" alt="${station.name}"><br>${station.name}`;
+                stationDiv.onclick = () => playStation(station.url, station.image);
+                stationList.appendChild(stationDiv);
             });
 
-            // Update the title and hide the menu
-            document.getElementById('countryTitle').innerText = country;
-            toggleMenu();
+            // Update country title
+            document.getElementById('countryTitle').textContent = country;
+            toggleMenu(); // Hide sidebar after selection
+            document.querySelector('.country-list').classList.remove('active'); // Close the sidebar
         }
 
-        function playStation(url, logo) {
+        function playStation(url, image) {
             if (currentAudio) {
                 currentAudio.pause();
             }
 
             currentAudio = new Audio(url);
-            currentAudio.play();
-
-            // Show the logo
-            const stationLogo = document.getElementById('stationLogo');
-            stationLogo.src = logo;
-            stationLogo.style.display = 'block';
-
-            // Show progress ring
-            const progressRing = document.getElementById('progress');
-            progressRing.style.display = 'block';
-
-            // Hide play button and update controls
-            document.querySelector('.play-button').innerText = '❚❚'; // Change to pause icon
+            currentAudio.volume = 1; // Default volume
+            document.getElementById('stationLogo').src = image;
+            document.getElementById('stationLogo').style.display = 'block'; // Show logo
+            togglePlay(); // Start playing
         }
 
         function togglePlay() {
+            const playButton = document.querySelector('.play-button');
+            const progress = document.getElementById('progress');
+
             if (currentAudio) {
                 if (currentAudio.paused) {
                     currentAudio.play();
-                    document.querySelector('.play-button').innerText = '❚❚'; // Change to pause icon
+                    playButton.textContent = '❚❚'; // Change to pause icon
+                    progress.style.display = 'block'; // Show progress ring
                 } else {
                     currentAudio.pause();
-                    document.querySelector('.play-button').innerText = '▶'; // Change to play icon
+                    playButton.textContent = '▶'; // Change to play icon
+                    progress.style.display = 'none'; // Hide progress ring
                 }
             }
         }
@@ -351,8 +357,10 @@
             }
         }
 
-        // Load default stations for the USA
-        window.onload = () => loadStations('USA');
+        // Load default country stations on page load
+        window.onload = function() {
+            loadStations('USA'); // Set default country
+        };
     </script>
 </body>
 </html>
