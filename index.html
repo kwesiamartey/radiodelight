@@ -25,30 +25,23 @@
 
         /* Sidebar (Country list) */
         .country-list {
-            width: 15%;
+            width: 180px; /* Adjusted for mobile */
             background-color: #f4f4f4;
             border-right: 1px solid #ddd;
             overflow-y: auto;
             padding: 10px;
-            display: block; /* Default visible on desktop/tablet */
+            display: none; /* Hide by default */
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            z-index: 1000; /* Ensure it stays on top */
+            transition: transform 0.3s ease; /* For slide effect */
         }
 
-        /* Hide sidebar in mobile view */
-        @media screen and (max-width: 768px) {
-            .country-list {
-                display: none; /* Hide by default on mobile */
-                position: absolute;
-                left: 0;
-                top: 0;
-                height: 100%;
-                z-index: 1000; /* Ensure it stays on top */
-                transition: transform 0.3s ease; /* For slide effect */
-            }
-
-            .country-list.active {
-                display: block; /* Show when active */
-                transform: translateX(0); /* Slide in */
-            }
+        .country-list.active {
+            display: block; /* Show when active */
+            transform: translateX(0); /* Slide in */
         }
 
         .country-list h2 {
@@ -159,7 +152,7 @@
             animation: spin 1s linear infinite;
             display: none; /* Hidden by default */
             margin-left: 20px;
-            margin-right: 20px;/* Margin to separate from the image */
+            margin-right: 20px; /* Margin to separate from the image */
         }
 
         @keyframes spin {
@@ -211,24 +204,7 @@
                 width: 100%; /* Full width on small screens */
                 margin-left: 14px;
             }
-           
-            .country-list {
-            width: 15%;
-            background-color: #f4f4f4;
-            border-right: 1px solid #ddd;
-            overflow-y: auto;
-            padding: 10px;
-            display: block; /* Default visible on desktop/tablet */
-        }
-    }
 
-        /* Drawable menu icon */
-        .menu-icon {
-            display: none; /* Default hidden */
-            cursor: pointer;
-        }
-
-        @media screen and (max-width: 768px) {
             .menu-icon {
                 display: block; /* Show only on mobile */
                 position: absolute;
@@ -242,61 +218,17 @@
                 border-radius: 5px;
                 padding: 5px 10px;
             }
-            .country-list {
-            width: 180px;
-            background-color: #f4f4f4;
-            border-right: 1px solid #ddd;
-            overflow-y: auto;
-            padding: 10px;
-            display: block; /* Default visible on desktop/tablet */
-            }
-
-            .station-list {
-            flex: 1;
-            padding: 20px 10px 10px 10px;
-            overflow-y: auto;
-            }
-            
         }
 
-         @media screen and (max-width: 508px) {
-            .menu-icon {
-                display: block; /* Show only on mobile */
-                position: absolute;
-                top: 10px;
-                left: 10px;
-                z-index: 1001; /* Ensure it stays on top */
-                font-size: 24px; /* Adjust size */
-                background: #007bff;
-                color: white;
-                border: none;
-                border-radius: 5px;
-                padding: 5px 10px;
-            }
-            .country-list {
-            width: 180px;
-            background-color: #f4f4f4;
-            border-right: 1px solid #ddd;
-            overflow-y: auto;
-            padding: 10px;
-            display: block; /* Default visible on desktop/tablet */
-           }
-
-            .station-list {
-            flex: 1;
-            padding: 20px 10px 10px 10px;
-            overflow-y: auto;
-            }
-            .sideBarcountryTitle{
-                font-size:16px;
-            }
+        @media screen and (max-width: 508px) {
             .station-image {
-            width: 50px;
-            height: 50px;
-            border-radius: 5px;
-            margin-right: 20px; /* Margin for spacing */
-           }
-    }
+                width: 50px;
+                height: 50px;
+            }
+            .sideBarcountryTitle {
+                font-size: 16px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -352,105 +284,76 @@
                 'USA': [
                     { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
                     { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' }   
+                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' }
                 ],
                 'Ghana': [
-                    { name: 'Adom FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }
+                    { name: 'Joy FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+                    { name: 'Peace FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+                    { name: 'Adom FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' }
                 ],
                 'Finland': [
-                    { name: 'Yle Radio Suomi', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' }
+                    { name: 'Yle Radio Suomi', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+                    { name: 'Radio Nova', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+                    { name: 'Radio Rock', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' }
                 ],
                 'Singapore': [
-                    { name: 'Radio Singapore', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' }
+                    { name: 'Class 95', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+                    { name: 'Gold 905', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+                    { name: '98.7 FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' }
                 ],
                 'Turkey': [
-                    { name: 'Radyo 7', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }
+                    { name: 'Kral FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+                    { name: 'Power Türk FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+                    { name: 'Joy FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' }
                 ]
             };
 
-            const stationList = document.getElementById('stationListContent');
-            stationList.innerHTML = ''; // Clear previous stations
+            const stationListContent = document.getElementById('stationListContent');
+            stationListContent.innerHTML = ''; // Clear previous stations
+            document.getElementById('countryTitle').innerText = `${country} Radio Stations`;
 
-            stationsData[country].forEach(station => {
-                const stationDiv = document.createElement('div');
-                stationDiv.classList.add('station-item');
-                stationDiv.innerHTML = `<img src="${station.image}" alt="${station.name}"><br>${station.name}`;
-                stationDiv.onclick = () => playStation(station.url, station.image);
-                stationList.appendChild(stationDiv);
+            const stations = stationsData[country] || [];
+            stations.forEach(station => {
+                const item = document.createElement('div');
+                item.className = 'station-item';
+                item.onclick = () => playStation(station.url, station.image);
+                item.innerHTML = `<img src="${station.image}" alt="${station.name}"><br>${station.name}`;
+                stationListContent.appendChild(item);
             });
-
-            // Update country title
-            document.getElementById('countryTitle').textContent = "All "+ country +" Radio Station";
-            toggleMenu(); // Hide sidebar after selection
-            document.querySelector('.country-list').classList.remove('active'); // Close the sidebar
         }
 
         function playStation(url, image) {
+            const stationLogo = document.getElementById('stationLogo');
+            const progress = document.getElementById('progress');
+            stationLogo.src = image;
+            stationLogo.style.display = 'block';
+            progress.style.display = 'block';
+            progress.classList.remove('playing'); // Reset the ring animation
+
             if (currentAudio) {
-                currentAudio.pause();
+                currentAudio.pause(); // Pause the current audio
             }
 
             currentAudio = new Audio(url);
-            currentAudio.volume = 1; // Default volume
-            document.getElementById('stationLogo').src = image;
-            document.getElementById('stationLogo').style.display = 'block'; // Show logo
-            togglePlay(); // Start playing
+            currentAudio.volume = document.getElementById('volumeSlider').value;
+            currentAudio.play();
+
+            document.querySelector('.play-button').innerText = '❚❚'; // Change button to pause
+            progress.classList.add('playing'); // Start the ring animation
         }
 
         function togglePlay() {
             const playButton = document.querySelector('.play-button');
             const progress = document.getElementById('progress');
 
-            if (currentAudio) {
-                if (currentAudio.paused) {
-                    currentAudio.play();
-                    playButton.textContent = '❚❚'; // Change to pause icon
-                    progress.style.display = 'block'; // Show progress ring
-                } else {
-                    currentAudio.pause();
-                    playButton.textContent = '▶'; // Change to play icon
-                    progress.style.display = 'none'; // Hide progress ring
-                }
+            if (currentAudio && !currentAudio.paused) {
+                currentAudio.pause();
+                playButton.innerText = '▶'; // Change button to play
+                progress.style.display = 'none'; // Hide progress ring
+            } else if (currentAudio) {
+                currentAudio.play();
+                playButton.innerText = '❚❚'; // Change button to pause
+                progress.style.display = 'block'; // Show progress ring
             }
         }
 
@@ -460,9 +363,9 @@
             }
         }
 
-        // Load default country stations on page load
+        // Load default stations for USA when the page loads
         window.onload = function() {
-            loadStations('USA'); // Set default country
+            loadStations('USA');
         };
     </script>
 </body>
