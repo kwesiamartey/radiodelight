@@ -30,7 +30,7 @@
             border-right: 1px solid #ddd;
             overflow-y: auto;
             padding: 10px;
-            display: block; /* Show by default on desktop/tablet */
+            display: none; /* Hide by default on mobile */
         }
 
         .country-list h2 {
@@ -52,11 +52,6 @@
             background-color: #e0e0e0;
         }
 
-        /* Mobile toggle */
-        .toggle-sidebar {
-            display: none; /* Hide toggle button by default */
-        }
-
         /* Middle column: Radio station list */
         .station-list {
             flex: 1;
@@ -66,7 +61,6 @@
 
         .station-list h2 {
             margin: 10px 0;
-            font-size: 1.5rem; /* Responsive font size */
         }
 
         .station-grid {
@@ -147,7 +141,7 @@
             animation: spin 1s linear infinite;
             display: none; /* Hidden by default */
             margin-left: 20px;
-            margin-right: 20px;/* Margin to separate from the image */
+            margin-right: 20px; /* Margin to separate from the image */
         }
 
         @keyframes spin {
@@ -171,22 +165,19 @@
 
         /* Responsive styles */
         @media screen and (max-width: 768px) {
-            .main-container {
-                flex-direction: column;
-            }
-
             .country-list {
-                display: none; /* Hide sidebar on mobile */
+                display: block; /* Show sidebar on mobile */
+                position: fixed; /* Fixed position */
+                top: 0;
+                left: 0;
+                height: 100%; /* Full height */
+                z-index: 999; /* Above other elements */
+                transition: transform 0.3s ease; /* Animation for sliding */
+                transform: translateX(-100%); /* Off-screen by default */
             }
 
-            .toggle-sidebar {
-                display: block; /* Show toggle button */
-                margin: 10px; /* Add some margin */
-            }
-
-            .player-container {
-                flex-direction: row; /* Keep elements in a row */
-                justify-content: space-between; /* Space out elements */
+            .country-list.show {
+                transform: translateX(0); /* Slide in */
             }
 
             .station-image {
@@ -212,12 +203,22 @@
                 width: 100%; /* Full width on small screens */
                 margin-left: 14px;
             }
+
+            /* Show radio stations title */
+            .station-list h2 {
+                font-size: 24px; /* Adjust for mobile */
+            }
+        }
+
+        /* Styles for larger screens */
+        @media screen and (min-width: 769px) {
+            .country-list {
+                display: block; /* Always show on larger screens */
+            }
         }
     </style>
 </head>
 <body>
-    <button class="toggle-sidebar" onclick="toggleSidebar()">☰ Toggle Country List</button>
-    
     <div class="main-container">
         <!-- Sidebar (Country list) -->
         <div class="country-list" id="countryList">
@@ -233,7 +234,7 @@
 
         <!-- Middle column: Radio station list -->
         <div class="station-list">
-            <h2 id="stationListTitle">Radio Stations - USA</h2>
+            <h2 id="countryTitle">Radio Stations</h2>
             <div id="stationListContent" class="station-grid"></div>
         </div>
     </div>
@@ -268,49 +269,44 @@
                 'Ghana': [
                     { name: 'Adom FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
                     { name: 'Peace FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' }
-                ],
-                // Add more countries and stations as needed
+                ]
             };
 
             const stationList = document.getElementById('stationListContent');
-            stationList.innerHTML = ''; // Clear previous stations
+            stationList.innerHTML = '';
+            document.getElementById('countryTitle').innerText = 'Radio Stations in ' + country;
+
             stationsData[country].forEach(station => {
-                const item = document.createElement('div');
-                item.className = 'station-item';
-                item.onclick = () => playStation(station);
-                item.innerHTML = `<img src="${station.image}" alt="${station.name} logo"><div>${station.name}</div>`;
-                stationList.appendChild(item);
+                const stationItem = document.createElement('div');
+                stationItem.className = 'station-item';
+                stationItem.onclick = () => playStation(station);
+                stationItem.innerHTML = `<img src="${station.image}" alt="${station.name}"><br>${station.name}`;
+                stationList.appendChild(stationItem);
             });
 
-            document.getElementById('stationListTitle').innerText = `Radio Stations - ${country}`;
-            document.getElementById('countryList').style.display = 'none'; // Hide country list in mobile view
+            // Hide the sidebar
+            document.getElementById('countryList').classList.remove('show');
         }
 
         function playStation(station) {
-            const logo = document.getElementById('stationLogo');
-            logo.src = station.image;
-            logo.style.display = 'block';
-
             if (currentAudio) {
                 currentAudio.pause();
             }
-
             currentAudio = new Audio(station.url);
+            document.getElementById('stationLogo').src = station.image;
+            document.getElementById('stationLogo').style.display = 'block';
             currentAudio.play();
-            togglePlay(); // Change play button to pause
-            setVolume(document.getElementById('volumeSlider').value);
         }
 
         function togglePlay() {
-            const playButton = document.querySelector('.play-button');
             if (currentAudio) {
                 if (currentAudio.paused) {
                     currentAudio.play();
-                    playButton.innerText = '❚❚'; // Change to pause icon
+                    document.querySelector('.play-button').innerText = '❚❚'; // Change to pause icon
                     document.getElementById('progress').style.display = 'block'; // Show progress ring
                 } else {
                     currentAudio.pause();
-                    playButton.innerText = '▶'; // Change to play icon
+                    document.querySelector('.play-button').innerText = '▶'; // Change to play icon
                     document.getElementById('progress').style.display = 'none'; // Hide progress ring
                 }
             }
@@ -322,17 +318,17 @@
             }
         }
 
-        function toggleSidebar() {
+        // Show sidebar on mobile toggle
+        document.addEventListener('DOMContentLoaded', () => {
             const sidebar = document.getElementById('countryList');
-            if (sidebar.style.display === 'block') {
-                sidebar.style.display = 'none'; // Hide sidebar
-            } else {
-                sidebar.style.display = 'block'; // Show sidebar
-            }
-        }
+            const sidebarToggle = document.createElement('button');
+            sidebarToggle.innerText = '☰'; // Hamburger icon
+            sidebarToggle.onclick = () => sidebar.classList.toggle('show');
+            document.body.insertBefore(sidebarToggle, document.body.firstChild);
+        });
 
-        // Load default country stations
-        loadStations('USA');
+        // Set default country to USA on load
+        window.onload = () => loadStations('USA');
     </script>
 </body>
 </html>
