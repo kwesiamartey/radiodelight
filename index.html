@@ -109,7 +109,7 @@
         .player-header{
             position: fixed; /* Fix the player at the bottom */
             overflow-x: hidden;
-            height: ;
+            height:auto ;
             top: 0;
             left: 0;
             right: 0;
@@ -258,10 +258,10 @@
             <!-- header row -->
     <div class="player-header">
         <!-- First column: Station Image -->
-          <button class="menu-icon" onclick="toggleMenu()">☰</button> <!-- Menu icon for mobile -->
+          <h1 class="menu-icon" onclick="toggleMenu()">☰</h1> <!-- Menu icon for mobile -->
 
         <!-- Second column: Play button and progress ring -->
-        <div class=""></div>
+        <div class=""> <h2 id="countryTitle">Radio Stations</h2></div>
 
         <!-- Third column: Volume control -->
         <div class=""></div>
@@ -282,7 +282,6 @@
 
         <!-- Middle column: Radio station list -->
         <div class="station-list">
-            <h2 id="countryTitle">Radio Stations</h2>
             <div id="stationListContent" class="station-grid"></div>
         </div>
     </div>
