@@ -113,6 +113,9 @@
             border-radius: 50%;
             overflow: hidden;
             margin-bottom: 10px;
+            display: flex; /* Flexbox to align items */
+            justify-content: center; /* Center play button */
+            align-items: center; /* Center play button */
         }
 
         .progress {
@@ -125,6 +128,7 @@
             border-radius: 50%;
             clip-path: circle(0%); /* Start with 0% visibility */
             transition: clip-path 0.5s ease;
+            z-index: 0; /* Behind the play button */
         }
 
         .play-button {
@@ -139,8 +143,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            position: absolute; /* Positioning for overlay */
-            z-index: 1;
+            z-index: 1; /* On top of the progress */
         }
 
         /* Volume control */
@@ -233,12 +236,6 @@
                 <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.5" onchange="setVolume(this.value)">
             </div>
         </div>
-        <div class="now-playing">
-            <div id="nowPlayingText" style="display: flex; flex-direction: column;">
-                <span id="currentStation">Now Playing: </span>
-                <span id="currentStationName" style="font-weight: bold;"></span>
-            </div>
-        </div>
     </div>
 
     <script>
@@ -303,17 +300,12 @@
         // Function to play the selected radio station
         function playStation(station) {
             const stationLogo = document.getElementById('stationLogo');
-            const nowPlayingText = document.getElementById('nowPlayingText');
-            const currentStationName = document.getElementById('currentStationName');
-            const progressContainer = document.getElementById('progressContainer');
             const progress = document.getElementById('progress');
             const playButton = document.querySelector('.play-button');
 
-            // Update logo and station name
+            // Update logo
             stationLogo.src = station.image;
             stationLogo.style.display = 'block';
-            nowPlayingText.style.display = 'block';
-            currentStationName.innerText = station.name;
 
             // If an audio is already playing, stop it
             if (currentAudio) {
@@ -359,13 +351,14 @@
 
         // Function to toggle play and pause
         function togglePlay() {
+            const playButton = document.querySelector('.play-button');
             if (currentAudio) {
                 if (currentAudio.paused) {
                     currentAudio.play();
-                    document.querySelector('.play-button').innerText = '⏸'; // Change to pause icon
+                    playButton.innerText = '⏸'; // Change to pause icon
                 } else {
                     currentAudio.pause();
-                    document.querySelector('.play-button').innerText = '▶'; // Change to play icon
+                    playButton.innerText = '▶'; // Change to play icon
                 }
             }
         }
