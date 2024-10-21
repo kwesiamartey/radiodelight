@@ -112,6 +112,7 @@
             justify-content: center;
             align-items: center;
             flex-direction: column; /* Stack button and progress ring */
+            margin-left: 10px; /* Additional margin between image and play controls */
         }
 
         .play-button {
@@ -271,17 +272,19 @@
 
             currentAudio = new Audio(station.url);
             currentAudio.volume = document.getElementById('volumeSlider').value;
+
+            // Show the progress indicator only when loading
             progress.style.display = 'block';
             playButton.innerText = '⏸';
 
             currentAudio.play();
 
             currentAudio.addEventListener('canplay', () => {
-                progress.style.display = 'none';
+                progress.style.display = 'none'; // Hide progress when audio is ready to play
             });
 
-            currentAudio.addEventListener('ended', () => {
-                playButton.innerText = '▶'; // Reset play button when audio ends
+            currentAudio.addEventListener('play', () => {
+                progress.style.display = 'none'; // Hide progress when audio is playing
             });
         }
 
@@ -292,7 +295,7 @@
             if (currentAudio.paused) {
                 currentAudio.play();
                 playButton.innerText = '⏸';
-                progress.style.display = 'block';
+                progress.style.display = 'block'; // Show progress when playing starts
             } else {
                 currentAudio.pause();
                 playButton.innerText = '▶';
@@ -304,6 +307,9 @@
                 currentAudio.volume = value;
             }
         }
+
+        // Load USA stations by default on page load
+        loadStations('USA');
     </script>
 </body>
 </html>
