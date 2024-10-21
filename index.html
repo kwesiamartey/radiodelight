@@ -30,7 +30,7 @@
             border-right: 1px solid #ddd;
             overflow-y: auto;
             padding: 10px;
-            display: block; /* Always show on desktop and tablet */
+            display: block; /* Show by default on desktop/tablet */
         }
 
         .country-list h2 {
@@ -52,6 +52,11 @@
             background-color: #e0e0e0;
         }
 
+        /* Mobile toggle */
+        .toggle-sidebar {
+            display: none; /* Hide toggle button by default */
+        }
+
         /* Middle column: Radio station list */
         .station-list {
             flex: 1;
@@ -61,6 +66,7 @@
 
         .station-list h2 {
             margin: 10px 0;
+            font-size: 1.5rem; /* Responsive font size */
         }
 
         .station-grid {
@@ -141,7 +147,7 @@
             animation: spin 1s linear infinite;
             display: none; /* Hidden by default */
             margin-left: 20px;
-            margin-right: 20px; /* Margin to separate from the image */
+            margin-right: 20px;/* Margin to separate from the image */
         }
 
         @keyframes spin {
@@ -165,8 +171,17 @@
 
         /* Responsive styles */
         @media screen and (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+
             .country-list {
-                display: none; /* Hide sidebar in mobile view */
+                display: none; /* Hide sidebar on mobile */
+            }
+
+            .toggle-sidebar {
+                display: block; /* Show toggle button */
+                margin: 10px; /* Add some margin */
             }
 
             .player-container {
@@ -201,6 +216,8 @@
     </style>
 </head>
 <body>
+    <button class="toggle-sidebar" onclick="toggleSidebar()">☰ Toggle Country List</button>
+    
     <div class="main-container">
         <!-- Sidebar (Country list) -->
         <div class="country-list" id="countryList">
@@ -216,7 +233,7 @@
 
         <!-- Middle column: Radio station list -->
         <div class="station-list">
-            <h2 id="stationTitle">Radio Stations - USA</h2>
+            <h2 id="stationListTitle">Radio Stations - USA</h2>
             <div id="stationListContent" class="station-grid"></div>
         </div>
     </div>
@@ -251,58 +268,50 @@
                 'Ghana': [
                     { name: 'Adom FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
                     { name: 'Peace FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' }
-                ]
+                ],
+                // Add more countries and stations as needed
             };
 
             const stationList = document.getElementById('stationListContent');
-            stationList.innerHTML = '';
-
+            stationList.innerHTML = ''; // Clear previous stations
             stationsData[country].forEach(station => {
-                const stationItem = document.createElement('div');
-                stationItem.className = 'station-item';
-                stationItem.innerHTML = `
-                    <img src="${station.image}" alt="${station.name}">
-                    <span>${station.name}</span>
-                `;
-                stationItem.onclick = () => playStation(station);
-                stationList.appendChild(stationItem);
+                const item = document.createElement('div');
+                item.className = 'station-item';
+                item.onclick = () => playStation(station);
+                item.innerHTML = `<img src="${station.image}" alt="${station.name} logo"><div>${station.name}</div>`;
+                stationList.appendChild(item);
             });
 
-            // Update title and hide sidebar if on desktop/tablet
-            const stationTitle = document.getElementById('stationTitle');
-            stationTitle.innerText = `Radio Stations - ${country}`;
-            document.getElementById('countryList').style.display = 'none'; // Hide sidebar on selection
-
-            if (country === 'USA') {
-                document.getElementById('countryList').style.display = 'block'; // Show sidebar for USA
-            }
+            document.getElementById('stationListTitle').innerText = `Radio Stations - ${country}`;
+            document.getElementById('countryList').style.display = 'none'; // Hide country list in mobile view
         }
 
         function playStation(station) {
+            const logo = document.getElementById('stationLogo');
+            logo.src = station.image;
+            logo.style.display = 'block';
+
             if (currentAudio) {
                 currentAudio.pause();
-                document.querySelector('.play-button').innerText = '▶'; // Set play button text to play
             }
 
             currentAudio = new Audio(station.url);
-            document.getElementById('stationLogo').src = station.image;
-            document.getElementById('stationLogo').style.display = 'block'; // Show station logo
             currentAudio.play();
-            document.querySelector('.play-button').innerText = '❚❚'; // Set play button text to pause
-            document.getElementById('progress').style.display = 'block'; // Show progress ring
-            currentAudio.onended = () => {
-                document.querySelector('.play-button').innerText = '▶'; // Reset button to play when audio ends
-            };
+            togglePlay(); // Change play button to pause
+            setVolume(document.getElementById('volumeSlider').value);
         }
 
         function togglePlay() {
+            const playButton = document.querySelector('.play-button');
             if (currentAudio) {
                 if (currentAudio.paused) {
                     currentAudio.play();
-                    document.querySelector('.play-button').innerText = '❚❚'; // Set play button text to pause
+                    playButton.innerText = '❚❚'; // Change to pause icon
+                    document.getElementById('progress').style.display = 'block'; // Show progress ring
                 } else {
                     currentAudio.pause();
-                    document.querySelector('.play-button').innerText = '▶'; // Set play button text to play
+                    playButton.innerText = '▶'; // Change to play icon
+                    document.getElementById('progress').style.display = 'none'; // Hide progress ring
                 }
             }
         }
@@ -313,10 +322,17 @@
             }
         }
 
-        // Load default stations for the USA on page load
-        window.onload = function() {
-            loadStations('USA');
-        };
+        function toggleSidebar() {
+            const sidebar = document.getElementById('countryList');
+            if (sidebar.style.display === 'block') {
+                sidebar.style.display = 'none'; // Hide sidebar
+            } else {
+                sidebar.style.display = 'block'; // Show sidebar
+            }
+        }
+
+        // Load default country stations
+        loadStations('USA');
     </script>
 </body>
 </html>
