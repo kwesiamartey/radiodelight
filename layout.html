@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layout Design</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        /* Header */
+        .header {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        /* Sidebar */
+        .sidebar {
+            background-color: #333; /* Dark Grey */
+            color: white;
+            width: 20%;
+            height: 100vh;
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        /* Main container */
+        .main-container {
+            background-color: #f1f1f1; /* Light Grey */
+            margin-left: 20%; /* Sidebar width */
+            padding: 20px;
+        }
+        /* List inside the main container */
+        .main-container ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .main-container ul li {
+            background-color: #fff;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        /* Bottom row */
+        .bottom-row {
+            background-color: #000080; /* Navy Blue */
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>Header Row</h1>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Sidebar</h2>
+        <p>This is the sidebar content</p>
+    </div>
+
+    <!-- Main container -->
+    <div class="main-container">
+        <h2>Main Container</h2>
+        <ul>
+            <li>Item 1</li>
+            <li>Item 2</li>
+            <li>Item 3</li>
+            <li>Item 4</li>
+        </ul>
+    </div>
+
+    <!-- Bottom row -->
+    <div class="bottom-row">
+        <p>Bottom Row</p>
+    </div>
+
+</body>
+</html>
