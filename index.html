@@ -12,7 +12,7 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
         }
 
         /* Main container */
@@ -21,7 +21,6 @@
             flex: 1;
             flex-direction: row;
             height: 100%;
-            overflow-y: auto;
         }
 
         /* Sidebar (Country list) */
@@ -33,35 +32,59 @@
             padding: 10px;
         }
 
+        .country-list h2 {
+            margin: 10px 0;
+        }
+
+        .country-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .country-list li {
+            padding: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .country-list li:hover {
+            background-color: #e0e0e0;
+        }
+
         /* Middle column: Radio station list */
         .station-list {
             flex: 1;
             padding: 10px;
+            overflow-y: auto;
+        }
+
+        .station-list h2 {
+            margin: 10px 0;
+        }
+
+        .station-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
             gap: 10px;
         }
 
         .station-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border: 1px solid #ddd;
-            padding: 10px;
+            text-align: center;
             cursor: pointer;
             transition: background-color 0.2s;
-            text-align: center;
-        }
-
-        .station-item img {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 10px;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border-radius: 5px;
         }
 
         .station-item:hover {
-            background-color: #e0e0e0;
+            background-color: #ddd;
+        }
+
+        .station-item img {
+            width: 80px;
+            height: 80px;
+            border-radius: 5px;
         }
 
         /* Bottom row: Player */
@@ -69,103 +92,105 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 10px;
             background-color: #333;
             color: white;
-            padding: 10px;
+            flex-wrap: wrap; /* Allows wrapping on smaller screens */
         }
 
-        .player-column {
-            display: flex;
-            align-items: center;
+        /* First column: Station Image */
+        .station-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 5px;
+            margin-right: 10px; /* Margin for spacing */
         }
 
-        .player-column img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        .play-button-container {
+        /* Second column: Play button and progress bar */
+        .play-control {
             position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .play-button {
             width: 50px;
             height: 50px;
-            border-radius: 50%;
-            background-color: #ff6f00;
             border: none;
+            border-radius: 50%;
+            background-color: #007bff;
             color: white;
-            font-size: 20px;
+            font-size: 24px;
             cursor: pointer;
-            position: relative;
-            z-index: 10;
+            z-index: 1;
+            margin-left: 10px; /* Margin for spacing */
         }
 
-        .circle-progress {
+        .progress-ring {
             position: absolute;
-            width: 60px;
-            height: 60px;
-            border: 3px solid #ccc;
+            width: 70px;
+            height: 70px;
+            border: 6px solid #ddd;
             border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            border-top-color: #007bff;
+            animation: spin 1s linear infinite;
             display: none; /* Hidden by default */
         }
 
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Third column: Volume control */
         .volume-control {
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 150px;
         }
 
-        .volume-bar {
-            width: 100px;
+        .volume-slider {
+            width: 100%;
         }
 
-        /* Responsive design for mobile view */
-        @media (max-width: 768px) {
+        /* Responsive styles */
+        @media screen and (max-width: 768px) {
             .player-container {
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-                padding: 5px;
+                flex-direction: column; /* Stack elements vertically on small screens */
+                align-items: flex-start; /* Align items to the start */
             }
 
-            .player-column {
-                flex-direction: row;
-                justify-content: flex-start;
-                width: auto;
+            .station-image {
+                width: 60px;
+                height: 60px;
             }
 
-            .player-column img {
+            .play-button {
                 width: 40px;
                 height: 40px;
-                margin-right: 5px;
+                font-size: 18px; /* Reduce button size */
+            }
+
+            .progress-ring {
+                width: 50px;
+                height: 50px;
             }
 
             .volume-control {
-                flex-direction: row;
-                margin-top: 0;
-                width: auto;
+                width: 100%; /* Full width on small screens */
             }
         }
     </style>
 </head>
 <body>
-
-    <!-- Menu button for mobile view -->
-    <div class="menu-button" onclick="toggleSidebar()">☰ Menu</div>
-
     <div class="main-container">
         <!-- Sidebar (Country list) -->
-        <div class="country-list" id="sidebar">
+        <div class="country-list">
             <h2>Countries</h2>
-            <ul id="countryList">
-                <li onclick="loadStations('Ghana')">Ghana</li>
+            <ul>
                 <li onclick="loadStations('USA')">USA</li>
+                <li onclick="loadStations('Ghana')">Ghana</li>
                 <li onclick="loadStations('Finland')">Finland</li>
                 <li onclick="loadStations('Singapore')">Singapore</li>
                 <li onclick="loadStations('Turkey')">Turkey</li>
@@ -173,88 +198,111 @@
         </div>
 
         <!-- Middle column: Radio station list -->
-        <div class="station-list" id="stationListContainer">
+        <div class="station-list">
             <h2>Radio Stations</h2>
-            <div id="stationList">Loading stations...</div>
+            <div id="stationListContent" class="station-grid"></div>
         </div>
     </div>
 
     <!-- Bottom row: Player -->
     <div class="player-container">
         <!-- First column: Station Image -->
-        <div class="player-column" id="station-image-container">
-            <img id="stationImage" src="station-placeholder.jpg" alt="Station Image">
+        <img id="stationLogo" class="station-image" src="" alt="Station Logo" style="display: none;">
+
+        <!-- Second column: Play button and progress ring -->
+        <div class="play-control">
+            <div class="progress-ring" id="progress"></div>
+            <button class="play-button" onclick="togglePlay()">▶</button>
         </div>
 
-        <!-- Second column: Player with Play Button and Circular Progress Bar -->
-        <div class="player-column play-button-container">
-            <div class="circle-progress" id="circleProgress"></div>
-            <button id="playButton" class="play-button">▶</button>
-        </div>
-
-        <!-- Third column: Volume Control -->
+        <!-- Third column: Volume control -->
         <div class="volume-control">
-            <input type="range" class="volume-bar" id="volumeBar" min="0" max="1" step="0.01" value="1">
+            <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
         </div>
     </div>
 
     <script>
-        // Function to toggle the sidebar on mobile
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('active');
-        }
+        let currentAudio = null;
 
-        // Function to load radio stations based on the country selected
         function loadStations(country) {
             const stationsData = {
-                'Ghana': ['Adom FM', 'Peace FM', 'Joy FM'],
-                'USA': ['Kiss FM', 'Hot 97', 'Z100'],
-                'Finland': ['Radio Suomi', 'YleX', 'Radio Rock'],
-                'Singapore': ['Class 95', 'Kiss92', 'Gold 905'],
-                'Turkey': ['Power FM', 'Metro FM', 'Virgin Radio Turkey']
+                'USA': [
+                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' }
+                ],
+                'Ghana': [
+                    { name: 'Adom FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
+                    { name: 'Peace FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' }
+                ]
             };
 
-            const stationList = stationsData[country] || [];
-            const stationListContainer = document.getElementById('stationList');
-            stationListContainer.innerHTML = '';
+            const stationList = document.getElementById('stationListContent');
+            stationList.innerHTML = '';
 
-            stationList.forEach(station => {
+            stationsData[country].forEach(station => {
                 const stationItem = document.createElement('div');
                 stationItem.className = 'station-item';
-                stationItem.innerHTML = `<img src="station-placeholder.jpg" alt="${station} Image"><span>${station}</span>`;
+                stationItem.innerHTML = `
+                    <img src="${station.image}" alt="${station.name}">
+                    <span>${station.name}</span>
+                `;
                 stationItem.onclick = () => playStation(station);
-                stationListContainer.appendChild(stationItem);
+                stationList.appendChild(stationItem);
+            });
+
+            if (country === 'USA') {
+                playStation(stationsData['USA'][0]);
+            }
+        }
+
+        function playStation(station) {
+            const stationLogo = document.getElementById('stationLogo');
+            const progress = document.getElementById('progress');
+            const playButton = document.querySelector('.play-button');
+
+            stationLogo.src = station.image;
+            stationLogo.style.display = 'block';
+
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+
+            currentAudio = new Audio(station.url);
+            currentAudio.volume = document.getElementById('volumeSlider').value;
+            progress.style.display = 'block';
+            playButton.innerText = '⏸';
+
+            currentAudio.play();
+
+            currentAudio.addEventListener('canplay', () => {
+                progress.style.display = 'none';
             });
         }
 
-        // Function to play the selected station
-        function playStation(station) {
-            const audioPlayer = document.getElementById('audioPlayer');
-            const stationImage = document.getElementById('stationImage');
-            const circleProgress = document.getElementById('circleProgress');
-            const playButton = document.getElementById('playButton');
+        function togglePlay() {
+            const playButton = document.querySelector('.play-button');
+            if (currentAudio) {
+                if (currentAudio.paused) {
+                    currentAudio.play();
+                    playButton.innerText = '⏸';
+                } else {
+                    currentAudio.pause();
+                    playButton.innerText = '▶';
+                }
+            }
+        }
 
-            // Set the station image and update the source
-            stationImage.src = 'station-placeholder.jpg'; // Update with the actual station image URL
-            circleProgress.style.display = 'block'; // Show the loading progress
-            playButton.disabled = true; // Disable the button while loading
+        function setVolume(value) {
+            if (currentAudio) {
+                currentAudio.volume = value;
+            }
+        }
 
-            // Simulate loading and then play the audio
-            setTimeout(() => {
-                audioPlayer.src = `https://example.com/stream/${station}.mp3`;
-                audioPlayer.play();
-                circleProgress.style.display = 'none'; // Hide the loading progress
-                playButton.disabled = false; // Enable the button
-            }, 2000); // Simulate loading time
+        window.onload = function() {
+            loadStations('USA');
         }
     </script>
-
-    <!-- Audio Player (hidden, using audio element) -->
-    <audio id="audioPlayer" controls style="display:none;">
-        <source src="" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-
 </body>
 </html>
