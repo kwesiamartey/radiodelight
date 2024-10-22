@@ -26,19 +26,10 @@
         /* Sidebar (Country list) */
         .country-list {
             width: 100%;
-            background-color: #000;
+            background-color: #f4f4f4;
+            opacity: .1;
             border-right: 1px solid #ddd;
             overflow-y: auto;
-            display: block; /* Default visible on desktop/tablet */
-        }
-
-        .sidebar-wrapper{
-            width: 200px;
-            height: 100%;
-            opacity: .1;
-            background-color: #f4f4f4;
-            overflow-y: auto;
-            padding: 10px;
             display: block; /* Default visible on desktop/tablet */
         }
 
@@ -48,11 +39,21 @@
                 transform: translateX(-100%); /* Hide off-screen */
                 position: absolute;
                 background-color: #333;
+                opacity:.1;
                 left: 0;
                 top: 0;
                 height: 100%;
                 z-index: 1000; /* Ensure it stays on top */
                 transition: transform 0.3s ease; /* For slide effect */
+            }
+
+            .sidebar-wrapper{
+            width: 200px;
+            height: 100%;
+            background-color: #f4f4f4;
+            overflow-y: auto;
+            padding: 10px;
+            display: block; /* Default visible on desktop/tablet */
             }
 
             .country-list.active {
