@@ -231,17 +231,17 @@
 
         @media screen and (max-width: 768px) {
             .menu-icon {
-                width:30px;
-                height:30px;
-                position:absolute;
                 display: block; /* Show only on mobile */
-                left: 10px;
+                position: absolute;
+                top: 0px;
+                left: 0px;
+            
+                z-index: 1001; /* Ensure it stays on top */
                 font-size: 24px; /* Adjust size */
-                background: #f4f4f4;
-                color: #333;
+                margin-left:16px;
+                color: white;
                 border: none;
                 border-radius: 5px;
-                padding: 10px;
             }
         }
     </style>
