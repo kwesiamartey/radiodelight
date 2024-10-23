@@ -65,6 +65,47 @@
             left: 0;
         }
 
+      /* Middle column: Radio station list */
+        .station-list {
+            flex: 1;
+            padding: 0px 30px 30px 230px;
+            overflow-y: auto;
+        }
+
+        .station-list h2 {
+            margin: 10px 5;
+            align-items: center;
+            width: 100%;
+            text-align: center;
+        }
+
+        .station-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 14px;
+            overflow:auto;
+        }
+
+        .station-item {
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border-radius: 5px;
+        }
+
+        .station-item:hover {
+            background-color: #ddd;
+        }
+
+        .station-item img {
+            width: 120px;
+            height: 120px;
+            border-radius: 5px;
+        }
+
+
         /* Hide sidebar in mobile view */
         @media screen and (max-width: 768px) {
             .country-list {
@@ -116,46 +157,7 @@
             background-color: #999;
         }
 
-        /* Middle column: Radio station list */
-        .station-list {
-            flex: 1;
-            padding: 10px 30px 30px 230px;
-            overflow-y: auto;
-        }
-
-        .station-list h2 {
-            margin: 10px 5;
-            align-items: center;
-            width: 100%;
-            text-align: center;
-        }
-
-        .station-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 14px;
-            overflow:auto;
-        }
-
-        .station-item {
-            text-align: center;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            padding: 10px;
-            background-color: #f4f4f4;
-            border-radius: 5px;
-        }
-
-        .station-item:hover {
-            background-color: #ddd;
-        }
-
-        .station-item img {
-            width: 120px;
-            height: 120px;
-            border-radius: 5px;
-        }
-
+       
         /* Bottom row: Player */
         .player-container {
             position: fixed; /* Fix the player at the bottom */
