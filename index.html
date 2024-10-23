@@ -54,13 +54,14 @@
         /* Sidebar (Country list) */
         .country-list {
             width: 15%;
+            height:100v;
             background-color: #333;
             border-right: 1px solid #333;
             overflow-y: auto;
             padding: 10px;
             display: block; /* Default visible on desktop/tablet */
             position: fixed;
-            top: 50px; /* Adjust to appear below the header */
+            top: 85px; /* Adjust to appear below the header */
             left: 0;
         }
 
@@ -69,10 +70,12 @@
             .country-list {
                 width:180px;
                 transform: translateX(-100%); /* Hide off-screen */
-                position: absolute;
                 left: 0;
                 top: 0;
                 height: 100%;
+                 position: fixed;
+                top: 85px; /* Adjust to appear below the header */
+                left: 0;
                 z-index: 1000; /* Ensure it stays on top */
                 transition: transform 0.3s ease; /* For slide effect */
             }
