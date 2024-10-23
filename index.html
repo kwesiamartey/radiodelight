@@ -61,12 +61,12 @@
             width: 80px;
             height:100%;
             background-color: #212529;
-            border-right: 1px solid #212529;
             overflow-y: auto;
             padding: 10px;
             display: block; /* Default visible on desktop/tablet */
             top: 85px; /* Adjust to appear below the header */
-            flex: 1; /* Make both columns equal in width */
+            justify-content: center;  /* Center horizontally */
+            align-items: center;      /* Center vertically */
         }
 
       /* Middle column: Radio station list */
@@ -74,8 +74,6 @@
             flex: 1;
             width:990px
             padding: 0px 30px 30px 30px;
-            height: calc(100vh - 160px); /* Adjust height minus header (80px) and bottom-row (80px) */
-            overflow-y: auto;
         }
 
         .station-list h2 {
