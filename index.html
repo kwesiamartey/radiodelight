@@ -50,6 +50,7 @@
             background-color:#455A64;
             height: calc(100vh - 160px); /* Adjust height minus header (80px) and bottom-row (80px) */
             overflow-y: auto;
+            gap: 20px; /* Space between columns */
         }
 
         /* Sidebar (Country list) */
@@ -64,6 +65,7 @@
             position: fixed;
             top: 85px; /* Adjust to appear below the header */
             left: 0;
+            flex: 1; /* Make both columns equal in width */
         }
 
       /* Middle column: Radio station list */
@@ -115,6 +117,7 @@
                 transform: translateX(-100%); /* Hide off-screen */
                 left: 0;
                 top: 0;
+                flex: 1; /* Make both columns equal in width */
                 height: 100%;
                  position: fixed;
                 top: 85px; /* Adjust to appear below the header */
@@ -305,6 +308,7 @@
                 background-color:#f4f4f4;
                 width:18px;
                 height:18px;
+                flex: 1; /* Make both columns equal in width */
                 z-index: 1001; /* Ensure it stays on top */
                 color: #333;
                 border: none;
