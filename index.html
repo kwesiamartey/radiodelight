@@ -3,92 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <title>Radio Delight</title>
- <style>
+    <style>
         body, html {
             margin: 0;
             padding: 0;
             font-family: Google Sans,Roboto,Arial,sans-serif;
             display: flex;
-            justify-content: center;  /* Center horizontally */
-            align-items: center;      /* Center vertically */
-            padding-top: 50px; /* Adjust according to the height of the header */
-            background-color:#455A64;
+            justify-content: center;
+            align-items: center;
+            padding-top: 50px;
+            background-color: #455A64;
             flex-direction: column;
-
-            overflow-x: hidden; /* Prevent horizontal scrolling */
+            overflow-x: hidden;
         }
-          /* header row: Player */
-        .player-header{
-            background-color: #333; /* Green */
-            position:fixed;
+
+        .player-header {
+            background-color: #333;
+            position: fixed;
             color: white;
             display: flex;
-            text-align:center;
-            align-items: center; /* Vertically center items */
+            justify-content: space-between;
+            align-items: center;
             padding: 10px;
-            position: fixed; /* Fixed at the top */
             top: 0;
             left: 0;
             right: 0;
-            z-index: 1000; /* Ensures header stays above other content */
+            z-index: 1000;
         }
 
-         #sidebaer_topBar{
-             width:100%;
-             height:9px;
-         }
+        #sidebaer_topBar {
+            width: 100%;
+            height: 9px;
+        }
 
         .player-header img {
             height: 40px;
         }
 
-        /* Main container */
         .main-container {
             display: flex;
             flex: 1;
-            width:1030px;
+            width: 100%;
+            max-width: 1030px;
             flex-direction: row;
-            background-color:#212529;
-            height: auto; /* Adjust height minus header (80px) and bottom-row (80px) */
+            background-color: #212529;
+            height: auto;
             overflow-y: auto;
-            padding:20px;
-            gap: 20px; /* Space between columns */
+            padding: 20px;
+            gap: 20px;
         }
 
-        /* Sidebar (Country list) */
         .country-list {
             width: 300px;
-            height:100%;
             background-color: #212529;
             overflow-y: auto;
             padding: 10px;
-            display: block; /* Default visible on desktop/tablet */
-            top: 85px; /* Adjust to appear below the header */
-            justify-content: center;  /* Center horizontally */
-            align-items: center;      /* Center vertically */
         }
 
-      /* Middle column: Radio station list */
         .station-list {
             flex: 1;
-            width:100%;
             padding: 0px 10px 10px 10px;
         }
 
         .station-list h2 {
-            margin: 10px 5;
-            align-items: center;
-            width: 100%;
+            margin: 10px 0;
             text-align: center;
+            color: #f4f4f4;
         }
 
         .station-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             gap: 14px;
-            overflow:auto;
         }
 
         .station-item {
@@ -105,57 +93,41 @@
         }
 
         .station-item img {
-            width: 120px;
-            height: 120px;
+            width: 100%;
+            max-width: 120px;
+            height: auto;
             border-radius: 5px;
         }
 
-
-        /* Hide sidebar in mobile view */
         @media screen and (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+                padding: 10px;
+            }
+
             .country-list {
-                width:180px;
-                transform: translateX(-100%); /* Hide off-screen */
-                left: 0;
-                top: 0;
-                flex: 1; /* Make both columns equal in width */
-                height: 100%;
-                 position: fixed;
-                top: 85px; /* Adjust to appear below the header */
-                left: 0;
-                z-index: 1000; /* Ensure it stays on top */
-                transition: transform 0.3s ease; /* For slide effect */
+                width: 100%;
+                max-width: 100%;
+                height: auto;
+                margin-bottom: 20px;
             }
 
-            .country-list.active {
-                transform: translateX(0); /* Slide in */
+            .station-list {
+                padding: 0px 0px 20px 0px;
             }
 
-
-              /* Middle column: Radio station list */
-        .station-list {
-            flex: 1;
-            padding: 0px 30px 30px 30px;
-            height: calc(100vh - 160px); /* Adjust height minus header (80px) and bottom-row (80px) */
-            overflow-y: auto;
+            .station-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             }
         }
 
-        .country-list h2 {
-            margin: 10px 0;
-            color:#f4f4f4;
-        }
-
-        .country-list ul {
-            list-style-type: none;
-            padding: 0;
-            color:#f4f4f4;
+        .country-list h2, .country-list ul {
+            color: #f4f4f4;
         }
 
         .country-list li {
             padding: 8px;
             cursor: pointer;
-            color:#f4f4f4;
             transition: background-color 0.2s;
         }
 
@@ -163,10 +135,8 @@
             background-color: #999;
         }
 
-       
-        /* Bottom row: Player */
         .player-container {
-            position: fixed; /* Fix the player at the bottom */
+            position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
@@ -176,37 +146,24 @@
             padding: 10px;
             background-color: #333;
             color: white;
-            z-index: 1000; /* Ensure it stays on top */
+            z-index: 1000;
         }
 
-        #Logo{
-             width: 40px;
+        #Logo {
+            width: 40px;
             height: 40px;
             border-radius: 100px;
             margin-left: 60px;
-            margin-right: 20px; /* Margin for spacing */
+            margin-right: 20px;
         }
 
-         .countryTitle{
-             color: white;
-             margin-bottom:20px;
-             margin-top: 20px;
-         }
-
-         #countryTitle{
-             color: white;
-             margin-bottom:20px;
-         }
-     
-        /* First column: Station Image */
         .station-image {
             width: 60px;
             height: 60px;
             border-radius: 5px;
-            margin-right: 40px; /* Margin for spacing */
+            margin-right: 40px;
         }
 
-        /* Second column: Play button and progress ring */
         .play-control {
             position: relative;
             display: flex;
@@ -223,7 +180,6 @@
             color: white;
             font-size: 24px;
             cursor: pointer;
-            z-index: 1;
         }
 
         .progress-ring {
@@ -234,264 +190,128 @@
             border-radius: 50%;
             border-top-color: #007bff;
             animation: spin 1s linear infinite;
-            display: none; /* Hidden by default */
-            margin-left: 20px;
-            margin-right: 20px; /* Margin to separate from the image */
+            display: none;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        /* Third column: Volume control */
         .volume-control {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-left: 20px;
-            margin-right: 20px;
             width: 100%;
         }
 
         .volume-slider {
             width: 100%;
-            margin-left: 14px;
         }
 
-        /* Responsive styles */
         @media screen and (max-width: 768px) {
             .player-container {
-                flex-direction: row; /* Keep elements in a row */
-                justify-content: space-between; /* Space out elements */
-            }
-
-            .station-image {
-                width: 60px;
-                height: 60px;
-                margin-right: 40px;
+                flex-direction: column;
+                padding: 10px;
             }
 
             .play-button {
-                width: 50px;
-                height: 50px;
-                font-size: 18px; /* Reduce button size */
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
             }
 
             .progress-ring {
                 width: 50px;
                 height: 50px;
-                margin-left: 20px;
-                margin-right: 20px;
             }
 
             .volume-control {
-                width: 100%; /* Full width on small screens */
-                margin-left: 14px;
-            }
-               /* Middle column: Radio station list */
-            .station-list {
-                flex: 1;
-                padding: 0px 30px 30px 30px;
-                height: calc(100vh - 160px); /* Adjust height minus header (80px) and bottom-row (80px) */
-            overflow-y: auto;
+                width: 100%;
             }
         }
 
-        /* Drawable menu icon */
-        .menu-icon {
-            display: none; /* Default hidden */
-            cursor: pointer;
-        }
-
-        @media screen and (max-width: 768px) {
-           /* .menu-icon {
-                display: block; /* Show only on mobile */
-                /*position: fixed;*/
-                /*background-color:#f4f4f4;*/
-                /*width:18px;*/
-                /*height:18px;*/
-                /*flex: 1; /* Make both columns equal in width */
-                /*z-index: 1001;*/ /* Ensure it stays on top */
-                /*color: #333;*/
-                /*border: none;*/
-                /*padding:5px 5px 8px 5px;*/
-                /*border-radius: 5px;*/
-           /* }*/
-
-            #sidebaer_topBar{
-             width:100%;
-             height:9px;
-           }
-
-               /* Middle column: Radio station list */
-        .station-list {
-            flex: 1;
-            padding: 0px 30px 30px 30px;
-            height: calc(100vh - 160px); /* Adjust height minus header (80px) and bottom-row (80px) */
-            overflow-y: auto;
-        }
-     }
     </style>
 </head>
 <body>
-
     <div class="player-header">
-    <!-- First column: Station Image -->
-    <text class="menu-icon" onclick="toggleMenu()">☰</text> <!-- Menu icon for mobile -->
-    <img id="Logo" src="logo.png" alt="Station Logo" >
-    <!-- Second column: Play button and progress ring -->
-    <h2>Radio Deleight</h2>
-    <!-- Third column: Volume control -->
-    <div></div>
-</div>
-    
+        <img id="Logo" src="logo.png" alt="Station Logo">
+        <h2>Radio Delight</h2>
+    </div>
+
     <div class="main-container">
-        <!-- Middle column: Radio station list -->
         <div class="station-list">
-            <h2 class="countryTitle">Radio Stations</h2>
+            <h2>Radio Stations</h2>
             <div id="stationListContent" class="station-grid"></div>
         </div>
 
         <div class="country-list">
-                <h2 id="countryTitle">Countries</h2>
-                <ul>
-                    <li onclick="loadStations('USA')">USA</li>
-                    <li onclick="loadStations('Ghana')">Ghana</li>
-                    <li onclick="loadStations('Finland')">Finland</li>
-                    <li onclick="loadStations('Singapore')">Singapore</li>
-                    <li onclick="loadStations('Turkey')">Turkey</li>
-                </ul>
+            <h2>Countries</h2>
+            <ul>
+                <li onclick="loadStations('USA')">USA</li>
+                <li onclick="loadStations('Ghana')">Ghana</li>
+                <li onclick="loadStations('Finland')">Finland</li>
+                <li onclick="loadStations('Singapore')">Singapore</li>
+                <li onclick="loadStations('Turkey')">Turkey</li>
+            </ul>
         </div>
     </div>
 
-    <!-- Bottom row: Player -->
     <div class="player-container">
-        <!-- First column: Station Image -->
         <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: none;">
-
-        <!-- Second column: Play button and progress ring -->
         <div class="play-control">
             <div class="progress-ring" id="progress"></div>
             <button class="play-button" onclick="togglePlay()">▶</button>
         </div>
-
-        <!-- Third column: Volume control -->
         <div class="volume-control">
             <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
         </div>
     </div>
-  <script>
-        
-        let currentAudio = null;
 
-        function toggleMenu() {
-            const countryList = document.getElementById('countryList');
-            countryList.classList.toggle('active'); // Toggle sidebar visibility
-        }
+    <script>
+        let currentAudio = null;
 
         function loadStations(country) {
             const stationsData = {
                 'USA': [
                     { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' }   
+                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' }
                 ],
-                'Ghana': [
-                    { name: 'Adom FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }
-                ],
-                'Finland': [
-                    { name: 'Yle Radio Suomi', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' }
-                ],
-                'Singapore': [
-                    { name: 'Radio Singapore', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' }
-                ],
-                'Turkey': [
-                    { name: 'Radyo 7', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }
-                ]
+                'Ghana': [ /* more stations */ ],
+                'Finland': [ /* more stations */ ],
+                'Singapore': [ /* more stations */ ],
+                'Turkey': [ /* more stations */ ]
             };
 
             const stationList = document.getElementById('stationListContent');
-            stationList.innerHTML = ''; // Clear previous stations
+            stationList.innerHTML = '';
 
             stationsData[country].forEach(station => {
-                const stationDiv = document.createElement('div');
-                stationDiv.classList.add('station-item');
-                stationDiv.innerHTML = `<img src="${station.image}" alt="${station.name}"><br>${station.name}`;
-                stationDiv.onclick = () => playStation(station.url, station.image);
-                stationList.appendChild(stationDiv);
+                const stationItem = document.createElement('div');
+                stationItem.className = 'station-item';
+                stationItem.innerHTML = `<img src="${station.image}" alt="${station.name}"><p>${station.name}</p>`;
+                stationItem.onclick = () => playStation(station.url, station.name, station.image);
+                stationList.appendChild(stationItem);
             });
-
-            // Update country title
-            document.querySelector('.countryTitle').textContent = " Live "+ country +" Radio Station Online ";
-            toggleMenu(); // Hide sidebar after selection
-            document.querySelector('.country-list').classList.remove('active'); // Close the sidebar
         }
 
-        function playStation(url, image) {
+        function playStation(url, name, image) {
             if (currentAudio) {
                 currentAudio.pause();
             }
 
             currentAudio = new Audio(url);
-            currentAudio.volume = 1; // Default volume
+            currentAudio.play();
+
             document.getElementById('stationLogo').src = image;
-            document.getElementById('stationLogo').style.display = 'block'; // Show logo
-            togglePlay(); // Start playing
+            document.getElementById('stationLogo').style.display = 'block';
         }
 
         function togglePlay() {
-            const playButton = document.querySelector('.play-button');
-            const progress = document.getElementById('progress');
-
             if (currentAudio) {
                 if (currentAudio.paused) {
                     currentAudio.play();
-                    playButton.textContent = '❚❚'; // Change to pause icon
-                    progress.style.display = 'block'; // Show progress ring
                 } else {
                     currentAudio.pause();
-                    playButton.textContent = '▶'; // Change to play icon
-                    progress.style.display = 'none'; // Hide progress ring
                 }
             }
         }
@@ -501,30 +321,6 @@
                 currentAudio.volume = value;
             }
         }
-
-        // Load default country stations on page load
-        window.onload = function() {
-            loadStations('USA'); // Set default country
-        };
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
