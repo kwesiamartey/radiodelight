@@ -340,7 +340,7 @@
         <div class="country-list" id="countryList">
            <div id="sidebaer_topBar"></div>
             <div class="sidebar-wrapper">
-                <h2 id="sideBarcountryTitle">Countries</h2>
+                <h2 >Countries</h2>
                 <ul>
                     <li onclick="loadStations('USA')">USA</li>
                     <li onclick="loadStations('Ghana')">Ghana</li>
@@ -375,7 +375,8 @@
         </div>
     </div>
   <script>
-                   let currentAudio = null;
+        
+        let currentAudio = null;
 
         function toggleMenu() {
             const countryList = document.getElementById('countryList');
@@ -455,7 +456,7 @@
             });
 
             // Update country title
-            document.getElementById('countryTitle').textContent = "All "+ country +" Radio Station";
+            document.getElementById('countryTitle').textContent = " Live "+ country +" Radio Station Online ";
             toggleMenu(); // Hide sidebar after selection
             document.querySelector('.country-list').classList.remove('active'); // Close the sidebar
         }
