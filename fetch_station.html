@@ -21,10 +21,22 @@
             cursor: pointer; /* Add cursor pointer to indicate clickable list */
         }
         img {
-            width: 40px; /* Adjust the size of the flags */
+            width: 40px;
             height: 40px;
             border-radius: 50%; /* Make the image circular */
             margin-right: 10px;
+        }
+        #stationList {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .station {
+            padding: 10px;
+            margin: 5px 0;
+            border-bottom: 1px solid #ddd;
         }
     </style>
 </head>
@@ -32,8 +44,11 @@
     <h1>Country List</h1>
     <ul id="countryList"></ul>
 
+    <h2>Station List</h2>
+    <div id="stationList">Select a country to view its stations.</div> <!-- Div to display station data -->
+
     <script>
-        // Function to fetch data from the countries PHP endpoint
+        // Fetch country data and populate the list
         function fetchCountries() {
             fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
                 .then(response => {
@@ -51,9 +66,9 @@
                             const listItem = document.createElement('li');
                             listItem.innerHTML = `<img src="${country.flag}" alt="${country.name} Flag">`;
                             
-                            // Attach an event listener for when a country is selected
+                            // Event listener for country selection
                             listItem.addEventListener('click', () => {
-                                fetchStations(country.url); // Pass the URL when the country is selected
+                                fetchStations(country.url); // Fetch stations when a country is selected
                             });
                             
                             countryList.appendChild(listItem);
@@ -68,17 +83,14 @@
                     console.error('There was a problem with the fetch operation:', error);
                     const countryList = document.getElementById('countryList');
                     const listItem = document.createElement('li');
-                    listItem.textContent = 'Error fetching data.';
+                    listItem.textContent = 'Error fetching country data.';
                     countryList.appendChild(listItem);
                 });
         }
 
-        // Function to fetch stations from the dynamically updated URL
+        // Fetch station data for the selected country
         function fetchStations(countryPath) {
-            // Construct the API URL using the selected country's path
             const apiUrl = `https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`;
-
-            // Fetch data from the dynamically constructed URL
             fetch(apiUrl)
                 .then(response => {
                     if (!response.ok) {
@@ -87,12 +99,32 @@
                     return response.json();
                 })
                 .then(data => {
-                    console.log('Fetched stations data:', data);
-                    // You can handle and display the station data here
-                    // For example, you can display stations in a separate section
+                    const stationList = document.getElementById('stationList');
+                    stationList.innerHTML = ''; // Clear the previous stations
+
+                    if (Array.isArray(data) && data.length > 0) {
+                        data.forEach(station => {
+                            const stationDiv = document.createElement('div');
+                            stationDiv.classList.add('station');
+                            
+                            // Populate the div with station data (e.g., name, logo)
+                            stationDiv.innerHTML = `
+                                <img src="${station.logo}" alt="${station.name} Logo" style="width: 40px; height: 40px; border-radius: 50%;">
+                                <strong>${station.name}</strong><br>
+                                <span>Location: ${station.location}</span><br>
+                                <a href="${station.web}" target="_blank">Visit Website</a>
+                            `;
+
+                            stationList.appendChild(stationDiv);
+                        });
+                    } else {
+                        stationList.textContent = 'No stations found for this country.';
+                    }
                 })
                 .catch(error => {
-                    console.error('Error fetching stations:', error);
+                    console.error('Error fetching station data:', error);
+                    const stationList = document.getElementById('stationList');
+                    stationList.textContent = 'Error fetching stations.';
                 });
         }
 
