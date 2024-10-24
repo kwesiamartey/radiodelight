@@ -47,7 +47,7 @@
     <h2>Station List</h2>
     <div id="stationList">Select a country to view its stations.</div> <!-- Div to display station data -->
 
-  <script>
+    <script>
     // Fetch country data and populate the list
     function fetchCountries() {
         fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
@@ -104,7 +104,15 @@
                 if (Array.isArray(stationData) && stationData.length > 0) {
                     stationData.forEach(station => {
                         const listItem = document.createElement('li');
-                        listItem.innerHTML = `<strong>${station.name}</strong> - ${station.location} <a href="${station.url}" target="_blank">Listen</a>`;
+                        listItem.innerHTML = `
+                            <div class="station-item">
+                                <img src="${station.logo}" alt="${station.name} Logo" class="station-logo">
+                                <div class="station-info">
+                                    <strong>${station.name}</strong> - ${station.location}
+                                    <br>
+                                    <a href="${station.url}" target="_blank">Listen</a>
+                                </div>
+                            </div>`;
                         stationList.appendChild(listItem);
                     });
                 } else {
@@ -125,6 +133,8 @@
     // Initialize by fetching the list of countries
     fetchCountries();
 </script>
+
+
 
 
 </body>
