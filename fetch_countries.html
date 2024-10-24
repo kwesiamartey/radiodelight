@@ -31,7 +31,7 @@
     <ul id="countryList"></ul>
 
     <script>
-        // Fetch the data from the PHP script
+        // Fetch the data from the specified PHP endpoint
         fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
             .then(response => {
                 if (!response.ok) {
@@ -43,15 +43,26 @@
                 // Get the UL element
                 const countryList = document.getElementById('countryList');
 
-                // Loop through the data and create list items
-                data.forEach(country => {
+                // Check if data is an array and has items
+                if (Array.isArray(data) && data.length > 0) {
+                    // Loop through the data and create list items
+                    data.forEach(country => {
+                        const listItem = document.createElement('li');
+                        listItem.innerHTML = `<img src="${country.flag}" alt="${country.name} Flag">${country.name}`;
+                        countryList.appendChild(listItem);
+                    });
+                } else {
                     const listItem = document.createElement('li');
-                    listItem.innerHTML = `<img src="${country.flag}" alt="${country.name} Flag">${country.name}`;
+                    listItem.textContent = 'No countries found.';
                     countryList.appendChild(listItem);
-                });
+                }
             })
             .catch(error => {
                 console.error('There was a problem with the fetch operation:', error);
+                const countryList = document.getElementById('countryList');
+                const listItem = document.createElement('li');
+                listItem.textContent = 'Error fetching data.';
+                countryList.appendChild(listItem);
             });
     </script>
 </body>
