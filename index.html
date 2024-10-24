@@ -114,6 +114,13 @@
             overflow:auto;
         }
 
+      .country-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 4px;
+            overflow:auto;
+        }
+
         .station-item {
             text-align: center;
             cursor: pointer;
@@ -383,7 +390,7 @@
       <div class="col-md-3">
             <!-- Right Column Content -->
            <h5 id="countryTitle">Other Countries</h5>
-                 <ul id="countryList" class="station-grid"></ul>
+                 <ul id="countryList" class="country-grid"></ul>
       </div>
     </div>
   </div>
