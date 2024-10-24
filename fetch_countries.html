@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        img {
+            width: 30px; /* Adjust the size of the flags */
+            height: auto;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Country List</h1>
+    <ul id="countryList"></ul>
+
+    <script>
+        // Fetch the data from the PHP script
+        fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Get the UL element
+                const countryList = document.getElementById('countryList');
+
+                // Loop through the data and create list items
+                data.forEach(country => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `<img src="${country.flag}" alt="${country.name} Flag">${country.name}`;
+                    countryList.appendChild(listItem);
+                });
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    </script>
+</body>
+</html>
