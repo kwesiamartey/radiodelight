@@ -17,7 +17,6 @@
             padding-top: 50px; /* Adjust according to the height of the header */
             background-color:#1c313a;
             flex-direction: column;
-
             overflow-x: hidden; /* Prevent horizontal scrolling */
         }
           /* header row: Player */
@@ -51,7 +50,7 @@
             flex: 1;
             width:1030px;
             flex-direction: row;
-            background-color:#212529;
+            background-color: #212529;
             height: auto; /* Adjust height minus header (80px) and bottom-row (80px) */
             overflow-y: auto;
             padding:20px;
@@ -95,7 +94,7 @@
         .station-item {
             text-align: center;
             cursor: pointer;
-            color:#ccc;
+            color: #ccc;
             transition: background-color 0.2s;
             padding: 0px 0px 10px 0px;
             background-color: #142229;
@@ -361,13 +360,7 @@
       <div class="col-md-3">
         <!-- Right Column Content -->
            <h5 id="countryTitle">Other Countries</h5>
-                <ul>
-                    <li onclick="loadStations('USA')">USA</li>
-                    <li onclick="loadStations('Ghana')">Ghana</li>
-                    <li onclick="loadStations('Finland')">Finland</li>
-                    <li onclick="loadStations('Singapore')">Singapore</li>
-                    <li onclick="loadStations('Turkey')">Turkey</li>
-                </ul>
+                 <ul id="countryList"></ul>
       </div>
     </div>
   </div>
@@ -518,5 +511,31 @@
             loadStations('USA'); // Set default country
         };
     </script>
+
+    <script>
+        // Fetch the data from the PHP script
+        fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Get the UL element
+                const countryList = document.getElementById('countryList');
+
+                // Loop through the data and create list items
+                data.forEach(country => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `<img src="${country.flag}" alt="${country.name} Flag">${country.name}`;
+                    countryList.appendChild(listItem);
+                });
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    </script>
+    
 </body>
 </html>
