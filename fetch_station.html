@@ -88,45 +88,53 @@
                 });
         }
 
-        // Fetch station data for the selected country
-        function fetchStations(countryPath) {
-            const apiUrl = `https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`;
-            fetch(apiUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch station data');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    const stationList = document.getElementById('stationList');
-                    stationList.innerHTML = ''; // Clear the previous stations
+   // Fetch station data for the selected country
+function fetchStations(countryPath) {
+    const apiUrl = `https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`;
+    
+    // Log the constructed API URL
+    console.log('Fetching stations from:', apiUrl);
 
-                    if (Array.isArray(data) && data.length > 0) {
-                        data.forEach(station => {
-                            const stationDiv = document.createElement('div');
-                            stationDiv.classList.add('station');
-                            
-                            // Populate the div with station data (e.g., name, logo)
-                            stationDiv.innerHTML = `
-                                <img src="${station.logo}" alt="${station.name} Logo" style="width: 40px; height: 40px; border-radius: 50%;">
-                                <strong>${station.name}</strong><br>
-                                <span>Location: ${station.location}</span><br>
-                                <a href="${station.web}" target="_blank">Visit Website</a>
-                            `;
+    fetch(apiUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch station data');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Log the fetched data for debugging
+            console.log('Fetched station data:', data);
 
-                            stationList.appendChild(stationDiv);
-                        });
-                    } else {
-                        stationList.textContent = 'No stations found for this country.';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching station data:', error);
-                    const stationList = document.getElementById('stationList');
-                    stationList.textContent = 'Error fetching stations.';
+            const stationList = document.getElementById('stationList');
+            stationList.innerHTML = ''; // Clear the previous stations
+
+            if (Array.isArray(data) && data.length > 0) {
+                data.forEach(station => {
+                    const stationDiv = document.createElement('div');
+                    stationDiv.classList.add('station');
+                    
+                    // Populate the div with station data (e.g., name, logo)
+                    stationDiv.innerHTML = `
+                        <img src="${station.logo}" alt="${station.name} Logo" style="width: 40px; height: 40px; border-radius: 50%;">
+                        <strong>${station.name}</strong><br>
+                        <span>Location: ${station.location}</span><br>
+                        <a href="${station.web}" target="_blank">Visit Website</a>
+                    `;
+
+                    stationList.appendChild(stationDiv);
                 });
-        }
+            } else {
+                stationList.textContent = 'No stations found for this country.';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching station data:', error); // Log the error
+            const stationList = document.getElementById('stationList');
+            stationList.textContent = 'Error fetching stations.';
+        });
+}
+
 
         // Initialize by fetching the list of countries
         fetchCountries();
