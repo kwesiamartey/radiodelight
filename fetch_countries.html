@@ -12,17 +12,25 @@
         ul {
             list-style-type: none;
             padding: 0;
+            display: grid; /* Use grid layout */
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Responsive columns */
+            gap: 10px; /* Space between items */
         }
         li {
             padding: 10px;
             border: 1px solid #ccc;
             margin: 5px 0;
             border-radius: 5px;
+            display: flex; /* Use flexbox to align items */
+            align-items: center; /* Center items vertically */
+            justify-content: flex-start; /* Align items to the start */
         }
         img {
-            width: 30px; /* Adjust the size of the flags */
-            height: auto;
+            width: 40px; /* Set width */
+            height: 40px; /* Set height */
+            border-radius: 50%; /* Make the image circular */
             margin-right: 10px;
+            object-fit: cover; /* Ensure the image covers the circle */
         }
     </style>
 </head>
