@@ -414,136 +414,11 @@
             <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
         </div>
     </div>
-  <script>
-        
-        let currentAudio = null;
 
-        function toggleMenu() {
-            const countryList = document.getElementById('countryList');
-            countryList.classList.toggle('active'); // Toggle sidebar visibility
-        }
-
-        function loadStations(country) {
-            const stationsData = {
-                'USA': [
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-                    { name: 'Kiss FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-                    { name: 'Hot 97', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-                    { name: 'Z100', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' }   
-                ],
-                'Ghana': [
-                    { name: 'Adom FM', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }
-                ],
-                'Finland': [
-                    { name: 'Yle Radio Suomi', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' }
-                ],
-                'Singapore': [
-                    { name: 'Radio Singapore', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' }
-                ],
-                'Turkey': [
-                    { name: 'Radyo 7', image: 'https://via.placeholder.com/80', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }
-                ]
-            };
-
-            const stationList = document.getElementById('stationListContent');
-            stationList.innerHTML = ''; // Clear previous stations
-
-            stationsData[country].forEach(station => {
-                const stationDiv = document.createElement('div');
-                stationDiv.classList.add('station-item');
-                stationDiv.innerHTML = `<img src="${station.image}" alt="${station.name}"><br>${station.name}`;
-                stationDiv.onclick = () => playStation(station.url, station.image);
-                stationList.appendChild(stationDiv);
-            });
-
-            // Update country title
-            document.querySelector('.countryTitle').textContent = " Live "+ country +" Radio Station Online ";
-            toggleMenu(); // Hide sidebar after selection
-            document.querySelector('.country-list').classList.remove('active'); // Close the sidebar
-        }
-
-        function playStation(url, image) {
-            if (currentAudio) {
-                currentAudio.pause();
-            }
-
-            currentAudio = new Audio(url);
-            currentAudio.volume = 1; // Default volume
-            document.getElementById('stationLogo').src = image;
-            document.getElementById('stationLogo').style.display = 'block'; // Show logo
-            togglePlay(); // Start playing
-        }
-
-        function togglePlay() {
-            const playButton = document.querySelector('.play-button');
-            const progress = document.getElementById('progress');
-
-            if (currentAudio) {
-                if (currentAudio.paused) {
-                    currentAudio.play();
-                    playButton.textContent = '❚❚'; // Change to pause icon
-                    progress.style.display = 'block'; // Show progress ring
-                } else {
-                    currentAudio.pause();
-                    playButton.textContent = '▶'; // Change to play icon
-                    progress.style.display = 'none'; // Hide progress ring
-                }
-            }
-        }
-
-        function setVolume(value) {
-            if (currentAudio) {
-                currentAudio.volume = value;
-            }
-        }
-
-        // Load default country stations on page load
-        window.onload = function() {
-            loadStations('USA'); // Set default country
-        };
-    </script>
-
-      <script>
-        // Fetch the data from the specified PHP endpoint
+    
+    <script>
+    // Fetch country data and populate the list
+    function fetchCountries() {
         fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
             .then(response => {
                 if (!response.ok) {
@@ -552,15 +427,19 @@
                 return response.json();
             })
             .then(data => {
-                // Get the UL element
                 const countryList = document.getElementById('countryList');
+                countryList.innerHTML = ''; // Clear the list
 
-                // Check if data is an array and has items
                 if (Array.isArray(data) && data.length > 0) {
-                    // Loop through the data and create list items
                     data.forEach(country => {
                         const listItem = document.createElement('li');
-                        listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag">`; // Removed country name
+                        listItem.innerHTML = `<img src="${country.flag}" alt="${country.name} Flag"> ${country.name}`;
+
+                        // Event listener for country selection
+                        listItem.addEventListener('click', () => {
+                            fetchStations(country.url); // Fetch stations when a country is selected
+                        });
+
                         countryList.appendChild(listItem);
                     });
                 } else {
@@ -573,10 +452,57 @@
                 console.error('There was a problem with the fetch operation:', error);
                 const countryList = document.getElementById('countryList');
                 const listItem = document.createElement('li');
-                listItem.textContent = 'Error fetching data.';
+                listItem.textContent = 'Error fetching country data.';
                 countryList.appendChild(listItem);
             });
-    </script>
+    }
+
+    // Function to fetch stations for a selected country
+    function fetchStations(countryPath) {
+        fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(stationData => {
+                const stationList = document.getElementById('stationList');
+                stationList.innerHTML = ''; // Clear previous station list
+
+                if (Array.isArray(stationData) && stationData.length > 0) {
+                    stationData.forEach(station => {
+                        const listItem = document.createElement('li');
+                        listItem.innerHTML = `
+                            <div class="station-item">
+                                <img src="${station.logo}" alt="${station.name} Logo" class="station-logo">
+                                <div class="station-info">
+                                    <strong>${station.name}</strong> - ${station.location}
+                                    <br>
+                                    <a href="${station.url}" target="_blank">Listen</a>
+                                </div>
+                            </div>`;
+                        stationList.appendChild(listItem);
+                    });
+                } else {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = 'No stations found for this country.';
+                    stationList.appendChild(listItem);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching station data:', error);
+                const stationList = document.getElementById('stationList');
+                const listItem = document.createElement('li');
+                listItem.textContent = 'Error fetching station data.';
+                stationList.appendChild(listItem);
+            });
+    }
+
+    // Initialize by fetching the list of countries
+    fetchCountries();
+</script>
+
     
 </body>
 </html>
