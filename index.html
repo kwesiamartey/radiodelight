@@ -252,6 +252,7 @@
         .station-image {
             width: 60px;
             height: 60px;
+            background-color:#fff;
             border-radius: 5px;
             margin-right: 40px; /* Margin for spacing */
         }
@@ -410,7 +411,7 @@
         </div>
     </div>
 
-    <div class="player-container">
+    <div class="player-container" style="display: none;">
         <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: none;">
 
         <div class="play-control">
@@ -577,6 +578,7 @@ function fetchStations(countryPath = 'unitedStateRadioList.json') {
             currentAudio.volume = 1; // Default volume
             document.getElementById('stationLogo').src = image;
             document.getElementById('stationLogo').style.display = 'block'; // Show logo
+            document.getElementById('player-container').style.display = 'block'; // Show logo
             togglePlay(); // Start playing
         }
 
