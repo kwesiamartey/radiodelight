@@ -408,13 +408,13 @@
                 <div id="stationListContent" class="station-grid"></div>
                 <br><br>
                 <div id="paginationControls"></div>
-                 <br><br><br><br>
+                 <br><br><br><br><br><br>
             </div>
             <div class="col-md-3">
                 
                 <p id="countryTitle">Other Countries</p>
                 <ul id="countryList" class="country-grid"></ul>
-                 </br></br></br></br></br></br>
+                 </br></br></br></br>
             </div>
         </div>
     </div>
@@ -423,12 +423,12 @@
   <div class="player-container" style="display: none;">
    <div class="row" style="display: flex; align-items: center; height: 100px;"> <!-- Vertically center contents -->
         <!-- First column: Station Image -->
-        <div class="col-1" style="display: flex; justify-content: center; align-items: center;">
+        <div class="col-2" style="display: flex; justify-content: center; align-items: center;">
             <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: none;">
         </div>
         
         <!-- Second column: Play button and progress ring -->
-        <div class="col-1" style="display: flex; justify-content: center; align-items: center;">
+        <div class="col-2" style="display: flex; justify-content: center; align-items: center;">
             <div class="play-control" style="display: flex; align-items: center;">
                 <div class="progress-ring" id="progress" style="margin-right: 10px;"></div>
                 <button class="play-button" onclick="togglePlay()">▶</button>
@@ -436,31 +436,30 @@
         </div>
         
         <!-- Third column: Volume control -->
-        <div class="col-10" style="display: flex; justify-content: center; align-items: center;">
+        <div class="col-8" style="display: flex; justify-content: center; align-items: center;">
             <div class="volume-control" style="display: flex; align-items: center;">
-                <i class="bi bi-volume-up" style="margin-right: 10px; color: white;"></i>
+                <p></p><i class="bi bi-volume-up" style="margin-right: 10px; color: white;"></i></p>
                 <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
             </div>
         </div>
    </div>
 </div>
 
- <script>
-    let selectedCountryPath = 'unitedStateRadioList.json';
-    let currentAudio = null;
-    let hls = null;
-    let currentPage = 1;
-    const itemsPerPage = 50;
-    const progress = document.getElementById('progress');
-    const playButton = document.querySelector('.play-button');
+   <script>
+        let selectedCountryPath = 'unitedStateRadioList.json';
+        let currentAudio = null;
+        let hls = null;
+        let currentPage = 1;
+        const itemsPerPage = 50;
+        const progress = document.getElementById('progress');
+        const playButton = document.querySelector('.play-button');
 
-    function fetchCountries() {
-        fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
-            .then(response => response.json())
-            .then(data => {
-                const countryList = document.getElementById('countryList');
-                countryList.innerHTML = '';
-                if (Array.isArray(data) && data.length > 0) {
+        function fetchCountries() {
+            fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
+                .then(response => response.ok ? response.json() : Promise.reject())
+                .then(data => {
+                    const countryList = document.getElementById('countryList');
+                    countryList.innerHTML = '';
                     data.forEach(country => {
                         const listItem = document.createElement('li');
                         listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag">`;
@@ -471,31 +470,23 @@
                         });
                         countryList.appendChild(listItem);
                     });
-                } else {
-                    countryList.innerHTML = '<li>No countries found.</li>';
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching country data:', error);
-                document.getElementById('countryList').innerHTML = '<li>Error fetching country data.</li>';
-            });
-    }
+                }).catch(error => console.error('Error fetching country data:', error));
+        }
 
-    function fetchStations(countryPath = 'unitedStateRadioList.json') {
-        fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`)
-            .then(response => response.json())
-            .then(stationData => {
-                const stationList = document.getElementById('stationListContent');
-                const paginationControls = document.getElementById('paginationControls');
-                stationList.innerHTML = '';
-                paginationControls.innerHTML = '';
+        function fetchStations(countryPath = 'unitedStateRadioList.json') {
+            fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`)
+                .then(response => response.ok ? response.json() : Promise.reject())
+                .then(stationData => {
+                    const stationList = document.getElementById('stationListContent');
+                    const paginationControls = document.getElementById('paginationControls');
+                    stationList.innerHTML = '';
+                    paginationControls.innerHTML = '';
 
-                const filteredStations = stationData.filter(station => station.name !== 'Local Fm');
-                const totalPages = Math.ceil(filteredStations.length / itemsPerPage);
-                const startIndex = (currentPage - 1) * itemsPerPage;
-                const stationsToDisplay = filteredStations.slice(startIndex, startIndex + itemsPerPage);
+                    const filteredStations = stationData.filter(station => station.name !== 'Local Fm');
+                    const totalPages = Math.ceil(filteredStations.length / itemsPerPage);
+                    const startIndex = (currentPage - 1) * itemsPerPage;
+                    const stationsToDisplay = filteredStations.slice(startIndex, startIndex + itemsPerPage);
 
-                if (stationsToDisplay.length > 0) {
                     stationsToDisplay.forEach(station => {
                         const stationItem = document.createElement('div');
                         stationItem.className = 'station-item';
@@ -505,127 +496,75 @@
                         stationList.appendChild(stationItem);
                     });
 
+                    // Pagination controls
                     const pageInfo = document.createElement('span');
                     pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
                     paginationControls.appendChild(pageInfo);
 
-                    function createPageLink(page) {
-                        const pageLink = document.createElement('span');
-                        pageLink.textContent = page;
-                        pageLink.style.cursor = 'pointer';
-                        pageLink.style.margin = '0 5px';
-                        pageLink.onclick = () => {
-                            currentPage = page;
-                            fetchStations(countryPath);
-                        };
-                        if (page === currentPage) {
-                            pageLink.style.fontWeight = 'bold';
-                            pageLink.style.textDecoration = 'underline';
-                        }
-                        paginationControls.appendChild(pageLink);
-                    }
-
-                    if (currentPage > 1) {
-                        const prevButton = document.createElement('span');
-                        prevButton.textContent = '<< ';
-                        prevButton.style.cursor = 'pointer';
-                        prevButton.onclick = () => { currentPage--; fetchStations(countryPath); };
-                        paginationControls.appendChild(prevButton);
-                    }
-
-                    createPageLink(1);
-                    if (currentPage > 3) paginationControls.appendChild(document.createTextNode(' ... '));
-                    for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
-                        createPageLink(i);
-                    }
-                    if (currentPage < totalPages - 2) paginationControls.appendChild(document.createTextNode(' ... '));
-                    if (totalPages > 1) createPageLink(totalPages);
-
-                    if (currentPage < totalPages) {
-                        const nextButton = document.createElement('span');
-                        nextButton.textContent = ' >>';
-                        nextButton.style.cursor = 'pointer';
-                        nextButton.onclick = () => { currentPage++; fetchStations(countryPath); };
-                        paginationControls.appendChild(nextButton);
-                    }
-                } else {
-                    stationList.innerHTML = '<h2>No stations found.</h2>';
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching station data:', error);
-                document.getElementById('stationListContent').innerHTML = '<h2>Error fetching station data.</h2>';
-            });
-    }
-
-    function playStation(url, image) {
-        if (currentAudio) {
-            currentAudio.pause();
-            currentAudio = null;
-            playButton.textContent = '▶';
-            if (hls) {
-                hls.destroy();
-                hls = null;
-            }
+                    if (currentPage > 1) paginationControls.innerHTML += `<span style="cursor:pointer;" onclick="currentPage--;fetchStations()"> << </span>`;
+                    paginationControls.innerHTML += `<span style="cursor:pointer; margin: 0 5px;" onclick="currentPage=1;fetchStations()">1</span>`;
+                    if (currentPage > 3) paginationControls.innerHTML += ' ... ';
+                    for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) paginationControls.innerHTML += `<span style="cursor:pointer; margin: 0 5px;" onclick="currentPage=${i};fetchStations()">${i}</span>`;
+                    if (currentPage < totalPages - 2) paginationControls.innerHTML += ' ... ';
+                    paginationControls.innerHTML += `<span style="cursor:pointer; margin: 0 5px;" onclick="currentPage=${totalPages};fetchStations()">${totalPages}</span>`;
+                    if (currentPage < totalPages) paginationControls.innerHTML += `<span style="cursor:pointer;" onclick="currentPage++;fetchStations()"> >> </span>`;
+                }).catch(error => console.error('Error fetching station data:', error));
         }
 
-        document.getElementById('stationLogo').src = image;
-        document.getElementById('stationLogo').style.display = 'block';
-        document.querySelector('.player-container').style.display = 'block';
-        progress.style.display = 'block';
-
-        if (Hls.isSupported() && url.endsWith('.m3u8')) {
-            hls = new Hls();
-            hls.loadSource(url);
-            currentAudio = new Audio();
-            hls.attachMedia(currentAudio);
-            hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                currentAudio.play().then(() => {
-                    progress.style.display = 'none';
-                    playButton.textContent = '❚❚';
-                });
-            });
-        } else {
-            currentAudio = new Audio(url);
-            currentAudio.oncanplay = () => {
-                progress.style.display = 'none';
-                playButton.textContent = '❚❚';
-            };
-            currentAudio.play();
-        }
-    }
-
-    function togglePlay() {
-        if (currentAudio) {
-            if (currentAudio.paused) {
-                progress.style.display = 'block';
-                currentAudio.play().then(() => {
-                    playButton.textContent = '❚❚';
-                    progress.style.display = 'none';
-                }).catch(error => {
-                    console.error("Audio play error:", error);
-                    progress.style.display = 'none';
-                });
-            } else {
+        function playStation(url, image) {
+            if (currentAudio) {
                 currentAudio.pause();
+                currentAudio = null;
                 playButton.textContent = '▶';
-                progress.style.display = 'none';
+                if (hls) hls.destroy();
+            }
+            document.getElementById('stationLogo').src = image;
+            document.getElementById('stationLogo').style.display = 'block';
+            document.querySelector('.player-container').style.display = 'block';
+            progress.style.display = 'block';
+
+            if (Hls.isSupported() && url.endsWith('.m3u8')) {
+                hls = new Hls();
+                hls.loadSource(url);
+                currentAudio = new Audio();
+                hls.attachMedia(currentAudio);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    currentAudio.play().then(() => playButton.textContent = '❚❚');
+                });
+                currentAudio.addEventListener('playing', () => progress.style.display = 'none');
+            } else {
+                currentAudio = new Audio(url);
+                currentAudio.oncanplay = () => playButton.textContent = '❚❚';
+                currentAudio.addEventListener('playing', () => progress.style.display = 'none');
+                currentAudio.play().catch(error => console.error("Audio play error:", error));
             }
         }
-    }
 
-    function setVolume(value) {
-        if (currentAudio) {
-            currentAudio.volume = value;
+        function togglePlay() {
+            if (currentAudio) {
+                if (currentAudio.paused) {
+                    progress.style.display = 'block';
+                    currentAudio.play().then(() => playButton.textContent = '❚❚').catch(error => {
+                        console.error("Audio play error:", error);
+                        progress.style.display = 'none';
+                    });
+                } else {
+                    currentAudio.pause();
+                    playButton.textContent = '▶';
+                    progress.style.display = 'none';
+                }
+            }
         }
-    }
 
-    window.onload = () => {
-        fetchCountries();
-        fetchStations();
-    };
-</script>
+        function setVolume(value) {
+            if (currentAudio) currentAudio.volume = value;
+        }
 
+        window.onload = () => {
+            fetchCountries();
+            fetchStations();
+        };
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </body>
