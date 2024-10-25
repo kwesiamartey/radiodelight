@@ -430,7 +430,7 @@
     let currentAudio = null;
     let hls = null;
     let currentPage = 1;
-    const itemsPerPage = 10;
+    const itemsPerPage = 50;
     const progress = document.getElementById('progress');
 
     function fetchCountries() {
@@ -544,6 +544,7 @@
 
         document.getElementById('stationLogo').src = image;
         document.getElementById('stationLogo').style.display = 'block';
+        document.querySelector(".player-container").style.display = 'block';
         progress.style.display = 'block';
 
         if (Hls.isSupported() && url.endsWith('.m3u8')) {
