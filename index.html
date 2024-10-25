@@ -35,7 +35,7 @@
         }
 
          .player-header h5{
-             margin-top:2px;
+             margin-top:7px;
          }
 
          #sidebaer_topBar{
@@ -384,6 +384,7 @@
         <div class="row">
             <div class="col-md-9">
                 <div id="stationListContent" class="station-grid"></div>
+                </br></br></br>
                 <div id="paginationControls"></div>
             </div>
             <div class="col-md-3">
@@ -508,6 +509,11 @@ function fetchStations(countryPath = 'unitedStateRadioList.json') {
                     };
                     paginationControls.appendChild(prevButton);
                 }
+
+                // Page number indicators
+                const pageInfo = document.createElement('span');
+                pageInfo.textContent = ` Page ${currentPage} of ${totalPages} `;
+                paginationControls.appendChild(pageInfo);
 
                 if (currentPage < totalPages) {
                     const nextButton = document.createElement('button');
