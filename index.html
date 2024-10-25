@@ -419,35 +419,31 @@
     </div>
 
     <!-- Bottom row: Player -->
-    <div class="player-container" style="display: none;">
-       <div class="row">
-
-        <div class="col-2">
-                <!-- First column: Station Image -->
+  <div class="player-container" style="display: none;">
+   <div class="row" style="display: flex; align-items: center; height: 100px;"> <!-- Vertically center contents -->
+        <!-- First column: Station Image -->
+        <div class="col-2" style="display: flex; justify-content: center; align-items: center;">
             <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: none;">
         </div>
-         <div class="col-2">
-             <!-- Second column: Play button and progress ring -->
-            <div class="play-control">
-                <div class="progress-ring" id="progress"></div>
+        
+        <!-- Second column: Play button and progress ring -->
+        <div class="col-2" style="display: flex; justify-content: center; align-items: center;">
+            <div class="play-control" style="display: flex; align-items: center;">
+                <div class="progress-ring" id="progress" style="margin-right: 10px;"></div>
                 <button class="play-button" onclick="togglePlay()">▶</button>
             </div>
         </div>
-           <div class="col-8">
-                 <!-- Third column: Volume control -->
-            <div class="volume-control">
-                <i class="bi bi-volume-up"></i>
+        
+        <!-- Third column: Volume control -->
+        <div class="col-8" style="display: flex; justify-content: center; align-items: center;">
+            <div class="volume-control" style="display: flex; align-items: center;">
+                <i class="bi bi-volume-up" style="margin-right: 10px;"></i>
                 <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
             </div>
-           
         </div>
+   </div>
+</div>
 
-      
-
-       
-           
-       </div>
-    </div>
   
    <script>
     let selectedCountryPath = 'unitedStateRadioList.json';
