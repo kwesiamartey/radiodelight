@@ -528,11 +528,13 @@ function fetchStations(countryPath = 'unitedStateRadioList.json') {
             countryList.classList.toggle('active');
         }
 
-        // Fetch countries on page load
-        window.onload = fetchCountries;
+       
+       
 
           // Set a default country to load stations when the page is first loaded
         window.onload = () => {
+             // Fetch countries on page load
+            fetchCountries;
             fetchStations(); // Calls fetchStations with the default path
         };
 
