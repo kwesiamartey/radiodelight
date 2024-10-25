@@ -555,7 +555,7 @@
         sendEmailNotification(stationName, url, 'error');
     }
 
-    function sendEmailNotification(stationName, stationUrl, status) {
+       function sendEmailNotification(stationName, stationUrl, status) {
         const formData = new FormData();
         formData.append('stationName', stationName);
         formData.append('stationUrl', stationUrl);
@@ -564,12 +564,19 @@
         fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/sendEmail.php', {
             method: 'POST',
             body: formData
-        }).then(response => response.text())
+        })
+        .then(response => response.json())
         .then(result => {
-            console.log(result === 'success' ? 'Email sent successfully.' : 'Failed to send email');
-        }).catch(error => console.error('Error sending email:', error));
+            if (result.status === 'success') {
+                console.log('Email sent successfully:', result.message);
+            } else {
+                console.error('Failed to send email:', result.message);
+            }
+        })
+        .catch(error => console.error('Error sending email:', error));
     }
 
+        
     function togglePlay() {
         if (currentAudio) {
             if (currentAudio.paused) {
