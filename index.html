@@ -78,6 +78,7 @@
          #paginationControls{
              color:white;
              justify-content: center;  /* Center horizontally */
+             align-items: center;      /* Center vertically */
          }
 
        .img {
@@ -135,6 +136,7 @@
             text-align: center;
             cursor: pointer;
             color: #ccc;
+            font-size:16px;
             transition: background-color 0.2s;
             padding: 0px 0px 10px 0px;
             background-color: #142229;
@@ -142,8 +144,8 @@
         }
 
         .station-item:hover {
-            background-color: #ddd;
-            color:#333;
+
+            color:#fff;
         }
 
         .station-item img {
@@ -484,7 +486,7 @@ function fetchStations(countryPath = 'unitedStateRadioList.json') {
             paginationControls.innerHTML = ''; // Clear existing pagination
 
             // Filter out "Local FM" stations
-            const filteredStations = stationData.filter(station => station.name !== 'Local FM');
+            const filteredStations = stationData.filter(station => station.name !== 'Local Fm');
 
             totalStations = filteredStations.length; // Update total stations
             const totalPages = Math.ceil(totalStations / itemsPerPage); // Calculate total pages
@@ -497,7 +499,7 @@ function fetchStations(countryPath = 'unitedStateRadioList.json') {
             if (stationsToDisplay.length > 0) {
                 stationsToDisplay.forEach(station => {
                     // Limit station name to 17 characters
-                    const stationName = station.name.length > 17 ? station.name.substring(0, 13) + '...' : station.name;
+                    const stationName = station.name.length > 13 ? station.name.substring(0, 13) + '...' : station.name;
 
                     const stationItem = document.createElement('div');
                     stationItem.className = 'station-item';
@@ -558,9 +560,6 @@ function fetchStations(countryPath = 'unitedStateRadioList.json') {
         });
 }
 
-
-
-        
         
         function playStation(url, image) {
             if (currentAudio) {
