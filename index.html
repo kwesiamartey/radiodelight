@@ -457,7 +457,7 @@ function fetchStations(countryPath = 'unitedStateRadioList.json') {
             stationList.innerHTML = ''; // Clear the station list
 
             // Filter out stations with the name "Local FM"
-            const filteredStations = stationData.filter(station => station.name !== "Local FM");
+            const filteredStations = stationData.filter(station => station.name != "Local FM");
 
             if (Array.isArray(filteredStations) && filteredStations.length > 0) {
                 filteredStations.forEach(station => {
@@ -484,7 +484,10 @@ function fetchStations(countryPath = 'unitedStateRadioList.json') {
         });
     }
 
-
+       // Set a default country to load stations when the page is first loaded
+        window.onload = () => {
+            fetchStations(); // Calls fetchStations with the default path
+        };
 
         
         function playStation(url, image) {
