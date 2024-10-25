@@ -436,7 +436,7 @@
         </div>
     </div>
   
-    <script>
+   <script>
     let selectedCountryPath = 'unitedStateRadioList.json';
     let currentAudio = null;
     let hls = null;
@@ -513,23 +513,56 @@
                     paginationControls.appendChild(document.createElement('br')); // New line for page links
 
                     // Create pagination links
-                    for (let i = 1; i <= Math.min(totalPages, 4); i++) {
+                    function createPageLink(page) {
                         const pageLink = document.createElement('span');
-                        pageLink.textContent = i;
+                        pageLink.textContent = page;
                         pageLink.style.cursor = 'pointer';
                         pageLink.style.margin = '0 5px';
                         pageLink.onclick = () => {
-                            currentPage = i;
+                            currentPage = page;
                             fetchStations(countryPath);
                         };
-                        if (i === currentPage) {
+                        if (page === currentPage) {
                             pageLink.style.fontWeight = 'bold';
                             pageLink.style.textDecoration = 'underline';
                         }
                         paginationControls.appendChild(pageLink);
                     }
 
-                    // Next button
+                    // Display "<<" for previous page if not on the first page
+                    if (currentPage > 1) {
+                        const prevButton = document.createElement('span');
+                        prevButton.textContent = '<< ';
+                        prevButton.style.cursor = 'pointer';
+                        prevButton.onclick = () => {
+                            currentPage--;
+                            fetchStations(countryPath);
+                        };
+                        paginationControls.appendChild(prevButton);
+                    }
+
+                    // Show first page
+                    createPageLink(1);
+
+                    // Show dots if there are pages in between
+                    if (currentPage > 3) {
+                        paginationControls.appendChild(document.createTextNode(' ... '));
+                    }
+
+                    // Show current page and nearby pages
+                    for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
+                        createPageLink(i);
+                    }
+
+                    // Show dots if there are pages in between
+                    if (currentPage < totalPages - 2) {
+                        paginationControls.appendChild(document.createTextNode(' ... '));
+                    }
+
+                    // Show last page if not current
+                    if (totalPages > 1) createPageLink(totalPages);
+
+                    // Display ">>" for next page if not on the last page
                     if (currentPage < totalPages) {
                         const nextButton = document.createElement('span');
                         nextButton.textContent = ' >>';
