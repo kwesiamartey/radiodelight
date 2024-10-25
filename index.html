@@ -436,15 +436,14 @@
         </div>
     </div>
   
-
-   <script>
+    <script>
     let selectedCountryPath = 'unitedStateRadioList.json';
     let currentAudio = null;
     let hls = null;
     let currentPage = 1;
     const itemsPerPage = 50;
     const progress = document.getElementById('progress');
-    const playButton = document.querySelector('.play-button'); // Select play button
+    const playButton = document.querySelector('.play-button');
 
     function fetchCountries() {
         fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
@@ -498,16 +497,23 @@
                     stationsToDisplay.forEach(station => {
                         const stationItem = document.createElement('div');
                         stationItem.className = 'station-item';
-                        stationItem.innerHTML = `<img src="${station.logo}" alt="${station.name}"><br>${station.name}`;
+
+                        // Truncate station name to 13 characters
+                        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
+                        stationItem.innerHTML = `<img src="${station.logo}" alt="${truncatedName}"><br>${truncatedName}`;
                         stationItem.addEventListener('click', () => playStation(station.url, station.logo));
                         stationList.appendChild(stationItem);
                     });
 
+                    // Add "Page X of Y" info
                     const pageInfo = document.createElement('span');
-                    pageInfo.textContent = `Page ${currentPage} of ${totalPages}<br>`;
+                    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
                     paginationControls.appendChild(pageInfo);
 
-                    for (let i = 1; i <= totalPages; i++) {
+                    paginationControls.appendChild(document.createElement('br')); // New line for page links
+
+                    // Create pagination links
+                    for (let i = 1; i <= Math.min(totalPages, 4); i++) {
                         const pageLink = document.createElement('span');
                         pageLink.textContent = i;
                         pageLink.style.cursor = 'pointer';
@@ -523,6 +529,7 @@
                         paginationControls.appendChild(pageLink);
                     }
 
+                    // Next button
                     if (currentPage < totalPages) {
                         const nextButton = document.createElement('span');
                         nextButton.textContent = ' >>';
@@ -547,7 +554,7 @@
         if (currentAudio) {
             currentAudio.pause();
             currentAudio = null;
-            playButton.textContent = '▶'; // Reset play button to play icon
+            playButton.textContent = '▶';
             if (hls) {
                 hls.destroy();
                 hls = null;
@@ -566,14 +573,14 @@
             hls.on(Hls.Events.MANIFEST_PARSED, () => {
                 currentAudio.play().then(() => {
                     progress.style.display = 'none';
-                    playButton.textContent = '❚❚'; // Set to pause icon when playing
+                    playButton.textContent = '❚❚';
                 });
             });
         } else {
             currentAudio = new Audio(url);
             currentAudio.oncanplay = () => {
                 progress.style.display = 'none';
-                playButton.textContent = '❚❚'; // Set to pause icon when playing
+                playButton.textContent = '❚❚';
             };
             currentAudio.play();
         }
@@ -583,11 +590,11 @@
         if (currentAudio) {
             if (currentAudio.paused) {
                 currentAudio.play();
-                playButton.textContent = '❚❚'; // Set to pause icon
+                playButton.textContent = '❚❚';
                 progress.style.display = 'block';
             } else {
                 currentAudio.pause();
-                playButton.textContent = '▶'; // Set to play icon
+                playButton.textContent = '▶';
                 progress.style.display = 'none';
             }
         }
@@ -604,6 +611,7 @@
         fetchStations();
     };
 </script>
+
 
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </body>
