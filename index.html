@@ -578,7 +578,7 @@ function fetchStations(countryPath = 'unitedStateRadioList.json') {
             currentAudio.volume = 1; // Default volume
             document.getElementById('stationLogo').src = image;
             document.getElementById('stationLogo').style.display = 'block'; // Show logo
-            document.getElementById('player-container').style.display = 'block'; // Show logo
+            document.querySelector('.player-container').style.display = 'block'; // Show logo
             togglePlay(); // Start playing
         }
 
