@@ -385,6 +385,7 @@
         <div class="row">
             <div class="col-md-9">
                 <div id="stationListContent" class="station-grid"></div>
+                <div id="paginationControls"></div>
             </div>
             <div class="col-md-3">
                 
@@ -453,6 +454,11 @@
                 });
         }
 
+// Pagination variables
+let currentPage = 1; // Start on page 1
+const itemsPerPage = 10; // Number of stations to display per page
+let totalStations = 0; // To track the total number of stations
+
 // Function to fetch stations for a selected country
 function fetchStations(countryPath = 'unitedStateRadioList.json') {
     fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`)
@@ -464,27 +470,55 @@ function fetchStations(countryPath = 'unitedStateRadioList.json') {
         })
         .then(stationData => {
             const stationList = document.getElementById('stationListContent');
+            const paginationControls = document.getElementById('paginationControls');
             stationList.innerHTML = ''; // Clear the station list
+            paginationControls.innerHTML = ''; // Clear existing pagination
 
-            if (Array.isArray(stationData) && stationData.length > 0) {
-                stationData.forEach(station => {
-                    // Skip station if name is "Local FM"
-                    if (station.name == 'Local FM') {
-                        return; // Skip this iteration
-                    }
+            // Filter out "Local FM" stations
+            const filteredStations = stationData.filter(station => station.name !== 'Local FM');
 
-                    const stationItem = document.createElement('div');
-                    stationItem.className = 'station-item';
+            totalStations = filteredStations.length; // Update total stations
+            const totalPages = Math.ceil(totalStations / itemsPerPage); // Calculate total pages
 
+            // Calculate the starting and ending index for the current page
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const stationsToDisplay = filteredStations.slice(startIndex, endIndex); // Get stations for the current page
+
+            if (stationsToDisplay.length > 0) {
+                stationsToDisplay.forEach(station => {
                     // Limit station name to 17 characters
                     const stationName = station.name.length > 17 ? station.name.substring(0, 13) + '...' : station.name;
 
+                    const stationItem = document.createElement('div');
+                    stationItem.className = 'station-item';
                     stationItem.innerHTML = `<img src="${station.logo}" alt="${station.name}"><br>${stationName}`;
                     stationItem.addEventListener('click', () => {
                         playStation(station.url, station.logo);
                     });
                     stationList.appendChild(stationItem);
                 });
+
+                // Create pagination controls
+                if (currentPage > 1) {
+                    const prevButton = document.createElement('button');
+                    prevButton.textContent = 'Previous';
+                    prevButton.onclick = () => {
+                        currentPage--; // Decrement page
+                        fetchStations(countryPath); // Fetch stations for the selected country
+                    };
+                    paginationControls.appendChild(prevButton);
+                }
+
+                if (currentPage < totalPages) {
+                    const nextButton = document.createElement('button');
+                    nextButton.textContent = 'Next';
+                    nextButton.onclick = () => {
+                        currentPage++; // Increment page
+                        fetchStations(countryPath); // Fetch stations for the selected country
+                    };
+                    paginationControls.appendChild(nextButton);
+                }
             } else {
                 stationList.innerHTML = '<h2>No stations found.</h2>';
             }
