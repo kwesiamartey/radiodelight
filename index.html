@@ -467,7 +467,7 @@
                 return response.json();
             })
             .then(stationData => {
-                const stationList = document.getElementById('stationList');
+                const stationList = document.getElementById('stationListContent');
                 stationList.innerHTML = ''; // Clear previous station list
 
                 if (Array.isArray(stationData) && stationData.length > 0) {
