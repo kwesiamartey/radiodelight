@@ -428,8 +428,8 @@
                             });
                             countryList.appendChild(listItem);
 
-                                 // Update country title
-                            document.querySelector('.countryTitle').textContent = " Live "+ ${country.name} +" Radio Station Online ";
+                            // Update country title using proper string interpolation
+                             document.querySelector('.countryTitle').textContent = `Live ${country.name} Radio Station Online`;
                         
                         });
                     } else {
