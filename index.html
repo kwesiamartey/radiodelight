@@ -14,7 +14,7 @@
             font-family: Google Sans,Roboto,Arial,sans-serif;
             display: flex;
             justify-content: center;  /* Center horizontally */
-            padding-top: 50px; /* Adjust according to the height of the header */
+            padding-top: 30px; /* Adjust according to the height of the header */
             background-color:#1c313a;
             flex-direction: column;
             overflow-x: hidden; /* Prevent horizontal scrolling */
@@ -370,7 +370,7 @@
 <body>
 
     <div class="player-header">
-        <span class="menu-icon" onclick="toggleMenu()">☰</span>
+       <!-- <span class="menu-icon" onclick="toggleMenu()">☰</span>-->
         <img id="Logo" src="logo.png" alt="Station Logo">
         <h5>Radio Delight</h5>
         <div></div>
@@ -473,7 +473,7 @@ function fetchStations(countryPath = 'unitedStateRadioList.json') {
                     stationItem.className = 'station-item';
 
                     // Limit station name to 17 characters
-                    const stationName = station.name.length > 17 ? station.name.substring(0, 15) + '...' : station.name;
+                    const stationName = station.name.length > 17 ? station.name.substring(0, 13) + '...' : station.name;
 
                     stationItem.innerHTML = `<img src="${station.logo}" alt="${station.name}"><br>${stationName}`;
                     stationItem.addEventListener('click', () => {
