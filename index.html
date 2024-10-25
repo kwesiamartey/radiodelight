@@ -425,7 +425,7 @@
 
     <script>
         let selectedCountryPath = 'unitedStateRadioList.json'; // Default country path
-
+        let currentAudio = null;
         // Fetch country data and populate the list
         function fetchCountries() {
             fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
@@ -477,6 +477,8 @@ let totalStations = 0; // To track the total number of stations
 
 // Function to fetch stations for a selected country
 function fetchStations(countryPath = 'unitedStateRadioList.json') {
+
+    
     fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`)
         .then(response => {
             if (!response.ok) {
