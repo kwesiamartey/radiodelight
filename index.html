@@ -457,8 +457,8 @@
             });
     }
 
-    // Function to fetch stations for a selected country
-    function fetchStations(countryPath) {
+     // Function to fetch stations for a selected country, with a default path if no country is selected
+    function fetchStations(countryPath = 'unitedStateRadioList.json') {
         fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`)
             .then(response => {
                 if (!response.ok) {
@@ -473,15 +473,7 @@
                 if (Array.isArray(stationData) && stationData.length > 0) {
                     stationData.forEach(station => {
                         const listItem = document.createElement('li');
-                        listItem.innerHTML = `
-                            <div class="station-item">
-                                <img src="${station.logo}" alt="${station.name} Logo" class="station-logo">
-                                <div class="station-info">
-                                    <strong>${station.name}</strong> - ${station.location}
-                                    <br>
-                                    <a href="${station.url}" target="_blank">Listen</a>
-                                </div>
-                            </div>`;
+                        listItem.innerHTML = `<img src="${station.image}" alt="${station.name}"><br>${station.name}`;
                         stationList.appendChild(listItem);
                     });
                 } else {
@@ -498,7 +490,6 @@
                 stationList.appendChild(listItem);
             });
     }
-
     // Initialize by fetching the list of countries
     fetchCountries();
 </script>
