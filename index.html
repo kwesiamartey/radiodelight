@@ -400,7 +400,7 @@
        <!-- <span class="menu-icon" onclick="toggleMenu()">☰</span>-->
         <img id="Logo" src="logo.png" alt="Station Logo">
         <h5>Radio Delight</h5>
-        <div></div>
+         <input type="text" id="searchInput" placeholder="Search stations..." oninput="filterStations()" />
     </div>
 
     <div class="container">
@@ -448,6 +448,7 @@
 </div>
 
   <script>
+    let stationData = []; // Store stations here to avoid multiple fetches
     let selectedCountryPath = 'unitedStateRadioList.json';
     let currentAudio = null;
     let hls = null;
@@ -597,6 +598,51 @@
     function setVolume(value) {
         if (currentAudio) currentAudio.volume = value;
     }
+
+
+
+    // Fetch stations once when page loads or country changes
+function fetchStations(countryPath = 'unitedStateRadioList.json') {
+    fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`)
+        .then(response => response.ok ? response.json() : Promise.reject())
+        .then(data => {
+            stationData = data.filter(station => station.name !== 'Local Fm'); // Cache stations
+            displayStations(stationData); // Display all stations initially
+        })
+        .catch(error => console.error('Error fetching station data:', error));
+}
+
+// Real-time filter as user types
+function filterStations() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    const filteredStations = stationData.filter(station => 
+        station.name.toLowerCase().includes(query)
+    );
+    displayStations(filteredStations); // Update display with filtered results
+}
+
+// Display stations on the page
+function displayStations(stations) {
+    const stationList = document.getElementById('stationListContent');
+    stationList.innerHTML = ''; // Clear current list
+
+    if (stations.length === 0) {
+        stationList.innerHTML = `<p>No results found.</p>`;
+    } else {
+        stations.forEach(station => {
+            const stationItem = document.createElement('div');
+            stationItem.className = 'station-item';
+            const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
+            stationItem.innerHTML = `<img src="${station.logo}" alt="${truncatedName}"><br>${truncatedName}`;
+            stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name));
+            stationList.appendChild(stationItem);
+        });
+    }
+}
+
+
+
+      
 
     window.onload = () => {
         fetchCountries();
