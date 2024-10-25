@@ -447,135 +447,155 @@
    </div>
 </div>
 
-      <script>
-        let selectedCountryPath = 'unitedStateRadioList.json';
-        let currentAudio = null;
-        let hls = null;
-        let currentPage = 1;
-        const itemsPerPage = 50;
-        const progress = document.getElementById('progress');
-        const playButton = document.querySelector('.play-button');
+     <script>
+    let selectedCountryPath = 'unitedStateRadioList.json';
+    let currentAudio = null;
+    let hls = null;
+    let currentPage = 1;
+    const itemsPerPage = 50;
+    const progress = document.getElementById('progress');
+    const playButton = document.querySelector('.play-button');
 
-        function fetchCountries() {
-            fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
-                .then(response => response.ok ? response.json() : Promise.reject())
-                .then(data => {
-                    const countryList = document.getElementById('countryList');
-                    countryList.innerHTML = '';
-                    data.forEach(country => {
-                        const listItem = document.createElement('li');
-                        listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag">`;
-                        listItem.addEventListener('click', () => {
-                            selectedCountryPath = country.url;
-                            fetchStations(selectedCountryPath);
-                            document.querySelector('.countryTitle').textContent = `Live ${country.name} Radio Station Online`;
-                        });
-                        countryList.appendChild(listItem);
+    function fetchCountries() {
+        fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
+            .then(response => response.ok ? response.json() : Promise.reject())
+            .then(data => {
+                const countryList = document.getElementById('countryList');
+                countryList.innerHTML = '';
+                data.forEach(country => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag">`;
+                    listItem.addEventListener('click', () => {
+                        selectedCountryPath = country.url;
+                        fetchStations(selectedCountryPath);
+                        document.querySelector('.countryTitle').textContent = `Live ${country.name} Radio Station Online`;
                     });
-                }).catch(error => console.error('Error fetching country data:', error));
-        }
-
-        function fetchStations(countryPath = 'unitedStateRadioList.json') {
-            fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`)
-                .then(response => response.ok ? response.json() : Promise.reject())
-                .then(stationData => {
-                    const stationList = document.getElementById('stationListContent');
-                    const paginationControls = document.getElementById('paginationControls');
-                    stationList.innerHTML = '';
-                    paginationControls.innerHTML = '';
-
-                    const filteredStations = stationData.filter(station => station.name !== 'Local Fm');
-                    const totalPages = Math.ceil(filteredStations.length / itemsPerPage);
-                    const startIndex = (currentPage - 1) * itemsPerPage;
-                    const stationsToDisplay = filteredStations.slice(startIndex, startIndex + itemsPerPage);
-
-                    stationsToDisplay.forEach(station => {
-                        const stationItem = document.createElement('div');
-                        stationItem.className = 'station-item';
-                        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-                        stationItem.innerHTML = `<img src="${station.logo}" alt="${truncatedName}"><br>${truncatedName}`;
-                        stationItem.addEventListener('click', () => playStation(station.url, station.logo));
-                        stationList.appendChild(stationItem);
-                    });
-
-                    // Pagination controls
-                    const pageInfo = document.createElement('span');
-                    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-                    paginationControls.appendChild(pageInfo);
-
-                    if (currentPage > 1) paginationControls.innerHTML += `<span style="cursor:pointer;" onclick="currentPage--;fetchStations()"> << </span>`;
-                    paginationControls.innerHTML += `<span style="cursor:pointer; margin: 0 5px;" onclick="currentPage=1;fetchStations()">1</span>`;
-                    if (currentPage > 3) paginationControls.innerHTML += ' ... ';
-                    for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) paginationControls.innerHTML += `<span style="cursor:pointer; margin: 0 5px;" onclick="currentPage=${i};fetchStations()">${i}</span>`;
-                    if (currentPage < totalPages - 2) paginationControls.innerHTML += ' ... ';
-                    paginationControls.innerHTML += `<span style="cursor:pointer; margin: 0 5px;" onclick="currentPage=${totalPages};fetchStations()">${totalPages}</span>`;
-                    if (currentPage < totalPages) paginationControls.innerHTML += `<span style="cursor:pointer;" onclick="currentPage++;fetchStations()"> >> </span>`;
-                }).catch(error => console.error('Error fetching station data:', error));
-        }
-
-        function playStation(url, image) {
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio = null;
-                playButton.textContent = '▶';
-                if (hls) hls.destroy();
-            }
-            document.getElementById('stationLogo').src = image;
-            document.getElementById('stationLogo').style.display = 'block';
-            document.querySelector('.player-container').style.display = 'block';
-            progress.style.display = 'block';
-
-            if (Hls.isSupported() && url.endsWith('.m3u8')) {
-                hls = new Hls();
-                hls.loadSource(url);
-                currentAudio = new Audio();
-                hls.attachMedia(currentAudio);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    currentAudio.play().then(() => playButton.textContent = '❚❚');
+                    countryList.appendChild(listItem);
                 });
-                currentAudio.addEventListener('playing', () => progress.style.display = 'none');
-                currentAudio.onerror = () => {
+            }).catch(error => console.error('Error fetching country data:', error));
+    }
+
+    function fetchStations(countryPath = 'unitedStateRadioList.json') {
+        fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`)
+            .then(response => response.ok ? response.json() : Promise.reject())
+            .then(stationData => {
+                const stationList = document.getElementById('stationListContent');
+                const paginationControls = document.getElementById('paginationControls');
+                stationList.innerHTML = '';
+                paginationControls.innerHTML = '';
+
+                const filteredStations = stationData.filter(station => station.name !== 'Local Fm');
+                const totalPages = Math.ceil(filteredStations.length / itemsPerPage);
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const stationsToDisplay = filteredStations.slice(startIndex, startIndex + itemsPerPage);
+
+                stationsToDisplay.forEach(station => {
+                    const stationItem = document.createElement('div');
+                    stationItem.className = 'station-item';
+                    const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
+                    stationItem.innerHTML = `<img src="${station.logo}" alt="${truncatedName}"><br>${truncatedName}`;
+                    stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name));
+                    stationList.appendChild(stationItem);
+                });
+
+                const pageInfo = document.createElement('span');
+                pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+                paginationControls.appendChild(pageInfo);
+
+                if (currentPage > 1) paginationControls.innerHTML += `<span style="cursor:pointer;" onclick="currentPage--;fetchStations()"> << </span>`;
+                paginationControls.innerHTML += `<span style="cursor:pointer; margin: 0 5px;" onclick="currentPage=1;fetchStations()">1</span>`;
+                if (currentPage > 3) paginationControls.innerHTML += ' ... ';
+                for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) paginationControls.innerHTML += `<span style="cursor:pointer; margin: 0 5px;" onclick="currentPage=${i};fetchStations()">${i}</span>`;
+                if (currentPage < totalPages - 2) paginationControls.innerHTML += ' ... ';
+                paginationControls.innerHTML += `<span style="cursor:pointer; margin: 0 5px;" onclick="currentPage=${totalPages};fetchStations()">${totalPages}</span>`;
+                if (currentPage < totalPages) paginationControls.innerHTML += `<span style="cursor:pointer;" onclick="currentPage++;fetchStations()"> >> </span>`;
+            }).catch(error => console.error('Error fetching station data:', error));
+    }
+
+    function playStation(url, image, stationName) {
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio = null;
+            playButton.textContent = '▶';
+            if (hls) hls.destroy();
+        }
+
+        document.getElementById('stationLogo').src = image;
+        document.getElementById('stationLogo').style.display = 'block';
+        document.querySelector('.player-container').style.display = 'block';
+        progress.style.display = 'block';
+
+        if (Hls.isSupported() && url.endsWith('.m3u8')) {
+            hls = new Hls();
+            hls.loadSource(url);
+            currentAudio = new Audio();
+            hls.attachMedia(currentAudio);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                currentAudio.play().then(() => {
+                    playButton.textContent = '❚❚';
                     progress.style.display = 'none';
-                    alert('The station could not be played. Please try another station.');
-                };
+                    sendEmailNotification(stationName, url, 'success');
+                }).catch(() => handlePlaybackError(url, stationName));
+            });
+        } else {
+            currentAudio = new Audio(url);
+            currentAudio.oncanplay = () => {
+                playButton.textContent = '❚❚';
+                progress.style.display = 'none';
+                sendEmailNotification(stationName, url, 'success');
+            };
+            currentAudio.onerror = () => handlePlaybackError(url, stationName);
+            currentAudio.play().catch(error => handlePlaybackError(url, stationName));
+        }
+    }
+
+    function handlePlaybackError(url, stationName) {
+        progress.style.display = 'none';
+        alert('The station could not be played. Please try another station.');
+        sendEmailNotification(stationName, url, 'error');
+    }
+
+    function sendEmailNotification(stationName, stationUrl, status) {
+        const formData = new FormData();
+        formData.append('stationName', stationName);
+        formData.append('stationUrl', stationUrl);
+        formData.append('status', status);
+
+        fetch('sendEmail.php', {
+            method: 'POST',
+            body: formData
+        }).then(response => response.text())
+        .then(result => {
+            console.log(result === 'success' ? 'Email sent successfully.' : 'Failed to send email');
+        }).catch(error => console.error('Error sending email:', error));
+    }
+
+    function togglePlay() {
+        if (currentAudio) {
+            if (currentAudio.paused) {
+                progress.style.display = 'block';
+                currentAudio.play().then(() => playButton.textContent = '❚❚').catch(error => {
+                    console.error("Audio play error:", error);
+                    handlePlaybackError(url, stationName);
+                });
             } else {
-                currentAudio = new Audio(url);
-                currentAudio.oncanplay = () => playButton.textContent = '❚❚';
-                currentAudio.addEventListener('playing', () => progress.style.display = 'none');
-                currentAudio.onerror = () => {
-                    progress.style.display = 'none';
-                    alert('The station could not be played. Please try another station.');
-                };
-                currentAudio.play().catch(error => console.error("Audio play error:", error));
+                currentAudio.pause();
+                playButton.textContent = '▶';
+                progress.style.display = 'none';
             }
         }
+    }
 
-        function togglePlay() {
-            if (currentAudio) {
-                if (currentAudio.paused) {
-                    progress.style.display = 'block';
-                    currentAudio.play().then(() => playButton.textContent = '❚❚').catch(error => {
-                        console.error("Audio play error:", error);
-                        progress.style.display = 'none';
-                        alert('The station could not be played. Please try another station.');
-                    });
-                } else {
-                    currentAudio.pause();
-                    playButton.textContent = '▶';
-                    progress.style.display = 'none';
-                }
-            }
-        }
+    function setVolume(value) {
+        if (currentAudio) currentAudio.volume = value;
+    }
 
-        function setVolume(value) {
-            if (currentAudio) currentAudio.volume = value;
-        }
+    window.onload = () => {
+        fetchCountries();
+        fetchStations();
+    };
+</script>
 
-        window.onload = () => {
-            fetchCountries();
-            fetchStations();
-        };
-    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </body>
