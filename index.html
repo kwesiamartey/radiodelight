@@ -443,7 +443,7 @@
                 });
         }
 
-        // Function to fetch stations for a selected country
+// Function to fetch stations for a selected country
 function fetchStations(countryPath = 'unitedStateRadioList.json') {
     fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`)
         .then(response => {
@@ -456,11 +456,13 @@ function fetchStations(countryPath = 'unitedStateRadioList.json') {
             const stationList = document.getElementById('stationListContent');
             stationList.innerHTML = ''; // Clear the station list
 
-            // Filter out stations with the name "Local FM"
-            const filteredStations = stationData.filter(station => station.name != "Local FM");
+            if (Array.isArray(stationData) && stationData.length > 0) {
+                stationData.forEach(station => {
+                    // Skip station if name is "Local FM"
+                    if (station.name === 'Local FM') {
+                        return; // Skip this iteration
+                    }
 
-            if (Array.isArray(filteredStations) && filteredStations.length > 0) {
-                filteredStations.forEach(station => {
                     const stationItem = document.createElement('div');
                     stationItem.className = 'station-item';
 
@@ -482,12 +484,7 @@ function fetchStations(countryPath = 'unitedStateRadioList.json') {
             const stationList = document.getElementById('stationListContent');
             stationList.innerHTML = '<h2>Error fetching station data.</h2>';
         });
-    }
-
-       // Set a default country to load stations when the page is first loaded
-        window.onload = () => {
-            fetchStations(); // Calls fetchStations with the default path
-        };
+}
 
         
         function playStation(url, image) {
@@ -531,7 +528,13 @@ function fetchStations(countryPath = 'unitedStateRadioList.json') {
             countryList.classList.toggle('active');
         }
         // Fetch countries on page load
-        window.onload = fetchCountries;
+          // Initialize by fetching the list of countries
+    fetchCountries();
+
+    // Set a default country to load stations when the page is first loaded
+    window.onload = () => {
+        fetchStations(); // Calls fetchStations with the default path
+    };
        
 
     </script>
