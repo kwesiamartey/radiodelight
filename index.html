@@ -460,12 +460,9 @@
                         stationData.forEach(station => {
                             const stationItem = document.createElement('div');
                             stationItem.className = 'station-item';
-                            stationItem.innerHTML = `
-                                <img src="${station.logo}" alt="${station.name} Logo">
-                                <h3>${station.name}</h3>
-                            `;
+                            stationItem.innerHTML = `<img src="${station.image}" alt="${station.name}"><br>${station.name}`;
                             stationItem.addEventListener('click', () => {
-                                playStation(station.url, station.logo, station.name);
+                                playStation(station.url, station.logo);
                             });
                             stationList.appendChild(stationItem);
                         });
@@ -480,36 +477,40 @@
                 });
         }
 
-        // Function to play selected station
-        function playStation(url, logo, name) {
-            const audioElement = document.createElement('audio');
-            audioElement.src = url;
-            audioElement.play();
 
-            document.getElementById('stationLogo').src = logo;
-            document.getElementById('stationLogo').style.display = 'block';
-            document.querySelector('.play-button').innerHTML = '❚❚'; // Change play button to pause
+        
+        function playStation(url, image) {
+            if (currentAudio) {
+                currentAudio.pause();
+            }
+
+            currentAudio = new Audio(url);
+            currentAudio.volume = 1; // Default volume
+            document.getElementById('stationLogo').src = image;
+            document.getElementById('stationLogo').style.display = 'block'; // Show logo
+            togglePlay(); // Start playing
         }
 
-        // Toggle play/pause
         function togglePlay() {
-            const audio = document.querySelector('audio');
-            if (audio) {
-                if (audio.paused) {
-                    audio.play();
-                    document.querySelector('.play-button').innerHTML = '❚❚'; // Change to pause icon
+            const playButton = document.querySelector('.play-button');
+            const progress = document.getElementById('progress');
+
+            if (currentAudio) {
+                if (currentAudio.paused) {
+                    currentAudio.play();
+                    playButton.textContent = '❚❚'; // Change to pause icon
+                    progress.style.display = 'block'; // Show progress ring
                 } else {
-                    audio.pause();
-                    document.querySelector('.play-button').innerHTML = '▶'; // Change to play icon
+                    currentAudio.pause();
+                    playButton.textContent = '▶'; // Change to play icon
+                    progress.style.display = 'none'; // Hide progress ring
                 }
             }
         }
 
-        // Set volume
-        function setVolume(volume) {
-            const audio = document.querySelector('audio');
-            if (audio) {
-                audio.volume = volume;
+        function setVolume(value) {
+            if (currentAudio) {
+                currentAudio.volume = value;
             }
         }
 
