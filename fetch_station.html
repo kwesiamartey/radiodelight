@@ -64,7 +64,7 @@
                 if (Array.isArray(data) && data.length > 0) {
                     data.forEach(country => {
                         const listItem = document.createElement('li');
-                          listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag">`; // Removed country name
+                        listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag">`; // Removed country name
 
                         // Event listener for country selection
                         listItem.addEventListener('click', () => {
@@ -88,8 +88,8 @@
             });
     }
 
-    // Function to fetch stations for a selected country
-    function fetchStations(countryPath) {
+    // Function to fetch stations for a selected country, with a default path if no country is selected
+    function fetchStations(countryPath = 'unitedStateRadioList.json') {
         fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`)
             .then(response => {
                 if (!response.ok) {
@@ -132,10 +132,11 @@
 
     // Initialize by fetching the list of countries
     fetchCountries();
+
+    // Set a default country to load stations when the page is first loaded
+    window.onload = () => {
+        fetchStations(); // Calls fetchStations with the default path
+    };
 </script>
-
-
-
-
 </body>
 </html>
