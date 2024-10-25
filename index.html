@@ -433,7 +433,7 @@
                 if (Array.isArray(data) && data.length > 0) {
                     data.forEach(country => {
                         const listItem = document.createElement('li');
-                        listItem.innerHTML = `<img src="${country.flag}" alt="${country.name} Flag"> ${country.name}`;
+                         listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag">`; // Removed country name
 
                         // Event listener for country selection
                         listItem.addEventListener('click', () => {
