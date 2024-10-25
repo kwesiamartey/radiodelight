@@ -454,6 +454,7 @@
                 });
         }
 
+
 // Pagination variables
 let currentPage = 1; // Start on page 1
 const itemsPerPage = 10; // Number of stations to display per page
@@ -500,24 +501,38 @@ function fetchStations(countryPath = 'unitedStateRadioList.json') {
                 });
 
                 // Create pagination controls
-                if (currentPage > 1) {
-                    const prevButton = document.createElement('button');
-                    prevButton.textContent = 'Previous';
-                    prevButton.onclick = () => {
-                        currentPage--; // Decrement page
-                        fetchStations(countryPath); // Fetch stations for the selected country
-                    };
-                    paginationControls.appendChild(prevButton);
-                }
-
-                // Page number indicators
                 const pageInfo = document.createElement('span');
-                pageInfo.textContent = ` Page ${currentPage} of ${totalPages} `;
+                pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
                 paginationControls.appendChild(pageInfo);
 
+                // Add a line break
+                paginationControls.appendChild(document.createElement('br'));
+
+                // Create page number links
+                for (let i = 1; i <= totalPages; i++) {
+                    const pageLink = document.createElement('span');
+                    pageLink.textContent = i;
+                    pageLink.style.cursor = 'pointer';
+                    pageLink.style.margin = '0 5px'; // Add some spacing
+                    pageLink.onclick = () => {
+                        currentPage = i; // Set the current page to the clicked page
+                        fetchStations(countryPath); // Fetch stations for the selected country
+                    };
+
+                    // Highlight the current page link
+                    if (i === currentPage) {
+                        pageLink.style.fontWeight = 'bold';
+                        pageLink.style.textDecoration = 'underline';
+                    }
+
+                    paginationControls.appendChild(pageLink);
+                }
+
+                // Add "Next" button if not on the last page
                 if (currentPage < totalPages) {
-                    const nextButton = document.createElement('button');
-                    nextButton.textContent = 'Next';
+                    const nextButton = document.createElement('span');
+                    nextButton.textContent = ' >>';
+                    nextButton.style.cursor = 'pointer';
                     nextButton.onclick = () => {
                         currentPage++; // Increment page
                         fetchStations(countryPath); // Fetch stations for the selected country
@@ -535,6 +550,9 @@ function fetchStations(countryPath = 'unitedStateRadioList.json') {
         });
 }
 
+
+
+        
         
         function playStation(url, image) {
             if (currentAudio) {
