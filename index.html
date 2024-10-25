@@ -446,7 +446,7 @@
    </div>
 </div>
 
-   <script>
+      <script>
         let selectedCountryPath = 'unitedStateRadioList.json';
         let currentAudio = null;
         let hls = null;
@@ -533,10 +533,18 @@
                     currentAudio.play().then(() => playButton.textContent = '❚❚');
                 });
                 currentAudio.addEventListener('playing', () => progress.style.display = 'none');
+                currentAudio.onerror = () => {
+                    progress.style.display = 'none';
+                    alert('The station could not be played. Please try another station.');
+                };
             } else {
                 currentAudio = new Audio(url);
                 currentAudio.oncanplay = () => playButton.textContent = '❚❚';
                 currentAudio.addEventListener('playing', () => progress.style.display = 'none');
+                currentAudio.onerror = () => {
+                    progress.style.display = 'none';
+                    alert('The station could not be played. Please try another station.');
+                };
                 currentAudio.play().catch(error => console.error("Audio play error:", error));
             }
         }
@@ -548,6 +556,7 @@
                     currentAudio.play().then(() => playButton.textContent = '❚❚').catch(error => {
                         console.error("Audio play error:", error);
                         progress.style.display = 'none';
+                        alert('The station could not be played. Please try another station.');
                     });
                 } else {
                     currentAudio.pause();
