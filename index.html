@@ -473,7 +473,7 @@ function fetchStations(countryPath = 'unitedStateRadioList.json') {
                     stationItem.className = 'station-item';
 
                     // Limit station name to 17 characters
-                    const stationName = station.name.length > 17 ? station.name.substring(0, 17) + '...' : station.name;
+                    const stationName = station.name.length > 17 ? station.name.substring(0, 15) + '...' : station.name;
 
                     stationItem.innerHTML = `<img src="${station.logo}" alt="${station.name}"><br>${stationName}`;
                     stationItem.addEventListener('click', () => {
