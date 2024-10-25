@@ -472,8 +472,9 @@
 
                 if (Array.isArray(stationData) && stationData.length > 0) {
                     stationData.forEach(station => {
-                        const listItem = document.createElement('li');
-                        listItem.innerHTML = `<img src="${station.image}" alt="${station.name}"><br>${station.name}`;
+                        const listItem = document.createElement('div');
+                        listItem.classList.add('station-item');
+                        listItem.innerHTML = `<img src="${station.logo}" alt="${station.name}"><br>${station.name}`;
                         stationList.appendChild(listItem);
                     });
                 } else {
