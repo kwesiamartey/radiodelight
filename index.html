@@ -294,8 +294,8 @@
             border-top-color: #007bff;
             animation: spin 1s linear infinite;
             display: none; /* Hidden by default */
-            margin-left: 20px;
-            margin-right: 20px; /* Margin to separate from the image */
+            margin-left: 10px;
+           
         }
 
         @keyframes spin {
@@ -437,7 +437,7 @@
         <!-- Third column: Volume control -->
         <div class="col-8" style="display: flex; justify-content: center; align-items: center;">
             <div class="volume-control" style="display: flex; align-items: center;">
-                <i class="bi bi-volume-up" style="margin-right: 10px;"></i>
+                <i class="bi bi-volume-up" style="margin-right: 10px; color:white;"></i>
                 <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
             </div>
         </div>
