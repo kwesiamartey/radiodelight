@@ -404,7 +404,8 @@
 
     <script>
         let selectedCountryPath = 'unitedStateRadioList.json'; // Default country path
-
+ // Update country title using proper string interpolation
+    document.querySelector('.countryTitle').textContent = `Live USA Radio Station Online`;
         // Fetch country data and populate the list
         function fetchCountries() {
             fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
@@ -425,11 +426,12 @@
                             listItem.addEventListener('click', () => {
                                 selectedCountryPath = country.url; // Update the selected country path
                                 fetchStations(selectedCountryPath); // Fetch stations for the selected country
+                                 // Update country title using proper string interpolation
+                                document.querySelector('.countryTitle').textContent = `Live ${country.name} Radio Station Online`;
                             });
                             countryList.appendChild(listItem);
 
-                            // Update country title using proper string interpolation
-                             document.querySelector('.countryTitle').textContent = `Live ${country.name} Radio Station Online`;
+                           
                         
                         });
                     } else {
