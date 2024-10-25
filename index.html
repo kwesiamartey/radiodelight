@@ -429,7 +429,7 @@
                             countryList.appendChild(listItem);
 
                                  // Update country title
-                            document.querySelector('.countryTitle').textContent = " Live "+ country +" Radio Station Online ";
+                            document.querySelector('.countryTitle').textContent = " Live "+ ${country.name} +" Radio Station Online ";
                         
                         });
                     } else {
@@ -463,7 +463,7 @@ function fetchStations(countryPath = 'unitedStateRadioList.json') {
             if (Array.isArray(stationData) && stationData.length > 0) {
                 stationData.forEach(station => {
                     // Skip station if name is "Local FM"
-                    if (station.name === 'Local FM') {
+                    if (station.name == 'Local FM') {
                         return; // Skip this iteration
                     }
 
