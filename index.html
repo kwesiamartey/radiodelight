@@ -482,7 +482,7 @@ function fetchStations(countryPath = 'unitedStateRadioList.json') {
             const stationList = document.getElementById('stationListContent');
             stationList.innerHTML = '<h2>Error fetching station data.</h2>';
         });
-}
+    }
 
 
 
@@ -527,16 +527,9 @@ function fetchStations(countryPath = 'unitedStateRadioList.json') {
             const countryList = document.querySelector('.country-list');
             countryList.classList.toggle('active');
         }
-
+        // Fetch countries on page load
+        window.onload = fetchCountries;
        
-       
-
-          // Set a default country to load stations when the page is first loaded
-        window.onload = () => {
-             // Fetch countries on page load
-            fetchCountries;
-            fetchStations(); // Calls fetchStations with the default path
-        };
 
     </script>
 </body>
