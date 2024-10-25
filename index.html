@@ -427,6 +427,10 @@
                                 fetchStations(selectedCountryPath); // Fetch stations for the selected country
                             });
                             countryList.appendChild(listItem);
+
+                                 // Update country title
+                            document.querySelector('.countryTitle').textContent = " Live "+ country +" Radio Station Online ";
+                        
                         });
                     } else {
                         const listItem = document.createElement('li');
