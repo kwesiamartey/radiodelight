@@ -76,12 +76,18 @@
             align-items: center;      /* Center vertically */
         }
 
-         #paginationControls{
-             width:100%;
-             color:white;
-             justify-content: center;  /* Center horizontally */
-             align-items: center;      /* Center vertically */
-         }
+             /* Center the pagination controls */
+    #paginationControls {
+        display: flex;
+        justify-content: center; /* Centers the controls horizontally */
+        align-items: center; /* Aligns items vertically in the center */
+        margin-top: 10px; /* Optional, to add some spacing */
+    }
+
+    #paginationControls span {
+        margin: 0 5px;
+        cursor: pointer;
+    }
 
        .img {
             width: 40px; /* Set width */
@@ -412,26 +418,32 @@
         </div>
     </div>
 
+    <!-- Bottom row: Player -->
     <div class="player-container" style="display: none;">
+        <!-- First column: Station Image -->
         <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: none;">
 
+        <!-- Second column: Play button and progress ring -->
         <div class="play-control">
             <div class="progress-ring" id="progress"></div>
             <button class="play-button" onclick="togglePlay()">▶</button>
         </div>
 
+        <!-- Third column: Volume control -->
         <div class="volume-control">
             <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
         </div>
     </div>
+  <script>
 
-    <script>
+   <script>
     let selectedCountryPath = 'unitedStateRadioList.json';
     let currentAudio = null;
     let hls = null;
     let currentPage = 1;
     const itemsPerPage = 50;
     const progress = document.getElementById('progress');
+    const playButton = document.querySelector('.play-button'); // Select play button
 
     function fetchCountries() {
         fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
@@ -460,8 +472,7 @@
             })
             .catch(error => {
                 console.error('Error fetching country data:', error);
-                const countryList = document.getElementById('countryList');
-                countryList.innerHTML = '<li>Error fetching country data.</li>';
+                document.getElementById('countryList').innerHTML = '<li>Error fetching country data.</li>';
             });
     }
 
@@ -491,7 +502,6 @@
                         stationList.appendChild(stationItem);
                     });
 
-                    // Pagination controls setup
                     const pageInfo = document.createElement('span');
                     pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
                     paginationControls.appendChild(pageInfo);
@@ -536,6 +546,7 @@
         if (currentAudio) {
             currentAudio.pause();
             currentAudio = null;
+            playButton.textContent = '▶'; // Reset play button to play icon
             if (hls) {
                 hls.destroy();
                 hls = null;
@@ -544,7 +555,6 @@
 
         document.getElementById('stationLogo').src = image;
         document.getElementById('stationLogo').style.display = 'block';
-        document.querySelector(".player-container").style.display = 'block';
         progress.style.display = 'block';
 
         if (Hls.isSupported() && url.endsWith('.m3u8')) {
@@ -555,28 +565,28 @@
             hls.on(Hls.Events.MANIFEST_PARSED, () => {
                 currentAudio.play().then(() => {
                     progress.style.display = 'none';
+                    playButton.textContent = '❚❚'; // Set to pause icon when playing
                 });
             });
         } else {
             currentAudio = new Audio(url);
             currentAudio.oncanplay = () => {
                 progress.style.display = 'none';
+                playButton.textContent = '❚❚'; // Set to pause icon when playing
             };
             currentAudio.play();
         }
     }
 
     function togglePlay() {
-        const playButton = document.querySelector('.play-button');
-
         if (currentAudio) {
             if (currentAudio.paused) {
                 currentAudio.play();
-                playButton.textContent = '❚❚';
+                playButton.textContent = '❚❚'; // Set to pause icon
                 progress.style.display = 'block';
             } else {
                 currentAudio.pause();
-                playButton.textContent = '▶';
+                playButton.textContent = '▶'; // Set to play icon
                 progress.style.display = 'none';
             }
         }
