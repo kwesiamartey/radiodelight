@@ -449,8 +449,8 @@
         <input type="text" id="searchInput" placeholder="Search stations" oninput="filterStations()">
     </div>
 
-    <div class="container">
-         <h2 class="countryTitle">Live USA Radio Station Online</h2>
+    <div class="container" >
+         <h2 class="countryTitle" style="display: none;">Live USA Radio Station Online</h2>
         <div class="row">
             <div class="col-md-9">
                 <div id="stationListContent" class="station-grid"></div>
@@ -460,7 +460,7 @@
             </div>
             <div class="col-md-3">
                 
-                <p id="countryTitle">Other Countries</p>
+                <p id="countryTitle" style="display: none;">Other Countries</p>
                 <ul id="countryList" class="country-grid"></ul>
                  </br></br></br></br><br><br>
             </div>
@@ -471,16 +471,16 @@
   <div class="player-container" style="display: none;">
    <div class="row" style="display: flex; align-items: center; height: 100px;"> <!-- Vertically center contents -->
         <!-- First column: Station Image -->
-        <div class="col-1" style="display: flex; justify-content: center; align-items: center;">
+        <div class="col-2" style="display: flex; justify-content: center; align-items: center;">
             <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: none;">
         </div>
 
-       <div class="col-1" style="display: flex; justify-content: start; align-items: start;">
+       <div class="col-2" style="display: flex; justify-content: start; align-items: start;">
             <h5>Station Name</h5>
         </div>
         
         <!-- Second column: Play button and progress ring -->
-        <div class="col-1" style="display: flex; justify-content: start; align-items: start;">
+        <div class="col-2" style="display: flex; justify-content: start; align-items: start;">
             <div class="play-control" style="display: flex; align-items: center;">
                 <div class="progress-ring" id="progress"></div>
                 <button class="play-button" onclick="togglePlay()">▶</button>
@@ -488,7 +488,7 @@
         </div>
         
         <!-- Third column: Volume control -->
-        <div class="col-8" style="display: flex; justify-content: start; align-items: start;">
+        <div class="col-6" style="display: flex; justify-content: start; align-items: start;">
             <div class="volume-control" style="display: flex; align-items: center;">
                 <p></p><i class="bi bi-volume-up" style="margin-right: 10px; color: white;"></i></p>
                 <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
@@ -513,6 +513,9 @@
             .then(response => response.ok ? response.json() : Promise.reject())
             .then(data => {
                 const countryList = document.getElementById('countryList');
+                document.getElementById('countryTitle').style.display = 'block';
+                document.querySelector('.countryTitle').style.display = 'block';
+                
                 countryList.innerHTML = '';
                 data.forEach(country => {
                     const listItem = document.createElement('li');
