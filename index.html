@@ -568,51 +568,55 @@
         createPaginationControls(stations.length, totalPages);
     }
 
-    function createPaginationControls(totalStations, totalPages) {
-        const paginationControls = document.getElementById('paginationControls');
-        const pageInfo = document.createElement('span');
-        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-        paginationControls.appendChild(pageInfo);
+function createPaginationControls(totalStations, totalPages) {
+    const paginationControls = document.getElementById('paginationControls');
+    paginationControls.innerHTML = ''; // Clear previous controls
 
-        if (currentPage > 1) {
-            const prevButton = document.createElement('span');
-            prevButton.textContent = ' << ';
-            prevButton.style.cursor = 'pointer';
-            prevButton.onclick = () => {
-                currentPage--;
-                displayStations(stationData);
-            };
-            paginationControls.appendChild(prevButton);
+    // Display page info
+    const pageInfo = document.createElement('span');
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    paginationControls.appendChild(pageInfo);
+
+    // Function to create a clickable button
+    const createButton = (text, onClick) => {
+        const button = document.createElement('span');
+        button.textContent = text;
+        button.style.cursor = 'pointer';
+        button.onclick = onClick;
+        paginationControls.appendChild(button);
+    };
+
+    // Previous button
+    if (currentPage > 1) {
+        createButton(' << ', () => {
+            currentPage--;
+            displayStations(stationData);
+        });
+    }
+
+    // Page number buttons
+    for (let i = 1; i <= totalPages; i++) {
+        createButton(i, () => {
+            currentPage = i;
+            displayStations(stationData);
+        });
+        if (i === currentPage) {
+            paginationControls.lastChild.style.fontWeight = 'bold'; // Highlight current page
         }
-
-        for (let i = 1; i <= totalPages; i++) {
-            const pageButton = document.createElement('span');
-            pageButton.textContent = i;
-            pageButton.style.cursor = 'pointer';
-            pageButton.onclick = () => {
-                currentPage = i;
-                displayStations(stationData);
-            };
-            if (i === currentPage) {
-                pageButton.style.fontWeight = 'bold'; // Highlight current page
-            }
-            paginationControls.appendChild(pageButton);
-            if (i < totalPages) {
-                paginationControls.innerHTML += ' | '; // Add separator
-            }
-        }
-
-        if (currentPage < totalPages) {
-            const nextButton = document.createElement('span');
-            nextButton.textContent = ' >> ';
-            nextButton.style.cursor = 'pointer';
-            nextButton.onclick = () => {
-                currentPage++;
-                displayStations(stationData);
-            };
-            paginationControls.appendChild(nextButton);
+        if (i < totalPages) {
+            paginationControls.innerHTML += ' | '; // Add separator
         }
     }
+
+    // Next button
+    if (currentPage < totalPages) {
+        createButton(' >> ', () => {
+            currentPage++;
+            displayStations(stationData);
+        });
+    }
+}
+
 
 
     function playStation(url, image, stationName) {
