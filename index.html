@@ -635,7 +635,10 @@
         }
 
         // Initialize countries on page load
-        window.onload = fetchCountries;
+            window.onload = () => {
+        fetchCountries();
+        fetchStations();
+    };
     </script>
 
 
