@@ -689,22 +689,25 @@ function createPaginationControls(totalStations, totalPages) {
 
 
     function togglePlay() {
-        progress.style.display = 'block';
-        if (currentAudio) {
-            if (currentAudio.paused) {
-                
-                currentAudio.play().then(() => playButton.textContent = '❚❚').catch(error => {
-                    console.error("Audio play error:", error);
-                    handlePlaybackError(currentAudio.src, currentAudio.stationName);
-                    progress.style.display = 'none';
-                });
-            } else {
-                currentAudio.pause();
-                playButton.textContent = '▶';
-                progress.style.display = 'none';
-            }
+    progress.style.display = 'block'; // Show progress initially
+
+    if (currentAudio) {
+        if (currentAudio.paused) {
+            currentAudio.play().then(() => {
+                playButton.textContent = '❚❚'; // Change button to pause icon
+                progress.style.display = 'none'; // Hide progress once audio starts playing
+            }).catch(error => {
+                console.error("Audio play error:", error);
+                handlePlaybackError(currentAudio.src, currentAudio.stationName);
+                progress.style.display = 'none'; // Hide progress if there's an error
+            });
+        } else {
+            currentAudio.pause();
+            playButton.textContent = '▶'; // Change button back to play icon
+            progress.style.display = 'none'; // Hide progress when paused
         }
     }
+}
 
     function setVolume(value) {
         if (currentAudio) currentAudio.volume = value;
