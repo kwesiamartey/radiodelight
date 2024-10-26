@@ -250,17 +250,26 @@
        
         /* Bottom row: Player */
         .player-container {
-            position: fixed; /* Fix the player at the bottom */
+   
+
+
+
+
+
+
+            background-color: #142229; /* Green */
+            position:fixed;
+            color: white;
+            position: fixed; /* Fixed at the top */
             bottom: 0;
             left: 0;
             right: 0;
+            z-index: 1000; /* Ensures header stays above other content */
             display: flex;
-            justify-content: space-between;
             align-items: center;
             padding: 10px;
-            background-color: #142229;
-            color: white;
-            z-index: 1000; /* Ensure it stays on top */
+
+            
         }
 
         #Logo{
