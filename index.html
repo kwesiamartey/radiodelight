@@ -621,7 +621,7 @@
                     updatePlayButton();
                 });
             } else {
-                showCustomError('Error, Please report.');
+                handlePlaybackError(audioUrl, stationName)
                 return;
             }
         } else {
@@ -638,6 +638,7 @@
         audio.addEventListener('error', () => {
             showSpinner(false);
             showCustomError('Error, Please report.');
+            handlePlaybackError(audioUrl, stationName)
         });
     }
 
@@ -662,7 +663,7 @@
                 updatePlayButton();  // Update the button after play starts
             }).catch(error => {
                 console.error('Audio play error:', error);
-                showCustomError('Error playing the audio. Please report.');
+                 alert('The station is currently unavailable. Please try using a different browser, such as Mozilla Firefox or Chrome, or check back in an hour as we work to resolve the issue.');
             });
         } else {
             audio.pause();
@@ -673,47 +674,7 @@
 
 
 
-        // Function to display a custom error message
-        function showCustomError(message) {
-            // Create the overlay div
-            const overlay = document.createElement('div');
-            overlay.id = 'customAlertOverlay';
-            overlay.style.position = 'fixed';
-            overlay.style.top = '0';
-            overlay.style.left = '0';
-            overlay.style.width = '100%';
-            overlay.style.height = '100%';
-            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-            overlay.style.display = 'flex';
-            overlay.style.justifyContent = 'center';
-            overlay.style.alignItems = 'center';
-            overlay.style.zIndex = '1000';
-
-            // Create the alert box
-            const alertBox = document.createElement('div');
-            alertBox.style.backgroundColor = 'white';
-            alertBox.style.padding = '20px';
-            alertBox.style.borderRadius = '5px';
-            alertBox.style.textAlign = 'center';
-            alertBox.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
-
-            // Create the alert message
-            const alertMessage = document.createElement('p');
-            alertMessage.textContent = message;
-            alertMessage.style.marginBottom = '20px';
-
-            // Append the message to the alert box
-            alertBox.appendChild(alertMessage);
-
-            // Append the alert box to the overlay
-            overlay.appendChild(alertBox);
-
-            // Append the overlay to the body
-            document.body.appendChild(overlay);
-        }
-
-
-
+       
 
 
 
@@ -726,6 +687,12 @@
 
 
     
+
+    function handlePlaybackError(url, stationName) {
+        progress.style.display = 'none';
+        alert('The station is currently unavailable. Please try using a different browser, such as Mozilla Firefox or Chrome, or check back in an hour as we work to resolve the issue.');
+        sendEmailNotification(stationName, url, 'error');
+    }
 
     
     function sendEmailNotification(stationName, stationUrl, status) {
