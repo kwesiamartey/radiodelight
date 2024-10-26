@@ -80,12 +80,13 @@
             align-items: center;      /* Center vertically */
         }
 
-         .searchInput{
+         #searchInput{
              backroung-color:white;
              border-radius:50px;
              color:#333;
              margin-left:40px;
              padding:6px;
+             width:100%;
          }
 
              /* Center the pagination controls */
@@ -389,6 +390,11 @@
                 /*border: none;*/
                 /*padding:5px 5px 8px 5px;*/
                 /*border-radius: 5px;*/
+
+         #web_title h4{
+             margin-botom:0px;
+             margin-top:8px;
+         }
            /* }*/
          #Logo{
             width: 40px;
@@ -423,9 +429,7 @@
        <!-- <span class="menu-icon" onclick="toggleMenu()">☰</span>-->
         <img id="Logo" src="logo.png" alt="Station Logo">
         <h4 id="web_title">Radio Delight</h4>
-        <!--<div>
-             <input type="text" id="searchInput" placeholder="Search stations" oninput="filterStations()">
-        </div>-->
+        <input type="text" id="searchInput" placeholder="Search stations" oninput="filterStations()">
     </div>
 
     <div class="container">
