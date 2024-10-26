@@ -450,7 +450,7 @@
 </div>
 
 <script>
-     let stationData = []; // Store stations here to avoid multiple fetches
+    let stationData = []; // Store stations here to avoid multiple fetches
     let selectedCountryPath = 'unitedStateRadioList.json';
     let currentAudio = null;
     let hls = null;
@@ -482,92 +482,94 @@
     function fetchStations(countryPath = 'unitedStateRadioList.json') {
         fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`)
             .then(response => response.ok ? response.json() : Promise.reject())
-            .then(stationData => {
-                const stationList = document.getElementById('stationListContent');
-                const paginationControls = document.getElementById('paginationControls');
-                stationList.innerHTML = '';
-                paginationControls.innerHTML = '';
-
-                const filteredStations = stationData.filter(station => station.name !== 'Local Fm');
-                const totalPages = Math.ceil(filteredStations.length / itemsPerPage);
-                const startIndex = (currentPage - 1) * itemsPerPage;
-                const stationsToDisplay = filteredStations.slice(startIndex, startIndex + itemsPerPage);
-
-                stationsToDisplay.forEach(station => {
-                    const stationItem = document.createElement('div');
-                    stationItem.className = 'station-item';
-                    const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-                    stationItem.innerHTML = `<img src="${station.logo}" alt="${truncatedName}"><br>${truncatedName}`;
-                    stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name));
-                    stationList.appendChild(stationItem);
-                });
-
-                const pageInfo = document.createElement('span');
-                pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-                paginationControls.appendChild(pageInfo);
-
-                if (currentPage > 1) paginationControls.innerHTML += `<span style="cursor:pointer;" onclick="currentPage--;fetchStations()"> << </span>`;
-                paginationControls.innerHTML += `<span style="cursor:pointer; margin: 0 5px;" onclick="currentPage=1;fetchStations()">1</span>`;
-                if (currentPage > 3) paginationControls.innerHTML += ' ... ';
-                for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
-                    paginationControls.innerHTML += `<span style="cursor:pointer; margin: 0 5px;" onclick="currentPage=${i};fetchStations()">${i}</span>`;
-                }
-                if (currentPage < totalPages - 2) paginationControls.innerHTML += ' ... ';
-                paginationControls.innerHTML += `<span style="cursor:pointer; margin: 0 5px;" onclick="currentPage=${totalPages};fetchStations()">${totalPages}</span>`;
-                if (currentPage < totalPages) paginationControls.innerHTML += `<span style="cursor:pointer;" onclick="currentPage++;fetchStations()"> >> </span>`;
+            .then(data => {
+                stationData = data.filter(station => station.name !== 'Local Fm');
+                displayStations(stationData);
             })
             .catch(error => console.error('Error fetching station data:', error));
     }
 
+    function filterStations() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const filteredStations = stationData.filter(station => 
+            station.name.toLowerCase().includes(query)
+        );
+        currentPage = 1; // Reset to first page on filter
+        displayStations(filteredStations);
+    }
 
-        // Real-time filter as user types
-        function filterStations() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filteredStations = stationData.filter(station => 
-                station.name.toLowerCase().includes(query)
-            );
-            displayStations(filteredStations); // Update display with filtered results
+    function displayStations(stations) {
+        const stationList = document.getElementById('stationListContent');
+        const paginationControls = document.getElementById('paginationControls');
+        stationList.innerHTML = ''; // Clear current list
+        paginationControls.innerHTML = ''; // Clear pagination
+
+        if (stations.length === 0) {
+            stationList.innerHTML = `<p>No results found.</p>`;
+            return;
         }
 
-        // Display stations on the page
-        function displayStations(stations) {
-            const stationList = document.getElementById('stationListContent');
-            const paginationControls = document.getElementById('paginationControls');
-            stationList.innerHTML = ''; // Clear current list
-            paginationControls.innerHTML = ''; // Clear pagination
+        const totalPages = Math.ceil(stations.length / itemsPerPage);
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
 
-            if (stations.length === 0) {
-                stationList.innerHTML = `<p>No results found.</p>`;
-                return;
+        stationsToDisplay.forEach(station => {
+            const stationItem = document.createElement('div');
+            stationItem.className = 'station-item';
+            const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
+            stationItem.innerHTML = `<img src="${station.logo}" alt="${truncatedName}"><br>${truncatedName}`;
+            stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name));
+            stationList.appendChild(stationItem);
+        });
+
+        createPaginationControls(stations.length, totalPages);
+    }
+
+    function createPaginationControls(totalStations, totalPages) {
+        const paginationControls = document.getElementById('paginationControls');
+        const pageInfo = document.createElement('span');
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+        paginationControls.appendChild(pageInfo);
+
+        if (currentPage > 1) {
+            const prevButton = document.createElement('span');
+            prevButton.textContent = ' << ';
+            prevButton.style.cursor = 'pointer';
+            prevButton.onclick = () => {
+                currentPage--;
+                displayStations(stationData);
+            };
+            paginationControls.appendChild(prevButton);
+        }
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('span');
+            pageButton.textContent = i;
+            pageButton.style.cursor = 'pointer';
+            pageButton.onclick = () => {
+                currentPage = i;
+                displayStations(stationData);
+            };
+            if (i === currentPage) {
+                pageButton.style.fontWeight = 'bold'; // Highlight current page
             }
-
-            const totalPages = Math.ceil(stations.length / itemsPerPage);
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
-
-            stationsToDisplay.forEach(station => {
-                const stationItem = document.createElement('div');
-                stationItem.className = 'station-item';
-                const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-                stationItem.innerHTML = `<img src="${station.logo}" alt="${truncatedName}"><br>${truncatedName}`;
-                stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name));
-                stationList.appendChild(stationItem);
-            });
-
-            // Create pagination buttons
-            for (let i = 1; i <= totalPages; i++) {
-                const pageButton = document.createElement('button');
-                pageButton.innerText = i;
-                pageButton.disabled = i === currentPage; // Disable current page button
-                pageButton.addEventListener('click', () => {
-                    currentPage = i; // Update current page
-                    displayStations(stations); // Redisplay stations based on new page
-                });
-                paginationControls.appendChild(pageButton);
+            paginationControls.appendChild(pageButton);
+            if (i < totalPages) {
+                paginationControls.innerHTML += ' | '; // Add separator
             }
         }
 
-    
+        if (currentPage < totalPages) {
+            const nextButton = document.createElement('span');
+            nextButton.textContent = ' >> ';
+            nextButton.style.cursor = 'pointer';
+            nextButton.onclick = () => {
+                currentPage++;
+                displayStations(stationData);
+            };
+            paginationControls.appendChild(nextButton);
+        }
+    }
 
     function playStation(url, image, stationName) {
         if (currentAudio) {
@@ -657,7 +659,6 @@
         fetchCountries();
         fetchStations();
     };
-
 </script>
 
 
