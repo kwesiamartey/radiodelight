@@ -590,6 +590,11 @@ function playStation(audioUrl, image, stationName) {
      audio.src = audioUrl;
             const audioExtension = audioUrl.split('.').pop().toLowerCase();
 
+        document.getElementById('stationLogo').src = image;
+        document.getElementById('stationLogo').style.display = 'block';
+        document.querySelector('.player-container').style.display = 'block';
+        progress.style.display = 'block';
+
             // Show the spinner when loading starts
             showSpinner(true);
 
