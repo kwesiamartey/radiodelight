@@ -689,9 +689,10 @@ function createPaginationControls(totalStations, totalPages) {
 
 
     function togglePlay() {
+        progress.style.display = 'block';
         if (currentAudio) {
             if (currentAudio.paused) {
-                progress.style.display = 'block';
+                
                 currentAudio.play().then(() => playButton.textContent = '❚❚').catch(error => {
                     console.error("Audio play error:", error);
                     handlePlaybackError(currentAudio.src, currentAudio.stationName);
