@@ -462,6 +462,7 @@
     let stationData = []; // Store stations here to avoid multiple fetches
     let selectedCountryPath = 'unitedStateRadioList.json';
     let currentAudio = null;
+    const audio = new Audio();
     let hls = null;
     let currentPage = 1;
     const itemsPerPage = 50;
@@ -585,65 +586,130 @@
 
 
 // Function to play the station
-function playStation(url, image, stationName) {
-    // Stop any currently playing audio
-    if (currentAudio) {
-        currentAudio.pause();
-        currentAudio = null;
-        playButton.textContent = '▶';  // Reset play button
-        if (hls) {
-            hls.destroy();
-            hls = null;
+function playStation(audioUrl, image, stationName) {
+     audio.src = audioUrl;
+            const audioExtension = audioUrl.split('.').pop().toLowerCase();
+
+            // Show the spinner when loading starts
+            showSpinner(true);
+
+            // If it's an HLS (m3u8) stream, use HLS.js
+            if (audioExtension === 'm3u8') {
+                if (Hls.isSupported()) {
+                    if (hls) {
+                        hls.destroy(); // Destroy the previous instance if any
+                    }
+                    hls = new Hls();
+                    hls.loadSource(audioUrl);
+                    hls.attachMedia(audio);
+                    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                        showSpinner(false); // Hide the spinner once the audio is ready
+                    });
+                    hls.on(Hls.Events.ERROR, (event, data) => {
+                        showSpinner(false); // Hide the spinner on error
+                        showCustomError('Error, Please report.');
+                    });
+                } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+                    // For Safari or native HLS support
+                    audio.src = audioUrl;
+                    audio.addEventListener('canplay', () => {
+                        showSpinner(false); // Hide the spinner when audio is ready
+                    });
+                } else {
+                    showCustomError('Error, Please report.');
+                    return;
+                }
+            } else {
+                // Use native HTML5 audio for other formats
+                audio.addEventListener('canplay', () => {
+                    showSpinner(false); // Hide the spinner when audio is ready
+                });
+            }
+
+            // Handle error events for unsupported formats
+            audio.addEventListener('error', function() {
+                showSpinner(false); // Hide the spinner on error
+                showCustomError('Error, Please report.');
+            });
+    
+    }
+
+
+
+    // Show or hide the spinner
+        function showSpinner(show) {
+            progress.style.display = show ? 'block' : 'none';
         }
-    }
 
-    // Update station logo and display player container
-    document.getElementById('stationLogo').src = image;
-    document.getElementById('stationLogo').style.display = 'block';
-    document.querySelector('.player-container').style.display = 'block';
-    progress.style.display = 'block';  // Show progress bar
-
-    // Function to handle playback success
-    const handlePlaybackSuccess = () => {
-        playButton.textContent = '❚❚';  // Change to pause button
-        progress.style.display = 'none';  // Hide progress bar
-        sendEmailNotification(stationName, url, 'success');  // Notify
-    };
-
-    // Function to handle playback error
-    const handlePlaybackError = () => {
-        progress.style.display = 'none';  // Hide progress bar
-        alert('The station could not be played. Please try another browser.');
-        sendEmailNotification(stationName, url, 'error');  // Notify
-    };
-
-    // Check for HLS (m3u8) support
-    if (Hls.isSupported() && url.endsWith('.m3u8')) {
-        hls = new Hls();
-        hls.loadSource(url);
-        currentAudio = new Audio();
-        hls.attachMedia(currentAudio);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-            currentAudio.play().then(handlePlaybackSuccess).catch(handlePlaybackError);
+        // Play/pause functionality with icons
+        playButton.addEventListener('click', () => {
+            if (!isPlaying) {
+                audio.play();
+                playPauseBtn.innerHTML = '||';  // Pause icon
+                showSpinner(false); // Hide the spinner when playing starts
+                isPlaying = true;
+            } else {
+                audio.pause();
+                playPauseBtn.innerHTML = '▶';  // Play icon
+                isPlaying = false;
+            }
         });
-        hls.on(Hls.Events.ERROR, handlePlaybackError);  // Handle HLS error
-    } else if (isSupportedFormat(url)) {
-        // Native audio support
-        currentAudio = new Audio(url);
-        currentAudio.oncanplay = handlePlaybackSuccess;  // Ready to play
-        currentAudio.onerror = handlePlaybackError;  // Error in loading
-        currentAudio.play().catch(handlePlaybackError);  // Error in playing
-    } else {
-        handlePlaybackError();  // Unsupported format
-    }
-}
 
-// Helper function to check supported formats
-function isSupportedFormat(url) {
-    const supportedFormats = /\.(m3u8|aacp|aac|mpeg|icecast|shoutcast|wma|wav|flac|mp3|mp4|m4a)$/i;
-    return supportedFormats.test(url);
-}
 
+
+        // Function to display a custom error message
+        function showCustomError(message) {
+            // Create the overlay div
+            const overlay = document.createElement('div');
+            overlay.id = 'customAlertOverlay';
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            overlay.style.display = 'flex';
+            overlay.style.justifyContent = 'center';
+            overlay.style.alignItems = 'center';
+            overlay.style.zIndex = '1000';
+
+            // Create the alert box
+            const alertBox = document.createElement('div');
+            alertBox.style.backgroundColor = 'white';
+            alertBox.style.padding = '20px';
+            alertBox.style.borderRadius = '5px';
+            alertBox.style.textAlign = 'center';
+            alertBox.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+
+            // Create the alert message
+            const alertMessage = document.createElement('p');
+            alertMessage.textContent = message;
+            alertMessage.style.marginBottom = '20px';
+
+            // Append the message to the alert box
+            alertBox.appendChild(alertMessage);
+
+            // Append the alert box to the overlay
+            overlay.appendChild(alertBox);
+
+            // Append the overlay to the body
+            document.body.appendChild(overlay);
+        }
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+    
 
     
     function sendEmailNotification(stationName, stationUrl, status) {
