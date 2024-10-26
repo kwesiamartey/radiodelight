@@ -695,6 +695,7 @@ function createPaginationControls(totalStations, totalPages) {
                 currentAudio.play().then(() => playButton.textContent = '❚❚').catch(error => {
                     console.error("Audio play error:", error);
                     handlePlaybackError(currentAudio.src, currentAudio.stationName);
+                    progress.style.display = 'none';
                 });
             } else {
                 currentAudio.pause();
