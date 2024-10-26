@@ -448,7 +448,7 @@
 </div>
 
   <script>
-    let selectedCountryPath = 'unitedStateRadioList.json';
+   let selectedCountryPath = 'unitedStateRadioList.json';
     let currentAudio = null;
     let hls = null;
     let currentPage = 1;
@@ -464,11 +464,11 @@
                 countryList.innerHTML = '';
                 data.forEach(country => {
                     const listItem = document.createElement('li');
-                    listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag">`;
+                    listItem.innerHTML = <img class="img" src="${country.flag}" alt="${country.name} Flag">;
                     listItem.addEventListener('click', () => {
                         selectedCountryPath = country.url;
                         fetchStations(selectedCountryPath);
-                        document.querySelector('.countryTitle').textContent = `Live ${country.name} Radio Station Online`;
+                        document.querySelector('.countryTitle').textContent = Live ${country.name} Radio Station Online;
                     });
                     countryList.appendChild(listItem);
                 });
@@ -476,7 +476,7 @@
     }
 
     function fetchStations(countryPath = 'unitedStateRadioList.json') {
-        fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`)
+        fetch(https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath})
             .then(response => response.ok ? response.json() : Promise.reject())
             .then(stationData => {
                 const stationList = document.getElementById('stationListContent');
@@ -493,13 +493,22 @@
                     const stationItem = document.createElement('div');
                     stationItem.className = 'station-item';
                     const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-                    stationItem.innerHTML = `<img src="${station.logo}" alt="${truncatedName}"><br>${truncatedName}`;
+                    stationItem.innerHTML = <img src="${station.logo}" alt="${truncatedName}"><br>${truncatedName};
                     stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name));
                     stationList.appendChild(stationItem);
                 });
 
-                // Pagination logic here
-                // ...
+                const pageInfo = document.createElement('span');
+                pageInfo.textContent = Page ${currentPage} of ${totalPages};
+                paginationControls.appendChild(pageInfo);
+
+                if (currentPage > 1) paginationControls.innerHTML += <span style="cursor:pointer;" onclick="currentPage--;fetchStations()"> << </span>;
+                paginationControls.innerHTML += <span style="cursor:pointer; margin: 0 5px;" onclick="currentPage=1;fetchStations()">1</span>;
+                if (currentPage > 3) paginationControls.innerHTML += ' ... ';
+                for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) paginationControls.innerHTML += <span style="cursor:pointer; margin: 0 5px;" onclick="currentPage=${i};fetchStations()">${i}</span>;
+                if (currentPage < totalPages - 2) paginationControls.innerHTML += ' ... ';
+                paginationControls.innerHTML += <span style="cursor:pointer; margin: 0 5px;" onclick="currentPage=${totalPages};fetchStations()">${totalPages}</span>;
+                if (currentPage < totalPages) paginationControls.innerHTML += <span style="cursor:pointer;" onclick="currentPage++;fetchStations()"> >> </span>;
             }).catch(error => console.error('Error fetching station data:', error));
     }
 
@@ -528,18 +537,7 @@
                     sendEmailNotification(stationName, url, 'success');
                 }).catch(() => handlePlaybackError(url, stationName));
             });
-        } else if (currentAudio.canPlayType('application/vnd.apple.mpegurl') || currentAudio.canPlayType('audio/mpegurl')) {
-            // Native HLS support
-            currentAudio = new Audio(url);
-            currentAudio.oncanplay = () => {
-                playButton.textContent = '❚❚';
-                progress.style.display = 'none';
-                sendEmailNotification(stationName, url, 'success');
-            };
-            currentAudio.onerror = () => handlePlaybackError(url, stationName);
-            currentAudio.play().catch(() => handlePlaybackError(url, stationName));
         } else {
-            // Non-HLS stream or non-HLS supported browser
             currentAudio = new Audio(url);
             currentAudio.oncanplay = () => {
                 playButton.textContent = '❚❚';
@@ -547,7 +545,7 @@
                 sendEmailNotification(stationName, url, 'success');
             };
             currentAudio.onerror = () => handlePlaybackError(url, stationName);
-            currentAudio.play().catch(() => handlePlaybackError(url, stationName));
+            currentAudio.play().catch(error => handlePlaybackError(url, stationName));
         }
     }
 
@@ -557,7 +555,7 @@
         sendEmailNotification(stationName, url, 'error');
     }
 
-    function sendEmailNotification(stationName, stationUrl, status) {
+       function sendEmailNotification(stationName, stationUrl, status) {
         const formData = new FormData();
         formData.append('stationName', stationName);
         formData.append('stationUrl', stationUrl);
@@ -578,6 +576,7 @@
         .catch(error => console.error('Error sending email:', error));
     }
 
+        
     function togglePlay() {
         if (currentAudio) {
             if (currentAudio.paused) {
@@ -602,6 +601,7 @@
         fetchCountries();
         fetchStations();
     };
+
 </script>
 
 
