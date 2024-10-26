@@ -448,194 +448,168 @@
 </div>
 
      <script>
-        let stationData = []; // Store stations here to avoid multiple fetches
-        let selectedCountryPath = 'unitedStateRadioList.json';
-        let currentAudio = null;
-        let hls = null;
-        let currentPage = 1;
-        const itemsPerPage = 50;
-        const progress = document.getElementById('progress');
-        const playButton = document.querySelector('.play-button');
-
-        function fetchCountries() {
-            fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
-                .then(response => response.ok ? response.json() : Promise.reject())
-                .then(data => {
-                    const countryList = document.getElementById('countryList');
-                    countryList.innerHTML = '';
-                    data.forEach(country => {
-                        const listItem = document.createElement('li');
-                        listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag">`;
-                        listItem.addEventListener('click', () => {
-                            selectedCountryPath = country.url;
-                            fetchStations(selectedCountryPath);
-                            document.querySelector('.countryTitle').textContent = `Live ${country.name} Radio Station Online`;
-                        });
-                        countryList.appendChild(listItem);
+           let stationData = []; // Store stations here to avoid multiple fetches
+    let selectedCountryPath = 'unitedStateRadioList.json';
+    let currentAudio = null;
+    let currentStation = null; // Store the current station details
+    let hls = null;
+    let currentPage = 1;
+    const itemsPerPage = 50;
+    const progress = document.getElementById('progress');
+    const playButton = document.querySelector('.play-button');
+    const volumeSlider = document.getElementById('volumeSlider');
+    
+    function fetchCountries() {
+        fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
+            .then(response => response.ok ? response.json() : Promise.reject())
+            .then(data => {
+                const countryList = document.getElementById('countryList');
+                countryList.innerHTML = '';
+                data.forEach(country => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag">`;
+                    listItem.addEventListener('click', () => {
+                        selectedCountryPath = country.url;
+                        fetchStations(selectedCountryPath);
+                        document.querySelector('.countryTitle').textContent = `Live ${country.name} Radio Station Online`;
                     });
-                }).catch(error => console.error('Error fetching country data:', error));
-        }
-
-        function fetchStations(countryPath = 'unitedStateRadioList.json') {
-            fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`)
-                .then(response => response.ok ? response.json() : Promise.reject())
-                .then(data => {
-                    stationData = data.filter(station => station.name !== 'Local Fm'); // Cache stations
-                    currentPage = 1; // Reset to first page
-                    displayStations(stationData); // Display all stations initially
-                })
-                .catch(error => console.error('Error fetching station data:', error));
-        }
-
-        // Real-time filter as user types
-        function filterStations() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filteredStations = stationData.filter(station => 
-                station.name.toLowerCase().includes(query)
-            );
-            displayStations(filteredStations); // Update display with filtered results
-        }
-
-        // Display stations on the page
-        function displayStations(stations) {
-            const stationList = document.getElementById('stationListContent');
-            const paginationControls = document.getElementById('paginationControls');
-            stationList.innerHTML = ''; // Clear current list
-            paginationControls.innerHTML = ''; // Clear pagination
-
-            if (stations.length === 0) {
-                stationList.innerHTML = `<p>No results found.</p>`;
-                return;
-            }
-
-            const totalPages = Math.ceil(stations.length / itemsPerPage);
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
-
-            stationsToDisplay.forEach(station => {
-                const stationItem = document.createElement('div');
-                stationItem.className = 'station-item';
-                const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-                stationItem.innerHTML = `<img src="${station.logo}" alt="${truncatedName}"><br>${truncatedName}`;
-                stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name));
-                stationList.appendChild(stationItem);
-            });
-
-            // Create pagination buttons
-            for (let i = 1; i <= totalPages; i++) {
-                const pageButton = document.createElement('button');
-                pageButton.innerText = i;
-                pageButton.disabled = i === currentPage; // Disable current page button
-                pageButton.addEventListener('click', () => {
-                    currentPage = i; // Update current page
-                    displayStations(stations); // Redisplay stations based on new page
+                    countryList.appendChild(listItem);
                 });
-                paginationControls.appendChild(pageButton);
+            }).catch(error => console.error('Error fetching country data:', error));
+    }
+
+    function fetchStations(countryPath = 'unitedStateRadioList.json') {
+        fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`)
+            .then(response => response.ok ? response.json() : Promise.reject())
+            .then(data => {
+                stationData = data.filter(station => station.name !== 'Local Fm'); // Cache stations
+                currentPage = 1; // Reset to first page
+                displayStations(stationData); // Display all stations initially
+            })
+            .catch(error => console.error('Error fetching station data:', error));
+    }
+
+    function filterStations() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const filteredStations = stationData.filter(station => 
+            station.name.toLowerCase().includes(query)
+        );
+        displayStations(filteredStations); // Update display with filtered results
+    }
+
+    function displayStations(stations) {
+        const stationList = document.getElementById('stationListContent');
+        const paginationControls = document.getElementById('paginationControls');
+        stationList.innerHTML = ''; // Clear current list
+        paginationControls.innerHTML = ''; // Clear pagination
+
+        if (stations.length === 0) {
+            stationList.innerHTML = `<p>No results found.</p>`;
+            return;
+        }
+
+        const totalPages = Math.ceil(stations.length / itemsPerPage);
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = Math.min(startIndex + itemsPerPage, stations.length);
+        const visibleStations = stations.slice(startIndex, endIndex);
+
+        visibleStations.forEach(station => {
+            const stationItem = document.createElement('div');
+            stationItem.classList.add('station-item');
+            stationItem.innerHTML = `<img src="${station.logo}" alt="${station.name} Logo"><br>${station.name}`;
+            stationItem.addEventListener('click', () => playStation(station));
+            stationList.appendChild(stationItem);
+        });
+
+        setupPagination(totalPages);
+    }
+
+    function setupPagination(totalPages) {
+        const paginationControls = document.getElementById('paginationControls');
+        for (let i = 1; i <= totalPages; i++) {
+            const pageItem = document.createElement('span');
+            pageItem.innerText = i;
+            pageItem.style.cursor = 'pointer';
+            if (i === currentPage) {
+                pageItem.style.fontWeight = 'bold'; // Highlight current page
             }
-        }
-
-       
-    function playStation(url, image, stationName) {
-        if (currentAudio) {
-            currentAudio.pause();
-            currentAudio = null;
-            playButton.textContent = '▶';
-            if (hls) hls.destroy();
-        }
-
-        document.getElementById('stationLogo').src = image;
-        document.getElementById('stationLogo').style.display = 'block';
-        document.querySelector('.player-container').style.display = 'block';
-        progress.style.display = 'block';
-
-        if (Hls.isSupported() && url.endsWith('.m3u8')) {
-            hls = new Hls();
-            hls.loadSource(url);
-            currentAudio = new Audio();
-            hls.attachMedia(currentAudio);
-            hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                currentAudio.play().then(() => {
-                    playButton.textContent = '❚❚';
-                    progress.style.display = 'none';
-                    sendEmailNotification(stationName, url, 'success');
-                }).catch(() => handlePlaybackError(url, stationName));
+            pageItem.addEventListener('click', () => {
+                currentPage = i;
+                displayStations(stationData); // Redisplay stations for the selected page
             });
-        } else if (currentAudio.canPlayType('application/vnd.apple.mpegurl') || currentAudio.canPlayType('audio/mpegurl')) {
-            // Native HLS support
-            currentAudio = new Audio(url);
-            currentAudio.oncanplay = () => {
-                playButton.textContent = '❚❚';
-                progress.style.display = 'none';
-                sendEmailNotification(stationName, url, 'success');
-            };
-            currentAudio.onerror = () => handlePlaybackError(url, stationName);
-            currentAudio.play().catch(() => handlePlaybackError(url, stationName));
-        } else {
-            // Non-HLS stream or non-HLS supported browser
-            currentAudio = new Audio(url);
-            currentAudio.oncanplay = () => {
-                playButton.textContent = '❚❚';
-                progress.style.display = 'none';
-                sendEmailNotification(stationName, url, 'success');
-            };
-            currentAudio.onerror = () => handlePlaybackError(url, stationName);
-            currentAudio.play().catch(() => handlePlaybackError(url, stationName));
+            paginationControls.appendChild(pageItem);
         }
     }
 
-        function handlePlaybackError(url, stationName, error) {
-            progress.style.display = 'none';
-            console.error('Playback error for', stationName, error);
-            alert('The station could not be played. Please try another station.');
-            sendEmailNotification(stationName, url, 'error');
+    function playStation(station) {
+        // Stop the currently playing audio if it's different from the selected station
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio = null;
         }
 
-        function sendEmailNotification(stationName, stationUrl, status) {
-            const formData = new FormData();
-            formData.append('stationName', stationName);
-            formData.append('stationUrl', stationUrl);
-            formData.append('status', status);
+        // Set the current station to display its logo and name
+        currentStation = station;
+        document.getElementById('stationLogo').src = station.logo;
+        document.getElementById('stationLogo').style.display = 'block'; // Show logo
+        document.querySelector('.player-container').style.display = 'flex'; // Show player
 
-            fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/sendEmail.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.status === 'success') {
-                    console.log('Email sent successfully:', result.message);
-                } else {
-                    console.error('Failed to send email:', result.message);
-                }
-            })
-            .catch(error => console.error('Error sending email:', error));
+        // Create a new audio element
+        if (station.url.endsWith('.m3u8')) {
+            // Use HLS.js for HLS streams
+            if (Hls.isSupported()) {
+                currentAudio = new Audio();
+                hls = new Hls();
+                hls.loadSource(station.url);
+                hls.attachMedia(currentAudio);
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    currentAudio.play();
+                });
+            } else if (currentAudio.canPlayType('application/vnd.apple.mpegurl')) {
+                currentAudio = new Audio(station.url);
+                currentAudio.play();
+            }
+        } else {
+            // For other formats, create a standard Audio element
+            currentAudio = new Audio(station.url);
+            currentAudio.play();
         }
 
-        function togglePlay() {
-            if (currentAudio) {
-                if (currentAudio.paused) {
-                    progress.style.display = 'block';
-                    currentAudio.play().then(() => playButton.textContent = '❚❚').catch(error => {
-                        console.error("Audio play error:", error);
-                        handlePlaybackError(url, stationName);
-                    });
-                } else {
-                    currentAudio.pause();
-                    playButton.textContent = '▶';
-                    progress.style.display = 'none';
-                }
+        // Update play button state
+        playButton.innerHTML = '❚❚'; // Change to pause icon
+        updateVolume(volumeSlider.value);
+        
+        currentAudio.addEventListener('ended', () => {
+            playButton.innerHTML = '▶'; // Reset to play icon when audio ends
+            currentAudio = null;
+        });
+    }
+
+    function togglePlay() {
+        if (currentAudio) {
+            if (currentAudio.paused) {
+                currentAudio.play();
+                playButton.innerHTML = '❚❚'; // Change to pause icon
+                progress.style.display = 'block'; // Show loading indicator
+            } else {
+                currentAudio.pause();
+                playButton.innerHTML = '▶'; // Change to play icon
+                progress.style.display = 'none'; // Hide loading indicator
             }
         }
+    }
 
-        function setVolume(value) {
-            if (currentAudio) currentAudio.volume = value;
+    function setVolume(value) {
+        if (currentAudio) {
+            currentAudio.volume = value; // Set audio volume
         }
+    }
 
         // Initialize countries on page load
             window.onload = () => {
-        fetchCountries();
-        fetchStations();
-    };
+                fetchCountries();
+                fetchStations();
+            };
     </script>
 
 
