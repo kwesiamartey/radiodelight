@@ -461,7 +461,6 @@
 <script>
     let stationData = []; // Store stations here to avoid multiple fetches
     let selectedCountryPath = 'unitedStateRadioList.json';
-    let currentAudio = null;
     const audio = new Audio();
     let hls = null;
     let currentPage = 1;
@@ -585,80 +584,88 @@
 
 
 
-// Function to play the station
-function playStation(audioUrl, image, stationName) {
-     audio.src = audioUrl;
-            const audioExtension = audioUrl.split('.').pop().toLowerCase();
+     // Function to play the station
+    function playStation(audioUrl, image, stationName) {
+        const audioExtension = audioUrl.split('.').pop().toLowerCase();
 
         document.getElementById('stationLogo').src = image;
         document.getElementById('stationLogo').style.display = 'block';
         document.querySelector('.player-container').style.display = 'block';
         progress.style.display = 'block';
 
-            // Show the spinner when loading starts
-            showSpinner(true);
+        // Show the spinner when loading starts
+        showSpinner(true);
 
-            // If it's an HLS (m3u8) stream, use HLS.js
-            if (audioExtension === 'm3u8') {
-                if (Hls.isSupported()) {
-                    if (hls) {
-                        hls.destroy(); // Destroy the previous instance if any
-                    }
-                    hls = new Hls();
-                    hls.loadSource(audioUrl);
-                    hls.attachMedia(audio);
-                    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                        showSpinner(false); // Hide the spinner once the audio is ready
-                    });
-                    hls.on(Hls.Events.ERROR, (event, data) => {
-                        showSpinner(false); // Hide the spinner on error
-                        showCustomError('Error, Please report.');
-                    });
-                } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
-                    // For Safari or native HLS support
-                    audio.src = audioUrl;
-                    audio.addEventListener('canplay', () => {
-                        showSpinner(false); // Hide the spinner when audio is ready
-                    });
-                } else {
-                    showCustomError('Error, Please report.');
-                    return;
-                }
-            } else {
-                // Use native HTML5 audio for other formats
-                audio.addEventListener('canplay', () => {
-                    showSpinner(false); // Hide the spinner when audio is ready
-                });
-            }
-
-            // Handle error events for unsupported formats
-            audio.addEventListener('error', function() {
-                showSpinner(false); // Hide the spinner on error
-                showCustomError('Error, Please report.');
-            });
-    
-    }
-
-
-
-    // Show or hide the spinner
-        function showSpinner(show) {
-            progress.style.display = show ? 'block' : 'none';
+        // Destroy any previous HLS instance
+        if (hls) {
+            hls.destroy();
+            hls = null;
         }
 
-        // Play/pause functionality with icons
-        playButton.addEventListener('click', () => {
-            if (!isPlaying) {
+        // Check if it's an HLS stream
+        if (audioExtension === 'm3u8') {
+            if (Hls.isSupported()) {
+                hls = new Hls();
+                hls.loadSource(audioUrl);
+                hls.attachMedia(audio);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    audio.play();  // Play audio when ready
+                    showSpinner(false);
+                    isPlaying = true;
+                    playPauseBtn.innerHTML = '||'; // Change to pause icon
+                });
+            } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+                audio.src = audioUrl;
+                audio.addEventListener('canplay', () => {
+                    audio.play();
+                    showSpinner(false);
+                    isPlaying = true;
+                    playPauseBtn.innerHTML = '||'; // Change to pause icon
+                });
+            } else {
+                showCustomError('Error, Please report.');
+                return;
+            }
+        } else {
+            // Native audio for non-HLS formats
+            audio.src = audioUrl;
+            audio.addEventListener('canplay', () => {
                 audio.play();
+                showSpinner(false);
+                isPlaying = true;
+                playPauseBtn.innerHTML = '||'; // Change to pause icon
+            });
+        }
+
+        // Error handling
+        audio.addEventListener('error', () => {
+            showSpinner(false);
+            showCustomError('Error, Please report.');
+        });
+    }
+
+    // Show or hide the spinner
+    function showSpinner(show) {
+        progress.style.display = show ? 'block' : 'none';
+    }
+
+    // Play/pause functionality with icons
+    playButton.addEventListener('click', () => {
+        if (!isPlaying) {
+            audio.play().then(() => {
                 playPauseBtn.innerHTML = '||';  // Pause icon
                 showSpinner(false); // Hide the spinner when playing starts
                 isPlaying = true;
-            } else {
-                audio.pause();
-                playPauseBtn.innerHTML = '▶';  // Play icon
-                isPlaying = false;
-            }
-        });
+            }).catch(error => {
+                console.error('Audio play error:', error);
+                showCustomError('Error playing the audio. Please report.');
+            });
+        } else {
+            audio.pause();
+            playPauseBtn.innerHTML = '▶';  // Play icon
+            isPlaying = false;
+        }
+    });
 
 
 
