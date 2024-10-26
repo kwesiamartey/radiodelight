@@ -584,7 +584,7 @@
 
 
 
-     // Function to play the station
+   // Function to play the station
     function playStation(audioUrl, image, stationName) {
         const audioExtension = audioUrl.split('.').pop().toLowerCase();
 
@@ -609,18 +609,16 @@
                 hls.loadSource(audioUrl);
                 hls.attachMedia(audio);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    audio.play();  // Play audio when ready
                     showSpinner(false);
-                    isPlaying = true;
-                    playPauseBtn.innerHTML = '||'; // Change to pause icon
+                    audio.play();
+                    updatePlayButton();
                 });
             } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
                 audio.src = audioUrl;
                 audio.addEventListener('canplay', () => {
-                    audio.play();
                     showSpinner(false);
-                    isPlaying = true;
-                    playPauseBtn.innerHTML = '||'; // Change to pause icon
+                    audio.play();
+                    updatePlayButton();
                 });
             } else {
                 showCustomError('Error, Please report.');
@@ -630,10 +628,9 @@
             // Native audio for non-HLS formats
             audio.src = audioUrl;
             audio.addEventListener('canplay', () => {
-                audio.play();
                 showSpinner(false);
-                isPlaying = true;
-                playPauseBtn.innerHTML = '||'; // Change to pause icon
+                audio.play();
+                updatePlayButton();
             });
         }
 
@@ -649,23 +646,30 @@
         progress.style.display = show ? 'block' : 'none';
     }
 
-    // Play/pause functionality with icons
+    // Function to update the play/pause button based on the audio state
+    function updatePlayButton() {
+        if (audio.paused) {
+            playPauseBtn.innerHTML = '▶';  // Play icon
+        } else {
+            playPauseBtn.innerHTML = '||';  // Pause icon
+        }
+    }
+
+    // Play/pause functionality using the native audio.paused property
     playButton.addEventListener('click', () => {
-        if (!isPlaying) {
+        if (audio.paused) {
             audio.play().then(() => {
-                playPauseBtn.innerHTML = '||';  // Pause icon
-                showSpinner(false); // Hide the spinner when playing starts
-                isPlaying = true;
+                updatePlayButton();  // Update the button after play starts
             }).catch(error => {
                 console.error('Audio play error:', error);
                 showCustomError('Error playing the audio. Please report.');
             });
         } else {
             audio.pause();
-            playPauseBtn.innerHTML = '▶';  // Play icon
-            isPlaying = false;
+            updatePlayButton();  // Update the button after pause
         }
     });
+
 
 
 
