@@ -468,6 +468,7 @@
     const progress = document.getElementById('progress');
     const playButton = document.querySelector('.play-button');
 
+
     function fetchCountries() {
         fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
             .then(response => response.ok ? response.json() : Promise.reject())
@@ -580,37 +581,43 @@
         }
     }
 
+
+
+
+// Function to play the station
 function playStation(url, image, stationName) {
     // Stop any currently playing audio
     if (currentAudio) {
         currentAudio.pause();
         currentAudio = null;
-        playButton.textContent = '▶';
+        playButton.textContent = '▶';  // Reset play button
         if (hls) {
             hls.destroy();
             hls = null;
         }
     }
 
-    // Update the station logo and display the player container
+    // Update station logo and display player container
     document.getElementById('stationLogo').src = image;
     document.getElementById('stationLogo').style.display = 'block';
     document.querySelector('.player-container').style.display = 'block';
-    progress.style.display = 'block';
+    progress.style.display = 'block';  // Show progress bar
 
-    // Function to handle audio playback success
+    // Function to handle playback success
     const handlePlaybackSuccess = () => {
-        playButton.textContent = '❚❚';
-        progress.style.display = 'none';
-        sendEmailNotification(stationName, url, 'success');
+        playButton.textContent = '❚❚';  // Change to pause button
+        progress.style.display = 'none';  // Hide progress bar
+        sendEmailNotification(stationName, url, 'success');  // Notify
     };
 
-    // Function to handle audio playback errors
+    // Function to handle playback error
     const handlePlaybackError = () => {
-        handlePlaybackError(url, stationName);
+        progress.style.display = 'none';  // Hide progress bar
+        alert('The station could not be played. Please try another browser.');
+        sendEmailNotification(stationName, url, 'error');  // Notify
     };
 
-    // Check for HLS support and appropriate URL extension
+    // Check for HLS (m3u8) support
     if (Hls.isSupported() && url.endsWith('.m3u8')) {
         hls = new Hls();
         hls.loadSource(url);
@@ -619,28 +626,26 @@ function playStation(url, image, stationName) {
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
             currentAudio.play().then(handlePlaybackSuccess).catch(handlePlaybackError);
         });
+        hls.on(Hls.Events.ERROR, handlePlaybackError);  // Handle HLS error
     } else if (isSupportedFormat(url)) {
+        // Native audio support
         currentAudio = new Audio(url);
-        currentAudio.oncanplay = handlePlaybackSuccess;
-        currentAudio.onerror = handlePlaybackError;
-        currentAudio.play().catch(handlePlaybackError);
+        currentAudio.oncanplay = handlePlaybackSuccess;  // Ready to play
+        currentAudio.onerror = handlePlaybackError;  // Error in loading
+        currentAudio.play().catch(handlePlaybackError);  // Error in playing
     } else {
-        console.error('Unsupported format or URL:', url);
+        handlePlaybackError();  // Unsupported format
     }
 }
 
-// Helper function to check for supported audio formats
+// Helper function to check supported formats
 function isSupportedFormat(url) {
     const supportedFormats = /\.(m3u8|aacp|aac|mpeg|icecast|shoutcast|wma|wav|flac|mp3|mp4|m4a)$/i;
     return supportedFormats.test(url);
 }
 
-    function handlePlaybackError(url, stationName) {
-        progress.style.display = 'none';
-        alert('The station could not be played. Please try another browser.');
-        sendEmailNotification(stationName, url, 'error');
-    }
 
+    
     function sendEmailNotification(stationName, stationUrl, status) {
         const formData = new FormData();
         formData.append('stationName', stationName);
