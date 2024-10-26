@@ -584,7 +584,8 @@
 
 
 
-   // Function to play the station
+  
+    // Function to play the station
     function playStation(audioUrl, image, stationName) {
         const audioExtension = audioUrl.split('.').pop().toLowerCase();
 
@@ -610,18 +611,17 @@
                 hls.attachMedia(audio);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
                     showSpinner(false);
-                    audio.play();
-                    updatePlayButton();
+                    audio.play().then(() => updatePlayButton()).catch(handlePlaybackError);
                 });
             } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+                // Native HLS support (Safari, some older browsers)
                 audio.src = audioUrl;
                 audio.addEventListener('canplay', () => {
                     showSpinner(false);
-                    audio.play();
-                    updatePlayButton();
+                    audio.play().then(() => updatePlayButton()).catch(handlePlaybackError);
                 });
             } else {
-                handlePlaybackError(audioUrl, stationName)
+                handlePlaybackError(audioUrl, stationName);
                 return;
             }
         } else {
@@ -629,16 +629,14 @@
             audio.src = audioUrl;
             audio.addEventListener('canplay', () => {
                 showSpinner(false);
-                audio.play();
-                updatePlayButton();
+                audio.play().then(() => updatePlayButton()).catch(handlePlaybackError);
             });
         }
 
-        // Error handling
+        // General error handling
         audio.addEventListener('error', () => {
             showSpinner(false);
-            showCustomError('Error, Please report.');
-            handlePlaybackError(audioUrl, stationName)
+            handlePlaybackError(audioUrl, stationName);
         });
     }
 
@@ -663,7 +661,7 @@
                 updatePlayButton();  // Update the button after play starts
             }).catch(error => {
                 console.error('Audio play error:', error);
-                 alert('The station is currently unavailable. Please try using a different browser, such as Mozilla Firefox or Chrome, or check back in an hour as we work to resolve the issue.');
+                alert('The station is currently unavailable. Please try using a different browser, such as Mozilla Firefox or Chrome, or check back later.');
             });
         } else {
             audio.pause();
@@ -671,27 +669,16 @@
         }
     });
 
-
-
-
-       
-
-
-
-
-    
-
-
-
-
-
-
-    
-
     function handlePlaybackError(url, stationName) {
         progress.style.display = 'none';
         alert('The station is currently unavailable. Please try using a different browser, such as Mozilla Firefox or Chrome, or check back in an hour as we work to resolve the issue.');
         sendEmailNotification(stationName, url, 'error');
+    }
+
+    // Example function to notify about the error (you can connect to your backend if needed)
+    function sendEmailNotification(stationName, url, errorType) {
+        // Example notification logic (e.g., use fetch to send data to a server)
+        console.log(`Error occurred for station: ${stationName}, URL: ${url}, Error: ${errorType}`);
     }
 
     
