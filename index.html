@@ -579,7 +579,9 @@
             paginationControls.appendChild(nextButton);
         }
     }
-function playStation(url, image, stationName) {
+
+
+    function playStation(url, image, stationName) {
     // Pause current audio and reset
     if (currentAudio) {
         currentAudio.pause();
@@ -596,7 +598,7 @@ function playStation(url, image, stationName) {
     document.querySelector('.player-container').style.display = 'block';
     progress.style.display = 'block';
 
-    // HLS stream support
+    // HLS stream support for .m3u8
     if (Hls.isSupported() && url.endsWith('.m3u8')) {
         hls = new Hls();
         hls.loadSource(url);
@@ -609,7 +611,7 @@ function playStation(url, image, stationName) {
             }).catch(() => handlePlaybackError(url, stationName)); // Correctly pass the function as callback
         });
     }
-    // Native HLS support for Safari
+    // Native HLS support for Safari (in case the browser supports HLS natively)
     else if (currentAudio.canPlayType('application/vnd.apple.mpegurl')) {
         currentAudio.src = url;
         currentAudio.oncanplay = () => {
@@ -618,16 +620,22 @@ function playStation(url, image, stationName) {
         };
         currentAudio.play().catch(() => handlePlaybackError(url, stationName)); // Correctly handle error
     }
-    // Regular audio streams (non-HLS)
-    else {
-        currentAudio = new Audio(url);
+    // Handling regular audio streams like MP3 (audio/mpeg)
+    else if (currentAudio.canPlayType('audio/mpeg')) {
+        currentAudio = new Audio(url); // Direct MP3 stream handling
         currentAudio.oncanplay = () => {
             progress.style.display = 'none';
             playButton.textContent = '❚❚'; // Set to pause icon when playing
         };
-        currentAudio.play().catch(() => handlePlaybackError(url, stationName)); // Correctly handle error
+        currentAudio.play().catch(() => handlePlaybackError(url, stationName)); // Handle playback error
+    }
+    // Fallback for non-supported streams
+    else {
+        console.error('The audio format is not supported by this browser.');
+        handlePlaybackError(url, stationName);
     }
 }
+
 
     function togglePlay() {
         if (currentAudio) {
