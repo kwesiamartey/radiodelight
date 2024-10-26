@@ -401,7 +401,7 @@
         <img id="Logo" src="logo.png" alt="Station Logo">
         <h5>Radio Delight</h5>
         <div>
-             <input type="text" id="searchInput" placeholder="Search stations" oninput="filterStations()">
+             <input type="text" id="searchInput" class="searchInput" placeholder="Search stations" oninput="filterStations()">
         </div>
     </div>
 
@@ -571,42 +571,60 @@
         }
     }
 
-    function playStation(url, image, stationName) {
-        if (currentAudio) {
-            currentAudio.pause();
-            currentAudio = null;
-            playButton.textContent = '▶';
-            if (hls) hls.destroy();
-        }
-
-        document.getElementById('stationLogo').src = image;
-        document.getElementById('stationLogo').style.display = 'block';
-        document.querySelector('.player-container').style.display = 'block';
-        progress.style.display = 'block';
-
-        if (Hls.isSupported() && url.endsWith('.m3u8')) {
-            hls = new Hls();
-            hls.loadSource(url);
-            currentAudio = new Audio();
-            hls.attachMedia(currentAudio);
-            hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                currentAudio.play().then(() => {
-                    playButton.textContent = '❚❚';
-                    progress.style.display = 'none';
-                    sendEmailNotification(stationName, url, 'success');
-                }).catch(() => handlePlaybackError(url, stationName));
-            });
-        } else {
-            currentAudio = new Audio(url);
-            currentAudio.oncanplay = () => {
-                playButton.textContent = '❚❚';
-                progress.style.display = 'none';
-                sendEmailNotification(stationName, url, 'success');
-            };
-            currentAudio.onerror = () => handlePlaybackError(url, stationName);
-            currentAudio.play().catch(error => handlePlaybackError(url, stationName));
+function playStation(url, image, stationName) {
+    // Stop any currently playing audio
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+        playButton.textContent = '▶';
+        if (hls) {
+            hls.destroy();
+            hls = null;
         }
     }
+
+    // Update the station logo and display the player container
+    document.getElementById('stationLogo').src = image;
+    document.getElementById('stationLogo').style.display = 'block';
+    document.querySelector('.player-container').style.display = 'block';
+    progress.style.display = 'block';
+
+    // Function to handle audio playback success
+    const handlePlaybackSuccess = () => {
+        playButton.textContent = '❚❚';
+        progress.style.display = 'none';
+        sendEmailNotification(stationName, url, 'success');
+    };
+
+    // Function to handle audio playback errors
+    const handlePlaybackError = () => {
+        handlePlaybackError(url, stationName);
+    };
+
+    // Check for HLS support and appropriate URL extension
+    if (Hls.isSupported() && url.endsWith('.m3u8')) {
+        hls = new Hls();
+        hls.loadSource(url);
+        currentAudio = new Audio();
+        hls.attachMedia(currentAudio);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            currentAudio.play().then(handlePlaybackSuccess).catch(handlePlaybackError);
+        });
+    } else if (isSupportedFormat(url)) {
+        currentAudio = new Audio(url);
+        currentAudio.oncanplay = handlePlaybackSuccess;
+        currentAudio.onerror = handlePlaybackError;
+        currentAudio.play().catch(handlePlaybackError);
+    } else {
+        console.error('Unsupported format or URL:', url);
+    }
+}
+
+// Helper function to check for supported audio formats
+function isSupportedFormat(url) {
+    const supportedFormats = /\.(m3u8|aacp|aac|mpeg|icecast|shoutcast|wma|wav|flac|mp3|mp4|m4a)$/i;
+    return supportedFormats.test(url);
+}
 
     function handlePlaybackError(url, stationName) {
         progress.style.display = 'none';
