@@ -461,13 +461,12 @@
 <script>
     let stationData = []; // Store stations here to avoid multiple fetches
     let selectedCountryPath = 'unitedStateRadioList.json';
-    const audio = new Audio();
+    let currentAudio = null; // Added this declaration
     let hls = null;
     let currentPage = 1;
     const itemsPerPage = 50;
     const progress = document.getElementById('progress');
     const playButton = document.querySelector('.play-button');
-
 
     function fetchCountries() {
         fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
@@ -581,12 +580,9 @@
         }
     }
 
-
-    // Function to play the station
-        function playStation(url, image, stationName) {
+    function playStation(url, image, stationName) {
         if (currentAudio) {
             currentAudio.pause();
-            currentAudio = null;
             playButton.textContent = '▶'; // Reset play button to play icon
             if (hls) {
                 hls.destroy();
@@ -597,7 +593,6 @@
         document.getElementById('stationLogo').src = image;
         document.getElementById('stationLogo').style.display = 'block';
         document.querySelector('player-container').style.display = 'block';
-           
         progress.style.display = 'block';
 
         if (Hls.isSupported() && url.endsWith('.m3u8')) {
@@ -609,7 +604,7 @@
                 currentAudio.play().then(() => {
                     progress.style.display = 'none';
                     playButton.textContent = '❚❚'; // Set to pause icon when playing
-                });
+                }).catch(handlePlaybackError(url, stationName));
             });
         } else {
             currentAudio = new Audio(url);
@@ -617,68 +612,8 @@
                 progress.style.display = 'none';
                 playButton.textContent = '❚❚'; // Set to pause icon when playing
             };
-            currentAudio.play();
+            currentAudio.play().catch(error => handlePlaybackError(url, stationName));
         }
-    }
-
-    function togglePlay() {
-        if (currentAudio) {
-            if (currentAudio.paused) {
-                currentAudio.play();
-                playButton.textContent = '❚❚'; // Set to pause icon
-                progress.style.display = 'block';
-            } else {
-                currentAudio.pause();
-                playButton.textContent = '▶'; // Set to play icon
-                progress.style.display = 'none';
-            }
-        }
-    }
-
-    function setVolume(value) {
-        if (currentAudio) {
-            currentAudio.volume = value;
-        }
-    }
-
-
-
-
-
-    
-
-    function handlePlaybackError(url, stationName) {
-        progress.style.display = 'none';
-        alert('The station is currently unavailable. Please try using a different browser, such as Mozilla Firefox or Chrome, or check back in an hour as we work to resolve the issue.');
-        sendEmailNotification(stationName, url, 'error');
-    }
-
-    // Example function to notify about the error (you can connect to your backend if needed)
-    function sendEmailNotification(stationName, url, errorType) {
-        // Example notification logic (e.g., use fetch to send data to a server)
-        console.log(`Error occurred for station: ${stationName}, URL: ${url}, Error: ${errorType}`);
-    }
-
-    
-    function sendEmailNotification(stationName, stationUrl, status) {
-        const formData = new FormData();
-        formData.append('stationName', stationName);
-        formData.append('stationUrl', stationUrl);
-        formData.append('status', status);
-
-        fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/sendEmail.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(result => {
-            if (result.status === 'success') {
-                console.log('Email sent successfully:', result.message);
-            } else {
-                console.error('Failed to send email:', result.message);
-            }
-        })
-        .catch(error => console.error('Error sending email:', error));
     }
 
     function togglePlay() {
@@ -701,10 +636,38 @@
         if (currentAudio) currentAudio.volume = value;
     }
 
+    function handlePlaybackError(url, stationName) {
+        progress.style.display = 'none';
+        alert('The station is currently unavailable. Please try using a different browser, such as Mozilla Firefox or Chrome, or check back in an hour as we work to resolve the issue.');
+        sendEmailNotification(stationName, url, 'error');
+    }
+
+    function sendEmailNotification(stationName, stationUrl, status) {
+        const formData = new FormData();
+        formData.append('stationName', stationName);
+        formData.append('stationUrl', stationUrl);
+        formData.append('status', status);
+
+        fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/sendEmail.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.status === 'success') {
+                console.log('Email sent successfully:', result.message);
+            } else {
+                console.error('Failed to send email:', result.message);
+            }
+        })
+        .catch(error => console.error('Error sending email:', error));
+    }
+
     window.onload = () => {
         fetchCountries();
         fetchStations();
     };
 </script>
+
 </body>
 </html>
