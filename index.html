@@ -586,88 +586,67 @@
 
   
     // Function to play the station
-    function playStation(audioUrl, image, stationName) {
-        const audioExtension = audioUrl.split('.').pop().toLowerCase();
+        function playStation(url, image) {
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio = null;
+            playButton.textContent = '▶'; // Reset play button to play icon
+            if (hls) {
+                hls.destroy();
+                hls = null;
+            }
+        }
 
         document.getElementById('stationLogo').src = image;
         document.getElementById('stationLogo').style.display = 'block';
-        document.querySelector('.player-container').style.display = 'block';
         progress.style.display = 'block';
 
-        // Show the spinner when loading starts
-        showSpinner(true);
-
-        // Destroy any previous HLS instance
-        if (hls) {
-            hls.destroy();
-            hls = null;
+        if (Hls.isSupported() && url.endsWith('.m3u8')) {
+            hls = new Hls();
+            hls.loadSource(url);
+            currentAudio = new Audio();
+            hls.attachMedia(currentAudio);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                currentAudio.play().then(() => {
+                    progress.style.display = 'none';
+                    playButton.textContent = '❚❚'; // Set to pause icon when playing
+                });
+            });
+        } else {
+            currentAudio = new Audio(url);
+            currentAudio.oncanplay = () => {
+                progress.style.display = 'none';
+                playButton.textContent = '❚❚'; // Set to pause icon when playing
+            };
+            currentAudio.play();
         }
+    }
 
-        // Check if it's an HLS stream
-        if (audioExtension === 'm3u8') {
-            if (Hls.isSupported()) {
-                hls = new Hls();
-                hls.loadSource(audioUrl);
-                hls.attachMedia(audio);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    showSpinner(false);
-                    audio.play().then(() => updatePlayButton()).catch(handlePlaybackError);
-                });
-            } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
-                // Native HLS support (Safari, some older browsers)
-                audio.src = audioUrl;
-                audio.addEventListener('canplay', () => {
-                    showSpinner(false);
-                    audio.play().then(() => updatePlayButton()).catch(handlePlaybackError);
-                });
+    function togglePlay() {
+        if (currentAudio) {
+            if (currentAudio.paused) {
+                currentAudio.play();
+                playButton.textContent = '❚❚'; // Set to pause icon
+                progress.style.display = 'block';
             } else {
-                handlePlaybackError(audioUrl, stationName);
-                return;
+                currentAudio.pause();
+                playButton.textContent = '▶'; // Set to play icon
+                progress.style.display = 'none';
             }
-        } else {
-            // Native audio for non-HLS formats
-            audio.src = audioUrl;
-            audio.addEventListener('canplay', () => {
-                showSpinner(false);
-                audio.play().then(() => updatePlayButton()).catch(handlePlaybackError);
-            });
-        }
-
-        // General error handling
-        audio.addEventListener('error', () => {
-            showSpinner(false);
-            handlePlaybackError(audioUrl, stationName);
-        });
-    }
-
-    // Show or hide the spinner
-    function showSpinner(show) {
-        progress.style.display = show ? 'block' : 'none';
-    }
-
-    // Function to update the play/pause button based on the audio state
-    function updatePlayButton() {
-        if (audio.paused) {
-            playPauseBtn.innerHTML = '▶';  // Play icon
-        } else {
-            playPauseBtn.innerHTML = '||';  // Pause icon
         }
     }
 
-    // Play/pause functionality using the native audio.paused property
-    playButton.addEventListener('click', () => {
-        if (audio.paused) {
-            audio.play().then(() => {
-                updatePlayButton();  // Update the button after play starts
-            }).catch(error => {
-                console.error('Audio play error:', error);
-                alert('The station is currently unavailable. Please try using a different browser, such as Mozilla Firefox or Chrome, or check back later.');
-            });
-        } else {
-            audio.pause();
-            updatePlayButton();  // Update the button after pause
+    function setVolume(value) {
+        if (currentAudio) {
+            currentAudio.volume = value;
         }
-    });
+    }
+
+
+
+
+
+    
 
     function handlePlaybackError(url, stationName) {
         progress.style.display = 'none';
