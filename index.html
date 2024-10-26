@@ -34,6 +34,26 @@
             align-items: center;
             padding: 10px;
         }
+
+        .play-control {
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+     /* Bottom row: Player */
+        .player-container {
+            background-color: #142229; /* Green */
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                background-color: #f8f9fa;
+                padding: 10px 0;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+        }
+         
          #web_title h4{
              margin-botom:0px;
              margin-top:8px;
@@ -251,18 +271,15 @@
         /* Bottom row: Player */
         .player-container {
             background-color: #142229; /* Green */
-            position:fixed;
-            color: white;
-            position: fixed; /* Fixed at the top */
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000; /* Ensures header stays above other content */
-            display: flex;
-            align-items: center;
-            padding: 10px;
-
-            
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                background-color: #f8f9fa;
+                padding: 10px 0;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
         }
 
         #Logo{
@@ -300,10 +317,8 @@
 
         /* Second column: Play button and progress ring */
         .play-control {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            margin-right: 20px;
+            cursor: pointer;
         }
 
         .play-button {
@@ -481,7 +496,7 @@
         </div>
     </div>
 
-    <!-- Bottom row: Player -->
+    <!-- Bottom row: Player -->    
   <div class="player-container" style="display: none;">
       <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: none;">
        <div class="play-control">
