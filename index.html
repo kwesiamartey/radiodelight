@@ -606,7 +606,17 @@
                     playButton.textContent = '❚❚'; // Set to pause icon when playing
                 }).catch(handlePlaybackError(url, stationName));
             });
-        } else {
+        }
+        else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+            audio.src = url;
+            audio.oncanplay = () => {
+                progress.style.display = 'none';
+                playButton.textContent = '❚❚'; // Set to pause icon when playing
+            };
+            audio.play();
+        }
+                
+        else {
             currentAudio = new Audio(url);
             currentAudio.oncanplay = () => {
                 progress.style.display = 'none';
