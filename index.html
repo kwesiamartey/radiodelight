@@ -547,7 +547,7 @@
     let stationData = []; // Store stations here to avoid multiple fetches
     let selectedCountryPath = 'unitedStateRadioList.json';
     let currentAudio = null; // Added this declaration
-    let hls = null;
+    let hls;
     let currentPage = 1;
     const itemsPerPage = 50;
     const progress = document.getElementById('progress');
@@ -688,10 +688,10 @@ function playStation(url, image, stationName) {
     const progress = document.getElementById('progress');
     const playButton = document.getElementById('playButton');
 
-    // Reset HLS instance if it exists
-    if (typeof hls !== 'undefined') {
+    // Only destroy HLS instance if it exists
+    if (typeof hls !== 'undefined' && hls !== null) {
         hls.destroy();
-        hls = null;
+        hls = null; // Reset hls after destruction
     }
 
     // Set station logo, display player, and show progress bar
