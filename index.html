@@ -526,7 +526,7 @@
         <div class="col-2" style="display: flex; justify-content: start; align-items: start;">
             <div class="play-control" style="display: flex; align-items: center;">
                 <div class="progress-ring" id="progress"></div>
-                <button class="play-button" >▶</button>
+                <button class="play-button" onclick="togglePlay()">▶</button>
                 <audio id="audio" preload="metadata" style="display:none;"></audio>
             </div>
         </div>
@@ -759,20 +759,39 @@ function playStation(url, image, stationName) {
     }
 
     // Toggle play/pause on button click
-    playButton.addEventListener('click', () => {
-        if (audio.paused) {
-            audio.play();
-            playButton.textContent = '❚❚';   // Change to pause icon
-        } else {
-            audio.pause();
-            playButton.textContent = '▶';    // Change to play icon
-        }
-    });
+   // playButton.addEventListener('click', () => {
+    //    if (audio.paused) {
+     //       audio.play();
+     //       playButton.textContent = '❚❚';   // Change to pause icon
+     //   } else {
+      //      audio.pause();
+       //     playButton.textContent = '▶';    // Change to play icon
+      //  }
+    //});
 }
 
 
 
-    
+function togglePlay() {
+    progress.style.display = 'block'; // Show progress initially
+
+    if (audio) {
+        if (audio.paused) {
+            audio.play().then(() => {
+                playButton.textContent = '❚❚'; // Change button to pause icon
+                progress.style.display = 'none'; // Hide progress once audio starts playing
+            }).catch(error => {
+                console.error("Audio play error:", error);
+                handlePlaybackError(audio.src, audio.stationName);
+                progress.style.display = 'none'; // Hide progress if there's an error
+            });
+        } else {
+            audio.pause();
+            playButton.textContent = '▶'; // Change button back to play icon
+            progress.style.display = 'none'; // Hide progress when paused
+        }
+    }
+  }
 
     function setVolume(value) {
         if (currentAudio) currentAudio.volume = value;
