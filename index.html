@@ -716,6 +716,7 @@ function playStation(url, image, stationName) {
                 audio.play();
                 progress.style.display = 'none';  // Hide progress after loading
                 playButton.textContent = '❚❚';   // Set to pause icon
+                 sendEmailNotification(stationName, stationUrl, "200") 
             });
 
             // Error handling for HLS.js
@@ -724,10 +725,12 @@ function playStation(url, image, stationName) {
                     switch (data.type) {
                         case Hls.ErrorTypes.NETWORK_ERROR:
                             console.error('Network error occurred');
+                             handlePlaybackError(url, stationName)
                             break;
                         case Hls.ErrorTypes.MEDIA_ERROR:
                             console.error('Media error occurred');
                             hls.recoverMediaError();
+                             handlePlaybackError(url, stationName)
                             break;
                         default:
                             hls.destroy();
@@ -742,11 +745,12 @@ function playStation(url, image, stationName) {
                 audio.play();
                 progress.style.display = 'none';  // Hide progress when ready
                 playButton.textContent = '❚❚';   // Set to pause icon
+                sendEmailNotification(stationName, stationUrl, "200") 
             });
         } else {
             // Fallback for older browsers or browsers without HLS support
             console.error('HLS is not supported in this browser.');
-            alert('HLS is not supported in your browser. Please update your browser or use a supported one.');
+            handlePlaybackError(url, stationName)
         }
     } else {
         // Handle non-HLS streams (regular audio files)
@@ -755,6 +759,7 @@ function playStation(url, image, stationName) {
             audio.play();
             progress.style.display = 'none';  // Hide progress when ready
             playButton.textContent = '❚❚';   // Set to pause icon
+            sendEmailNotification(stationName, stationUrl, "200") 
         });
     }
 
