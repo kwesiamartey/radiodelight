@@ -682,9 +682,6 @@ function playStation(url, image, stationName) {
     document.getElementById('playing-station-name').textContent = stationName;
     progress.style.display = 'block';
 
-    // Show the spinner when loading starts
-    showSpinner(true); // Assuming `showSpinner` is defined elsewhere to handle spinner visibility
-
     // Clean up previous audio event listeners
     audio.removeEventListener('canplay', onCanPlay);
     audio.removeEventListener('error', onError);
@@ -693,12 +690,10 @@ function playStation(url, image, stationName) {
     function onCanPlay() {
         progress.style.display = 'none';
         playButton.textContent = '❚❚'; // Set to pause icon when playing
-        showSpinner(false); // Hide the spinner when the audio can play
     }
 
     function onError() {
         progress.style.display = 'none';
-        showSpinner(false); // Hide the spinner on error
         handlePlaybackError(url, stationName); // Handle error appropriately
     }
 
