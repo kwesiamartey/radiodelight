@@ -685,11 +685,10 @@ function createPaginationControls(totalStations, totalPages) {
 }
 
 function playStation(url, image, stationName) {
-    const audio = document.getElementById('audio');
     const progress = document.getElementById('progress');
     const playButton = document.getElementById('playButton');
 
-    // Reset HLS instance if exists
+    // Reset HLS instance if it exists
     if (typeof hls !== 'undefined') {
         hls.destroy();
         hls = null;
@@ -707,7 +706,7 @@ function playStation(url, image, stationName) {
 
     // Check if the stream is HLS (.m3u8) format
     if (hlsUrl.endsWith('.m3u8')) {
-        // Use HLS.js if supported
+        // Use HLS.js if the browser does not support native HLS playback
         if (Hls.isSupported()) {
             hls = new Hls();
             hls.loadSource(hlsUrl);
@@ -719,14 +718,36 @@ function playStation(url, image, stationName) {
                 progress.style.display = 'none';  // Hide progress after loading
                 playButton.textContent = '❚❚';   // Set to pause icon
             });
+
+            // Error handling for HLS.js
+            hls.on(Hls.Events.ERROR, (event, data) => {
+                if (data.fatal) {
+                    switch (data.type) {
+                        case Hls.ErrorTypes.NETWORK_ERROR:
+                            console.error('Network error occurred');
+                            break;
+                        case Hls.ErrorTypes.MEDIA_ERROR:
+                            console.error('Media error occurred');
+                            hls.recoverMediaError();
+                            break;
+                        default:
+                            hls.destroy();
+                            break;
+                    }
+                }
+            });
         } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
-            // Use native HLS support for Safari
+            // Use native HLS support for Safari and similar browsers
             audio.src = hlsUrl;
             audio.addEventListener('canplay', () => {
                 audio.play();
                 progress.style.display = 'none';  // Hide progress when ready
                 playButton.textContent = '❚❚';   // Set to pause icon
             });
+        } else {
+            // Fallback for older browsers or browsers without HLS support
+            console.error('HLS is not supported in this browser.');
+            alert('HLS is not supported in your browser. Please update your browser or use a supported one.');
         }
     } else {
         // Handle non-HLS streams (regular audio files)
@@ -739,21 +760,16 @@ function playStation(url, image, stationName) {
     }
 
     // Toggle play/pause on button click
-       playButton.addEventListener('click', () => {
-         progress.style.display = 'block'; // Show progress initially
+    playButton.addEventListener('click', () => {
         if (audio.paused) {
             audio.play();
-            playButton.textContent = '❚❚'; // Change to pause icon
-             progress.style.display = 'none'; // Hide progress once audio starts playing
+            playButton.textContent = '❚❚';   // Change to pause icon
         } else {
             audio.pause();
-            playButton.textContent = '▶'; // Change to play icon
-             progress.style.display = 'none'; // Hide progress once audio starts playing
+            playButton.textContent = '▶';    // Change to play icon
         }
     });
-
 }
-
 
 
 
