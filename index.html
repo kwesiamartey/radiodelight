@@ -534,6 +534,7 @@
     let stationData = []; // Store stations here to avoid multiple fetches
     let selectedCountryPath = 'unitedStateRadioList.json';
     let currentAudio = null; // Added this declaration
+    const audio = new Audio();
     let hls = null;
     let currentPage = 1;
     const itemsPerPage = 50;
@@ -685,7 +686,7 @@ function playStation(url, image, stationName) {
                 progress.style.display = 'block';
     
             // Show the spinner when loading starts
-            showSpinner(true);
+        
 
             // If it's an HLS (m3u8) stream, use HLS.js
             if (audioExtension === 'm3u8') {
