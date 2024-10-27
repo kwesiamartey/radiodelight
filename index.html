@@ -685,64 +685,45 @@ function createPaginationControls(totalStations, totalPages) {
 }
 
 function playStation(url, image, stationName) {
+   
     const audio = document.getElementById('audio');
     const progress = document.getElementById('progress');
     const playButton = document.querySelector('.play-button');
+
     
-    // Reset previous HLS instance if it exists
-    if (typeof hls !== 'undefined') {
-        hls.destroy();
-        hls = null;
-    }
-    
-    // Set station logo and display player
+       // Set station logo and display player
     document.getElementById('stationLogo').src = image;
     document.getElementById('stationLogo').style.display = 'block';
     document.querySelector('.player-container').style.display = 'block';
     document.getElementById('playing-station-name').textContent = stationName;
     progress.style.display = 'block';
 
-    const audioUrls = [ url ]; // Insert the fetched URLs here
+    const audioUrls = [
+        url // Insert the fetched URLs here
+    ];
 
     let hls;
     let currentAudioIndex = 0;
-    const hlsUrl = audioUrls[currentAudioIndex];
 
-    // Pause any currently playing audio
-    audio.pause();
-    audio.src = '';  // Reset the audio source
-    
-    if (hlsUrl.endsWith('.m3u8')) {
-        // Handle HLS streams
-        if (Hls.isSupported()) {
-            hls = new Hls();
-            hls.loadSource(hlsUrl);
-            hls.attachMedia(audio);
-            hls.on(Hls.Events.MANIFEST_PARSED, function () {
-                audio.play();
-                progress.style.display = 'none'; // Hide progress bar when ready to play
-                playButton.textContent = '❚❚'; // Set to pause icon when playing
-            });
-        } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
-            // For Safari and older browsers with native HLS support
-            audio.src = hlsUrl;
-            audio.addEventListener('canplay', () => {
-                audio.play();
-                progress.style.display = 'none';
-                playButton.textContent = '❚❚'; // Set to pause icon when playing
-            });
-        }
-    } else {
-        // Handle regular audio streams
+
+        const hlsUrl = audioUrls[currentAudioIndex];
         audio.src = hlsUrl;
-        audio.addEventListener('canplay', () => {
-            audio.play();
-            progress.style.display = 'none';
-            playButton.textContent = '❚❚'; // Set to pause icon when playing
-        });
-    }
-    
-    // Add event listener to toggle play/pause button
+
+        if (hlsUrl.endsWith('.m3u8')) {
+            if (Hls.isSupported()) {
+                hls = new Hls();
+                hls.loadSource(hlsUrl);
+                hls.attachMedia(audio);
+                 progress.style.display = 'none';
+                playButton.textContent = '❚❚'; // Set to pause icon when playing
+            } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+                audio.src = hlsUrl;
+                 progress.style.display = 'none';
+                 playButton.textContent = '❚❚'; // Set to pause icon when playing
+            }
+        }
+   
+            // Add event listener to toggle play/pause button
     playButton.addEventListener('click', () => {
          progress.style.display = 'block'; // Show progress initially
         if (audio.paused) {
@@ -755,8 +736,12 @@ function playStation(url, image, stationName) {
              progress.style.display = 'none'; // Hide progress once audio starts playing
         }
     });
+
 }
 
+
+
+    
 
     function togglePlay() {
     progress.style.display = 'block'; // Show progress initially
