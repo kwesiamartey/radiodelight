@@ -469,7 +469,6 @@
 </head>
 <body>
 
-    
     <div class="player-header">
        <!-- <span class="menu-icon" onclick="toggleMenu()">☰</span>-->
           <a href="index.html">
@@ -686,7 +685,7 @@ function createPaginationControls(totalStations, totalPages) {
 
 function playStation(url, image, stationName) {
     const progress = document.getElementById('progress');
-    const playButton = document.getElementById('playButton');
+    const playButton = document.querySelector('.play-button');
 
     // Only destroy HLS instance if it exists
     if (typeof hls !== 'undefined' && hls !== null) {
