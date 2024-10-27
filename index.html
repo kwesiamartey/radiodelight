@@ -672,7 +672,7 @@ function createPaginationControls(totalStations, totalPages) {
 }
 
 function playStation(url, image, stationName) {
-    audio.src = ''; // Reset audio source to avoid previous playback issues
+    audio.src = url; // Reset audio source to avoid previous playback issues
     const audioExtension = url.split('.').pop().toLowerCase();
 
     // Set station logo and display player
