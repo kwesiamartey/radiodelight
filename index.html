@@ -484,7 +484,7 @@
         </div>
 
        <div class="col-2" style="display: flex; justify-content: start; align-items: start;">
-            <h5>Station Name</h5>
+            <h5 id="playing-station-name">Station Name</h5>
         </div>
         
         <!-- Second column: Play button and progress ring -->
@@ -532,6 +532,7 @@
                         selectedCountryPath = country.url;
                         fetchStations(selectedCountryPath);
                         document.querySelector('.countryTitle').textContent = `Live ${country.name} Radio Station Online`;
+                        
                     });
                     countryList.appendChild(listItem);
                 });
@@ -663,6 +664,7 @@ function createPaginationControls(totalStations, totalPages) {
     document.getElementById('stationLogo').src = image;
     document.getElementById('stationLogo').style.display = 'block';
     document.querySelector('.player-container').style.display = 'block';
+    document.getElementById('playing-station-name').textContent = stationName;
     progress.style.display = 'block';
 
     // HLS stream support for .m3u8
