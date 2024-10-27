@@ -657,9 +657,7 @@ function createPaginationControls(totalStations, totalPages) {
 }
 
 
-
-
-    function playStation(url, image, stationName) {
+function playStation(url, image, stationName) {
     // Pause current audio and reset
     if (currentAudio) {
         currentAudio.pause();
@@ -677,29 +675,34 @@ function createPaginationControls(totalStations, totalPages) {
     document.getElementById('playing-station-name').textContent = stationName;
     progress.style.display = 'block';
 
-    // HLS stream support for .m3u8
-    if (Hls.isSupported() && url.endsWith('.m3u8')) {
-        hls = new Hls();
-        hls.loadSource(url);
-        currentAudio = new Audio(); // Create a new audio object
-        hls.attachMedia(currentAudio);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-            currentAudio.play().then(() => {
+    // Check if the URL is for HLS stream (.m3u8) and if Hls.js is supported
+    if (url.endsWith('.m3u8')) {
+        if (Hls.isSupported()) {
+            // Use HLS.js for playing .m3u8
+            hls = new Hls();
+            hls.loadSource(url);
+            currentAudio = new Audio();
+            hls.attachMedia(currentAudio);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                currentAudio.play().then(() => {
+                    progress.style.display = 'none';
+                    playButton.textContent = '❚❚'; // Set to pause icon when playing
+                }).catch(() => handlePlaybackError(url, stationName)); // Handle playback error
+            });
+        } else if (currentAudio.canPlayType('application/vnd.apple.mpegurl')) {
+            // Native HLS support (Safari)
+            currentAudio.src = url;
+            currentAudio.oncanplay = () => {
                 progress.style.display = 'none';
                 playButton.textContent = '❚❚'; // Set to pause icon when playing
-            }).catch(() => handlePlaybackError(url, stationName)); // Correctly pass the function as callback
-        });
-    }
-    // Native HLS support for Safari (in case the browser supports HLS natively)
-    else if (currentAudio.canPlayType('application/vnd.apple.mpegurl')) {
-        currentAudio.src = url;
-        currentAudio.oncanplay = () => {
-            progress.style.display = 'none';
-            playButton.textContent = '❚❚'; // Set to pause icon when playing
-        };
-        currentAudio.play().catch(() => handlePlaybackError(url, stationName)); // Correctly handle error
-    }
-    // Handling regular audio streams like MP3 (audio/mpeg)
+            };
+            currentAudio.play().catch(() => handlePlaybackError(url, stationName)); // Handle playback error
+        } else {
+            console.error('HLS.js is not supported, and the browser cannot play .m3u8 streams natively.');
+            handlePlaybackError(url, stationName);
+        }
+    } 
+      // Handling regular audio streams like MP3 (audio/mpeg)
     else if (currentAudio.canPlayType('audio/mpeg')) {
         currentAudio = new Audio(url); // Direct MP3 stream handling
         currentAudio.oncanplay = () => {
@@ -707,13 +710,35 @@ function createPaginationControls(totalStations, totalPages) {
             playButton.textContent = '❚❚'; // Set to pause icon when playing
         };
         currentAudio.play().catch(() => handlePlaybackError(url, stationName)); // Handle playback error
-    }
-    // Fallback for non-supported streams
+    }   
+    // For non-.m3u8 formats, use SoundManager2 (or any other direct URL player)
     else {
-        console.error('The audio format is not supported by this browser.');
-        handlePlaybackError(url, stationName);
+        // Check if the URL is not .m3u8 and use SoundManager2 for regular formats
+        soundManager.setup({
+            url: '/path-to-soundmanager2/', // Path to SoundManager2 SWF or resources
+            onready: function() {
+                currentAudio = soundManager.createSound({
+                    id: 'stationSound',
+                    url: url,
+                    autoPlay: true,
+                    onplay: function() {
+                        playButton.textContent = '❚❚'; // Set to pause icon when playing
+                        progress.style.display = 'none';
+                    },
+                    onfinish: function() {
+                        playButton.textContent = '▶'; // Reset to play icon when done
+                    },
+                    onerror: function() {
+                        handlePlaybackError(url, stationName);
+                    }
+                });
+            }
+        });
     }
 }
+
+
+
 
 
     function togglePlay() {
