@@ -671,65 +671,67 @@ function createPaginationControls(totalStations, totalPages) {
     }
 }
 
-
 function playStation(url, image, stationName) {
-   
-     audio.src = url;
-            const audioExtension = audioUrl.split('.').pop().toLowerCase();
+    audio.src = ''; // Reset audio source to avoid previous playback issues
+    const audioExtension = url.split('.').pop().toLowerCase();
 
+    // Set station logo and display player
+    document.getElementById('stationLogo').src = image;
+    document.getElementById('stationLogo').style.display = 'block';
+    document.querySelector('.player-container').style.display = 'block';
+    document.getElementById('playing-station-name').textContent = stationName;
+    progress.style.display = 'block';
 
-              // Set station logo and display player
-                document.getElementById('stationLogo').src = image;
-                document.getElementById('stationLogo').style.display = 'block';
-                document.querySelector('.player-container').style.display = 'block';
-                document.getElementById('playing-station-name').textContent = stationName;
-                progress.style.display = 'block';
-    
-            // Show the spinner when loading starts
-        
+    // Show the spinner when loading starts
+    showSpinner(true); // Assuming `showSpinner` is defined elsewhere to handle spinner visibility
 
-            // If it's an HLS (m3u8) stream, use HLS.js
-            if (audioExtension === 'm3u8') {
-                if (Hls.isSupported()) {
-                    if (hls) {
-                        hls.destroy(); // Destroy the previous instance if any
-                    }
-                    hls = new Hls();
-                    hls.loadSource(audioUrl);
-                    hls.attachMedia(audio);
-                    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                         progress.style.display = 'none';
-                         playButton.textContent = '❚❚'; // Set to pause icon when playing
-                    });
-                    hls.on(Hls.Events.ERROR, (event, data) => {
-                        showSpinner(false); // Hide the spinner on error
-                         handlePlaybackError(url, stationName);
-                    });
-                } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
-                    // For Safari or native HLS support
-                    audio.src = audioUrl;
-                    audio.addEventListener('canplay', () => {
-                        progress.style.display = 'none';
-                       playButton.textContent = '❚❚'; // Set to pause icon when playing
-                    });
-                } else {
-                     handlePlaybackError(url, stationName);
-                    return;
-                }
-            } else {
-                // Use native HTML5 audio for other formats
-                audio.addEventListener('canplay', () => {
-                     progress.style.display = 'none';
-                    playButton.textContent = '❚❚'; // Set to pause icon when playing
-                });
+    // Clean up previous audio event listeners
+    audio.removeEventListener('canplay', onCanPlay);
+    audio.removeEventListener('error', onError);
+
+    // Define the event listeners
+    function onCanPlay() {
+        progress.style.display = 'none';
+        playButton.textContent = '❚❚'; // Set to pause icon when playing
+        showSpinner(false); // Hide the spinner when the audio can play
+    }
+
+    function onError() {
+        progress.style.display = 'none';
+        showSpinner(false); // Hide the spinner on error
+        handlePlaybackError(url, stationName); // Handle error appropriately
+    }
+
+    // If it's an HLS (m3u8) stream, use HLS.js
+    if (audioExtension === 'm3u8') {
+        if (Hls.isSupported()) {
+            if (hls) {
+                hls.destroy(); // Destroy the previous instance if any
             }
-
-            // Handle error events for unsupported formats
-            audio.addEventListener('error', function() {
-                progress.style.display = 'none';
-                handlePlaybackError(url, stationName);
+            hls = new Hls();
+            hls.loadSource(url); // Use the correct `url` variable
+            hls.attachMedia(audio);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                onCanPlay(); // Trigger canplay logic
             });
-
+            hls.on(Hls.Events.ERROR, (event, data) => {
+                onError(); // Handle error
+            });
+        } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+            // For Safari or native HLS support
+            audio.src = url;
+            audio.addEventListener('canplay', onCanPlay);
+            audio.addEventListener('error', onError);
+        } else {
+            onError(); // Handle unsupported format
+            return;
+        }
+    } else {
+        // Use native HTML5 audio for other formats
+        audio.src = url;
+        audio.addEventListener('canplay', onCanPlay);
+        audio.addEventListener('error', onError);
+    }
 }
 
 
