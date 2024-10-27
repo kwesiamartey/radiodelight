@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Radio FM USA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Google Sans,Roboto,Arial,sans-serif;
+            display: flex;
+            justify-content: center;  /* Center horizontally */
+            padding-top: 30px; /* Adjust according to the height of the header */
+            background-color:#1c313a;
+            flex-direction: column;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+        }
+
+         .footer-links a {
+            color: white;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+          /* header row: Player */
+        .player-header{
+            background-color: #142229; /* Green */
+            position:fixed;
+            color: white;
+            position: fixed; /* Fixed at the top */
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000; /* Ensures header stays above other content */
+            display: flex;
+            align-items: center;
+            padding: 10px;
+        }
+         #web_title h4{
+             margin-botom:0px;
+             margin-top:8px;
+             margin-right:20px;
+             width:90px;
+         }
+
+         .player-header h5{
+             margin-top:7px;
+         }
+
+         #sidebaer_topBar{
+             width:100%;
+             height:9px;
+         }
+
+        .player-header img {
+            height: 40px;
+            align-items: center;
+            width:100%;
+        }
+
+        /* Main container */
+        .main-container {
+            display: flex;
+            flex: 1;
+            width:1030px;
+            flex-direction: row;
+            background-color: #212529;
+            height: auto; /* Adjust height minus header (80px) and bottom-row (80px) */
+            overflow-y: auto;
+            padding:20px;
+            gap: 20px; /* Space between columns */
+        }
+
+        /* Sidebar (Country list) */
+        .country-list {
+            width: 300px;
+            height:100%;
+            background-color: #212529;
+            overflow-y: auto;
+            padding: 10px;
+            display: block; /* Default visible on desktop/tablet */
+            top: 85px; /* Adjust to appear below the header */
+            justify-content: center;  /* Center horizontally */
+            align-items: center;      /* Center vertically */
+        }
+
+         #searchInput{
+             backroung-color:#dadce0;
+             border-top-color: #dadce0;
+             border-radius:50px;
+             color:#333;
+             margin-left:40px;
+             margin-left:12px;
+             padding-left:12px;
+             width:50%;
+         }
+
+             /* Center the pagination controls */
+    #paginationControls {
+        display: flex;
+        color:white;
+        justify-content: center; /* Centers the controls horizontally */
+        align-items: center; /* Aligns items vertically in the center */
+        margin-top: 10px; /* Optional, to add some spacing */
+    }
+
+    #paginationControls span {
+        margin: 0 5px;
+        cursor: pointer;
+    }
+
+       .img {
+            width: 40px; /* Set width */
+            height: 40px; /* Set height */
+            border-radius: 50%; /* Make the image circular */
+            object-fit: cover; /* Ensure the image covers the circle */
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            display: grid; /* Use grid layout */
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Responsive columns */
+            gap: 10px; /* Space between items */
+        }
+        li {
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin: 5px 0;
+            border-radius: 5px;
+            display: flex; /* Use flexbox to align items */
+            align-items: center; /* Center items vertically */
+            justify-content: center; /* Center items horizontally */
+        }
+
+      /* Middle column: Radio station list */
+        .station-list {
+            flex: 1;
+            width:100%;
+            padding: 0px 10px 10px 10px;
+        }
+
+        .station-list h2 {
+            margin: 10px 5;
+            align-items: center;
+            width: 100%;
+            text-align: center;
+        }
+
+        .station-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 4px;
+            overflow:auto;
+            
+        }
+
+      .country-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 4px;
+            overflow:auto;
+        }
+
+        .station-item {
+            text-align: center;
+            cursor: pointer;
+            color: #ccc;
+            font-size:16px;
+            transition: background-color 0.2s;
+            padding: 0px 0px 0px 0px;
+            background-color: #142229;
+            border-radius: 5px;
+        }
+
+        .station-item:hover {
+
+            color:#fff;
+        }
+
+        .station-item img {
+            width: 100%;
+            height: 130px;
+            border-radius: 5px 5px 0px 0px;
+            object-fit: cover;
+            background-color:white;
+        }
+
+
+        /* Hide sidebar in mobile view */
+        @media screen and (max-width: 768px) {
+            .country-list {
+                width:180px;
+                transform: translateX(-100%); /* Hide off-screen */
+                left: 0;
+                top: 0;
+                flex: 1; /* Make both columns equal in width */
+                height: 100%;
+                 position: fixed;
+                top: 85px; /* Adjust to appear below the header */
+                left: 0;
+                z-index: 1000; /* Ensure it stays on top */
+                transition: transform 0.3s ease; /* For slide effect */
+            }
+
+            .country-list.active {
+                transform: translateX(0); /* Slide in */
+            }
+
+
+              /* Middle column: Radio station list */
+        .station-list {
+            flex: 1;
+            padding: 0px 30px 30px 30px;
+            height: calc(100vh - 160px); /* Adjust height minus header (80px) and bottom-row (80px) */
+            overflow-y: auto;
+            }
+        }
+
+        .country-list h2 {
+            margin: 10px 0;
+            color:#f4f4f4;
+        }
+
+        .country-list ul {
+            list-style-type: none;
+            padding: 0;
+            color:#f4f4f4;
+        }
+
+        .country-list li {
+            padding: 8px;
+            cursor: pointer;
+            color:#f4f4f4;
+            transition: background-color 0.2s;
+        }
+
+        .country-list li:hover {
+            background-color: #999;
+        }
+
+       
+        /* Bottom row: Player */
+        .player-container {
+            position: fixed; /* Fix the player at the bottom */
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #142229;
+            color: white;
+            z-index: 1000; /* Ensure it stays on top */
+        }
+
+        #Logo{
+             width: 40px;
+            height: 40px;
+            border-radius: 100px;
+            margin-left: 20px;
+            margin-right: 20px; /* Margin for spacing */
+            object-fit: cover; /* Ensure the image covers the circle */
+        }
+
+         .countryTitle{
+             color: white;
+             margin-bottom:20px;
+             margin-top: 20px;
+             text-align: center;
+         }
+
+         #countryTitle{
+             color: #ccc;
+             margin-bottom:12px;
+             font-size:16px;
+         }
+     
+        /* First column: Station Image */
+        .station-image {
+            width: 60px;
+            height: 60px;
+            background-color:#fff;
+            border-radius: 5px;
+            object-fit: cover; /* Ensure the image covers the circle */
+        }
+
+        /* Second column: Play button and progress ring */
+        .play-control {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .play-button {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            background-color: #007bff;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        .progress-ring {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border: 6px solid #ddd;
+            border-radius: 50%;
+            border-top-color: #007bff;
+            animation: spin 1s linear infinite;
+            display: none; /* Hidden by default */
+            margin-left: 10px;
+            margin-right: 10px;
+           
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Third column: Volume control */
+        .volume-control {
+            justify-content: center;
+            align-items: center;
+            margin-left: 20px;
+            margin-right: 20px;
+            width:100%;
+           
+        }
+
+        .volume-slider {
+            width: 100%;
+            margin-left: 14px;
+        }
+
+        /* Responsive styles */
+        @media screen and (max-width: 768px) {
+            .player-container {
+                flex-direction: row; /* Keep elements in a row */
+                justify-content: space-between; /* Space out elements */
+            }
+
+            .station-image {
+                width: 60px;
+                height: 60px;
+                margin-left:16px;
+                object-fit: cover; /* Ensure the image covers the circle */
+            }
+
+            .play-button {
+                width: 50px;
+                height: 50px;
+                font-size: 18px; /* Reduce button size */
+            }
+
+            .progress-ring {
+                width: 70px;
+                height: 70px;
+                margin-left: 20px;
+                margin-right: 20px;
+            }
+
+            .volume-control {
+                width: 100%; /* Full width on small screens */
+                margin-left: 14px;
+            }
+               /* Middle column: Radio station list */
+            .station-list {
+                flex: 1;
+                padding: 0px 30px 30px 30px;
+                height: calc(100vh - 160px); /* Adjust height minus header (80px) and bottom-row (80px) */
+                overflow-y: auto;
+            }
+        }
+
+        /* Drawable menu icon */
+        .menu-icon {
+            display: none; /* Default hidden */
+            cursor: pointer;
+        }
+
+        @media screen and (max-width: 768px) {
+           /* .menu-icon {
+                display: block; /* Show only on mobile */
+                /*position: fixed;*/
+                /*background-color:#f4f4f4;*/
+                /*width:18px;*/
+                /*height:18px;*/
+                /*flex: 1; /* Make both columns equal in width */
+                /*z-index: 1001;*/ /* Ensure it stays on top */
+                /*color: #333;*/
+                /*border: none;*/
+                /*padding:5px 5px 8px 5px;*/
+                /*border-radius: 5px;*/
+         #searchInput{
+             backroung-color:#dadce0;
+             border-top-color: #dadce0;
+             border-radius:50px;
+             color:#333;
+    
+             margin-left:18px;
+             padding-left:12px;
+             width:50%;
+         }
+
+         #web_title h4{
+             margin-botom:0px;
+             margin-top:8px;
+             margin-right:20px;
+         }
+           /* }*/
+         #Logo{
+            width: 40px;
+            height: 40px;
+            border-radius: 100px;
+            margin-left: 0px;
+            margin-right: 20px; /* Margin for spacing */
+            object-fit: cover; /* Ensure the image covers the circle */
+        }
+
+            
+
+            #sidebaer_topBar{
+             width:100%;
+             height:9px;
+           }
+
+               /* Middle column: Radio station list */
+        .station-list {
+            flex: 1;
+            padding: 0px 30px 30px 30px;
+            height: calc(100vh - 160px); /* Adjust height minus header (80px) and bottom-row (80px) */
+            overflow-y: auto;
+        }
+     }
+    </style>
+</head>
+<body>
+      <div class="player-header">
+       <!-- <span class="menu-icon" onclick="toggleMenu()">☰</span>-->
+        <a href="https://kwesiamartey.github.io/radiodelight_website/">
+            <img id="Logo" src="logo.png" alt="Station Logo">
+      </a>
+        <h5 id="web_title">Radio Delight</h5>
+        <input type="text" id="searchInput" placeholder="Search stations" oninput="filterStations()">
+   </div>
+
+<!-- Privacy Policy Section -->
+    <div class="row" style="background-color: #142229;padding:50px;">
+       <div class="container">
+           <div class="col">
+           <h1 class="mb-4" style="color: #f4f4f4;">About Us</h1>
+             
+              <p>Radio Delight is a comprehensive website that offers a vast selection of listening options for its users. With free access to numerous radio stations, users can enjoy a wide range of genres, including news, music, sports, and more.</p>
+              
+              <p>In addition, Radio Delight provides access to a variety of podcasts, enabling users to explore an extensive library of on-demand audio content. Whether you're tuning into live radio or discovering new podcasts, Radio Delight is your go-to destination for all your audio entertainment.</p>
+              
+              <h2>About Radio Delight</h2>
+              <p>Radio Delight specializes in mobile application development, creating innovative and engaging apps for both Android and iOS platforms. With a strong focus on news and media applications, our team of expert developers and designers works to deliver high-quality, user-friendly apps that offer a personalized experience for our users.</p>
+              
+              <p>Beyond news and media apps, we also develop a wide array of applications across different industries, always aiming to meet diverse user needs.</p>
+              
+              <p>At Radio Delight, we believe in the power of mobile technology and strive to remain at the forefront of this dynamic industry by continuously pushing the limits of innovation.</p>
+              
+              <p>If you have any questions regarding Radio Delight or any of our products, feel free to contact us.</p>
+
+
+        </div></div>
+    </div>
+
+    <div class="row" style="background-color: #142229;padding:30px;">
+ <div class="container">
+    <div class="row">
+        <!-- Left Section: Radio FM USA Description -->
+        <div class="col-md-6" style="color: #f4f4f4;">
+            <h2>Radio Delight</h2>
+            <p>Explore the finest global radio experience with our free online app, offering seamless access to over 5000 FM/AM stations featuring live broadcasts of news, sports, and music. Stay informed on the latest events in the US and enjoy a wide variety of music genres. Whether you're into pop, rock, or classical, we've got something for every taste.</p>
+
+        </div>
+
+        <!-- Right Section: Top Radio Stations -->
+        <div class="col-md-6" style="color: #f4f4f4;">
+            <h2>Top Radio Countries</h2>
+            <ul class="list-unstyled">
+                <li>1. USA</li>
+                <li>2. Canada</li>
+                <li>3. Finland</li>
+                <li>4. Albania</li>
+                <li>5. UK</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <div class="row mt-5" style="color: #f4f4f4;">
+        <div class="col text-center footer-links">
+            <a href="privacy.html">Privacy Policy</a> · 
+            <a href="privacy.html">Terms of Service</a> · 
+            <a href="about-us.html">About Us</a> · 
+            <a href="contact-us.html">Contact Us</a>
+        </div>
+    </div>
+</div>   
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
