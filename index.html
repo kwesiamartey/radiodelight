@@ -547,12 +547,12 @@
     let stationData = []; // Store stations here to avoid multiple fetches
     let selectedCountryPath = 'unitedStateRadioList.json';
     let currentAudio = null; // Added this declaration
-    const audio = new Audio();
     let hls = null;
     let currentPage = 1;
     const itemsPerPage = 50;
     const progress = document.getElementById('progress');
     const playButton = document.querySelector('.play-button');
+    const audio = document.getElementById('audio');
 
     function fetchCountries() {
         fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
@@ -685,12 +685,7 @@ function createPaginationControls(totalStations, totalPages) {
 }
 
 function playStation(url, image, stationName) {
-   
-    const audio = document.getElementById('audio');
-    const progress = document.getElementById('progress');
-    const playButton = document.querySelector('.play-button');
-
-    
+       
        // Set station logo and display player
     document.getElementById('stationLogo').src = image;
     document.getElementById('stationLogo').style.display = 'block';
@@ -698,15 +693,12 @@ function playStation(url, image, stationName) {
     document.getElementById('playing-station-name').textContent = stationName;
     progress.style.display = 'block';
 
-    const audioUrls = [
-        url // Insert the fetched URLs here
-    ];
 
     let hls;
     let currentAudioIndex = 0;
 
 
-        const hlsUrl = audioUrls[currentAudioIndex];
+        const hlsUrl = url;
         audio.src = hlsUrl;
 
         if (hlsUrl.endsWith('.m3u8')) {
@@ -722,8 +714,10 @@ function playStation(url, image, stationName) {
                  playButton.textContent = '❚❚'; // Set to pause icon when playing
             }
         }
-   
-            // Add event listener to toggle play/pause button
+
+}
+
+                // Add event listener to toggle play/pause button
     playButton.addEventListener('click', () => {
          progress.style.display = 'block'; // Show progress initially
         if (audio.paused) {
@@ -736,9 +730,6 @@ function playStation(url, image, stationName) {
              progress.style.display = 'none'; // Hide progress once audio starts playing
         }
     });
-
-}
-
 
 
     
