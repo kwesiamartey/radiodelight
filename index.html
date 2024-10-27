@@ -685,40 +685,61 @@ function createPaginationControls(totalStations, totalPages) {
 }
 
 function playStation(url, image, stationName) {
-       
-       // Set station logo and display player
+    const audio = document.getElementById('audio');
+    const progress = document.getElementById('progress');
+    const playButton = document.getElementById('playButton');
+
+    // Reset HLS instance if exists
+    if (typeof hls !== 'undefined') {
+        hls.destroy();
+        hls = null;
+    }
+
+    // Set station logo, display player, and show progress bar
     document.getElementById('stationLogo').src = image;
     document.getElementById('stationLogo').style.display = 'block';
     document.querySelector('.player-container').style.display = 'block';
     document.getElementById('playing-station-name').textContent = stationName;
     progress.style.display = 'block';
 
+    // Initialize HLS or regular stream
+    const hlsUrl = url;
 
-    let hls;
-    let currentAudioIndex = 0;
+    // Check if the stream is HLS (.m3u8) format
+    if (hlsUrl.endsWith('.m3u8')) {
+        // Use HLS.js if supported
+        if (Hls.isSupported()) {
+            hls = new Hls();
+            hls.loadSource(hlsUrl);
+            hls.attachMedia(audio);
 
-
-        const hlsUrl = url;
-        audio.src = hlsUrl;
-
-        if (hlsUrl.endsWith('.m3u8')) {
-            if (Hls.isSupported()) {
-                hls = new Hls();
-                hls.loadSource(hlsUrl);
-                hls.attachMedia(audio);
-                 progress.style.display = 'none';
-                playButton.textContent = '❚❚'; // Set to pause icon when playing
-            } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
-                audio.src = hlsUrl;
-                 progress.style.display = 'none';
-                 playButton.textContent = '❚❚'; // Set to pause icon when playing
-            }
+            // Hide progress and start playback when manifest is loaded
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                audio.play();
+                progress.style.display = 'none';  // Hide progress after loading
+                playButton.textContent = '❚❚';   // Set to pause icon
+            });
+        } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+            // Use native HLS support for Safari
+            audio.src = hlsUrl;
+            audio.addEventListener('canplay', () => {
+                audio.play();
+                progress.style.display = 'none';  // Hide progress when ready
+                playButton.textContent = '❚❚';   // Set to pause icon
+            });
         }
+    } else {
+        // Handle non-HLS streams (regular audio files)
+        audio.src = hlsUrl;
+        audio.addEventListener('canplay', () => {
+            audio.play();
+            progress.style.display = 'none';  // Hide progress when ready
+            playButton.textContent = '❚❚';   // Set to pause icon
+        });
+    }
 
-}
-
-                // Add event listener to toggle play/pause button
-    playButton.addEventListener('click', () => {
+    // Toggle play/pause on button click
+       playButton.addEventListener('click', () => {
          progress.style.display = 'block'; // Show progress initially
         if (audio.paused) {
             audio.play();
@@ -731,19 +752,12 @@ function playStation(url, image, stationName) {
         }
     });
 
+}
+
+
+
 
     
-
-    function togglePlay() {
-    progress.style.display = 'block'; // Show progress initially
-        if (audio.paused) {
-            audio.play();
-            playButton.textContent = '❚❚'; // Change to pause icon
-        } else {
-            audio.pause();
-            playButton.textContent = '▶'; // Change to play icon
-        }
-    }
 
     function setVolume(value) {
         if (currentAudio) currentAudio.volume = value;
