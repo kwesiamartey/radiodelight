@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="logo.png">
     <title>404 Page Not Found</title>
     <style>
         body {
@@ -62,7 +63,37 @@
         <h1 class="error-code">404</h1>
         <p class="error-message">Station Not Found</p>
         <p class="error-description">Apologies, but the station you're trying to access is currently unavailable or the streaming service is down.</p>
-        <a href="#" class="home-button"> Clck on the red triangle icon at the top to report</a>
+        <p class="error-description">Please come back in an hour time.</p>
+        <a href="index.html" class="home-button">back to Home</a>
     </div>
+
+
+  <script>
+    sendEmailNotification("404 Page appeared", "404", "404 Page appeared") 
+
+    function sendEmailNotification(stationName, stationUrl, status) {
+        const formData = new FormData();
+        formData.append('stationName', stationName);
+        formData.append('stationUrl', stationUrl);
+        formData.append('status', status);
+
+        fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/sendEmail.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.status === 'success') {
+                console.log('Email sent successfully:', result.message);
+            } else {
+                console.error('Failed to send email:', result.message);
+            }
+        })
+        .catch(error => console.error('Error sending email:', error));
+    }
+      
+  </script>
+
+    
 </body>
 </html>
