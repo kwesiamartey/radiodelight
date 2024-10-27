@@ -736,9 +736,11 @@ function playStation(url, image, stationName) {
         if (audio.paused) {
             audio.play();
             playButton.textContent = '❚❚'; // Change to pause icon
+             progress.style.display = 'none'; // Hide progress once audio starts playing
         } else {
             audio.pause();
             playButton.textContent = '▶'; // Change to play icon
+             progress.style.display = 'none'; // Hide progress once audio starts playing
         }
     });
 }
