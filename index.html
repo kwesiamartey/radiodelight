@@ -662,6 +662,7 @@ function createPaginationControls(totalStations, totalPages) {
     document.getElementById('stationLogo').src = image;
     document.getElementById('stationLogo').style.display = 'block';
     document.querySelector('.player-container').style.display = 'block';
+    document.getElementById('footer').style.display = 'block';
     progress.style.display = 'block';
 
     // HLS stream support for .m3u8
@@ -764,7 +765,7 @@ function createPaginationControls(totalStations, totalPages) {
 
 
 
- <div class="row" style="background-color: #142229;padding:30px;">
+ <div class="row" id="footer" style="background-color: #142229;padding:30px; display: none;">
  <div class="container">
     <div class="row">
         <!-- Left Section: Radio FM USA Description -->
