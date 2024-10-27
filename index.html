@@ -658,83 +658,63 @@ function createPaginationControls(totalStations, totalPages) {
 
 
 function playStation(url, image, stationName) {
-    // Pause current audio and reset
-    if (currentAudio) {
-        currentAudio.pause();
-        playButton.textContent = '▶'; // Reset play button to play icon
-        if (hls) {
-            hls.destroy();
-            hls = null;
-        }
-    }
+   
+     audio.src = url;
+            const audioExtension = audioUrl.split('.').pop().toLowerCase();
 
-    // Set station logo and display player
-    document.getElementById('stationLogo').src = image;
-    document.getElementById('stationLogo').style.display = 'block';
-    document.querySelector('.player-container').style.display = 'block';
-    document.getElementById('playing-station-name').textContent = stationName;
-    progress.style.display = 'block';
 
-    // Check if the URL is for HLS stream (.m3u8) and if Hls.js is supported
-    if (url.endsWith('.m3u8')) {
-        if (Hls.isSupported()) {
-            // Use HLS.js for playing .m3u8
-            hls = new Hls();
-            hls.loadSource(url);
-            currentAudio = new Audio();
-            hls.attachMedia(currentAudio);
-            hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                currentAudio.play().then(() => {
-                    progress.style.display = 'none';
-                    playButton.textContent = '❚❚'; // Set to pause icon when playing
-                }).catch(() => handlePlaybackError(url, stationName)); // Handle playback error
-            });
-        } else if (currentAudio.canPlayType('application/vnd.apple.mpegurl')) {
-            // Native HLS support (Safari)
-            currentAudio.src = url;
-            currentAudio.oncanplay = () => {
-                progress.style.display = 'none';
-                playButton.textContent = '❚❚'; // Set to pause icon when playing
-            };
-            currentAudio.play().catch(() => handlePlaybackError(url, stationName)); // Handle playback error
-        } else {
-            console.error('HLS.js is not supported, and the browser cannot play .m3u8 streams natively.');
-            handlePlaybackError(url, stationName);
-        }
-    } 
-      // Handling regular audio streams like MP3 (audio/mpeg)
-    else if (currentAudio.canPlayType('audio/mpeg')) {
-        currentAudio = new Audio(url); // Direct MP3 stream handling
-        currentAudio.oncanplay = () => {
-            progress.style.display = 'none';
-            playButton.textContent = '❚❚'; // Set to pause icon when playing
-        };
-        currentAudio.play().catch(() => handlePlaybackError(url, stationName)); // Handle playback error
-    }   
-    // For non-.m3u8 formats, use SoundManager2 (or any other direct URL player)
-    else {
-        // Check if the URL is not .m3u8 and use SoundManager2 for regular formats
-        soundManager.setup({
-            url: 'https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/', // Path to SoundManager2 SWF or resources
-            onready: function() {
-                currentAudio = soundManager.createSound({
-                    id: 'stationSound',
-                    url: url,
-                    autoPlay: true,
-                    onplay: function() {
-                        playButton.textContent = '❚❚'; // Set to pause icon when playing
-                        progress.style.display = 'none';
-                    },
-                    onfinish: function() {
-                        playButton.textContent = '▶'; // Reset to play icon when done
-                    },
-                    onerror: function() {
-                        handlePlaybackError(url, stationName);
+              // Set station logo and display player
+                document.getElementById('stationLogo').src = image;
+                document.getElementById('stationLogo').style.display = 'block';
+                document.querySelector('.player-container').style.display = 'block';
+                document.getElementById('playing-station-name').textContent = stationName;
+                progress.style.display = 'block';
+    
+            // Show the spinner when loading starts
+            showSpinner(true);
+
+            // If it's an HLS (m3u8) stream, use HLS.js
+            if (audioExtension === 'm3u8') {
+                if (Hls.isSupported()) {
+                    if (hls) {
+                        hls.destroy(); // Destroy the previous instance if any
                     }
+                    hls = new Hls();
+                    hls.loadSource(audioUrl);
+                    hls.attachMedia(audio);
+                    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                         progress.style.display = 'none';
+                         playButton.textContent = '❚❚'; // Set to pause icon when playing
+                    });
+                    hls.on(Hls.Events.ERROR, (event, data) => {
+                        showSpinner(false); // Hide the spinner on error
+                         handlePlaybackError(url, stationName);
+                    });
+                } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+                    // For Safari or native HLS support
+                    audio.src = audioUrl;
+                    audio.addEventListener('canplay', () => {
+                        progress.style.display = 'none';
+                       playButton.textContent = '❚❚'; // Set to pause icon when playing
+                    });
+                } else {
+                     handlePlaybackError(url, stationName);
+                    return;
+                }
+            } else {
+                // Use native HTML5 audio for other formats
+                audio.addEventListener('canplay', () => {
+                     progress.style.display = 'none';
+                    playButton.textContent = '❚❚'; // Set to pause icon when playing
                 });
             }
-        });
-    }
+
+            // Handle error events for unsupported formats
+            audio.addEventListener('error', function() {
+                progress.style.display = 'none';
+                handlePlaybackError(url, stationName);
+            });
+
 }
 
 
