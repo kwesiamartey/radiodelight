@@ -927,7 +927,7 @@ function playStation(url, image, stationName) {
             hls.on(Hls.Events.MANIFEST_PARSED, () => {
                 audio.play();
                 progress.style.display = 'none';  // Hide progress after loading
-                playButton.textContent = '❚❚';   // Set to pause icon
+                playButton.textContent = '||';   // Set to pause icon
                  sendEmailNotification(stationName, stationUrl, "200") 
             });
 
@@ -956,7 +956,7 @@ function playStation(url, image, stationName) {
             audio.addEventListener('canplay', () => {
                 audio.play();
                 progress.style.display = 'none';  // Hide progress when ready
-                playButton.textContent = '❚❚';   // Set to pause icon
+                playButton.textContent = '||';   // Set to pause icon
                 sendEmailNotification(stationName, stationUrl, "200") 
             });
         } else {
@@ -970,7 +970,7 @@ function playStation(url, image, stationName) {
         audio.addEventListener('canplay', () => {
             audio.play();
             progress.style.display = 'none';  // Hide progress when ready
-            playButton.textContent = '❚❚';   // Set to pause icon
+            playButton.textContent = '||';   // Set to pause icon
             sendEmailNotification(stationName, stationUrl, "200") 
         });
     }
@@ -995,7 +995,7 @@ function togglePlay() {
     if (audio) {
         if (audio.paused) {
             audio.play().then(() => {
-                playButton.textContent = '❚❚'; // Change button to pause icon
+                playButton.textContent = '||'; // Change button to pause icon
                 progress.style.display = 'none'; // Hide progress once audio starts playing
             }).catch(error => {
                 console.error("Audio play error:", error);
