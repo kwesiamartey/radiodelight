@@ -495,6 +495,12 @@
             flex-direction: column;
             overflow-x: hidden; /* Prevent horizontal scrolling */
         }
+
+         .toFactory{
+             display: flex; 
+             justify-content: start; 
+             align-items: start;
+         }
      }
       
     </style>
@@ -595,16 +601,16 @@
   <div class="player-container" style=" background-color:#142229;display: none;">
    <div class="row" style="display: flex; align-items: center; height: 100px;justify-content:center;"> <!-- Vertically center contents -->
         <!-- First column: Station Image -->
-        <div class="col-2" style="width:auto;display: flex; justify-content: center; align-items: center;">
+        <div class="col-2 toFactory" style="width:auto;display: flex; justify-content: center; align-items: center;">
             <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: none;">
         </div>
 
-       <div class="col-2" style="width:auto;display: flex; justify-content: start; align-items: start;">
+       <div class="col-2 toFactory" style="width:auto;display: flex; justify-content: start; align-items: start;">
             <h5 id="playing-station-name">Station Name</h5>
         </div>
         
         <!-- Second column: Play button and progress ring -->
-        <div class="col-2" style="width:auto;display: flex; justify-content: start; align-items: start;">
+        <div class="col-2 toFactory" style="width:auto;display: flex; justify-content: start; align-items: start;">
             <div class="play-control" style="display: flex; align-items: center;">
                 <div class="progress-ring" id="progress"></div>
                 <button class="play-button" onclick="togglePlay()">▶</button>
