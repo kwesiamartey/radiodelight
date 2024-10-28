@@ -1027,9 +1027,9 @@ function togglePlay() {
     }
 
     //popUp Html
-    function openPopupWithData(name, url) {
+    function openPopupWithData(stationName, logoUrl, audioUrl) {
     // Create a new window with specific dimensions
-    const popupWindow = window.open("", "_blank", "width=600,height=400");
+    const popupWindow = window.open("", "_blank", "width=300,height=400");
 
     // Check if popup was blocked
     if (!popupWindow) {
@@ -1041,32 +1041,35 @@ function togglePlay() {
     popupWindow.document.write(`
         <html>
             <head>
-                <title>Popup with Data</title>
+                <title>Radio Station</title>
                 <style>
-                    body { font-family: Arial, sans-serif; padding: 20px; }
-                    h1 { color: #333; }
-                    p { margin: 10px 0; }
+                    body { font-family: Arial, sans-serif; padding: 20px; text-align: center; }
+                    h1 { color: #333; font-size: 1.2em; margin-top: 10px; }
+                    img { width: 100px; height: 100px; border-radius: 50%; }
+                    audio { width: 100%; margin-top: 20px; }
+                    .container { display: flex; flex-direction: column; align-items: center; }
                 </style>
             </head>
             <body>
-                <h1>${name}</h1>
-                <p>${url}</p>
-                <ul id="dataList"></ul>
-                <button onclick="window.close()">Close Popup</button>
+                <div class="container">
+                    <!-- Logo at the top -->
+                    <img src="${logoUrl}" alt="${stationName} Logo">
+                    
+                    <!-- Station name below the logo -->
+                    <h1>${stationName}</h1>
+                    
+                    <!-- Audio player below the station name -->
+                    <audio controls>
+                        <source src="${audioUrl}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+                
+                <!-- Close button -->
+                <button onclick="window.close()" style="margin-top: 20px;">Close</button>
             </body>
         </html>
     `);
-
-    // Data to display in the popup (you can replace this with dynamic data)
-    const data = ["Item 1", "Item 2", "Item 3"];
-
-    // Populate the data into the popup
-    const dataList = popupWindow.document.getElementById("dataList");
-    data.forEach(item => {
-        const listItem = popupWindow.document.createElement("li");
-        listItem.textContent = item;
-        dataList.appendChild(listItem);
-    });
 
     // Optional: Focus on the new popup window
     popupWindow.focus();
