@@ -222,6 +222,13 @@
             background-color:white;
         }
 
+      .toFactory{
+            width:auto;
+             display: flex; 
+             justify-content: start;
+             align-items: start;
+         }
+
 
         /* Hide sidebar in mobile view */
         @media screen and (max-width: 768px) {
@@ -497,9 +504,7 @@
         }
 
          .toFactory{
-             display: flex; 
-             justify-content: start; 
-             align-items: start;
+        
          }
      }
       
@@ -601,16 +606,16 @@
   <div class="player-container" style=" background-color:#142229;display: none;">
    <div class="row" style="display: flex; align-items: center; height: 100px;justify-content:center;"> <!-- Vertically center contents -->
         <!-- First column: Station Image -->
-        <div class="col-2 toFactory" style="width:auto;display: flex; justify-content: center; align-items: center;">
+        <div class="col-2 toFactory" >
             <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: none;">
         </div>
 
-       <div class="col-2 toFactory" style="width:auto;display: flex; justify-content: start; align-items: start;">
+       <div class="col-2 toFactory" >
             <h5 id="playing-station-name">Station Name</h5>
         </div>
         
         <!-- Second column: Play button and progress ring -->
-        <div class="col-2 toFactory" style="width:auto;display: flex; justify-content: start; align-items: start;">
+        <div class="col-2 toFactory" >
             <div class="play-control" style="display: flex; align-items: center;">
                 <div class="progress-ring" id="progress"></div>
                 <button class="play-button" onclick="togglePlay()">▶</button>
@@ -619,7 +624,7 @@
         </div>
         
         <!-- Third column: Volume control -->
-        <div class="col-6" style="display: flex; justify-content: start; align-items: start;">
+        <div class="col-6" >
             <div class="volume-control" style="display: flex; align-items: center;">
                 <i class="fa fa-volume-up" style="font-size:24px;color:white;margin-right:12px;"></i>
                 <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
