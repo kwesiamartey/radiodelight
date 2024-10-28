@@ -660,11 +660,11 @@ function setupPaginationButtons(data, totalPages) {
     // Previous button
     const prevButton = document.createElement('button');
     prevButton.textContent = 'Previous';
-    prevButton.disabled = currentPage === 1;
+    prevButton.disabled = currentPage1 === 1;
     prevButton.addEventListener('click', () => {
-        if (currentPage > 1) {
-            currentPage--;
-            renderCountryList(data, currentPage, totalPages);
+        if (currentPage1 > 1) {
+            currentPage1--;
+            renderCountryList(data, currentPage1, totalPages);
         }
     });
     paginationControls.appendChild(prevButton);
@@ -673,10 +673,10 @@ function setupPaginationButtons(data, totalPages) {
     for (let i = 1; i <= totalPages; i++) {
         const pageButton = document.createElement('button');
         pageButton.textContent = i;
-        pageButton.disabled = i === currentPage;
+        pageButton.disabled = i === currentPage1;
         pageButton.addEventListener('click', () => {
-            currentPage = i;
-            renderCountryList(data, currentPage, totalPages);
+            currentPage1 = i;
+            renderCountryList(data, currentPage1, totalPages);
         });
         paginationControls.appendChild(pageButton);
     }
@@ -684,11 +684,11 @@ function setupPaginationButtons(data, totalPages) {
     // Next button
     const nextButton = document.createElement('button');
     nextButton.textContent = 'Next';
-    nextButton.disabled = currentPage === totalPages;
+    nextButton.disabled = currentPage1 === totalPages;
     nextButton.addEventListener('click', () => {
-        if (currentPage < totalPages) {
-            currentPage++;
-            renderCountryList(data, currentPage, totalPages);
+        if (currentPage1 < totalPages) {
+            currentPage1++;
+            renderCountryList(data, currentPage1, totalPages);
         }
     });
     paginationControls.appendChild(nextButton);
