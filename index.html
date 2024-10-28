@@ -7,8 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966"
-     crossorigin="anonymous"></script>
+   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966" crossorigin="anonymous"></script>
     <title>Radio Delight</title>
   <style>
         body, html {
@@ -656,9 +655,12 @@ function setupPaginationButtons(data, totalPages) {
     const paginationControls = document.getElementById('paginationControls1');
     paginationControls.innerHTML = ''; // Clear any existing controls
 
+    const maxVisibleButtons = 3; // Number of visible buttons around the current page
+    const ellipsis = '...';
+
     // Previous button
     const prevButton = document.createElement('button');
-    prevButton.textContent = 'Previous';
+    prevButton.textContent = '<<';
     prevButton.disabled = currentPage1 === 1;
     prevButton.addEventListener('click', () => {
         if (currentPage1 > 1) {
@@ -669,22 +671,55 @@ function setupPaginationButtons(data, totalPages) {
     });
     paginationControls.appendChild(prevButton);
 
-    // Page numbers
-    for (let i = 1; i <= totalPages; i++) {
-        const pageButton = document.createElement('button');
-        pageButton.textContent = i;
-        pageButton.disabled = i === currentPage1;
-        pageButton.addEventListener('click', () => {
-            currentPage1 = i;
-            renderCountryList(data, currentPage1, totalPages);
-            setupPaginationButtons(data, totalPages); // Refresh pagination buttons
-        });
-        paginationControls.appendChild(pageButton);
+    // Page number buttons
+    if (totalPages <= maxVisibleButtons + 2) {
+        // If total pages are few, display all
+        for (let i = 1; i <= totalPages; i++) {
+            addPageButton(i);
+        }
+    } else {
+        // Handle case when total pages are more than the visible buttons
+        let startPage, endPage;
+
+        if (currentPage1 <= maxVisibleButtons) {
+            // Near the beginning
+            startPage = 1;
+            endPage = maxVisibleButtons;
+        } else if (currentPage1 + maxVisibleButtons - 1 >= totalPages) {
+            // Near the end
+            startPage = totalPages - maxVisibleButtons + 1;
+            endPage = totalPages;
+        } else {
+            // Somewhere in the middle
+            startPage = currentPage1 - Math.floor(maxVisibleButtons / 2);
+            endPage = currentPage1 + Math.floor(maxVisibleButtons / 2);
+        }
+
+        // Show the first page and ellipsis if needed
+        if (startPage > 1) {
+            addPageButton(1);
+            if (startPage > 2) {
+                addEllipsis();
+            }
+        }
+
+        // Display range of page numbers
+        for (let i = startPage; i <= endPage; i++) {
+            addPageButton(i);
+        }
+
+        // Show the last page and ellipsis if needed
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                addEllipsis();
+            }
+            addPageButton(totalPages);
+        }
     }
 
     // Next button
     const nextButton = document.createElement('button');
-    nextButton.textContent = 'Next';
+    nextButton.textContent = '>>';
     nextButton.disabled = currentPage1 === totalPages;
     nextButton.addEventListener('click', () => {
         if (currentPage1 < totalPages) {
@@ -694,6 +729,24 @@ function setupPaginationButtons(data, totalPages) {
         }
     });
     paginationControls.appendChild(nextButton);
+
+    function addPageButton(page) {
+        const pageButton = document.createElement('button');
+        pageButton.textContent = page;
+        pageButton.disabled = page === currentPage1;
+        pageButton.addEventListener('click', () => {
+            currentPage1 = page;
+            renderCountryList(data, currentPage1, totalPages);
+            setupPaginationButtons(data, totalPages); // Refresh pagination buttons
+        });
+        paginationControls.appendChild(pageButton);
+    }
+
+    function addEllipsis() {
+        const ellipsisSpan = document.createElement('span');
+        ellipsisSpan.textContent = ellipsis;
+        paginationControls.appendChild(ellipsisSpan);
+    }
 }
 
      
