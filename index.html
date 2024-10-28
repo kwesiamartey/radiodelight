@@ -480,6 +480,9 @@
         #playing-station-name{
             display: none;
         }
+         #web_title{
+             display: none;
+         }
 
             body, html {
             margin: 0;
@@ -771,25 +774,6 @@ function setupPaginationButtons(data, totalPages) {
     }
 }
 
-     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
     function fetchStations(countryPath = 'unitedStateRadioList.json') {
         fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`)
             .then(response => response.ok ? response.json() : Promise.reject())
@@ -1041,6 +1025,55 @@ function togglePlay() {
         })
         .catch(error => console.error('Error sending email:', error));
     }
+
+    //popUp Html
+    function openPopupWithData(name, url) {
+    // Create a new window with specific dimensions
+    const popupWindow = window.open("", "_blank", "width=600,height=400");
+
+    // Check if popup was blocked
+    if (!popupWindow) {
+        alert("Popup blocked! Please allow popups for this site.");
+        return;
+    }
+
+    // Set up HTML content in the new window
+    popupWindow.document.write(`
+        <html>
+            <head>
+                <title>Popup with Data</title>
+                <style>
+                    body { font-family: Arial, sans-serif; padding: 20px; }
+                    h1 { color: #333; }
+                    p { margin: 10px 0; }
+                </style>
+            </head>
+            <body>
+                <h1>${name}</h1>
+                <p>${url}</p>
+                <ul id="dataList"></ul>
+                <button onclick="window.close()">Close Popup</button>
+            </body>
+        </html>
+    `);
+
+    // Data to display in the popup (you can replace this with dynamic data)
+    const data = ["Item 1", "Item 2", "Item 3"];
+
+    // Populate the data into the popup
+    const dataList = popupWindow.document.getElementById("dataList");
+    data.forEach(item => {
+        const listItem = popupWindow.document.createElement("li");
+        listItem.textContent = item;
+        dataList.appendChild(listItem);
+    });
+
+    // Optional: Focus on the new popup window
+    popupWindow.focus();
+}
+
+
+    
 
     window.onload = () => {
         loadCountries();
