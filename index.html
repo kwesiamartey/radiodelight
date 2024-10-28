@@ -505,6 +505,8 @@
                 
                 <p id="countryTitle" style="display: none;">Other Countries</p>
                 <ul id="countryList" class="country-grid"></ul>
+                <br><br>
+                <div id="paginationControls1"></div>
             </br>
                 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966"
                     crossorigin="anonymous"></script>
@@ -606,33 +608,109 @@
     let hls;
     let currentPage = 1;
     const itemsPerPage = 50;
+    let currentPage1 = 1;
+    const itemsPerPage1 = 10; // Number of countries per page
     const progress = document.getElementById('progress');
     const playButton = document.querySelector('.play-button');
     const audio = document.getElementById('audio');
 
-    function fetchCountries() {
-        fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
-            .then(response => response.ok ? response.json() : Promise.reject())
-            .then(data => {
-                const countryList = document.getElementById('countryList');
-                document.getElementById('countryTitle').style.display = 'block';
-                document.querySelector('.countryTitle').style.display = 'block';
-                
-                countryList.innerHTML = '';
-                data.forEach(country => {
-                    const listItem = document.createElement('li');
-                    listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag">`;
-                    listItem.addEventListener('click', () => {
-                        selectedCountryPath = country.url;
-                        fetchStations(selectedCountryPath);
-                        document.querySelector('.countryTitle').textContent = `Live ${country.name} Radio Station Online`;
-                        
-                    });
-                    countryList.appendChild(listItem);
-                });
-            })
-            .catch(error => console.error('Error fetching country data:', error));
+
+
+
+function loadCountries() {
+    fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
+        .then(response => response.ok ? response.json() : Promise.reject())
+        .then(data => {
+            const totalPages = Math.ceil(data.length / itemsPerPage1);
+            renderCountryList(data, currentPage1, totalPages);
+            setupPaginationButtons(data, totalPages);
+        })
+        .catch(error => console.error('Error fetching country data:', error));
+}
+
+function renderCountryList(data, page, totalPages) {
+    const countryList = document.getElementById('countryList');
+    document.getElementById('countryTitle').style.display = 'block';
+    document.querySelector('.countryTitle').style.display = 'block';
+    
+    countryList.innerHTML = ''; // Clear the current list
+
+    // Determine the start and end indices for the current page
+    const startIndex = (page - 1) * itemsPerPage1;
+    const endIndex = Math.min(startIndex + itemsPerPage1, data.length);
+
+    // Display countries for the current page
+    for (let i = startIndex; i < endIndex; i++) {
+        const country = data[i];
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag">`;
+        listItem.addEventListener('click', () => {
+            selectedCountryPath = country.url;
+            fetchStations(selectedCountryPath);
+            document.querySelector('.countryTitle').textContent = `Live ${country.name} Radio Station Online`;
+        });
+        countryList.appendChild(listItem);
     }
+}
+
+function setupPaginationButtons(data, totalPages) {
+    const paginationControls = document.getElementById('paginationControls1');
+    paginationControls.innerHTML = ''; // Clear any existing controls
+
+    // Previous button
+    const prevButton = document.createElement('button');
+    prevButton.textContent = 'Previous';
+    prevButton.disabled = currentPage === 1;
+    prevButton.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderCountryList(data, currentPage, totalPages);
+        }
+    });
+    paginationControls.appendChild(prevButton);
+
+    // Page numbers
+    for (let i = 1; i <= totalPages; i++) {
+        const pageButton = document.createElement('button');
+        pageButton.textContent = i;
+        pageButton.disabled = i === currentPage;
+        pageButton.addEventListener('click', () => {
+            currentPage = i;
+            renderCountryList(data, currentPage, totalPages);
+        });
+        paginationControls.appendChild(pageButton);
+    }
+
+    // Next button
+    const nextButton = document.createElement('button');
+    nextButton.textContent = 'Next';
+    nextButton.disabled = currentPage === totalPages;
+    nextButton.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderCountryList(data, currentPage, totalPages);
+        }
+    });
+    paginationControls.appendChild(nextButton);
+}
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
 
     function fetchStations(countryPath = 'unitedStateRadioList.json') {
         fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`)
@@ -887,7 +965,7 @@ function togglePlay() {
     }
 
     window.onload = () => {
-        fetchCountries();
+        loadCountries();
         fetchStations();
     };
 </script>
