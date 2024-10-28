@@ -665,6 +665,7 @@ function setupPaginationButtons(data, totalPages) {
         if (currentPage1 > 1) {
             currentPage1--;
             renderCountryList(data, currentPage1, totalPages);
+            setupPaginationButtons(data, totalPages); // Refresh pagination buttons
         }
     });
     paginationControls.appendChild(prevButton);
@@ -677,6 +678,7 @@ function setupPaginationButtons(data, totalPages) {
         pageButton.addEventListener('click', () => {
             currentPage1 = i;
             renderCountryList(data, currentPage1, totalPages);
+            setupPaginationButtons(data, totalPages); // Refresh pagination buttons
         });
         paginationControls.appendChild(pageButton);
     }
@@ -689,10 +691,12 @@ function setupPaginationButtons(data, totalPages) {
         if (currentPage1 < totalPages) {
             currentPage1++;
             renderCountryList(data, currentPage1, totalPages);
+            setupPaginationButtons(data, totalPages); // Refresh pagination buttons
         }
     });
     paginationControls.appendChild(nextButton);
 }
+
      
 
 
