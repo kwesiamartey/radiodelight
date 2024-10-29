@@ -74,13 +74,27 @@
             text-decoration: none;
             margin-right: 10px;
         }
+
+        top-header{
+            position:fixed;
+            color: white;
+            position: fixed; /* Fixed at the top */
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000; /* Ensures header stays above other content */
+            display: flex;
+            align-items: center;
+            padding: 10px;
+        
+        }
+    
           /* header row: Player */
         .player-header{
             background-color: #142229; /* Green */
             position:fixed;
             color: white;
-            position: fixed; /* Fixed at the top */
-            top: 0;
+            width:100%;
             left: 0;
             right: 0;
             z-index: 1000; /* Ensures header stays above other content */
@@ -531,8 +545,8 @@
 </head>
 <body>
 
-    <div class="player-header">
-      <div>
+    <div id="top-header">
+      <divclass="player-header">
            <!-- <span class="menu-icon" onclick="toggleMenu()">☰</span>-->
           <a href="index.html">
             <img id="Logo" src="logo.png" alt="Station Logo">
