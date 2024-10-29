@@ -1110,41 +1110,39 @@ function togglePlay() {
     }
 
    
-    
 function openPopupWithLogo(stationName, logoUrl, stationUrl) {
-    // Create a new popup window with specific dimensions
-    const popupWindow = window.open("", "_blank", "width=400,height=500");
+            const popupWindow = window.open("", "_blank", "width=400,height=500");
 
-    // Check if the popup was blocked
-    if (!popupWindow) {
-        alert("Popup blocked! Please allow popups for this site.");
-        return;
-    }
+            // Check if the popup was blocked
+            if (!popupWindow) {
+                alert("Popup blocked! Please allow popups for this site.");
+                return;
+            }
 
-    // Set up HTML content in the new window
-    popupWindow.document.write(`
-        <html>
-            <head>
-                <title>${stationName}</title>
-                <style>
-                    body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0; padding: 0; height: 100vh; background-color: #f9f9f9; text-align: center; }
-                    img { width: 100px; height: 100px; border-radius: 50%; margin-top: 20px; }
-                    h1 { font-size: 1.5em; margin: 10px 0 20px; color: #333; }
-                    .button { padding: 10px 20px; font-size: 1em; color: #fff; background-color: #007BFF; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; }
-                    .button:hover { background-color: #0056b3; }
-                </style>
-            </head>
-            <body>
-                <img src="${logoUrl}" alt="${stationName} Logo">
-                <h1>${stationName}</h1>
-                <a href="${stationUrl}" class="button" target="_blank">Listen Now</a>
-            </body>
-        </html>
-    `);
+            // Set up HTML content in the new window
+            popupWindow.document.write(`
+                <html>
+                    <head>
+                        <title>${stationName}</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0; padding: 0; height: 100vh; background-color: #f9f9f9; text-align: center; }
+                            img { width: 100px; height: 100px; border-radius: 50%; margin-top: 20px; }
+                            h1 { font-size: 1.5em; margin: 10px 0 20px; color: #333; }
+                            .button { padding: 10px 20px; font-size: 1em; color: #fff; background-color: #007BFF; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; }
+                            .button:hover { background-color: #0056b3; }
+                        </style>
+                    </head>
+                    <body>
+                        <img src="${logoUrl}" alt="${stationName} Logo">
+                        <h1>${stationName}</h1>
+                        <a href="${stationUrl}" class="button" target="_blank">Listen Now</a>
+                    </body>
+                </html>
+            `);
 
-    // Optional: Focus on the new popup window
-    popupWindow.focus();
-}
+            // Focus on the new popup window
+            popupWindow.focus();
+        }
 
 
 
