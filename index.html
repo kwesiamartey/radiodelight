@@ -1124,7 +1124,6 @@ function openPopupWithData(stationName, logoUrl, stationUrl) {
 
     // Set up initial HTML content with logo and station name
     popupWindow.document.write(`
-        <!DOCTYPE html>
         <html>
             <head>
                 <title>${stationName}</title>
@@ -1140,31 +1139,26 @@ function openPopupWithData(stationName, logoUrl, stationUrl) {
                     <img src="${logoUrl}" alt="${stationName} Logo">
                     <h1>${stationName}</h1>
                     <p>Loading station...</p>
-                    <div class="page_here"></div>
                 </div>
             </body>
         </html>
     `);
 
-    // Fetch the content from the station URL and load it into the page_here div
-    fetch(stationUrl)
-        .then(response => {
-            console.log('Response status:', response.status); // Log response status
-            if (!response.ok) {
-                throw new Error('Network response was not ok ' + response.statusText);
-            }
-            return response.text(); // Get the response as text
-        })
-        .then(data => {
-            console.log('Fetched data:', data); // Log the fetched data
-            const pageHereDiv = popupWindow.document.querySelector('.page_here');
-            pageHereDiv.innerHTML = data; // Insert the fetched content
-        })
-        .catch(error => {
-            console.error('There was a problem with the fetch operation:', error);
-            const pageHereDiv = popupWindow.document.querySelector('.page_here');
-            pageHereDiv.innerHTML = '<p>Error loading station content.</p>';
-        });
+    // After a short delay, set the popup window to the station URL
+    setTimeout(() => {
+        // Check if the popup window is still open before changing its location
+        if (!popupWindow.closed) {
+            popupWindow.location.href = stationUrl;
+
+            // Optional: You could also update the HTML to show a "Now Playing" message if desired
+            popupWindow.document.body.innerHTML = `
+                <div class="container">
+                    <h1>Now Playing...</h1>
+                    <p>Enjoy your music!</p>
+                </div>
+            `;
+        }
+    }, 1500); // Adjust delay as needed
 }
 
 
