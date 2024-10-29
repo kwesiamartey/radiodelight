@@ -825,7 +825,7 @@ function setupPaginationButtons(data, totalPages) {
             stationItem.className = 'station-item';
             const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
             stationItem.innerHTML = `<img src="${station.logo}" alt="${truncatedName}"><br>${truncatedName}`;
-            stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name));
+            stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.added));
             stationList.appendChild(stationItem);
         });
 
@@ -891,8 +891,11 @@ function createPaginationControls(totalStations, totalPages) {
     }
 }
 
-function playStation(url, image, stationName) {
-    const progress = document.getElementById('progress');
+function playStation(url, image, stationName, added) {
+        if(added == 3){
+                 openPopupWithData(stationName, image, url)
+        }else{
+     const progress = document.getElementById('progress');
     const playButton = document.querySelector('.play-button');
 
     // Only destroy HLS instance if it exists
@@ -981,6 +984,7 @@ function playStation(url, image, stationName) {
        //     playButton.textContent = '▶';    // Change to play icon
       //  }
     //});
+        }
 }
 
 
