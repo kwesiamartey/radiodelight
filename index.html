@@ -762,10 +762,6 @@ function renderCountryList(data, page, totalPages) {
         });
         countryList.appendChild(listItem);
     }
-
-    document.getElementById('countryTitle').style.display = 'block';
-    document.querySelector('.countryTitle').style.display = 'block';
-    document.getElementById('country_list_wrapper').style.display = 'block';
 }
 
 function setupPaginationButtons(data, totalPages) {
@@ -887,6 +883,9 @@ function setupPaginationButtons(data, totalPages) {
 
     function displayStations(stations) {
         document.getElementById('footerr').style.display = 'block';
+           document.getElementById('countryTitle').style.display = 'block';
+      document.querySelector('.countryTitle').style.display = 'block';
+      document.getElementById('country_list_wrapper').style.display = 'block';
         const stationList = document.getElementById('stationListContent');
         const paginationControls = document.getElementById('paginationControls');
         stationList.innerHTML = ''; // Clear current list
