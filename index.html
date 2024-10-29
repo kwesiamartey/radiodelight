@@ -1109,7 +1109,7 @@ function togglePlay() {
         .catch(error => console.error('Error sending email:', error));
     }
 
-   function openPopupWithData(url) {
+   function openPopupWithData(stationName, image, url) {
     // Open the URL directly in a new window with specified dimensions
     const popupWindow = window.open(url, "_blank", "width=300,height=400");
 
