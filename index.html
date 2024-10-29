@@ -504,6 +504,9 @@
          #web_title{
              display: none;
          }
+          #font-awesome-icon{
+             display: none;
+         }
 
             body, html {
             margin: 0;
@@ -643,14 +646,13 @@
         <!-- Third column: Volume control -->
         <div class="col-6" >
             <div class="volume-control" style="display: flex; align-items: center;">
-                <i class="fa fa-volume-up" style="font-size:24px;color:white;margin-right:12px;"></i>
+                <i id ="font-awesome-icon" class="fa fa-volume-up" style="font-size:24px;color:white;margin-right:12px;"></i>
                 <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
             </div>
         </div>
    </div>
 </div>
 </div>
-
         
 </div><!--wrapper ends here-->       
     
