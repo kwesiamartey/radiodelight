@@ -333,7 +333,7 @@
          #countryTitle{
              color: #f4f4f4;
              margin-bottom:12px;
-             font-size:1.4rem;
+             font-size:1.0rem;
          }
      
         /* First column: Station Image */
@@ -557,11 +557,12 @@
                  <br><br><br><br><br><br><br>
             </div>
             <div class="col-md-4">
-                <div style="background-color:rgb(77, 100, 111);padding:12px;">
-                <h5 id="countryTitle" style="display: none;background-color:#1c313a;padding:6px 12px;border-radius:4px;">Other Countries</h5>
+                <div id="country_list_wrapper" style="background-color:rgb(77, 100, 111);padding:12px;display:none;">
+                <p id="countryTitle" style="display: none;background-color:#1c313a;padding:6px 12px;border-radius:4px;">Discover by Countries</p>
                 <ul id="countryList" class="country-grid"></ul>
                 <br>
                 <div id="paginationControls1"></div>
+             </div>
             </br>
                 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966"
                     crossorigin="anonymous"></script>
@@ -575,7 +576,7 @@
                     <script>
                          (adsbygoogle = window.adsbygoogle || []).push({});
                     </script>
-                </div>
+               
                  </br></br></br></br><br><br>
             </div>
         </div>
@@ -701,7 +702,7 @@ function renderCountryList(data, page, totalPages) {
     const countryList = document.getElementById('countryList');
     document.getElementById('countryTitle').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'block';
-    
+    document.getElementById('country_list_wrapper').style.display = 'block';
     countryList.innerHTML = ''; // Clear the current list
 
     // Determine the start and end indices for the current page
