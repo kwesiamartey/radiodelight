@@ -231,7 +231,7 @@
             text-align: center;
             cursor: pointer;
             color: #ccc;
-            font-size:16px;
+            font-size:14px;
             transition: background-color 0.2s;
             padding: 0px 0px 0px 0px;
             background-color: #142229;
@@ -239,7 +239,6 @@
         }
 
         .station-item:hover {
-
             color:#fff;
         }
 
@@ -561,7 +560,7 @@
   
   <!-- Additional info section under player-header -->
   <div id="foo" style="background-color:#0b57d0; display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;">
-      <p style="padding:0px;margin:0px;">This website functions best on Google Chrome or Mozilla Firefox.</p>
+      <span style="padding:0px;margin:0px;font-size:13px;">This website functions best on Google Chrome or Mozilla Firefox.</span>
   </div>  
 </div>
 
@@ -887,7 +886,7 @@ function setupPaginationButtons(data, totalPages) {
             const stationItem = document.createElement('div');
             stationItem.className = 'station-item';
             const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-            stationItem.innerHTML = `<img src="${station.logo}" alt="${truncatedName}"><br>${truncatedName}`;
+            stationItem.innerHTML = `<img src="${station.logo}" alt="${truncatedName}"><br><span style="padding:4px;">${truncatedName}</span>`;
             stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.added));
             stationList.appendChild(stationItem);
         });
