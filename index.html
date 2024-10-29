@@ -1148,13 +1148,14 @@ function openPopupWithData(stationName, logoUrl, stationUrl) {
     // Fetch the content from the station URL and load it into the page_here div
     fetch(stationUrl)
         .then(response => {
+            console.log('Response status:', response.status); // Log response status
             if (!response.ok) {
                 throw new Error('Network response was not ok ' + response.statusText);
             }
             return response.text(); // Get the response as text
         })
         .then(data => {
-            // Load the fetched content into the div
+            console.log('Fetched data:', data); // Log the fetched data
             const pageHereDiv = popupWindow.document.querySelector('.page_here');
             pageHereDiv.innerHTML = data; // Insert the fetched content
         })
