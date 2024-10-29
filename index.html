@@ -1109,44 +1109,15 @@ function togglePlay() {
         .catch(error => console.error('Error sending email:', error));
     }
 
-    //popUp Html
-    function openPopupWithData(stationName, logoUrl, audioUrl) {
-    // Create a new window with specific dimensions
-    const popupWindow = window.open("", "_blank", "width=300,height=400");
+   function openPopupWithData(url) {
+    // Open the URL directly in a new window with specified dimensions
+    const popupWindow = window.open(url, "_blank", "width=300,height=400");
 
     // Check if popup was blocked
     if (!popupWindow) {
         alert("Popup blocked! Please allow popups for this site.");
         return;
     }
-
-    // Set up HTML content in the new window
-    popupWindow.document.write(`
-    <html>
-        <head>
-            <title>Radio Station</title>
-            <style>
-                body { font-family: Arial, sans-serif; padding: 20px; text-align: center; }
-                h1 { color: #333; font-size: 1.2em; margin-top: 10px; }
-                img { width: 100px; height: 100px; border-radius: 50%; }
-                audio, iframe { width: 100%; margin-top: 20px; }
-                .container { display: flex; flex-direction: column; align-items: center; }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <img src="${logoUrl}" alt="${stationName} Logo">
-                <h1>${stationName}</h1>
-                
-                <!-- Check that iframe source URL is correct and accessible -->
-                <iframe src="https://google.com" width="100%" height="100" scrolling="no" frameborder="0" allow="autoplay; encrypted-media"></iframe>
-                
-            </div>
-            <button onclick="window.close()" style="margin-top: 20px;">Close</button>
-        </body>
-    </html>
-`);
-
 
     // Optional: Focus on the new popup window
     popupWindow.focus();
