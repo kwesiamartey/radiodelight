@@ -745,9 +745,6 @@ function loadCountries() {
 
 function renderCountryList(data, page, totalPages) {
     const countryList = document.getElementById('countryList');
-    document.getElementById('countryTitle').style.display = 'block';
-    document.querySelector('.countryTitle').style.display = 'block';
-    document.getElementById('country_list_wrapper').style.display = 'block';
     countryList.innerHTML = ''; // Clear the current list
 
     // Determine the start and end indices for the current page
@@ -766,6 +763,10 @@ function renderCountryList(data, page, totalPages) {
         });
         countryList.appendChild(listItem);
     }
+
+    document.getElementById('countryTitle').style.display = 'block';
+    document.querySelector('.countryTitle').style.display = 'block';
+    document.getElementById('country_list_wrapper').style.display = 'block';
 }
 
 function setupPaginationButtons(data, totalPages) {
