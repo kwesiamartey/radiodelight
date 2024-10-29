@@ -808,52 +808,32 @@ function setupPaginationButtons(data, totalPages) {
     }
 
     function displayStations(stations) {
-            document.getElementById('footerr').style.display = 'block';
-    const stationList = document.getElementById('stationListContent');
-    const paginationControls = document.getElementById('paginationControls');
-    stationList.innerHTML = ''; // Clear current list
-    paginationControls.innerHTML = ''; // Clear pagination
+        document.getElementById('footerr').style.display = 'block';
+        const stationList = document.getElementById('stationListContent');
+        const paginationControls = document.getElementById('paginationControls');
+        stationList.innerHTML = ''; // Clear current list
+        paginationControls.innerHTML = ''; // Clear pagination
 
-    if (stations.length === 0) {
-        stationList.innerHTML = `<p>No results found.</p>`;
-        return;
-    }
-
-    const totalPages = Math.ceil(stations.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
-
-    stationsToDisplay.forEach((station, index) => {
-        const stationItem = document.createElement('div');
-        stationItem.className = 'station-item';
-        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-        stationItem.innerHTML = `<img src="${station.logo}" alt="${truncatedName}"><br>${truncatedName}`;
-        stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.added));
-        stationList.appendChild(stationItem);
-
-        // Insert ad code every 4 items
-        if ((index + 1) % 4 === 0) {
-            const adContainer = document.createElement('div');
-            adContainer.className = 'ad-container';
-            adContainer.innerHTML = `
-                        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966"
-     crossorigin="anonymous"></script>
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-format="fluid"
-     data-ad-layout-key="+1q+s0-k-t+3t"
-     data-ad-client="ca-pub-3366131354604966"
-     data-ad-slot="8171575072"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-                `;
-            stationList.appendChild(adContainer);
+        if (stations.length === 0) {
+            stationList.innerHTML = `<p>No results found.</p>`;
+            return;
         }
-    });
 
-    createPaginationControls(stations.length, totalPages);
- }
+        const totalPages = Math.ceil(stations.length / itemsPerPage);
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
+
+        stationsToDisplay.forEach(station => {
+            const stationItem = document.createElement('div');
+            stationItem.className = 'station-item';
+            const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
+            stationItem.innerHTML = `<img src="${station.logo}" alt="${truncatedName}"><br>${truncatedName}`;
+            stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.added));
+            stationList.appendChild(stationItem);
+        });
+
+        createPaginationControls(stations.length, totalPages);
+    }
 
 function createPaginationControls(totalStations, totalPages) {
     const paginationControls = document.getElementById('paginationControls');
