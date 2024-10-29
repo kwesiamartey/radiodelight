@@ -610,14 +610,14 @@
     <div class="row">
         <!-- Left Section: Radio FM USA Description -->
         <div class="col-md-6" style="color: #f4f4f4;">
-            <h4>Radio Delight</h4>
-            <p>Explore the finest global radio experience with our free online app, offering seamless access to over 5000 FM/AM stations featuring live broadcasts of news, sports, and music. Stay informed on the latest events in the US and enjoy a wide variety of music genres. Whether you're into pop, rock, or classical, we've got something for every taste.</p>
+            <h5>Radio Delight</h5>
+            <span span style="font-size:13px;">Explore the finest global radio experience with our free online app, offering seamless access to over 5000 FM/AM stations featuring live broadcasts of news, sports, and music. Stay informed on the latest events in the US and enjoy a wide variety of music genres. Whether you're into pop, rock, or classical, we've got something for every taste.</span>
 
         </div>
 
         <!-- Right Section: Top Radio Stations -->
         <div class="col-md-6" style="color: #f4f4f4;">
-            <h4>Top Radio Countries</h4>
+            <h5>Top Radio Countries</h5>
             <ul class="list-unstyled">
                 <li>1. USA</li>
                 <li>2. Canada</li>
@@ -884,7 +884,7 @@ function setupPaginationButtons(data, totalPages) {
             const stationItem = document.createElement('div');
             stationItem.className = 'station-item';
             const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-            stationItem.innerHTML = `<img src="${station.logo}" alt="${truncatedName}"><br><span style="padding:4px;">${truncatedName}</span>`;
+            stationItem.innerHTML = `<img src="${station.logo}" alt="${truncatedName}"><br><span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
             stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.added));
             stationList.appendChild(stationItem);
         });
