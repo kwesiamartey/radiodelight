@@ -623,38 +623,43 @@
     
 
   <!-- Bottom row: Player -->
-  <div class="footer-div-wraaper" > 
-  <div class="player-container" style=" background-color:#142229;display: none;">
-   <div class="row" style="display: flex; align-items: center; height: 60px;justify-content:center;"> <!-- Vertically center contents -->
-        <!-- First column: Station Image -->
-        <div class="col-2 toFactory" >
-            <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: none;">
-        </div>
+<div class="footer-div-wraaper" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <div class="player-container" style="background-color:#142229; display: none;">
+        <div class="row" style="display: flex; align-items: center; height: 60px; justify-content: center;">
+            <!-- First column: Station Image -->
+            <div class="col-2 toFactory">
+                <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: none;">
+            </div>
+            
+            <!-- Station Name -->
+            <div class="col-2 toFactory">
+                <h5 id="playing-station-name">Station Name</h5>
+            </div>
 
-       <div class="col-2 toFactory" >
-            <h5 id="playing-station-name">Station Name</h5>
-        </div>
-        
-        <!-- Second column: Play button and progress ring -->
-        <div class="col-2 toFactory" >
-            <div class="play-control" style="display: flex; align-items: center;">
-                <div class="progress-ring" id="progress"></div>
-                <button class="play-button" onclick="togglePlay()">▶</button>
-                <audio id="audio" preload="metadata" style="display:none;"></audio>
+            <!-- Second column: Play button and progress ring -->
+            <div class="col-2 toFactory">
+                <div class="play-control" style="display: flex; align-items: center;">
+                    <div class="progress-ring" id="progress"></div>
+                    <button class="play-button" onclick="togglePlay()">▶</button>
+                    <audio id="audio" preload="metadata" style="display: none;"></audio>
+                </div>
+            </div>
+
+            <!-- Third column: Volume control -->
+            <div class="col-6">
+                <div class="volume-control" style="display: flex; align-items: center;">
+                    <i id="font-awesome-icon" class="fa fa-volume-up" style="font-size: 24px; color: white; margin-right: 12px;"></i>
+                    <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
+                </div>
             </div>
         </div>
-        
-        <!-- Third column: Volume control -->
-        <div class="col-6" >
-            <div class="volume-control" style="display: flex; align-items: center;">
-                <i id ="font-awesome-icon" class="fa fa-volume-up" style="font-size:24px;color:white;margin-right:12px;"></i>
-                <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
-            </div>
-        </div>
-   </div>
+    </div>
+    
+    <!-- Centered "mmi" Element -->
+    <h4 id="mmi" style="color: white; text-align: center;">hello test</h4>
 </div>
-      <h4 style="color:white;">hello test</h4>
-</div>
+
+
         
 </div><!--wrapper ends here-->       
     
