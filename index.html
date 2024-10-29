@@ -1124,6 +1124,7 @@ function openPopupWithData(stationName, logoUrl, stationUrl) {
 
     // Set up initial HTML content with logo and station name
     popupWindow.document.write(`
+        <!DOCTYPE html>
         <html>
             <head>
                 <title>${stationName}</title>
@@ -1165,6 +1166,7 @@ function openPopupWithData(stationName, logoUrl, stationUrl) {
             pageHereDiv.innerHTML = '<p>Error loading station content.</p>';
         });
 }
+
 
     
 
