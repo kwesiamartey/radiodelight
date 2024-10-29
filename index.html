@@ -23,6 +23,20 @@
             flex-direction: column;
             overflow-x: hidden; /* Prevent horizontal scrolling */
         }
+
+    .footer-div-wraaper{
+           position: fixed; /* Fix the player at the bottom */
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #142229;
+            color: white;
+            z-index: 1000; /* Ensure it stays on top */
+    }
       
       #countryList li ul{
           background-color:#142229;
@@ -286,17 +300,7 @@
        
         /* Bottom row: Player */
         .player-container {
-            position: fixed; /* Fix the player at the bottom */
-            bottom: 0;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background-color: #142229;
-            color: white;
-            z-index: 1000; /* Ensure it stays on top */
+         
         }
 
         #Logo{
@@ -605,7 +609,8 @@
 
     
 
-    <!-- Bottom row: Player -->
+  <!-- Bottom row: Player -->
+  <div class="footer-div-wraaper">      
   <div class="player-container" style=" background-color:#142229;display: none;">
    <div class="row" style="display: flex; align-items: center; height: 100px;justify-content:center;"> <!-- Vertically center contents -->
         <!-- First column: Station Image -->
@@ -635,6 +640,9 @@
         </div>
    </div>
 </div>
+</div>
+
+        
 </div><!--wrapper ends here-->       
     
 
@@ -807,79 +815,33 @@ function setupPaginationButtons(data, totalPages) {
         displayStations(filteredStations);
     }
 
+    function displayStations(stations) {
+        document.getElementById('footerr').style.display = 'block';
+        const stationList = document.getElementById('stationListContent');
+        const paginationControls = document.getElementById('paginationControls');
+        stationList.innerHTML = ''; // Clear current list
+        paginationControls.innerHTML = ''; // Clear pagination
 
-function displayStations(stations) {
-    document.getElementById('footerr').style.display = 'block';
-    const stationList = document.getElementById('stationListContent');
-    const paginationControls = document.getElementById('paginationControls');
-    stationList.innerHTML = ''; // Clear current list
-    paginationControls.innerHTML = ''; // Clear pagination
+        if (stations.length === 0) {
+            stationList.innerHTML = `<p>No results found.</p>`;
+            return;
+        }
 
-    if (stations.length === 0) {
-        stationList.innerHTML = `<p>No results found.</p>`;
-        return;
+        const totalPages = Math.ceil(stations.length / itemsPerPage);
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
+
+        stationsToDisplay.forEach(station => {
+            const stationItem = document.createElement('div');
+            stationItem.className = 'station-item';
+            const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
+            stationItem.innerHTML = `<img src="${station.logo}" alt="${truncatedName}"><br>${truncatedName}`;
+            stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.added));
+            stationList.appendChild(stationItem);
+        });
+
+        createPaginationControls(stations.length, totalPages);
     }
-
-    const totalPages = Math.ceil(stations.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
-
-    stationsToDisplay.forEach((station, index) => {
-        const stationItem = document.createElement('div');
-        stationItem.className = 'station-item';
-        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-
-        // Create an image element with error handling
-        const stationImage = document.createElement('img');
-        stationImage.src = station.logo;
-        stationImage.alt = truncatedName;
-        stationImage.onerror = () => {
-            stationImage.src = 'path/to/default-image.png'; // Path to a default image
-            stationImage.alt = 'Default Image';
-        };
-
-        stationItem.appendChild(stationImage);
-        stationItem.innerHTML += `<br>${truncatedName}`;
-        stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.added));
-        stationList.appendChild(stationItem);
-
-        // Insert ad code every 4 items
-       if ((index + 1) % 4 === 0) {
-    const adContainer = document.createElement('div');
-    adContainer.className = 'ad-container';
-    
-    // Instead of using innerHTML, we create and append the ad elements
-    const scriptElement = document.createElement('script');
-    scriptElement.async = true;
-    scriptElement.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966";
-    scriptElement.crossOrigin = "anonymous";
-    
-    const insElement = document.createElement('ins');
-    insElement.className = 'adsbygoogle';
-    insElement.style.display = 'block';
-    insElement.setAttribute('data-ad-format', 'fluid');
-    insElement.setAttribute('data-ad-layout-key', '+1q+s0-k-t+3t');
-    insElement.setAttribute('data-ad-client', 'ca-pub-3366131354604966');
-    insElement.setAttribute('data-ad-slot', '8171575072');
-
-    // Append the script and ins elements to the ad container
-    adContainer.appendChild(scriptElement);
-    adContainer.appendChild(insElement);
-
-    // Push adsbygoogle to initialize the ad
-    const pushScript = document.createElement('script');
-    pushScript.textContent = '(adsbygoogle = window.adsbygoogle || []).push({});';
-    adContainer.appendChild(pushScript);
-    
-    stationList.appendChild(adContainer);
-}
-
-    });
-
-    createPaginationControls(stations.length, totalPages);
-
-    }
-    
 
 function createPaginationControls(totalStations, totalPages) {
     const paginationControls = document.getElementById('paginationControls');
