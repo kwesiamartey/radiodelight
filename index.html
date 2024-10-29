@@ -544,19 +544,26 @@
 </head>
 <body>
 
-    <div id="top-header">
-      <div class="player-header">
-           <!-- <span class="menu-icon" onclick="toggleMenu()">☰</span>-->
-          <a href="index.html">
-            <img id="Logo" src="logo.png" alt="Station Logo">
-          </a>
-        <h5 id="web_title">Radio Delight</h5>
-        <input type="text" id="searchInput" placeholder="Search stations" oninput="filterStations()">
-      </div>
-      <div style="background-color:red;display: flex; flex-direction: column; align-items: center; justify-content: center;">
-          <p>This website works well on Google Chrome or Mozilla firefox.</p>
-      </div>  
-    </div>
+   <div id="top-header">
+  <div class="player-header" style="display: flex; align-items: center; justify-content: space-between;">
+      <!-- Menu icon (if needed) -->
+      <!-- <span class="menu-icon" onclick="toggleMenu()">☰</span> -->
+      
+      <!-- Logo and Title -->
+      <a href="index.html">
+        <img id="Logo" src="logo.png" alt="Station Logo">
+      </a>
+      <h5 id="web_title">Radio Delight</h5>
+
+      <!-- Search bar -->
+      <input type="text" id="searchInput" placeholder="Search stations" oninput="filterStations()">
+  </div>
+  
+  <!-- Additional info section under player-header -->
+  <div id="foo" style="background-color:red; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; width: 100%;">
+      <p>This website functions best on Google Chrome or Mozilla Firefox.</p>
+  </div>  
+</div>
 
     <!--wrapper-->
     <div class="wrapper">
