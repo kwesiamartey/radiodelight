@@ -1074,10 +1074,10 @@ function togglePlay() {
                     <h1>${stationName}</h1>
                     
                     <!-- Audio player below the station name -->
-                    <audio controls>
-                        <source src="${audioUrl}"  type="audio/ogg; codecs=vorbis">
+                    <video controls autoplay name="media">
+                        <source src="${audioUrl}"  type="audio/mpeg">
                         Your browser does not support the audio element.
-                    </audio>
+                    </video>
                 </div>
                 
                 <!-- Close button -->
