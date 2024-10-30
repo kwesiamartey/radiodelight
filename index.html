@@ -893,7 +893,7 @@ function setupPaginationButtons(data, totalPages) {
             stationItem.className = 'station-item';
             const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
             stationItem.innerHTML = `<img src="${station.logo}" alt="${truncatedName}"><br><span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
-            stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.added));
+            stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.bit));
             stationList.appendChild(stationItem);
         });
 
@@ -959,8 +959,8 @@ function createPaginationControls(totalStations, totalPages) {
     }
 }
 
-function playStation(url, image, stationName, added) {
-        if(added == 3){
+function playStation(url, image, stationName, bit) {
+        if(bits == 00){
                  openPopupWithData(stationName, image, url)
         }else{
      const progress = document.getElementById('progress');
