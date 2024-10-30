@@ -1150,29 +1150,40 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
                     
                     <!-- Close button -->
                     <button class="close-button" onclick="window.close()">Close</button>
-                    </br>
-                    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966"
-                         crossorigin="anonymous"></script>
+                    
+                    <!-- Ad container -->
                     <ins class="adsbygoogle"
                          style="display:block; text-align:center;"
                          data-ad-layout="in-article"
                          data-ad-format="fluid"
                          data-ad-client="ca-pub-3366131354604966"
                          data-ad-slot="3488022788"></ins>
-                    <script>
-                         (adsbygoogle = window.adsbygoogle || []).push({});
-                    </script>
                 </div>
             </body>
         </html>
     `;
 
-    // Write the content to the popup window
+    // Write the initial HTML content to the popup
     popupWindow.document.write(popupContent);
+
+    // Add the Google Ads script asynchronously after the HTML content is loaded
+    const adScript = popupWindow.document.createElement("script");
+    adScript.async = true;
+    adScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966";
+    adScript.crossOrigin = "anonymous";
+    popupWindow.document.body.appendChild(adScript);
+
+    // Initialize the Google ad once the script loads
+    adScript.onload = () => {
+        const inlineScript = popupWindow.document.createElement("script");
+        inlineScript.textContent = "(adsbygoogle = window.adsbygoogle || []).push({});";
+        popupWindow.document.body.appendChild(inlineScript);
+    };
 
     // Optional: Focus on the popup window
     popupWindow.focus();
 }
+
 
 
 
