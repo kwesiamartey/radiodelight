@@ -893,7 +893,7 @@ function setupPaginationButtons(data, totalPages) {
             const stationItem = document.createElement('div');
             stationItem.className = 'station-item';
             const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-            stationItem.innerHTML = `<img  style="width: 90px; height:90px;"  src="${station.logo}" alt="${truncatedName}"><br><span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
+            stationItem.innerHTML = `<img  style="width: 100%; height:100%; object-fit:cover;"  src="${station.logo}" alt="${truncatedName}"><br><span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
             stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.bit));
             stationList.appendChild(stationItem);
         });
