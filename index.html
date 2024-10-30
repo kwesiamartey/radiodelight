@@ -28,7 +28,6 @@
             flex-direction: column;
         }
         
-    
 
     .footer-div-wraaper{
            position: fixed; /* Fix the player at the bottom */
@@ -961,7 +960,7 @@ function createPaginationControls(totalStations, totalPages) {
 }
 
 function playStation(url, image, stationName, bit) {
-        if(bits == 00){
+        if(bit == 00){
                  openPopupWithData(stationName, image, url)
         }else{
      const progress = document.getElementById('progress');
