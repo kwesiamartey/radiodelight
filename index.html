@@ -591,10 +591,6 @@
                                         <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: none;">
                                 </div>
                                 
-                                <!-- Station Name -->
-                                <div class="col-2 toFactory" style="display: none;">
-                                    <h5 id="playing-station-name">Station Name</h5>
-                                </div>
                     
                                 <!-- Second column: Play button and progress ring -->
                                 <div class="col-2 toFactory">
@@ -606,17 +602,11 @@
                                 </div>
                     
                                 <!-- Third column: Volume control -->
-                                <div class="col-6">
-                                    <div class="volume-control" style="display: flex; align-items: center;">
-                                        <i id="font-awesome-icon" class="fa fa-volume-up" style="font-size: 24px; color: white; margin-right: 12px;display: none;"></i>
-                                        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
-                                    </div>
+                                <div class="col-8">
+                                     <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
                                 </div>
                             </div>
                         </div>
-                    
-                    
-                    
                     </div>
 
             <!----------the player ends here ------->
