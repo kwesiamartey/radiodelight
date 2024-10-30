@@ -605,6 +605,7 @@
                                 <div class="col-8">
                                      <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
                                 </div>
+                            
                             </div>
                         </div>
                     </div>
@@ -988,7 +989,7 @@ function playStation(url, image, stationName, bit) {
     document.getElementById('stationLogo').src = image;
     document.getElementById('stationLogo').style.display = 'block';
     document.querySelector('.player-container').style.display = 'block';
-    document.getElementById('playing-station-name').textContent = stationName;
+    //document.getElementById('playing-station-name').textContent = stationName;
     document.querySelector('.footer-div-wraaper').style.display = 'block';
     progress.style.display = 'block';
 
