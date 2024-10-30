@@ -587,26 +587,32 @@
             <div class="col-md-8">
 
               <!------- the player start here ---->
-                      <div class="footer-div-wraaper">
-        <div class="player-container">
-            <!-- First column: Station Image -->
-            <div>
-                <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo">
-            </div>
-
-            <!-- Second column: Play button and progress ring -->
-            <div class="play-control">
-                <div class="progress-ring" id="progress"></div>
-                <button class="play-button" onclick="togglePlay()">▶</button>
-                <audio id="audio" preload="metadata" style="display: none;"></audio>
-            </div>
-
-            <!-- Third column: Volume control -->
-            <div class="volume-control">
-                <input type="range" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
-            </div>
-        </div>
-    </div>
+                 <div class="footer-div-wraaper" style="display: none; flex-direction: column; align-items: center; justify-content: center;">
+                        <div class="player-container" style="background-color:#142229; display: none;">
+                            <div class="row" style="display: flex; align-items: center; height: auto;">
+                                <!-- First column: Station Image -->
+                                <div class="col-2 toFactory" >
+                                        <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: none;">
+                                </div>
+                                
+                    
+                                <!-- Second column: Play button and progress ring -->
+                                <div class="col-2 toFactory">
+                                    <div class="play-control" style="display: flex; align-items: center;">
+                                        <div class="progress-ring" id="progress"></div>
+                                        <button class="play-button" onclick="togglePlay()">▶</button>
+                                        <audio id="audio" preload="metadata" style="display: none;"></audio>
+                                    </div>
+                                </div>
+                    
+                                <!-- Third column: Volume control -->
+                                <div class="col-8 toFactory">
+                                     <input style="width:100%" type="range" id="" class="" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
+                                </div>
+                            
+                            </div>
+                        </div>
+                    </div>
 
             <!----------the player ends here ------->
                 
