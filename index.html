@@ -30,8 +30,7 @@
         
 
     .footer-div-wraaper{
-           position: fixed; /* Fix the player at the bottom */
-            bottom: 0;
+            width: 100%; /* Fix the player at the bottom */
             left: 0;
             right: 0;
             justify-content: space-between;
@@ -321,7 +320,6 @@
         /* Bottom row: Player */
         .player-container {
             width:100%;
-            bottom: 0;
             left: 0;
             right: 0;
             display: flex;
@@ -583,9 +581,50 @@
          <h2 class="countryTitle" style="display: none;">Live USA Radio Station Online</h2>
         <div class="row">
             <div class="col-md-8">
-               
+
+              <!------- the player start here ---->
+
+                    <div class="footer-div-wraaper" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+ 
+                    
+                        <div class="player-container" style="background-color:#142229; display: none;">
+                            <div class="row" style="display: flex; align-items: center; height: 60px; justify-content: center;">
+                                <!-- First column: Station Image -->
+                                <div class="col-2 toFactory">
+                                    <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: none;">
+                                </div>
+                                
+                                <!-- Station Name -->
+                                <div class="col-2 toFactory">
+                                    <h5 id="playing-station-name">Station Name</h5>
+                                </div>
+                    
+                                <!-- Second column: Play button and progress ring -->
+                                <div class="col-2 toFactory">
+                                    <div class="play-control" style="display: flex; align-items: center;">
+                                        <div class="progress-ring" id="progress"></div>
+                                        <button class="play-button" onclick="togglePlay()">▶</button>
+                                        <audio id="audio" preload="metadata" style="display: none;"></audio>
+                                    </div>
+                                </div>
+                    
+                                <!-- Third column: Volume control -->
+                                <div class="col-6">
+                                    <div class="volume-control" style="display: flex; align-items: center;">
+                                        <i id="font-awesome-icon" class="fa fa-volume-up" style="font-size: 24px; color: white; margin-right: 12px;"></i>
+                                        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    
+                    
+                    </div>
+
+            <!----------the player ends here ------->
+                
                    <div id="stationListContent" class="station-grid"></div>
-            
                 <br><br>
                 <div id="paginationControls"></div>
                  <br><br><br><br><br><br><br>
@@ -599,7 +638,7 @@
              </div>
             </br>
                 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966"
-                    crossorigin="anonymous"></script>
+                         crossorigin="anonymous"></script>
                     <!-- 300 by 250 ads -->
                     <ins class="adsbygoogle"
                          style="display:block"
@@ -647,11 +686,8 @@
         </div>
     </div>
     </div>
-
     <!-- Footer Section -->
-    <div class="row mt-5" style="color: #ccc;">
-  
-    </div>
+    <div class="row mt-5" style="color: #ccc;"> </div>
 </div>   
 </div>
 
@@ -660,52 +696,6 @@
     
 
   <!-- Bottom row: Player -->
-<div class="footer-div-wraaper" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-    <div class="player-container" style="background-color:#142229; display: none;">
-        <div class="row" style="display: flex; align-items: center; height: 60px; justify-content: center;">
-            <!-- First column: Station Image -->
-            <div class="col-2 toFactory">
-                <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: none;">
-            </div>
-            
-            <!-- Station Name -->
-            <div class="col-2 toFactory">
-                <h5 id="playing-station-name">Station Name</h5>
-            </div>
-
-            <!-- Second column: Play button and progress ring -->
-            <div class="col-2 toFactory">
-                <div class="play-control" style="display: flex; align-items: center;">
-                    <div class="progress-ring" id="progress"></div>
-                    <button class="play-button" onclick="togglePlay()">▶</button>
-                    <audio id="audio" preload="metadata" style="display: none;"></audio>
-                </div>
-            </div>
-
-            <!-- Third column: Volume control -->
-            <div class="col-6">
-                <div class="volume-control" style="display: flex; align-items: center;">
-                    <i id="font-awesome-icon" class="fa fa-volume-up" style="font-size: 24px; color: white; margin-right: 12px;"></i>
-                    <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Centered "mmi" Element -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966"
-     crossorigin="anonymous"></script>
-        <!-- fixed banner -->
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-3366131354604966"
-             data-ad-slot="9145041123"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>
-             (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-</div>
 
 </div><!--wrapper ends here-->       
     
