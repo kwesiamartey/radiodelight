@@ -965,7 +965,7 @@ function createPaginationControls(totalStations, totalPages) {
 }
 
 function playStation(url, image, stationName, bit) {
-        if(bit == 00){
+        if(bit == 00 && bit != null){
                  openPopupWithData(stationName, image, url)
         }else  if(bit == null || bit != 00 ){
      const progress = document.getElementById('progress');
