@@ -902,8 +902,9 @@ function setupPaginationButtons(data, totalPages) {
     <div style="width: 100%; height: 140px; position: absolute; top: 0; left: 0; border-radius: 5px; overflow: hidden;">
         <div style="
             background-image: url('${station.logo}');
-            background-size: contain;
+            background-size: cover;
             background-position: center;
+            background-repeat: no-repeat;
             filter: blur(8px);
             width: 100%;
             height: 140px;
@@ -919,6 +920,7 @@ function setupPaginationButtons(data, totalPages) {
                 border-radius: 5px 5px 0px 0px;
                 object-fit: scale-down;
                  background-image: url('${station.logo}');
+                 background-size: cover;
                 position: relative;
                 z-index: 1;"  
          src="${station.logo}" 
