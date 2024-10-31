@@ -633,7 +633,7 @@
 
               <!------- the player start here ---->
                         <div class="footer-div-wraaper" style="display: none; flex-direction: column; align-items: center; justify-content: center;">
-                        <div class="col-xl-6 col-lg-6 col-md-9 col-sm-10 col-xs-11 col-12 mb-3" style="background-color:#142229; display: none;align-items: center; justify-content: center;">
+                        <div class="col-xl-6 col-lg-6 col-md-9 col-sm-10 col-xs-11 col-12 mb-3   playing-station-wrap" style="background-color:#142229; display: none;align-items: center; justify-content: center;">
                             <div class="row" style="display: flex; align-items: center; height: auto;">
                                 <!-- First column: Station Image -->
                                 <div class="col-2" >
@@ -1041,7 +1041,7 @@ function playStation(url, image, stationName, bit) {
     document.getElementById('stationLogo').src = image;
     document.getElementById('stationLogo').style.display = 'block';
     //document.querySelector('.player-container').style.display = 'block';
-    //document.getElementById('playing-station-name').textContent = stationName;
+    document.querySelector('playing-station-wrap').textContent = stationName;
     document.querySelector('.footer-div-wraaper').style.display = 'block';
     progress.style.display = 'block';
 
