@@ -447,10 +447,7 @@
 
         @media screen and (min-width: 600) and (max-width: 768px) {
 
-       .footer-div-wraaper {
-                flex-direction: column;
-                align-items: center;
-            }
+
             .player-container {
                 flex-direction: column;
             }
@@ -1050,7 +1047,7 @@ function playStation(url, image, stationName, bit) {
     document.getElementById('stationLogo').style.display = 'block';
     document.querySelector('.playing-station-wrap').style.display = 'block';
    // document.getElementById('playing-station-name').textContent = stationName;
-    document.querySelector('.footer-div-wraaper').style.display = 'block';
+    document.querySelector('.footer-div-wraaper').style.display = 'flex';
     progress.style.display = 'block';
 
     // Initialize HLS or regular stream
