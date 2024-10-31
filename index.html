@@ -1216,11 +1216,6 @@ function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
             </head>
             <body>
                 <h1>${stationName}</h1>
-                <img src="${logoUrl}" alt="${stationName} Logo">
-                <audio controls>
-                    <source src="${audioUrl}" type="audio/mpeg">
-                    Your browser does not support the audio tag.
-                </audio>
                 <div id="loadedContent">Loading content...</div>
             </body>
         </html>
@@ -1231,7 +1226,7 @@ function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
     popupWindow.document.close(); // Close the document for rendering
 
     // Load additional content into the popup
-    fetch('https://example.com') // Replace with your content URL
+    fetch(audioUrl) // Replace with your content URL
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
