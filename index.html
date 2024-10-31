@@ -637,7 +637,7 @@
 
 
  <!------- the player start here ---->
-<div class="footer-div-wraaper" style="margin:auto;">
+<div class="footer-div-wraaper" style="display:none;">
     <div class="col playing-station-wrap" style="width:400px;background-color: #142229; display: none; align-items: center; justify-content: center;margin:auto;">
         <div class="row" style="display: flex; align-items: center; height: auto; width: 100%;">
             
@@ -1050,7 +1050,7 @@ function playStation(url, image, stationName, bit) {
     document.getElementById('stationLogo').style.display = 'block';
     document.querySelector('.playing-station-wrap').style.display = 'block';
    // document.getElementById('playing-station-name').textContent = stationName;
-   // document.querySelector('.footer-div-wraaper').style.display = 'block';
+   document.querySelector('.footer-div-wraaper').style.display = 'block';
     progress.style.display = 'block';
 
     // Initialize HLS or regular stream
