@@ -5,233 +5,619 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Responsive Layout Design</title>
     <style>
-        body {
+       html, body {
             margin: 0;
-            font-family: Arial, sans-serif;
+            padding: 0;
+            font-family: "Open Sans", sans-serif;
+            background-color: #1c313a;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center;     /* Center vertically if needed */
+            padding-top: 50px;       /* Adjust according to the height of the header */
+            flex-direction: column;
         }
-        /* Header */
-        .header {
-            background-color: #4CAF50; /* Green */
-            color: white;
-            text-align: center;
-            padding: 20px;
+
+        .footer-div-wraaper {
+            width: 100%;
+            margin-bottom: 18px;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        /* Sidebar */
-        .sidebar {
-            background-color: #333; /* Dark Grey */
+
+        .player-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 10px;
+            background-color: #142229;
             color: white;
-            width: 15%;
-            height: 100vh;
-            padding: 20px;
-            position: fixed;
+        }
+
+    
+      
+      #countryList li ul{
+          background-color:#142229;
+          padding:10px;
+            border-radius: 5px;
+            display: flex; /* Use flexbox to align items */
+            align-items: center; /* Center items vertically */
+            justify-content: center; /* Center items horizontally */
+          list-style-type: none;
+            padding: 0;
+            display: grid; /* Use grid layout */
+            grid-template-columns: repeat(100px, minmax(100px, 1fr)); /* Responsive columns */
+            gap: 10px; /* Space between items */
+           
+      }
+        /* First column: Station Image */
+        .station-image {
+            width: 140px;
+            height: 140px;
+            background-color:#fff;
+            border-radius: 5px;
+             object-fit: cover;  /* Ensure the image covers the circle */
+        }
+
+
+        #countryList li{
+          background-color:#142229;
+          border-color:#142229; 
+          margin:0px; 
+       }
+      
+
+      .wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+      .content {
+           flex: 1; /* This allows the content to take up all the remaining space */
+      }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        #top-header{
+            position:fixed;
+            color: white;
+            position: fixed; /* Fixed at the top */
             top: 0;
             left: 0;
-        }
-        /* Right Sidebar */
-        .right-sidebar {
-            background-color: #FF6347; /* Tomato color */
-            color: white;
-            width: 300px;
-            height: 100vh;
-            padding: 20px;
-            position: fixed;
-            top: 0;
             right: 0;
+            z-index: 1000; /* Ensures header stays above other content */
+            display: flex;
+            align-items: center;
+        
+        
         }
+    
+          /* header row: Player */
+        .player-header{
+            background-color: #142229; /* Green */
+            color: white;
+            width:100%;
+            left: 0;
+            right: 0;
+            z-index: 1000; /* Ensures header stays above other content */
+            display: flex;
+            align-items: center;
+            padding: 10px;
+        }
+         #web_title h4{
+             margin-botom:0px;
+             margin-top:8px;
+             margin-right:20px;
+             width:90px;
+         }
+
+         .player-header h5{
+             margin-top:7px;
+         }
+
+         #sidebaer_topBar{
+             width:100%;
+             height:9px;
+         }
+
+        .player-header img {
+            height: 40px;
+            align-items: center;
+            width:100%;
+        }
+
         /* Main container */
         .main-container {
-            background-color: #f1f1f1; /* Light Grey */
-            margin-left: 20%; /* Sidebar width */
-            margin-right: 300px; /* Right sidebar width */
-            padding: 20px;
+            display: flex;
+            flex: 1;
+            width:1030px;
+            flex-direction: row;
+            background-color: #212529;
+            height: auto; /* Adjust height minus header (80px) and bottom-row (80px) */
+            overflow-y: auto;
+            padding:20px;
+            gap: 20px; /* Space between columns */
         }
-        /* List inside the main container */
-        .main-container ul {
+
+        /* Sidebar (Country list) */
+        .country-list {
+            width: 300px;
+            height:100%;
+            background-color: #1c313a;
+            overflow-y: auto;
+            padding: 10px;
+            display: block; /* Default visible on desktop/tablet */
+            top: 85px; /* Adjust to appear below the header */
+            justify-content: center;  /* Center horizontally */
+            align-items: center;      /* Center vertically */
+        }
+
+         #searchInput{
+             background-color:#c4c4c4;
+             border-color: #c4c4c4;
+             border-radius:50px;
+             color:#333;
+             margin-left:40px;
+             margin-left:12px;
+             padding-left:12px;
+             width:50%;
+         }
+
+             /* Center the pagination controls */
+    #paginationControls {
+        display: flex;
+        color:white;
+        justify-content: center; /* Centers the controls horizontally */
+        align-items: center; /* Aligns items vertically in the center */
+        margin-top: 10px; /* Optional, to add some spacing */
+    }
+
+    #paginationControls span {
+        margin: 0 5px;
+        cursor: pointer;
+    }
+
+       .img {
+            width: 100%; /* Set width */
+            height: 50px; /* Set height */
+            object-fit: cover; /* Ensure the image covers the circle */
+            background-color:#142229;
+        }
+      
+        ul {
             list-style-type: none;
             padding: 0;
+            display: grid; /* Use grid layout */
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Responsive columns */
+            gap: 10px; /* Space between items */
         }
-        .main-container ul li {
-            background-color: #fff;
-            margin: 10px 0;
+        li {
             padding: 10px;
+            border: 1px solid #ccc;
+            margin: 5px 0;
             border-radius: 5px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        }
-        /* Bottom row */
-        .bottom-row {
-            background-color: #000080; /* Navy Blue */
-            color: white;
-            text-align: center;
-            padding: 10px;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
+            display: flex; /* Use flexbox to align items */
+            align-items: center; /* Center items vertically */
+            justify-content: center; /* Center items horizontally */
         }
 
-        .sidebar h2 {
-            margin: 10px 0;
-        }
-
-        .sidebar ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .sidebar li {
-            padding: 8px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .sidebar li:hover {
-            background-color: #e0e0e0;
-        }
-
-        /* Middle column: Radio station list */
+      /* Middle column: Radio station list */
         .station-list {
             flex: 1;
-            padding: 20px 10px 10px 10px;
-            overflow-y: auto;
+            width:100%;
+            padding: 0px 10px 10px 10px;
         }
 
         .station-list h2 {
-            margin: 10px 0;
+            margin: 10px 5;
+            align-items: center;
+            width: 100%;
+            text-align: center;
         }
 
         .station-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+            gap: 7px;
+        }
+
+
+
+      .country-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 4px;
+            overflow:auto;
         }
 
         .station-item {
             text-align: center;
             cursor: pointer;
+             height: 170px; 
+            color: #ccc;
+            font-size:14px;
             transition: background-color 0.2s;
-            padding: 10px;
-            background-color: #f4f4f4;
-            border-radius: 5px;
+            padding: 0px 0px 0px 0px;
+            background-color: #142229;
+            border-radius: 5px 5px 0px 0px;
         }
 
         .station-item:hover {
-            background-color: #ddd;
+            color:#fff;
         }
 
-        .station-item img {
-            width: 80px;
-            height: 80px;
-            border-radius: 5px;
-        }
+       /*.station-item img {
+            width: 100%;
+            height: 140px;
+            transition: all 0.3s ease-in-out;
+            border-radius: 5px 5px 0px 0px;
+            object-fit: scale-down;
+             background-image: url('${station.logo}');
+        }*/
 
-        /* Responsive Design */
-        @media screen and (max-width: 1200px) {
-            /* Adjust for medium screens */
-            .sidebar {
-                width: 15%;
-            }
-            .main-container {
-                margin-left: 15%;
-                margin-right: 250px; /* Slightly reduce the right sidebar */
-            }
-            .right-sidebar {
-                width: 250px;
-            }
-        }
+      .toFactory{
+            width:auto;
+             display: flex; 
+             justify-content: start;
+             align-items: start;
+         }
 
-        @media screen and (max-width: 992px) {
-            /* Adjust for tablets */
-            .sidebar {
-                width: 25%;
-            }
-            .main-container {
-                margin-left: 25%;
-                margin-right: 200px; /* Reduce the right sidebar */
-            }
-            .right-sidebar {
-                width: 200px;
-            }
+     .volume-slider {
+                margin: 10px 0;
+                width: 30%;
+      }
 
-        }
 
+        /* Hide sidebar in mobile view */
         @media screen and (max-width: 768px) {
-            /* Adjust for small screens (mobiles) */
-            .sidebar, .right-sidebar {
-                width: 100%; /* Full width for both sidebars */
-                height: auto;
-                position: relative;
-            }
-            .main-container {
-                margin: 0; /* No margins for small screens */
-                padding: 10px;
-            }
-               .country-list {
+            .country-list {
+                width:180px;
                 transform: translateX(-100%); /* Hide off-screen */
-                position: absolute;
                 left: 0;
                 top: 0;
+                flex: 1; /* Make both columns equal in width */
                 height: 100%;
+                 position: fixed;
+                top: 85px; /* Adjust to appear below the header */
+                left: 0;
                 z-index: 1000; /* Ensure it stays on top */
                 transition: transform 0.3s ease; /* For slide effect */
             }
 
-            .sidebar.active {
+            .country-list.active {
                 transform: translateX(0); /* Slide in */
             }
+
+
+              /* Middle column: Radio station list */
+        .station-list {
+            flex: 1;
+            padding: 0px 30px 30px 30px;
+            height: calc(100vh - 160px); /* Adjust height minus header (80px) and bottom-row (80px) */
+            overflow-y: auto;
+            }
         }
+
+        .country-list h2 {
+            margin: 10px 0;
+            color:#f4f4f4;
+        }
+
+        .country-list ul {
+            list-style-type: none;
+            padding: 0;
+            color:#f4f4f4;
+        }
+
+        .country-list li {
+            padding: 8px;
+            cursor: pointer;
+            color:#f4f4f4;
+            transition: background-color 0.2s;
+        }
+
+        .country-list li:hover {
+            background-color: #999;
+        }
+
+    
+
+        #Logo{
+             width: 40px;
+            height: 40px;
+            border-radius: 100px;
+            margin-left: 20px;
+            margin-right: 20px; /* Margin for spacing */
+            object-fit: cover; /* Ensure the image covers the circle */
+        }
+
+         .countryTitle{
+             color: white;
+             margin-bottom:20px;
+             margin-top: 20px;
+             text-align: center;
+             font-weight:700;
+         }
+
+         #countryTitle{
+             color: #f4f4f4;
+             margin-bottom:12px;
+             font-size:1.0rem;
+         }
+     
+        /* Second column: Play button and progress ring */
+        .play-control {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .play-button {
+            width: 70px;
+            height: 70px;
+            border: none;
+            border-radius: 50%;
+            background-color: #007bff;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        .progress-ring {
+            position: absolute;
+            width: 73px;
+            height: 73px;
+            border: 6px solid #ddd;
+            border-radius: 50%;
+            border-top-color: #007bff;
+            animation: spin 1s linear infinite;
+            display: none; /* Hidden by default */
+            margin-left: 10px;
+            margin-right: 10px;
+           
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+
+        .volume-control {
+                margin: 8px 0;
+                width: 100%;
+         }
+    
+
+        /* Responsive styles */
+        @media screen and (max-width: 768px) {
+  
+            .play-button {
+                width: 70px;
+                height: 70px;
+                font-size: 18px; /* Reduce button size */
+            }
+
+            .progress-ring {
+                width: 73px;
+                height: 73px;
+                margin-left: 20px;
+                margin-right: 20px;
+            }
+
+              .volume-control {
+                margin: 8px 0;
+                width: 30%;
+            }
+               /* Middle column: Radio station list */
+            .station-list {
+                flex: 1;
+                padding: 0px 30px 30px 30px;
+                height: calc(100vh - 160px); /* Adjust height minus header (80px) and bottom-row (80px) */
+                overflow-y: auto;
+            }
+        }
+
+        /* Drawable menu icon */
+        .menu-icon {
+            display: none; /* Default hidden */
+            cursor: pointer;
+        }
+
+        @media screen and (min-width: 600) and (max-width: 768px) {
+
+       .footer-div-wraaper {
+                flex-direction: column;
+                align-items: center;
+            }
+            .player-container {
+                flex-direction: column;
+            }
+            .station-image, .play-button{
+                margin: 10px 0;
+            }
+        
+    
+           /* .menu-icon {
+                display: block; /* Show only on mobile */
+                /*position: fixed;*/
+                /*background-color:#f4f4f4;*/
+                /*width:18px;*/
+                /*height:18px;*/
+                /*flex: 1; /* Make both columns equal in width */
+                /*z-index: 1001;*/ /* Ensure it stays on top */
+                /*color: #333;*/
+                /*border: none;*/
+                /*padding:5px 5px 8px 5px;*/
+                /*border-radius: 5px;*/
+         #searchInput{
+              background-color:#c4c4c4;
+             border-color: #c4c4c4;
+             border-radius:50px;
+             color:#333;
+             margin-left:18px;
+             padding-left:12px;
+             width:100%;
+         }
+
+         #web_title h4{
+             margin-botom:0px;
+             margin-top:8px;
+             margin-right:20px;
+         }
+           /* }*/
+         #Logo{
+            width: 40px;
+            height: 40px;
+            border-radius: 100px;
+            margin-left: 0px;
+            margin-right: 20px; /* Margin for spacing */
+            object-fit: cover; /* Ensure the image covers the circle */
+        }
+
+            
+
+            #sidebaer_topBar{
+             width:100%;
+             height:9px;
+           }
+
+               /* Middle column: Radio station list */
+        .station-list {
+            flex: 1;
+            padding: 0px 30px 30px 30px;
+            height: calc(100vh - 160px); /* Adjust height minus header (80px) and bottom-row (80px) */
+            overflow-y: auto;
+        }
+     }
+
+
+    @media only screen and (min-width: 435) and (max-width: 600px){
+          .player-container {
+                flex-direction: column;
+            }
+            .station-image, .play-button{
+                margin: 10px 0;
+            }
+         
+             .volume-control {
+                margin: 8px 0;
+                width: 25%;
+            }
+         
+        #playing-station-name{
+            display: none;
+        }
+         #web_title{
+             display: none;
+         }
+          #font-awesome-icon{
+             display: none;
+         }
+
+         body, html {
+            margin: 0;
+            padding: 0;
+            font-family: "Open Sans", sans-serif;
+            display: flex;
+            justify-content: center;  /* Center horizontally */
+            padding-top: 40px; /* Adjust according to the height of the header */
+            background-color:#1c313a;
+            flex-direction: column;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+        }
+
+         .toFactory{
+        
+         }
+     }
+
+
+    
+    @media only screen and (min-width: 379) and (max-width: 435){
+          .player-container {
+                flex-direction: column;
+            }
+            .station-image, .play-button{
+                margin: 2px 0;
+            }
+         
+             .volume-control {
+                margin: 8px 0;
+                width: 20%;
+            }
+         
+        #playing-station-name{
+            display: none;
+        }
+         #web_title{
+             display: none;
+         }
+          #font-awesome-icon{
+             display: none;
+         }
+
+         body, html {
+            margin: 0;
+            padding: 0;
+            font-family: "Open Sans", sans-serif;
+            display: flex;
+            justify-content: center;  /* Center horizontally */
+            padding-top: 40px; /* Adjust according to the height of the header */
+            background-color:#1c313a;
+            flex-direction: column;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+        }
+
+         .toFactory{
+        
+         }
+     }
+      
     </style>
 </head>
 <body>
 
-    <!-- Header -->
-    <div class="header">
-        <h1>Header Row</h1>
-    </div>
+                        <div class="footer-div-wraaper" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <div class="col-xl-6 col-lg-6 col-md-9 col-sm-10 col-xs-11 col-12 mb-3 playing-station-wrap" style="background-color: #142229; display: none; align-items: center; justify-content: center;">
+        <div class="row" style="display: flex; align-items: center; height: auto; width: 100%;">
+            
+            <!-- First column: Station Image -->
+            <div class="col-2">
+                <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: block;">
+            </div>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <h2 id="sideBarcountryTitle">Countries</h2>
-            <ul>
-                <li onclick="loadStations('USA')">USA</li>
-                <li onclick="loadStations('Ghana')">Ghana</li>
-                <li onclick="loadStations('Finland')">Finland</li>
-                <li onclick="loadStations('Singapore')">Singapore</li>
-                <li onclick="loadStations('Turkey')">Turkey</li>
-            </ul>
-    </div>
+            <!-- Second column: Play button and progress ring -->
+            <div class="col-10">
+                
+                <!-- Centered Play Control -->
+                <div class="col" style="display: flex; align-items: center; justify-content: center;">
+                    <div class="play-control" style="display: flex; align-items: center; justify-content: center;">
+                        <div class="progress-ring" id="progress"></div>
+                        <button class="play-button" onclick="togglePlay()">▶</button>
+                        <audio id="audio" preload="metadata" style="display: none;"></audio>
+                    </div>
+                </div>
 
-    <!-- Right Sidebar -->
-    <div class="right-sidebar">
-        <h2>Right Sidebar</h2>
-        <p>This is the right sidebar content</p>
-    </div>
-
-    <!-- Main container -->
-    <div class="main-container">
-        <h2>Main Container</h2>
-        <ul>
-            <li>Item 1</li>
-            <li>Item 2</li>
-            <li>Item 3</li>
-            <li>Item 4</li>
-        </ul>
-    </div>
-
-    <!-- Bottom row -->
-    <div class="bottom-row">
-        <!-- First column: Station Image -->
-        <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: none;">
-
-        <!-- Second column: Play button and progress ring -->
-        <div class="play-control">
-            <div class="progress-ring" id="progress"></div>
-            <button class="play-button" onclick="togglePlay()">▶</button>
-        </div>
-
-        <!-- Third column: Volume control -->
-        <div class="volume-control">
-            <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
+                <!-- Centered Volume Control -->
+                <div class="col" style="display: flex; align-items: center; justify-content: center;">
+                    <input style="width: 50%; margin: 14px 12px; display: flex; align-items: center; justify-content: center;" 
+                           type="range" id="volumeControl" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
+                </div>
+            </div>
         </div>
     </div>
+</div>
+
 
 </body>
 </html>
