@@ -633,8 +633,8 @@
             <div class="col-md-8">
 
               <!------- the player start here ---->
-                       <div class="footer-div-wraaper" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-    <div class="col-xl-6 col-lg-6 col-md-9 col-sm-10 col-xs-11 col-12 mb-3 playing-station-wrap" style="background-color: #142229; display: none; align-items: center; justify-content: center;">
+<div class="footer-div-wraaper" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <div class="col" style="background-color: #142229; display: none; align-items: center; justify-content: center;">
         <div class="row" style="display: flex; align-items: center; height: auto; width: 100%;">
             
             <!-- First column: Station Image -->
@@ -644,7 +644,6 @@
 
             <!-- Second column: Play button and progress ring -->
             <div class="col-10">
-                
                 <!-- Centered Play Control -->
                 <div class="col" style="display: flex; align-items: center; justify-content: center;">
                     <div class="play-control" style="display: flex; align-items: center; justify-content: center;">
@@ -668,7 +667,7 @@
 
             <!----------the player ends here ------->
                 
-                   <div id="stationListContent" class="station-grid"></div>
+    <div id="stationListContent" class="station-grid"></div>
                 <br><br>
                 <div id="paginationControls"></div>
                  <br><br><br><br><br><br><br>
@@ -1200,12 +1199,6 @@ function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
         popupWindow.focus();
     }
 }
-
-
-
-    
-
-
 
 
 function openPopupWithData(stationName, logoUrl, audioUrl) {
