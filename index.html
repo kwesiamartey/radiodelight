@@ -1190,50 +1190,16 @@ function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
         return;
     }
 
-    // Create a new popup window
-    const popupWindow = window.open("", "_blank", "width=300,height=500");
+    // Open the URL directly in a new popup window
+    const popupWindow = window.open(audioUrl, "_blank", "width=300,height=500");
 
     // Check if the popup was blocked
     if (!popupWindow) {
         alert("Popup blocked! Please allow popups for this site.");
-        return;
+    } else {
+        popupWindow.focus();
     }
-
-    // Construct the content for the popup
-    const popupContent = `
-        <html>
-            <head>
-                <title>${stationName}</title>
-                <style>
-                    body {
-                        font-family: Arial, sans-serif;
-                        text-align: center;
-                        margin: 20px;
-                    }
-                    img {
-                        max-width: 100%;
-                        height: auto;
-                    }
-                </style>
-            </head>
-            <body>
-                <h1>${stationName}</h1>
-                <img src="${logoUrl}" alt="${stationName} Logo">
-                <div id="loadedContent">Loading content...</div>
-            </body>
-        </html>
-    `;
-
-    // Write the content to the popup window
-    popupWindow.document.write(popupContent);
-    popupWindow.document.close(); // Close the document for rendering
-
-    // Load additional content into the popup (change the URL to a valid one)
-    const contentUrl = 'https://google.com'; // Replace with your content URL
-     $('#loadedContent').html('contentUrl">');
-  
 }
-
 
 
 
