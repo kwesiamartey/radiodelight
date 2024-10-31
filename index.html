@@ -644,14 +644,16 @@
                                 
                     
                                 <!-- Second column: Play button and progress ring -->
-                                <div class="col-10">
+                                <div class="col-10" toFactory>
                                    <div class="row">
-                                       <div class="progress-ring" id="progress"></div>
-                                        <button class="play-button" onclick="togglePlay()">▶</button>
-                                        <audio id="audio" preload="metadata" style="display: none;"></audio>
+                                           <div class="play-control" style="display: flex; align-items: center;">
+                                            <div class="progress-ring" id="progress"></div>
+                                            <button class="play-button" onclick="togglePlay()">▶</button>
+                                            <audio id="audio" preload="metadata" style="display:none;"></audio>
+                                        </div>
                                    </div>
 
-                                    <div class="row">
+                                    <div class="row" toFactory>
                                         <input style="width:100%; margin:4px 12px;" type="range" id=""  min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
                                     </div>
                                 </div>
