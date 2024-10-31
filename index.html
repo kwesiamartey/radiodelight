@@ -1182,9 +1182,14 @@ function togglePlay() {
 
 
 function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
-       const streamUrl = audioUrl;
+    // Validate the audio URL
+    if (!audioUrl || typeof audioUrl !== 'string' || !audioUrl.startsWith('http')) {
+        alert("Invalid audio URL.");
+        return;
+    }
+
     // Open the URL directly in a new popup window
-    const popupWindow = window.open(streamUrl, "_blank", "width=300,height=500");
+    const popupWindow = window.open(audioUrl, "_blank", "width=300,height=500");
 
     // Check if the popup was blocked
     if (!popupWindow) {
@@ -1194,6 +1199,8 @@ function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
     }
 }
 
+
+    
 
 
 
