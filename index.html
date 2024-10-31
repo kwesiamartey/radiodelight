@@ -634,7 +634,7 @@
 
               <!------- the player start here ---->
 <div class="footer-div-wraaper" style="width:560px;display: flex; flex-direction: column; align-items: center; justify-content: center;">
-    <div class="col" style="background-color: #142229; display: none; align-items: center; justify-content: center;">
+    <div class="col playing-station-wrap" style="background-color: #142229; display: none; align-items: center; justify-content: center;">
         <div class="row" style="display: flex; align-items: center; height: auto; width: 100%;">
             
             <!-- First column: Station Image -->
@@ -1045,7 +1045,7 @@ function playStation(url, image, stationName, bit) {
     // Set station logo, display player, and show progress bar
     document.getElementById('stationLogo').src = image;
     document.getElementById('stationLogo').style.display = 'block';
-    //document.querySelector('.playing-station-wrap').style.display = 'block';
+    document.querySelector('.playing-station-wrap').style.display = 'block';
    // document.getElementById('playing-station-name').textContent = stationName;
     document.querySelector('.footer-div-wraaper').style.display = 'block';
     progress.style.display = 'block';
