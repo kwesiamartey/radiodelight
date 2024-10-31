@@ -1214,10 +1214,7 @@ function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
                     <h1>${stationName}</h1>
                     
                     <!-- Audio player for station -->
-                    <audio controls autoplay>
-                        <source src="${audioUrl}" >
-                        Your browser does not support the audio element.
-                    </audio>
+                    <iframe src="${audioUrl}"></iframe>
                     
                     <!-- Close button -->
                     <button class="close-button" onclick="window.close()">Close</button>
