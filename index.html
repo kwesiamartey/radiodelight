@@ -1188,17 +1188,67 @@ function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
         return;
     }
 
-    // Open the URL directly in a new popup window
-    const popupWindow = window.open(audioUrl, "_blank", "width=300,height=500");
+    // Create a new popup window
+    const popupWindow = window.open("", "_blank", "width=300,height=500");
 
     // Check if the popup was blocked
     if (!popupWindow) {
         alert("Popup blocked! Please allow popups for this site.");
-    } else {
-        popupWindow.focus();
+        return;
     }
-}
 
+    // Construct the content for the popup
+    const popupContent = `
+        <html>
+            <head>
+                <title>${stationName}</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        text-align: center;
+                        margin: 20px;
+                    }
+                    img {
+                        max-width: 100%;
+                        height: auto;
+                    }
+                </style>
+            </head>
+            <body>
+                <h1>${stationName}</h1>
+                <img src="${logoUrl}" alt="${stationName} Logo">
+                <audio controls>
+                    <source src="${audioUrl}" type="audio/mpeg">
+                    Your browser does not support the audio tag.
+                </audio>
+                <div id="loadedContent">Loading content...</div>
+            </body>
+        </html>
+    `;
+
+    // Write the content to the popup window
+    popupWindow.document.write(popupContent);
+    popupWindow.document.close(); // Close the document for rendering
+
+    // Load additional content into the popup
+    fetch('https://example.com') // Replace with your content URL
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text(); // Assuming the response is HTML
+        })
+        .then(data => {
+            popupWindow.document.getElementById("loadedContent").innerHTML = data; // Load content into the div
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+            popupWindow.document.getElementById("loadedContent").innerHTML = "Failed to load content.";
+        });
+
+    // Focus the popup window
+    popupWindow.focus();
+}
 
     
 
