@@ -1182,7 +1182,7 @@ function togglePlay() {
 
 
 function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
-       const streamUrl = "${audioUrl}";
+       const streamUrl = audioUrl;
     // Open the URL directly in a new popup window
     const popupWindow = window.open(streamUrl, "_blank", "width=300,height=500");
 
