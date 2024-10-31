@@ -513,7 +513,7 @@
      }
 
 
-    @media only screen and (min-width: 379) and (max-width: 600px){
+    @media only screen and (min-width: 435) and (max-width: 600px){
           .player-container {
                 flex-direction: column;
             }
@@ -524,6 +524,48 @@
              .volume-control {
                 margin: 8px 0;
                 width: 25%;
+            }
+         
+        #playing-station-name{
+            display: none;
+        }
+         #web_title{
+             display: none;
+         }
+          #font-awesome-icon{
+             display: none;
+         }
+
+         body, html {
+            margin: 0;
+            padding: 0;
+            font-family: "Open Sans", sans-serif;
+            display: flex;
+            justify-content: center;  /* Center horizontally */
+            padding-top: 40px; /* Adjust according to the height of the header */
+            background-color:#1c313a;
+            flex-direction: column;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+        }
+
+         .toFactory{
+        
+         }
+     }
+
+
+    
+    @media only screen and (min-width: 379) and (max-width: 435){
+          .player-container {
+                flex-direction: column;
+            }
+            .station-image, .play-button{
+                margin: 2px 0;
+            }
+         
+             .volume-control {
+                margin: 8px 0;
+                width: 20%;
             }
          
         #playing-station-name{
