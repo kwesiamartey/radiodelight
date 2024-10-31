@@ -1181,6 +1181,7 @@ function togglePlay() {
     }
 
 
+
 function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
     // Validate the audio URL
     if (!audioUrl || typeof audioUrl !== 'string' || !audioUrl.startsWith('http')) {
@@ -1216,6 +1217,11 @@ function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
             </head>
             <body>
                 <h1>${stationName}</h1>
+                <img src="${logoUrl}" alt="${stationName} Logo">
+                <audio controls>
+                    <source src="${audioUrl}" type="audio/mpeg">
+                    Your browser does not support the audio tag.
+                </audio>
                 <div id="loadedContent">Loading content...</div>
             </body>
         </html>
@@ -1225,8 +1231,10 @@ function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
     popupWindow.document.write(popupContent);
     popupWindow.document.close(); // Close the document for rendering
 
-    // Load additional content into the popup
-    fetch(audioUrl) // Replace with your content URL
+    // Load additional content into the popup (change the URL to a valid one)
+    const contentUrl = 'https://google.com'; // Replace with your content URL
+
+    fetch(contentUrl) // Fetch content from a valid URL
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -1244,6 +1252,9 @@ function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
     // Focus the popup window
     popupWindow.focus();
 }
+
+
+
 
     
 
