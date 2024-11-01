@@ -1,6 +1,7 @@
 <?php
-
-<!DOCTYPE html>
+ob_start();
+// Generate HTML content here
+$content = '<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -1542,6 +1543,15 @@ window.__h82AlnkH6D91__("WyJwdWItMzM2NjEzMTM1NDYwNDk2NiIsW251bGwsbnVsbCxudWxsLCJ
         
 
 </body>
-</html>
+</html>';
 
+
+echo $content; // Output content only if user has access
+
+ob_end_flush();
 ?>
+
+
+
+
+
