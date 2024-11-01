@@ -1041,7 +1041,7 @@ function setupPaginationButtons(data, totalPages) {
     }
 }
 
-    function fetchStations(countryPath = 'unitedStateRadioList.json') {
+    function fetchStations(countryPath = selectedCountryPath) {
         fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`)
             .then(response => response.ok ? response.json() : Promise.reject())
             .then(data => {
