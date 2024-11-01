@@ -635,22 +635,33 @@
              font-weight:700;
              font-size:1.0rem;
          }
+
+        .playing-station-wrap{
+            width:380px;
+            margin:12px;
+        }
+
+        .p-m-player-v{
+            width:180px;
+            margin:12px;
+        }
      }
 
 
     
     @media only screen and (min-width: 379) and (max-width: 435){
-          .player-container {
-                flex-direction: column;
-            }
-            .station-image, .play-button{
-                margin: 2px 0;
-            }
+        .player-container {
+            flex-direction: column;
+        }
+        
+        .station-image, .play-button{
+            margin: 2px 0;
+        }
          
-             .volume-control {
-                margin: 8px 0;
-                width: 20%;
-            }
+        .volume-control {
+            margin: 8px 0;
+            width: 20%;
+        }
          
         #playing-station-name{
             display: none;
@@ -736,12 +747,12 @@
         <div class="row" style="display: flex; align-items: center; height: auto; width: 100%;">
             
             <!-- First column: Station Image -->
-            <div class="col-2" style="width:180px;">
+            <div class="col-2 " style="width:180px;">
                 <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: block;">
             </div>
 
             <!-- Second column: Play button and progress ring -->
-            <div class="col-10" style="width:200px;padding-top:10px;">
+            <div class="col-10 p-m-player-v" style="width:200px;padding-top:10px;">
                 <!-- Centered Play Control -->
                 <div class="col" style="display: flex; align-items: center; justify-content: center;">
                     <div class="play-control" style="display: flex; align-items: center; justify-content: center;">
