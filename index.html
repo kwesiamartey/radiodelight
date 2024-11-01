@@ -585,6 +585,17 @@
             height: calc(100vh - 160px); /* Adjust height minus header (80px) and bottom-row (80px) */
             overflow-y: auto;
         }
+        .station-item {
+            text-align: center;
+            cursor: pointer;
+             height: 170px; 
+            color: #ccc;
+            font-size:14px;
+            transition: background-color 0.2s;
+            padding: 0px 0px 0px 0px;
+            background-color: #142229;
+            border-radius: 5px 5px 0px 0px;
+        }
      }
 
 
@@ -645,6 +656,17 @@
         .p-m-player-v{
             width:119px;
             margin:auto;
+        }
+        .station-item {
+            text-align: center;
+            cursor: pointer;
+             height: 170px; 
+            color: #ccc;
+            font-size:14px;
+            transition: background-color 0.2s;
+            padding: 0px 0px 0px 0px;
+            background-color: #142229;
+            border-radius: 5px 5px 0px 0px;
         }
      }
 
@@ -707,6 +729,17 @@
         .p-m-player-v{
             width:119px;
             margin:auto;
+        }
+         .station-item {
+            text-align: center;
+            cursor: pointer;
+             height: 170px; 
+            color: #ccc;
+            font-size:14px;
+            transition: background-color 0.2s;
+            padding: 0px 0px 0px 0px;
+            background-color: #142229;
+            border-radius: 5px 5px 0px 0px;
         }
         
      }
@@ -1049,11 +1082,11 @@ function setupPaginationButtons(data, totalPages) {
             const stationItem = document.createElement('div');
             stationItem.className = 'station-item';
             const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-            stationItem.innerHTML = `<div style="width: 100%; height: 100%; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden;">
+            stationItem.innerHTML = `<div style="width: 100%; height: 140px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden;">
     <!-- Blurred background with ::before pseudo-element -->
     <div style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; border-radius: 5px 5px 0px 0px; overflow: hidden;">
         <div style="
-            background-image: url('${station.logo}');
+            background-image: white;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -1066,12 +1099,12 @@ function setupPaginationButtons(data, totalPages) {
     
     <!-- Foreground image on top of the blurred background -->
     <img style="width: 100%;
-                height: 100%;
+                height: 140px;
                 transition: all 0.3s ease-in-out;
                 border-radius: 5px 5px 0px 0px;
                 object-fit: scale-down;
-                 background-image: url('${station.logo}');
-                 background-size: cover;
+                background-image: url('${station.logo}');
+                background-size: cover;
                 position: relative;
                 z-index: 1;"  
          src="${station.logo}" 
