@@ -1,3 +1,5 @@
+<?php
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +15,52 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
-    <title>Radio Delight</title>
+    <title>Listen to Live World-wide Radio Stations Online | Free Internet Radio</title>
+    <meta name="description" content="Discover and listen to over world-wide radio stations online at radiosdelight.com - Enjoy your favorite radio shows anytime, anywhere!">
+
+       <!-- Favicons -->
+        <link rel="icon" href="logo.png" sizes="any">
+        <link rel="icon" type="logo.png" href="/assets/images/favicon-32" sizes="32x32">
+        <link rel="apple-touch-icon" sizes="180x180" href="logo.png">
+        <link rel="mask-icon" href="logo.png" >
+        <link rel="manifest" href="manifest.json">
+
+
+    
+    <!-- Open Graph -->
+        <meta property="og:title" content="Listen to Live World-wide Radio Stations Online | Free Internet Radio">
+        <meta property="og:type" content="website">
+        <meta property="og:image" content="https://radiosdelight.com/logo.png">
+        <meta property="og:url" content="https://radiosdelight.com">
+        <meta property="og:description" content="Discover and listen to over world-wide radio stations online at radiosdelight.com - Enjoy your favorite radio shows anytime, anywhere!">
+
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:title" content="Listen to Live World-wide Radio Stations Online | Free Internet Radio">
+        <meta name="twitter:url" content="https://radiosdelight.com">
+        <meta name="twitter:description" content="Discover and listen to World radio sta<!-- Open Graph -->
+        <meta property="og:title" content="Listen to Live World-wide Radio Stations Online | Free Internet Radio">
+        <meta property="og:type" content="website">
+        <meta property="og:image" content="https://radiosdelight.com/logo.png">
+        <meta property="og:url" content="https://radiosdelight.com">
+        <meta property="og:description" content="Discover and listen to over world-wide radio stations online at radiosdelight.com - Enjoy your favorite radio shows anytime, anywhere!">
+
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:title" content="Listen to Live World-wide Radio Stations Online | Free Internet Radio">
+        <meta name="twitter:url" content="https://radiosdelight.com">
+        <meta name="twitter:description" content="Discover and listen to over world-wide radio stations online at radiosdelight.com - Enjoy your favorite radio shows anytime, anywhere!">
+    
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Radios Stations",
+          "headline": "Radio Stations",
+          "author": "Amartey",
+          "datePublished": "2024-10-31",
+          "image": "https://radiosdelight.com"
+        }
+    </script>
    
 <style>
        html, body {
@@ -29,12 +76,22 @@
             flex-direction: column;
         }
 
+          .playing-station-wrap{
+            width:400px;
+            margin:auto;
+        }
+
+        .p-m-player-v{
+            width:200px;
+            margin:auto;
+        }
+
         .footer-div-wraaper {
             width: 100%;
             margin-bottom: 18px;
-            margin-right:auto;
-            margin-left:auto;
             z-index: 1000;
+             margin-right:auto;
+            margin-left:auto;
             justify-content: center;
             align-items: center;
         }
@@ -70,6 +127,7 @@
         .station-image {
             width: 140px;
             height: 140px;
+            padding:15px;
             background-color:#fff;
             border-radius: 5px;
              object-fit: cover;  /* Ensure the image covers the circle */
@@ -357,6 +415,7 @@
              margin-top: 20px;
              text-align: center;
              font-weight:700;
+             font-size:2.0rem;
          }
 
          #countryTitle{
@@ -412,6 +471,17 @@
 
         /* Responsive styles */
         @media screen and (max-width: 768px) {
+
+
+         .countryTitle {
+             color: white;
+             margin-bottom:20px;
+             margin-top: 20px;
+             text-align: center;
+             font-weight:700;
+             font-size:1.3rem;
+         }
+            
   
             .play-button {
                 width: 70px;
@@ -447,13 +517,26 @@
 
         @media screen and (min-width: 600) and (max-width: 768px) {
 
-
+       .footer-div-wraaper {
+                flex-direction: column;
+                align-items: center;
+            }
             .player-container {
                 flex-direction: column;
             }
             .station-image, .play-button{
                 margin: 10px 0;
             }
+
+
+            .countryTitle {
+             color: white;
+             margin-bottom:20px;
+             margin-top: 20px;
+             text-align: center;
+             font-weight:700;
+             font-size:1.3rem;
+         }
         
     
            /* .menu-icon {
@@ -493,12 +576,10 @@
             object-fit: cover; /* Ensure the image covers the circle */
         }
 
-            
-
-            #sidebaer_topBar{
-             width:100%;
-             height:9px;
-           }
+        #sidebaer_topBar{
+            width:100%;
+            height:9px;
+        }
 
                /* Middle column: Radio station list */
         .station-list {
@@ -507,21 +588,33 @@
             height: calc(100vh - 160px); /* Adjust height minus header (80px) and bottom-row (80px) */
             overflow-y: auto;
         }
+        .station-item {
+            text-align: center;
+            cursor: pointer;
+             height: 170px; 
+            color: #ccc;
+            font-size:14px;
+            transition: background-color 0.2s;
+            padding: 0px 0px 0px 0px;
+            background-color: #142229;
+            border-radius: 5px 5px 0px 0px;
+        }
      }
 
 
     @media only screen and (min-width: 435) and (max-width: 600px){
-          .player-container {
-                flex-direction: column;
-            }
-            .station-image, .play-button{
-                margin: 10px 0;
-            }
+        .player-container {
+            flex-direction: column;
+        }
+        
+        .station-image, .play-button{
+            margin: 10px 0;
+        }
          
-             .volume-control {
-                margin: 8px 0;
-                width: 25%;
-            }
+        .volume-control {
+            margin: 8px 0;
+            width: 25%;
+        }
          
         #playing-station-name{
             display: none;
@@ -548,22 +641,53 @@
          .toFactory{
         
          }
+
+         .countryTitle {
+             color: white;
+             margin-bottom:20px;
+             margin-top: 20px;
+             text-align: center;
+             font-weight:700;
+             font-size:1.0rem;
+         }
+
+         .playing-station-wrap{
+            width:300px;
+            margin:auto;
+        }
+
+        .p-m-player-v{
+            width:119px;
+            margin:auto;
+        }
+        .station-item {
+            text-align: center;
+            cursor: pointer;
+             height: 170px; 
+            color: #ccc;
+            font-size:14px;
+            transition: background-color 0.2s;
+            padding: 0px 0px 0px 0px;
+            background-color: #142229;
+            border-radius: 5px 5px 0px 0px;
+        }
      }
 
 
     
-    @media only screen and (min-width: 379) and (max-width: 435){
-          .player-container {
-                flex-direction: column;
-            }
-            .station-image, .play-button{
-                margin: 2px 0;
-            }
+    @media only screen and (min-width: 375) and (max-width: 435){
+        .player-container {
+            flex-direction: column;
+        }
+        
+        .station-image, .play-button{
+            margin: 2px 0;
+        }
          
-             .volume-control {
-                margin: 8px 0;
-                width: 20%;
-            }
+        .volume-control {
+            margin: 8px 0;
+            width: 20%;
+        }
          
         #playing-station-name{
             display: none;
@@ -590,6 +714,37 @@
          .toFactory{
         
          }
+
+          .countryTitle {
+             color: white;
+             margin-bottom:20px;
+             margin-top: 20px;
+             text-align: center;
+             font-weight:700;
+             font-size:1.0rem;
+         }
+
+        .playing-station-wrap{
+            width:300px;
+            margin:auto;
+        }
+
+        .p-m-player-v{
+            width:119px;
+            margin:auto;
+        }
+         .station-item {
+            text-align: center;
+            cursor: pointer;
+             height: 170px; 
+            color: #ccc;
+            font-size:14px;
+            transition: background-color 0.2s;
+            padding: 0px 0px 0px 0px;
+            background-color: #142229;
+            border-radius: 5px 5px 0px 0px;
+        }
+        
      }
       
     </style>
@@ -634,17 +789,17 @@
 
 
  <!------- the player start here ---->
-<div class="footer-div-wraaper" style="flex-direction: column;align-items: center;justify-content: center;marrgin:auto;">
-    <div class="col playing-station-wrap" style="width:400px;background-color: #142229; display: none; align-items: center; justify-content: center;">
+<div class="footer-div-wraaper" style="display:none;">
+    <div class="col playing-station-wrap" style="background-color: #142229; display: none; align-items: center; justify-content: center;margin:auto;">
         <div class="row" style="display: flex; align-items: center; height: auto; width: 100%;">
             
             <!-- First column: Station Image -->
-            <div class="col-2" style="width:180px;">
+            <div class="col-2 " style="width:180px;">
                 <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: block;">
             </div>
 
             <!-- Second column: Play button and progress ring -->
-            <div class="col-10" style="width:200px;padding-top:10px;">
+            <div class="col-10 p-m-player-v" style="padding-top:10px;">
                 <!-- Centered Play Control -->
                 <div class="col" style="display: flex; align-items: center; justify-content: center;">
                     <div class="play-control" style="display: flex; align-items: center; justify-content: center;">
@@ -745,13 +900,13 @@
 
 <script>
     let stationData = []; // Store stations here to avoid multiple fetches
-    let selectedCountryPath = 'unitedStateRadioList.json';
+    let selectedCountryPath = 'italyRadioList.json';
     let currentAudio = null; // Added this declaration
     let hls;
     let currentPage = 1;
     const itemsPerPage = 72;
     let currentPage1 = 1;
-    const itemsPerPage1 = 50; // Number of countries per page
+    const itemsPerPage1 = 30; // Number of countries per page
     const progress = document.getElementById('progress');
     const playButton = document.querySelector('.play-button');
     const audio = document.getElementById('audio');
@@ -888,7 +1043,7 @@ function setupPaginationButtons(data, totalPages) {
     }
 }
 
-    function fetchStations(countryPath = 'unitedStateRadioList.json') {
+    function fetchStations(countryPath = selectedCountryPath) {
         fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`)
             .then(response => response.ok ? response.json() : Promise.reject())
             .then(data => {
@@ -930,11 +1085,11 @@ function setupPaginationButtons(data, totalPages) {
             const stationItem = document.createElement('div');
             stationItem.className = 'station-item';
             const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-            stationItem.innerHTML = `<div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden;">
+            stationItem.innerHTML = `<div style="width: 100%; height: 140px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden;">
     <!-- Blurred background with ::before pseudo-element -->
-    <div style="width: 100%; height: 140px; position: absolute; top: 0; left: 0; border-radius: 5px 5px 0px 0px; overflow: hidden;">
+    <div style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; border-radius: 5px 5px 0px 0px; overflow: hidden;">
         <div style="
-            background-image: url('${station.logo}');
+            background-color: white;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -943,22 +1098,23 @@ function setupPaginationButtons(data, totalPages) {
             height: 140px;
             position: absolute;
             top: 0; left: 0;"></div>
-    </div>
+       </div>
     
     <!-- Foreground image on top of the blurred background -->
     <img style="width: 100%;
                 height: 140px;
+                padding:15px;
                 transition: all 0.3s ease-in-out;
                 border-radius: 5px 5px 0px 0px;
-                object-fit: scale-down;
-                 background-image: url('${station.logo}');
-                 background-size: cover;
+                object-fit: contain;
+                margin:auto;
+                background-size: contain;
                 position: relative;
                 z-index: 1;"  
          src="${station.logo}" 
          alt="${truncatedName}">
-</div>
-<span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
+    </div>
+        <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
             
             stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.bit));
             stationList.appendChild(stationItem);
@@ -1047,7 +1203,7 @@ function playStation(url, image, stationName, bit) {
     document.getElementById('stationLogo').style.display = 'block';
     document.querySelector('.playing-station-wrap').style.display = 'block';
    // document.getElementById('playing-station-name').textContent = stationName;
-    //document.querySelector('.footer-div-wraaper').style.display = 'flex';
+   document.querySelector('.footer-div-wraaper').style.display = 'block';
     progress.style.display = 'block';
 
     // Initialize HLS or regular stream
@@ -1095,7 +1251,7 @@ function playStation(url, image, stationName, bit) {
                 audio.play();
                 progress.style.display = 'none';  // Hide progress when ready
                 playButton.textContent = '||';   // Set to pause icon
-                sendEmailNotification(stationName, url, "200") 
+                sendEmailNotification(stationName, stationUrl, "200") 
             });
         } else {
             // Fallback for older browsers or browsers without HLS support
@@ -1109,7 +1265,7 @@ function playStation(url, image, stationName, bit) {
             audio.play();
             progress.style.display = 'none';  // Hide progress when ready
             playButton.textContent = '||';   // Set to pause icon
-            sendEmailNotification(stationName, url, "200") 
+            sendEmailNotification(stationName, stationUrl, "200") 
         });
     }
 
@@ -1387,3 +1543,5 @@ window.__h82AlnkH6D91__("WyJwdWItMzM2NjEzMTM1NDYwNDk2NiIsW251bGwsbnVsbCxudWxsLCJ
 
 </body>
 </html>
+
+?>
