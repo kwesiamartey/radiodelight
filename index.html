@@ -1154,90 +1154,42 @@ function handleImageError(imageElement, stationName) {
 }
 
 
-function displayStations(stations) {
-    document.getElementById('footerr').style.display = 'block';
-    document.getElementById('countryTitle').style.display = 'block';
-    document.querySelector('.countryTitle').style.display = 'block';
-    document.getElementById('country_list_wrapper').style.display = 'block';
 
-    const stationList = document.getElementById('stationListContent');
-    const paginationControls = document.getElementById('paginationControls');
-    stationList.innerHTML = ''; // Clear current list
-    paginationControls.innerHTML = ''; // Clear pagination
-
-    if (stations.length === 0) {
-        stationList.innerHTML = `<p>No results found.</p>`;
-        return;
-    }
-
-    const totalPages = Math.ceil(stations.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
-
-    stationsToDisplay.forEach(station => {
-        const stationItem = document.createElement('div');
-        stationItem.className = 'station-item';
-        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-
-        stationItem.innerHTML = `
-            <div style="width: 100%; height: 140px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden;">
-                <!-- Blurred background with ::before pseudo-element -->
-                <div style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; border-radius: 5px 5px 0px 0px; overflow: hidden;">
-                    <div style="
-                        background-color: white;
-                        background-size: cover;
-                        background-position: center;
-                        background-repeat: no-repeat;
-                        filter: blur(8px);
-                        width: 100%;
-                        height: 140px;
-                        position: absolute;
-                        top: 0; left: 0;">
-                    </div>
-                </div>
-                <!-- Foreground image on top of the blurred background -->
-                <img style="width: 100%;
-                            height: 140px;
-                            padding:15px;
-                            transition: all 0.3s ease-in-out;
-                            border-radius: 5px 5px 0px 0px;
-                            object-fit: contain;
-                            margin:auto;
-                            background-size: contain;
-                            position: relative;
-                            z-index: 1;"  
-                     src="${station.logo}" 
-                     alt="${truncatedName}"
-                     onerror="handleImageError(this, '${truncatedName}')">
-            </div>
-            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
-
-        stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.bit));
-        stationList.appendChild(stationItem);
-    });
-
-    createPaginationControls(stations.length, totalPages);
-}
-
-// Function to handle image load errors
 function handleImageError(imageElement, stationName) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     canvas.width = 200;
-    canvas.height = 200;
+    canvas.height = 140;  // Adjusted height for better text fitting
 
     // Set background color to white
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Set text properties to match the Wix style
+    // Set text properties
     ctx.fillStyle = 'black';
-    ctx.font = 'bold 30px Arial';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    // Draw the station name in the center
-    ctx.fillText(stationName, canvas.width / 2, canvas.height / 2);
+    // Adjust font size based on station name length
+    const maxFontSize = 24;
+    const minFontSize = 16;
+    let fontSize = maxFontSize;
+    if (stationName.length > 10) {
+        fontSize = Math.max(minFontSize, maxFontSize - (stationName.length - 10) * 1.2);
+    }
+    ctx.font = `bold ${fontSize}px Arial`;
+
+    // Handle long text by splitting into two lines if necessary
+    const words = stationName.split(' ');
+    if (words.length > 1) {
+        const firstLine = words.slice(0, Math.ceil(words.length / 2)).join(' ');
+        const secondLine = words.slice(Math.ceil(words.length / 2)).join(' ');
+        ctx.fillText(firstLine, canvas.width / 2, canvas.height / 2 - fontSize / 2);
+        ctx.fillText(secondLine, canvas.width / 2, canvas.height / 2 + fontSize / 2);
+    } else {
+        // Single line if station name is short
+        ctx.fillText(stationName, canvas.width / 2, canvas.height / 2);
+    }
 
     // Set the canvas as the image source
     imageElement.src = canvas.toDataURL();
