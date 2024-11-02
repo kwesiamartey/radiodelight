@@ -1118,11 +1118,17 @@ function displayStations(stations) {
 
 function handleImageError(imageElement, stationName) {
     const baseWidth = 200; // Base width for the canvas
-    const maxHeight = 140; // Maximum height for the canvas
     const padding = 20; // Padding for text
-    const lineHeight = 30; // Space between lines
-    let fontSize = 32; // Starting font size
-    const ctx = document.createElement('canvas').getContext('2d');
+    const lineHeight = 40; // Space between lines
+    const fontSize = 32; // Fixed font size
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Set font properties
+    ctx.font = `900 ${fontSize}px Open Sans, sans-serif`;
+    ctx.textAlign = 'center'; // Center text horizontally
+    ctx.textBaseline = 'middle'; // Align text vertically by middle
 
     // Function to wrap text and measure width
     function wrapText(text, maxWidth) {
@@ -1134,7 +1140,9 @@ function handleImageError(imageElement, stationName) {
             const testLine = currentLine + (currentLine ? ' ' : '') + word;
             const width = ctx.measureText(testLine).width;
 
+            // Check if the line exceeds the maxWidth
             if (width > maxWidth) {
+                // If the current line is not empty, push it to lines
                 if (currentLine) {
                     lines.push(currentLine);
                 }
@@ -1151,44 +1159,33 @@ function handleImageError(imageElement, stationName) {
         return lines;
     }
 
-    // Create a canvas to determine text dimensions
-    ctx.font = `900 ${fontSize}px Open Sans, sans-serif`;
-    let lines = wrapText(stationName, baseWidth - padding);
+    // Wrap the station name to fit within the canvas width
+    const lines = wrapText(stationName, baseWidth - padding);  // 20px padding on each side
 
-    // Dynamically adjust canvas height based on number of lines
-    let canvasHeight = Math.min(lines.length * lineHeight + padding, maxHeight);
+    // Create the canvas height based on the number of lines
+    const canvasHeight = Math.min(lines.length * lineHeight + padding, 140); // Max height 140px
 
-    // Create the final canvas
-    const canvas = document.createElement('canvas');
+    // Update canvas dimensions
     canvas.width = baseWidth;
     canvas.height = canvasHeight;
-    const finalCtx = canvas.getContext('2d');
 
     // Set background color to white
-    finalCtx.fillStyle = 'white';
-    finalCtx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Draw the text onto the canvas
-    finalCtx.fillStyle = 'black';
-    finalCtx.textAlign = 'center';  // Center text horizontally
-    finalCtx.textBaseline = 'middle';  // Align text vertically by middle
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Calculate the initial Y position for vertical centering
     const totalHeight = lines.length * lineHeight;
     const initialY = (canvas.height - totalHeight) / 2 + lineHeight / 2;
 
+    // Draw the text onto the canvas
+    ctx.fillStyle = 'black';
     lines.forEach((line, index) => {
-        finalCtx.fillText(line, canvas.width / 2, initialY + index * lineHeight);
+        ctx.fillText(line, canvas.width / 2, initialY + index * lineHeight);
     });
 
     // Set the canvas as the image source
     imageElement.src = canvas.toDataURL();
 }
-
-    
-
-
-
 
     
 
