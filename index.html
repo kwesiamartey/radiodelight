@@ -1114,14 +1114,14 @@ function displayStations(stations) {
 }
 
 
+
+
 function handleImageError(imageElement, stationName) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     canvas.width = 200;
-    canvas.height = 140;// Height adjusted for multiline support
+    canvas.height = 140;  // Height adjusted for multiline support
 
-
-    
     // Set background color to white
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -1171,12 +1171,13 @@ function handleImageError(imageElement, stationName) {
 
     // Draw each line of text
     lines.forEach((line, index) => {
-        ctx.fillText(line, canvas.width, initialY + index * lineHeight);
+        ctx.fillText(line, canvas.width / 2, initialY + index * lineHeight);
     });
 
     // Set the canvas as the image source
     imageElement.src = canvas.toDataURL();
 }
+
 
     
 
