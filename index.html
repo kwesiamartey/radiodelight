@@ -1159,7 +1159,7 @@ function handleImageError(imageElement, stationName) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     canvas.width = 200;
-    canvas.height = 140;  // Adjusted height for better text fitting
+    canvas.height = 140;  // Set canvas height for multiline support
 
     // Set background color to white
     ctx.fillStyle = 'white';
@@ -1167,33 +1167,45 @@ function handleImageError(imageElement, stationName) {
 
     // Set text properties
     ctx.fillStyle = 'black';
+    ctx.font = 'bold 28px Arial';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    // Adjust font size based on station name length
-    const maxFontSize = 24;
-    const minFontSize = 16;
-    let fontSize = maxFontSize;
-    if (stationName.length > 10) {
-        fontSize = Math.max(minFontSize, maxFontSize - (stationName.length - 10) * 1.2);
-    }
-    ctx.font = `bold ${fontSize}px Arial`;
+    // Function to split text into multiple lines if needed
+    function wrapText(text, maxWidth) {
+        const words = text.split(' ');
+        const lines = [];
+        let currentLine = words[0];
 
-    // Handle long text by splitting into two lines if necessary
-    const words = stationName.split(' ');
-    if (words.length > 1) {
-        const firstLine = words.slice(0, Math.ceil(words.length / 2)).join(' ');
-        const secondLine = words.slice(Math.ceil(words.length / 2)).join(' ');
-        ctx.fillText(firstLine, canvas.width / 2, canvas.height / 2 - fontSize / 2);
-        ctx.fillText(secondLine, canvas.width / 2, canvas.height / 2 + fontSize / 2);
-    } else {
-        // Single line if station name is short
-        ctx.fillText(stationName, canvas.width / 2, canvas.height / 2);
+        for (let i = 1; i < words.length; i++) {
+            const word = words[i];
+            const width = ctx.measureText(currentLine + ' ' + word).width;
+            if (width < maxWidth) {
+                currentLine += ' ' + word;
+            } else {
+                lines.push(currentLine);
+                currentLine = word;
+            }
+        }
+        lines.push(currentLine);
+        return lines;
     }
+
+    // Wrap the station name if it exceeds the canvas width
+    const lines = wrapText(stationName, canvas.width - 20);  // 20px padding on each side
+
+    // Position lines vertically centered
+    const lineHeight = 30;  // Space between lines
+    const initialY = canvas.height / 2 - (lines.length - 1) * lineHeight / 2;
+
+    lines.forEach((line, index) => {
+        ctx.fillText(line, canvas.width / 2, initialY + index * lineHeight);
+    });
 
     // Set the canvas as the image source
     imageElement.src = canvas.toDataURL();
 }
+
 
 
     
