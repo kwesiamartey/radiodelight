@@ -1096,7 +1096,7 @@ function setupPaginationButtons(data, totalPages) {
                         background-size: cover;
                         background-position: center;
                         background-repeat: no-repeat;
-                        filter: blur(8px);
+                        filter: blur(1px);
                         width: 100%;
                         height: 140px;
                         position: absolute;
@@ -1106,7 +1106,7 @@ function setupPaginationButtons(data, totalPages) {
                 <!-- Foreground image on top of the blurred background -->
                 <img style="width: 100%;
                             height: 140px;
-                            padding:15px;
+                            padding:8px;
                             transition: all 0.3s ease-in-out;
                             border-radius: 5px 5px 0px 0px;
                             object-fit: contain;
@@ -1141,7 +1141,7 @@ function handleImageError(imageElement, stationName) {
 
     // Set text properties with font-weight of 900 and font size
     ctx.fillStyle = 'black';
-    ctx.font = '900 28px Open Sans, sans-serif';  // Font-weight 900, 28px size
+    ctx.font = '900 32px Open Sans, sans-serif';  // Font-weight 900, 28px size
     ctx.textAlign = 'center';  // Center text horizontally
     ctx.textBaseline = 'middle';  // Align text vertically by middle
 
