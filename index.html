@@ -1116,7 +1116,6 @@ function displayStations(stations) {
 
 
 
-
 function handleImageError(imageElement, stationName) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -1164,9 +1163,9 @@ function handleImageError(imageElement, stationName) {
     }
 
     // Wrap the station name to fit within the canvas width
-    const lines = wrapText(stationName, baseWidth - padding);  // 20px padding on each side
+    const lines = wrapText(stationName, baseWidth - padding); // 20px padding on each side
 
-    // Create the canvas height based on the number of lines
+    // Create the canvas height based on the number of lines, ensuring max height
     const canvasHeight = Math.min(lines.length * lineHeight + padding, 140); // Max height 140px
     canvas.height = canvasHeight; // Update the canvas height
 
