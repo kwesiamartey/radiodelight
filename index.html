@@ -1042,28 +1042,27 @@ function setupPaginationButtons(data, totalPages) {
     }
 }
 
-// Fetch stations for multiple countries concurrently
-function fetchStations(countryPaths = selectedCountryPath) {
-    // Create an array of fetch promises for each country path
-    const fetchPromises = countryPaths.map(countryPath =>
-        fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`)
+function fetchStations(countryPath = selectedCountryPath) {
+        fetch(https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath})
             .then(response => response.ok ? response.json() : Promise.reject())
-            .then(data => data.filter(station => station.name !== 'Local Fm'))
-            .catch(error => {
-                console.error(`Error fetching data for ${countryPath}:`, error);
-                return []; // Return an empty array on error to prevent breaking the Promise.all
+            .then(data => {
+                stationData = data.filter(station => station.name !== 'Local Fm');
+                displayStations(stationData);
             })
-    );
+            .catch(error => console.error('Error fetching station data:', error));
+    }
 
-    // Wait for all fetch requests to complete
-    Promise.all(fetchPromises)
-        .then(results => {
-            // Flatten the array of arrays into one array
-            stationData = results.flat();
-            displayStations(stationData);
-        })
-        .catch(error => console.error('Error with concurrent fetching:', error));
-}
+    function filterStations() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const filteredStations = stationData.filter(station => 
+            station.name.toLowerCase().includes(query)
+        );
+        currentPage = 1; // Reset to first page on filter
+        displayStations(filteredStations);
+    }
+
+
+
 
 function filterStations() {
     const query = document.getElementById('searchInput').value.toLowerCase();
