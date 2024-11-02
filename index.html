@@ -1085,7 +1085,7 @@ function displayStations(stations) {
     stationsToDisplay.forEach(station => {
         const stationItem = document.createElement('div');
         stationItem.className = 'station-item';
-        const truncatedName = station.name;
+        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
 
 
 
@@ -1102,7 +1102,7 @@ function displayStations(stations) {
                             "  
                      src="${station.logo}" 
                      alt="${truncatedName}"
-                     onerror="handleImageError(this, '${truncatedName}')">
+                     onerror="handleImageError(this, '${station.name}')">
             </div>
             <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
 
@@ -1123,12 +1123,12 @@ function handleImageError(imageElement, stationName) {
     placeholder.style.width = '100%'; // Set desired width
     placeholder.style.height = '140px'; // Set desired height
     placeholder.style.backgroundColor = 'white'; // Background color
-    placeholder.style.color = '#333'; // Text color
+    placeholder.style.color = 'black'; // Text color
     placeholder.style.display = 'flex'; // Use flexbox for centering
     placeholder.style.flexDirection = 'column'; // Stack text lines vertically
     placeholder.style.justifyContent = 'center'; // Center vertically
     placeholder.style.alignItems = 'center'; // Center horizontally
-    placeholder.style.fontWeight = '400'; // Font weight
+    placeholder.style.fontWeight = '600'; // Font weight
     placeholder.style.fontSize = '20px'; // Font size
     placeholder.style.textAlign = 'center'; // Center text alignment
     placeholder.style.padding = '15px'; // Padding for better text fit
