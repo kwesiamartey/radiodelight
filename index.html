@@ -1190,11 +1190,13 @@ function playStation(url, image, stationName, bit) {
         const progress = document.getElementById('progress');
         const playButton = document.querySelector('.play-button');
         
+        // Only destroy HLS instance if it exists
         if (typeof hls !== 'undefined' && hls !== null) {
             hls.destroy();
-            hls = null;
+            hls = null; // Reset hls after destruction
         }
 
+        // Set station logo, display player, and show progress bar
         const stationLogo = document.getElementById('stationLogo');
         stationLogo.src = image;
         stationLogo.style.display = 'block';
@@ -1202,20 +1204,20 @@ function playStation(url, image, stationName, bit) {
         document.querySelector('.footer-div-wraaper').style.display = 'block';
         progress.style.display = 'block';
 
-        // Create a custom placeholder if the image fails to load
+        // Create a custom placeholder image if the original fails
         stationLogo.onerror = function () {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             canvas.width = 200; // Set desired width
-            canvas.height = 200; // Set desired height
+            canvas.height = 100; // Set desired height
 
-            // Set background color to white
+            // Fill the background with white
             ctx.fillStyle = 'white';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Set text color and font to match the Wix style
+            // Set text properties
             ctx.fillStyle = 'black';
-            ctx.font = 'bold 30px Arial'; 
+            ctx.font = 'bold 20px Arial'; // Set font size and family
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
@@ -1223,24 +1225,29 @@ function playStation(url, image, stationName, bit) {
             ctx.fillText(stationName, canvas.width / 2, canvas.height / 2);
 
             // Set the canvas as the image source
-            stationLogo.src = canvas.toDataURL();
+            stationLogo.src = canvas.toDataURL(); // Convert the canvas to a data URL
         };
 
+        // Initialize HLS or regular stream
         const hlsUrl = url;
 
+        // Check if the stream is HLS (.m3u8) format
         if (hlsUrl.endsWith('.m3u8')) {
+            // Use HLS.js if the browser does not support native HLS playback
             if (Hls.isSupported()) {
                 hls = new Hls();
                 hls.loadSource(hlsUrl);
                 hls.attachMedia(audio);
 
+                // Hide progress and start playback when manifest is loaded
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
                     audio.play();
-                    progress.style.display = 'none';
-                    playButton.textContent = '||';
+                    progress.style.display = 'none';  // Hide progress after loading
+                    playButton.textContent = '||';   // Set to pause icon
                     sendEmailNotification(stationName, stationUrl, "200");
                 });
 
+                // Error handling for HLS.js
                 hls.on(Hls.Events.ERROR, (event, data) => {
                     if (data.fatal) {
                         switch (data.type) {
@@ -1260,28 +1267,32 @@ function playStation(url, image, stationName, bit) {
                     }
                 });
             } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+                // Use native HLS support for Safari and similar browsers
                 audio.src = hlsUrl;
                 audio.addEventListener('canplay', () => {
                     audio.play();
-                    progress.style.display = 'none';
-                    playButton.textContent = '||';
+                    progress.style.display = 'none';  // Hide progress when ready
+                    playButton.textContent = '||';   // Set to pause icon
                     sendEmailNotification(stationName, stationUrl, "200");
                 });
             } else {
+                // Fallback for older browsers or browsers without HLS support
                 console.error('HLS is not supported in this browser.');
                 handlePlaybackError(url, stationName);
             }
         } else {
+            // Handle non-HLS streams (regular audio files)
             audio.src = hlsUrl;
             audio.addEventListener('canplay', () => {
                 audio.play();
-                progress.style.display = 'none';
-                playButton.textContent = '||';
+                progress.style.display = 'none';  // Hide progress when ready
+                playButton.textContent = '||';   // Set to pause icon
                 sendEmailNotification(stationName, stationUrl, "200");
             });
         }
     }
 }
+
 
     
 
