@@ -1117,22 +1117,14 @@ function displayStations(stations) {
 
 
 function handleImageError(imageElement, stationName) {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = 200;
-    canvas.height = 140;  // Height adjusted for multiline support
+    const baseWidth = 200; // Base width for the canvas
+    const maxHeight = 140; // Maximum height for the canvas
+    const padding = 20; // Padding for text
+    const lineHeight = 30; // Space between lines
+    let fontSize = 32; // Starting font size
+    const ctx = document.createElement('canvas').getContext('2d');
 
-    // Set background color to white
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Set text properties with font-weight of 900 and font size
-    ctx.fillStyle = 'black';
-    ctx.font = '600 32px Open Sans, sans-serif';  // Font-weight 900, 32px size
-    ctx.textAlign = 'center';  // Center text horizontally
-    ctx.textBaseline = 'middle';  // Align text vertically by middle
-
-    // Function to split text into multiple lines if needed
+    // Function to wrap text and measure width
     function wrapText(text, maxWidth) {
         const words = text.split(' ');
         const lines = [];
@@ -1159,25 +1151,39 @@ function handleImageError(imageElement, stationName) {
         return lines;
     }
 
-    // Wrap the station name to fit within the canvas width
-    const lines = wrapText(stationName, canvas.width - 20);  // 20px padding on each side
+    // Create a canvas to determine text dimensions
+    ctx.font = `900 ${fontSize}px Open Sans, sans-serif`;
+    let lines = wrapText(stationName, baseWidth - padding);
 
-    // Calculate the total height of all lines to center vertically
-    const lineHeight = 30;  // Space between lines
+    // Dynamically adjust canvas height based on number of lines
+    let canvasHeight = Math.min(lines.length * lineHeight + padding, maxHeight);
+
+    // Create the final canvas
+    const canvas = document.createElement('canvas');
+    canvas.width = baseWidth;
+    canvas.height = canvasHeight;
+    const finalCtx = canvas.getContext('2d');
+
+    // Set background color to white
+    finalCtx.fillStyle = 'white';
+    finalCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw the text onto the canvas
+    finalCtx.fillStyle = 'black';
+    finalCtx.textAlign = 'center';  // Center text horizontally
+    finalCtx.textBaseline = 'middle';  // Align text vertically by middle
+
+    // Calculate the initial Y position for vertical centering
     const totalHeight = lines.length * lineHeight;
+    const initialY = (canvas.height - totalHeight) / 2 + lineHeight / 2;
 
-    // Calculate initial Y position for vertical centering
-    const initialY = (canvas.height - totalHeight) / 2 + lineHeight / 2; 
-
-    // Draw each line of text
     lines.forEach((line, index) => {
-        ctx.fillText(line, canvas.width / 2, initialY + index * lineHeight);
+        finalCtx.fillText(line, canvas.width / 2, initialY + index * lineHeight);
     });
 
     // Set the canvas as the image source
     imageElement.src = canvas.toDataURL();
 }
-
 
     
 
