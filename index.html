@@ -1116,50 +1116,60 @@ function displayStations(stations) {
 
 
 function handleImageError(imageElement, stationName) {
-    // Create a div element
+    // Create a div element as a placeholder
     const placeholder = document.createElement('div');
     
     // Set the styles for the placeholder
-    placeholder.style.width = '200px'; // Set desired width
+    placeholder.style.width = '100%'; // Set desired width
     placeholder.style.height = '140px'; // Set desired height
     placeholder.style.backgroundColor = 'white'; // Background color
     placeholder.style.color = 'black'; // Text color
     placeholder.style.display = 'flex'; // Use flexbox for centering
-    placeholder.style.justifyContent = 'center'; // Center horizontally
-    placeholder.style.alignItems = 'center'; // Center vertically
-    placeholder.style.fontWeight = '900'; // Bold text
-    placeholder.style.fontSize = '32px'; // Set font size
-    placeholder.style.textAlign = 'center'; // Center text
+    placeholder.style.flexDirection = 'column'; // Stack text lines vertically
+    placeholder.style.justifyContent = 'center'; // Center vertically
+    placeholder.style.alignItems = 'center'; // Center horizontally
+    placeholder.style.fontWeight = '600'; // Font weight
+    placeholder.style.fontSize = '24px'; // Font size
+    placeholder.style.textAlign = 'center'; // Center text alignment
+    placeholder.style.padding = '10px'; // Padding for better text fit
+    placeholder.style.boxSizing = 'border-box'; // Ensure padding is considered in width
 
-    // Split text into lines if necessary
-    const words = stationName.split(' ');
-    let currentLine = '';
-    const lines = [];
+    // Function to wrap text into multiple lines if needed
+    function wrapText(text, maxWidth) {
+        const words = text.split(' ');
+        const lines = [];
+        let currentLine = words[0];
 
-    // Wrap text based on width
-    words.forEach(word => {
-        const testLine = currentLine + (currentLine ? ' ' : '') + word;
-        placeholder.innerText = testLine; // Temporarily set text to measure it
-        if (placeholder.offsetWidth > placeholder.clientWidth) {
-            if (currentLine) {
-                lines.push(currentLine); // Push the current line if it's not empty
+        for (let i = 1; i < words.length; i++) {
+            const word = words[i];
+            const testLine = `${currentLine} ${word}`;
+            placeholder.innerText = testLine;
+            if (placeholder.scrollWidth > maxWidth) {
+                lines.push(currentLine);
+                currentLine = word;
+            } else {
+                currentLine = testLine;
             }
-            currentLine = word; // Start a new line with the current word
-        } else {
-            currentLine = testLine; // Update current line with the new word
         }
-    });
-
-    if (currentLine) {
-        lines.push(currentLine); // Push the last line
+        lines.push(currentLine); // Push the final line
+        return lines;
     }
 
-    // Set the text of the placeholder, ensuring it is multiline
-    placeholder.innerText = lines.join('\n');
+    // Wrap the station name text to fit within the placeholder width
+    const lines = wrapText(stationName, 180); // Account for 20px padding (200px width minus 10px on each side)
+
+    // Set each line as a separate div for better control
+    placeholder.innerHTML = ''; // Clear existing text
+    lines.forEach(line => {
+        const lineDiv = document.createElement('div');
+        lineDiv.textContent = line;
+        placeholder.appendChild(lineDiv);
+    });
 
     // Replace the image with the placeholder div
     imageElement.parentNode.replaceChild(placeholder, imageElement);
 }
+
 
     
     
