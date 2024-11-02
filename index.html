@@ -1135,17 +1135,17 @@ function handleImageError(imageElement, stationName) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     canvas.width = 200;
-    canvas.height = 140;  // Set canvas height for multiline support
+    canvas.height = 140;  // Height adjusted for multiline support
 
     // Set background color to white
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Set text properties
+    // Set text properties with font-weight of 900 and font size
     ctx.fillStyle = 'black';
-    ctx.font = 'bold 28px Arial';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
+    ctx.font = '900 28px Open Sans, sans-serif';  // Font-weight 900, 28px size
+    ctx.textAlign = 'center';  // Center text horizontally
+    ctx.textBaseline = 'middle';  // Align text vertically by middle
 
     // Function to split text into multiple lines if needed
     function wrapText(text, maxWidth) {
@@ -1167,12 +1167,15 @@ function handleImageError(imageElement, stationName) {
         return lines;
     }
 
-    // Wrap the station name if it exceeds the canvas width
+    // Wrap the station name to fit within the canvas width
     const lines = wrapText(stationName, canvas.width - 20);  // 20px padding on each side
 
-    // Position lines vertically centered
+    // Calculate the total height of all lines to center vertically
     const lineHeight = 30;  // Space between lines
-    const initialY = canvas.height / 2 - (lines.length - 1) * lineHeight / 2;
+    const totalHeight = lines.length * lineHeight;
+
+    // Calculate initial Y position for vertical centering
+    const initialY = (canvas.height - totalHeight) / 2 + lineHeight / 2; 
 
     lines.forEach((line, index) => {
         ctx.fillText(line, canvas.width / 2, initialY + index * lineHeight);
@@ -1181,8 +1184,6 @@ function handleImageError(imageElement, stationName) {
     // Set the canvas as the image source
     imageElement.src = canvas.toDataURL();
 }
-
-
 
     
 
@@ -1348,7 +1349,7 @@ function playStation(url, image, stationName, bit) {
 
             // Set text properties
             ctx.fillStyle = 'black';
-            ctx.font = 'bold 18px Arial'; // Set font size and family
+            ctx.font = '900 18px Open Sans, sans-serif'; // Set font size and family
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
