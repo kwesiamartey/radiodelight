@@ -1115,77 +1115,51 @@ function displayStations(stations) {
 
 
 
-
 function handleImageError(imageElement, stationName) {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const baseWidth = 200; // Base width for the canvas
-    const padding = 20; // Padding for text
-    const lineHeight = 30; // Space between lines
-    const fontSize = 32; // Fixed font size
+    // Create a div element
+    const placeholder = document.createElement('div');
+    
+    // Set the styles for the placeholder
+    placeholder.style.width = '200px'; // Set desired width
+    placeholder.style.height = '140px'; // Set desired height
+    placeholder.style.backgroundColor = 'white'; // Background color
+    placeholder.style.color = 'black'; // Text color
+    placeholder.style.display = 'flex'; // Use flexbox for centering
+    placeholder.style.justifyContent = 'center'; // Center horizontally
+    placeholder.style.alignItems = 'center'; // Center vertically
+    placeholder.style.fontWeight = '900'; // Bold text
+    placeholder.style.fontSize = '32px'; // Set font size
+    placeholder.style.textAlign = 'center'; // Center text
 
-    // Set canvas dimensions
-    canvas.width = baseWidth;
-    canvas.height = 140; // Maximum height for the canvas
+    // Split text into lines if necessary
+    const words = stationName.split(' ');
+    let currentLine = '';
+    const lines = [];
 
-    // Set text properties
-    ctx.fillStyle = 'white'; // Background color
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'black';
-    ctx.font = `900 ${fontSize}px Open Sans, sans-serif`; // Font-weight 900
-    ctx.textAlign = 'center'; // Center text horizontally
-    ctx.textBaseline = 'middle'; // Align text vertically
-
-    // Function to wrap text into multiple lines if needed
-    function wrapText(text, maxWidth) {
-        const words = text.split(' ');
-        const lines = [];
-        let currentLine = '';
-
-        for (let word of words) {
-            const testLine = currentLine + (currentLine ? ' ' : '') + word;
-            const width = ctx.measureText(testLine).width;
-
-            if (width > maxWidth) {
-                if (currentLine) {
-                    lines.push(currentLine); // Push the current line if it's not empty
-                }
-                currentLine = word; // Start a new line with the current word
-            } else {
-                currentLine = testLine; // Update current line with the new word
+    // Wrap text based on width
+    words.forEach(word => {
+        const testLine = currentLine + (currentLine ? ' ' : '') + word;
+        placeholder.innerText = testLine; // Temporarily set text to measure it
+        if (placeholder.offsetWidth > placeholder.clientWidth) {
+            if (currentLine) {
+                lines.push(currentLine); // Push the current line if it's not empty
             }
+            currentLine = word; // Start a new line with the current word
+        } else {
+            currentLine = testLine; // Update current line with the new word
         }
-
-        if (currentLine) {
-            lines.push(currentLine); // Push the last line
-        }
-        return lines;
-    }
-
-    // Wrap the station name to fit within the canvas width
-    const lines = wrapText(stationName, baseWidth - padding); // 20px padding on each side
-
-    // Create the canvas height based on the number of lines, ensuring max height
-    const canvasHeight = Math.min(lines.length * lineHeight + padding, 140); // Max height 140px
-    canvas.height = canvasHeight; // Update the canvas height
-
-    // Redraw the background
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Calculate initial Y position for vertical centering
-    const totalHeight = lines.length * lineHeight;
-    const initialY = (canvas.height - totalHeight) / 2 + lineHeight / 2; 
-
-    // Draw each line of text
-    lines.forEach((line, index) => {
-        ctx.fillText(line, canvas.width / 2, initialY + index * lineHeight);
     });
 
-    // Set the canvas as the image source
-    imageElement.src = canvas.toDataURL();
-}
+    if (currentLine) {
+        lines.push(currentLine); // Push the last line
+    }
 
+    // Set the text of the placeholder, ensuring it is multiline
+    placeholder.innerText = lines.join('\n');
+
+    // Replace the image with the placeholder div
+    imageElement.parentNode.replaceChild(placeholder, imageElement);
+}
 
     
     
