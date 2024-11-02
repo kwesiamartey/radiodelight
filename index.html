@@ -1062,8 +1062,6 @@ function setupPaginationButtons(data, totalPages) {
 
 
 
-
-
     function displayStations(stations) {
     document.getElementById('footerr').style.display = 'block';
     document.getElementById('countryTitle').style.display = 'block';
@@ -1336,28 +1334,9 @@ function playStation(url, image, stationName, bit) {
         document.querySelector('.footer-div-wraaper').style.display = 'block';
         progress.style.display = 'block';
 
-        // Create a custom placeholder image if the original fails
+        // Handle image loading error using the handleImageError function
         stationLogo.onerror = function () {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = 200; // Set desired width
-            canvas.height = 100; // Set desired height
-
-            // Fill the background with white
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Set text properties
-            ctx.fillStyle = 'black';
-            ctx.font = '900 18px Open Sans, sans-serif'; // Set font size and family
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-
-            // Draw the station name in the center
-            ctx.fillText(stationName, canvas.width / 2, canvas.height / 2);
-
-            // Set the canvas as the image source
-            stationLogo.src = canvas.toDataURL(); // Convert the canvas to a data URL
+            handleImageError(stationLogo, stationName);
         };
 
         // Initialize HLS or regular stream
@@ -1424,7 +1403,6 @@ function playStation(url, image, stationName, bit) {
         }
     }
 }
-
 
     
 
