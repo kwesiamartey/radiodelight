@@ -1085,7 +1085,7 @@ function displayStations(stations) {
     stationsToDisplay.forEach(station => {
         const stationItem = document.createElement('div');
         stationItem.className = 'station-item';
-        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
+        const truncatedName = station.name;
 
 
 
