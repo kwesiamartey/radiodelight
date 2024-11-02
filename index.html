@@ -1043,7 +1043,7 @@ function setupPaginationButtons(data, totalPages) {
 }
 
 // Fetch stations for multiple countries concurrently
-function fetchStations(countryPaths = [selectedCountryPath]) {
+function fetchStations(countryPaths = selectedCountryPath) {
     // Create an array of fetch promises for each country path
     const fetchPromises = countryPaths.map(countryPath =>
         fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`)
