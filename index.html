@@ -1128,13 +1128,16 @@ function handleImageError(imageElement, stationName) {
     placeholder.style.display = 'flex'; // Use flexbox for centering
     placeholder.style.flexDirection = 'column'; // Stack text lines vertically
     placeholder.style.justifyContent = 'center'; // Center vertically
-    placeholder.style.fontFamily = "'Montserrat', sans-serif"; 
     placeholder.style.alignItems = 'center'; // Center horizontally
     placeholder.style.fontWeight = '600'; // Font weight
     placeholder.style.fontSize = '20px'; // Font size
+    placeholder.style.fontFamily = "'Montserrat', sans-serif"; // Set Montserrat Bold font
     placeholder.style.textAlign = 'center'; // Center text alignment
     placeholder.style.padding = '15px'; // Padding for better text fit
     placeholder.style.boxSizing = 'border-box'; // Ensure padding is considered in width
+    placeholder.style.overflowWrap = 'break-word'; // Allow breaking of words for overflow
+    placeholder.style.wordWrap = 'break-word'; // Legacy support for breaking words
+    placeholder.style.whiteSpace = 'normal'; // Allow normal word wrapping
 
     // Function to wrap text into multiple lines if needed
     function wrapText(text, maxWidth) {
@@ -1165,6 +1168,12 @@ function handleImageError(imageElement, stationName) {
     lines.forEach(line => {
         const lineDiv = document.createElement('div');
         lineDiv.textContent = line;
+
+        // Additional styles for each line
+        lineDiv.style.overflowWrap = 'break-word';
+        lineDiv.style.wordWrap = 'break-word';
+        lineDiv.style.whiteSpace = 'normal';
+
         placeholder.appendChild(lineDiv);
     });
 
