@@ -1116,45 +1116,49 @@ function displayStations(stations) {
 
 
 
-function handleImageError(imageElement, stationName) {
-    const baseWidth = 200; // Base width for the canvas
-    const padding = 20; // Padding for text
-    const lineHeight = 40; // Space between lines
-    const fontSize = 32; // Fixed font size
 
+function handleImageError(imageElement, stationName) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
+    const baseWidth = 200; // Base width for the canvas
+    const padding = 20; // Padding for text
+    const lineHeight = 30; // Space between lines
+    const fontSize = 32; // Fixed font size
 
-    // Set font properties
-    ctx.font = `900 ${fontSize}px Open Sans, sans-serif`;
+    // Set canvas dimensions
+    canvas.width = baseWidth;
+    canvas.height = 140; // Maximum height for the canvas
+
+    // Set text properties
+    ctx.fillStyle = 'white'; // Background color
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'black';
+    ctx.font = `900 ${fontSize}px Open Sans, sans-serif`; // Font-weight 900
     ctx.textAlign = 'center'; // Center text horizontally
-    ctx.textBaseline = 'middle'; // Align text vertically by middle
+    ctx.textBaseline = 'middle'; // Align text vertically
 
-    // Function to wrap text and measure width
+    // Function to wrap text into multiple lines if needed
     function wrapText(text, maxWidth) {
         const words = text.split(' ');
         const lines = [];
         let currentLine = '';
 
-        words.forEach((word) => {
+        for (let word of words) {
             const testLine = currentLine + (currentLine ? ' ' : '') + word;
             const width = ctx.measureText(testLine).width;
 
-            // Check if the line exceeds the maxWidth
             if (width > maxWidth) {
-                // If the current line is not empty, push it to lines
                 if (currentLine) {
-                    lines.push(currentLine);
+                    lines.push(currentLine); // Push the current line if it's not empty
                 }
                 currentLine = word; // Start a new line with the current word
             } else {
-                currentLine = testLine; // Add the word to the current line
+                currentLine = testLine; // Update current line with the new word
             }
-        });
+        }
 
-        // Add the last line if it exists
         if (currentLine) {
-            lines.push(currentLine);
+            lines.push(currentLine); // Push the last line
         }
         return lines;
     }
@@ -1164,21 +1168,17 @@ function handleImageError(imageElement, stationName) {
 
     // Create the canvas height based on the number of lines
     const canvasHeight = Math.min(lines.length * lineHeight + padding, 140); // Max height 140px
+    canvas.height = canvasHeight; // Update the canvas height
 
-    // Update canvas dimensions
-    canvas.width = baseWidth;
-    canvas.height = canvasHeight;
-
-    // Set background color to white
+    // Redraw the background
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Calculate the initial Y position for vertical centering
+    // Calculate initial Y position for vertical centering
     const totalHeight = lines.length * lineHeight;
-    const initialY = (canvas.height - totalHeight) / 2 + lineHeight / 2;
+    const initialY = (canvas.height - totalHeight) / 2 + lineHeight / 2; 
 
-    // Draw the text onto the canvas
-    ctx.fillStyle = 'black';
+    // Draw each line of text
     lines.forEach((line, index) => {
         ctx.fillText(line, canvas.width / 2, initialY + index * lineHeight);
     });
@@ -1187,6 +1187,8 @@ function handleImageError(imageElement, stationName) {
     imageElement.src = canvas.toDataURL();
 }
 
+
+    
     
 
    /* function displayStations(stations) {
