@@ -1091,11 +1091,11 @@ function displayStations(stations) {
 
         
         stationItem.innerHTML = `
-            <div style="width: 100%; height: 140px; border-radius: 5px 5px 0px 0px;">
+            <div style="width: 100%; height: 140px; border-radius: 5px 5px 0px 0px;background-color:white;">
     
                 <!-- Foreground image on top of the blurred background -->
                 <img style="width: 100%;
-                            height: 100%;
+                            height: 140px;
                             padding:15px;
                             border-radius: 5px 5px 0px 0px;
                             object-fit: contain;
@@ -1118,8 +1118,11 @@ function handleImageError(imageElement, stationName) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     canvas.width = 200;
-    canvas.height = 140;  // Height adjusted for multiline support
+    canvas.height = 140;// Height adjusted for multiline support
+    canvas.padding = 15px;
 
+
+    
     // Set background color to white
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -1169,7 +1172,7 @@ function handleImageError(imageElement, stationName) {
 
     // Draw each line of text
     lines.forEach((line, index) => {
-        ctx.fillText(line, canvas.width / 2, initialY + index * lineHeight);
+        ctx.fillText(line, canvas.width, initialY + index * lineHeight);
     });
 
     // Set the canvas as the image source
