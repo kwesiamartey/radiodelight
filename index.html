@@ -1129,30 +1129,6 @@ function setupPaginationButtons(data, totalPages) {
     createPaginationControls(stations.length, totalPages);
 }
 
-// Function to handle image load errors
-function handleImageError(imageElement, stationName) {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = 200;
-    canvas.height = 200;
-
-    // Set background color to white
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Set text properties to match the Wix style
-    ctx.fillStyle = 'black';
-    ctx.font = 'bold 30px Arial';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-
-    // Draw the station name in the center
-    ctx.fillText(stationName, canvas.width / 2, canvas.height / 2);
-
-    // Set the canvas as the image source
-    imageElement.src = canvas.toDataURL();
-}
-
 
 
 function handleImageError(imageElement, stationName) {
