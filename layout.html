@@ -1100,7 +1100,7 @@ function displayStations(stations) {
             </div>
             <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
                 
-        stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.bit));
+        stationItem.addEventListener('click', () => playStation(station.url, logoUrl, station.name, station.bit));
         stationList.appendChild(stationItem);
     });
 
@@ -1201,10 +1201,11 @@ function createStationLogoCanvas(stationName) {
 
     const initials = stationName.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
 
-    context.fillStyle = 'white';
-    context.font = '34px Arial';
+    context.fillStyle = randomColor;
+    context.font = '40px Arial';
     context.textAlign = 'center';
-     context.fontWeight = '600';
+    context.color = '#fff';
+    context.fontWeight = '800';
     context.textBaseline = 'middle';
     context.shadowColor = '#333';
     context.shadowOffsetX = 2;
