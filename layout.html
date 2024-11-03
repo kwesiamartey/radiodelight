@@ -126,7 +126,6 @@
         .station-image {
             width: 140px;
             height: 140px;
-            padding:15px;
             background-color:#fff;
             border-radius: 5px;
              object-fit: cover;  /* Ensure the image covers the circle */
@@ -1201,7 +1200,7 @@ function createStationLogoCanvas(stationName) {
 
     const initials = stationName.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
 
-    context.fillStyle = randomColor;
+    context.fillStyle = '#fff';
     context.font = '40px Arial';
     context.textAlign = 'center';
     context.color = '#fff';
