@@ -1195,7 +1195,10 @@ function playStation(url, image, stationName, bit) {
     }
 
     // Set station logo, display player, and show progress bar
-      stationLogo.style.display = 'block';
+        // Set station logo, display player, and show progress bar
+        const stationLogo = document.getElementById('stationLogo');
+        stationLogo.src = image;
+        stationLogo.style.display = 'block';
         document.querySelector('.playing-station-wrap').style.display = 'block';
         document.querySelector('.footer-div-wraaper').style.display = 'block';
         progress.style.display = 'block';
