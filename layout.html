@@ -1067,53 +1067,52 @@ function filterStations() {
 }
 
 function createStationLogoCanvas(stationName) {
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
+  const decodedStationName = decodeURIComponent(stationName.replace(/\\u/g, '%u'));
 
-    // Set the fixed height and dynamic width based on the container
-    canvas.height = 140;
-    canvas.width = 140; // Default width, but will adjust later
+    // Create a div element as a placeholder
+    const placeholder = document.createElement('div');
 
-    // Generate a random background color
-    const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-    context.fillStyle = randomColor;
-    context.fillRect(0, 0, canvas.width, canvas.height);
+    // Set the styles for the placeholder
+    placeholder.style.width = '100%';
+    placeholder.style.height = '140px';
+    placeholder.style.color = 'white';
+    placeholder.style.display = 'flex';
+    placeholder.style.flexDirection = 'column';
+    placeholder.style.justifyContent = 'center';
+    placeholder.style.alignItems = 'center';
+    placeholder.style.fontWeight = '600';
+    placeholder.style.fontSize = '60px';
+    placeholder.style.fontFamily = "'Montserrat', sans-serif";
+    placeholder.style.textAlign = 'center';
+    placeholder.style.padding = '15px';
+    placeholder.style.boxSizing = 'border-box';
+    placeholder.style.overflowWrap = 'break-word';
+    placeholder.style.wordWrap = 'break-word';
+    placeholder.style.whiteSpace = 'normal';
 
-    // Get initials from station name
-    const initials = stationName.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
+    // Get the initials (first character of each word, max 3 initials)
+    const words = decodedStationName.split(' ');
+    const initials = words.slice(0, 3).map(word => word[0]).join('').toUpperCase();
 
-    // Set text properties
-   
+    // Set the initials as the inner HTML of the placeholder
+    placeholder.innerHTML = initials;
 
-    context.width = '100%';
-    context.height = '140px';
-    context.color = 'white';
-    context.display = 'flex';
-    context.flexDirection = 'column';
-    context.justifyContent = 'center';
-    context.alignItems = 'center';
-    context.fontWeight = '600';
-    context.fontSize = '60px';
-    context.fontFamily = "'Montserrat', sans-serif";
-    context.textAlign = 'center';
-    context.padding = '15px';
-    context.boxSizing = 'border-box';
-    context.overflowWrap = 'break-word';
-    context.wordWrap = 'break-word';
-    context.whiteSpace = 'normal';
+    // Set random background color
+    const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+    placeholder.style.backgroundColor = randomColor;
 
-    
+    // Add text shadow for effect
+    placeholder.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.7)';
 
-    // Add shadow to the text
-    context.shadowColor = 'rgba(0, 0, 0, 0.5)';
-    context.shadowOffsetX = 2;
-    context.shadowOffsetY = 2;
-    context.shadowBlur = 5;
+    // Bind click event to the placeholder to call playStation
+    placeholder.addEventListener('click', () => {
+        // Append a timestamp to ensure a fresh URL
+        const uniqueUrl = `${url}?timestamp=${Date.now()}`;
+        playStation(uniqueUrl, randomColor, decodedStationName, bit);
+    });
 
-    // Draw the text
-    context.fillText(initials, canvas.width / 2, canvas.height / 2);
-
-    return canvas.toDataURL(); // Return the data URL of the canvas
+    // Replace the image with the placeholder div
+    imageElement.parentNode.replaceChild(placeholder, imageElement);turn the data URL of the canvas
 }
 
     
