@@ -1085,6 +1085,7 @@ function filterStations() {
         const totalPages = Math.ceil(stations.length / itemsPerPage);
         const startIndex = (currentPage - 1) * itemsPerPage;
         const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
+        const logoUrl =  station.logo !== 'null' ? station.logo : 'white_img.jpg';
 
         stationsToDisplay.forEach(station => {
             const stationItem = document.createElement('div');
@@ -1101,7 +1102,7 @@ function filterStations() {
                  background-size: cover;
                 position: relative;
                 z-index: 1;"  
-         src="${station.logo}" 
+         src="${logoUrl}" 
          alt="${truncatedName}">
 </div>
 <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
