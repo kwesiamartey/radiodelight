@@ -1082,47 +1082,35 @@ function filterStations() {
         const startIndex = (currentPage - 1) * itemsPerPage;
         const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
 
+        const logoUrl = station.logo && station.logo !== 'null' ? station.logo : createStationLogoCanvas(station.name);
+
         stationsToDisplay.forEach(station => {
             const stationItem = document.createElement('div');
             stationItem.className = 'station-item';
             const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
             stationItem.innerHTML = `<div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden;">
-    <!-- Blurred background with ::before pseudo-element -->
-    <div style="width: 100%; height: 140px; position: absolute; top: 0; left: 0; border-radius: 5px 5px 0px 0px; overflow: hidden;">
-        <div style="
-            background-image: url('${station.logo}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            filter: blur(8px);
-            width: 100%;
-            height: 140px;
-            position: absolute;
-            top: 0; left: 0;
-        "></div>
-    </div>
-    
-    <!-- Foreground image on top of the blurred background -->
-    <img style="width: 100%;
-                height: 140px;
-                transition: all 0.3s ease-in-out;
-                border-radius: 5px 5px 0px 0px;
-                object-fit: scale-down;
-                 background-image: url('${station.logo}');
-                 background-size: cover;
-                position: relative;
-                z-index: 1;"  
-         src="${station.logo}" 
-         alt="${truncatedName}">
-</div>
-<span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
-            
-            stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.bit));
-            stationList.appendChild(stationItem);
-        });
 
-        createPaginationControls(stations.length, totalPages);
-    }
+    
+            <!-- Foreground image on top of the blurred background -->
+            <img style="width: 100%;
+                        height: 140px;
+                      
+                        object-fit: contain;
+                         background-image: url('${logoUrl}');
+                         background-size: cover;
+                        position: relative;
+                        z-index: 1;"  
+                 src="${logoUrl}" 
+                 alt="${truncatedName}">
+            </div>
+        <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
+                
+                stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.bit));
+                stationList.appendChild(stationItem);
+            });
+    
+            createPaginationControls(stations.length, totalPages);
+        }
     
 
 
