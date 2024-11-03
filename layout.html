@@ -1067,7 +1067,7 @@ function filterStations() {
 }
 
 function createStationLogoCanvas(stationName) {
-const canvas = document.createElement('canvas');
+    const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
 
     // Set the fixed height and dynamic width based on the container
@@ -1075,7 +1075,7 @@ const canvas = document.createElement('canvas');
     canvas.width = 140; // Default width, but will adjust later
 
     // Generate a random background color
-    const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    const randomColor = #${Math.floor(Math.random() * 16777215).toString(16)};
     context.fillStyle = randomColor;
     context.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -1100,55 +1100,32 @@ const canvas = document.createElement('canvas');
     return canvas.toDataURL(); // Return the data URL of the canvas
 }
 
-    
-    function displayStations(stations) {
-    document.getElementById('footerr').style.display = 'block';
-    document.getElementById('countryTitle').style.display = 'block';
-    document.querySelector('.countryTitle').style.display = 'block';
-    document.getElementById('country_list_wrapper').style.display = 'block';
-
+function displayStations(stations) {
     const stationList = document.getElementById('stationListContent');
-    const paginationControls = document.getElementById('paginationControls');
     stationList.innerHTML = ''; // Clear current list
-    paginationControls.innerHTML = ''; // Clear pagination
 
     if (stations.length === 0) {
-        stationList.innerHTML = `<p>No results found.</p>`;
+        stationList.innerHTML = <p>No results found.</p>;
         return;
     }
 
-    const totalPages = Math.ceil(stations.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
-
-    stationsToDisplay.forEach(station => {
+    stations.forEach(station => {
         const stationItem = document.createElement('div');
         stationItem.className = 'station-item';
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
 
-        // Determine the logo URL, defaulting to 'white_img.jpg' if necessary
-       // const logoUrl = station.logo && station.logo !== 'null' ? station.logo : 'white_img.jpg';
-         const logoUrl = station.logo && station.logo !== 'null' ? station.logo : createStationLogoCanvas(station.name);
+        // Determine the logo URL or use the canvas
+        const logoUrl = station.logo && station.logo !== 'null' ? station.logo : createStationLogoCanvas(station.name);
 
-        stationItem.innerHTML = `
-            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden;background-color: white;">
-                <!-- Foreground image on top of the blurred background -->
-                <img style="width: 100%;
-                            height: 140px;
-                            border-radius: 5px 5px 0px 0px;
-                            z-index: 1;"  
-                     src="${logoUrl}" 
-                     alt="${truncatedName}">
+        stationItem.innerHTML = 
+            <div style="width: 100%; height: 140px; border-radius: 5px; position: relative; overflow: hidden;">
+                <img style="width: 100%; height: 100%; object-fit: cover;" src="${logoUrl}" alt="${truncatedName}">
             </div>
-            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
+            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>;
 
-        stationItem.addEventListener('click', () => playStation(station.url, logoUrl, station.name, station.bit));
         stationList.appendChild(stationItem);
     });
-
-    createPaginationControls(stations.length, totalPages);
 }
-
 
 
 
