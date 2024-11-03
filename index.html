@@ -1084,14 +1084,15 @@ function displayStations(stations) {
     const totalPages = Math.ceil(stations.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
-
+    const logoDiv = document.createElement('div');
+    const stationItem = document.createElement('div');
+    stationItem.className = 'station-item';
     stationsToDisplay.forEach(station => {
-        const stationItem = document.createElement('div');
-        stationItem.className = 'station-item';
+        
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
 
         // Create logo div
-        const logoDiv = document.createElement('div');
+     
         logoDiv.style.width = '100%';
         logoDiv.style.height = '140px';
         logoDiv.style.borderRadius = '5px 5px 0px 0px';
@@ -1117,39 +1118,41 @@ function displayStations(stations) {
             const decodedStationName = decodeURIComponent(station.name.replace(/\\u/g, '%u'));
 
             // Create a placeholder div
-            const placeholder = document.createElement('div');
-            placeholder.style.width = '100%';
-            placeholder.style.height = '140px';
-            placeholder.style.color = 'white';
-            placeholder.style.display = 'flex';
-            placeholder.style.flexDirection = 'column';
-            placeholder.style.justifyContent = 'center';
-            placeholder.style.alignItems = 'center';
-            placeholder.style.fontWeight = '600';
-            placeholder.style.fontSize = '60px';
-            placeholder.style.fontFamily = "'Montserrat', sans-serif";
-            placeholder.style.textAlign = 'center';
-            placeholder.style.padding = '15px';
-            placeholder.style.boxSizing = 'border-box';
-            placeholder.style.overflowWrap = 'break-word';
-            placeholder.style.wordWrap = 'break-word';
-            placeholder.style.whiteSpace = 'normal';
+            logoDiv.style.width = '100%';
+            logoDiv.style.height = '140px';
+            logoDiv.style.color = 'white';
+            logoDiv.style.display = 'flex';
+            logoDiv.style.flexDirection = 'column';
+            logoDiv.style.justifyContent = 'center';
+            logoDiv.style.alignItems = 'center';
+            logoDiv.style.fontWeight = '600';
+            logoDiv.style.fontSize = '60px';
+            logoDiv.style.fontFamily = "'Montserrat', sans-serif";
+            logoDiv.style.textAlign = 'center';
+            logoDiv.style.padding = '15px';
+            logoDiv.style.boxSizing = 'border-box';
+            logoDiv.style.overflowWrap = 'break-word';
+            logoDiv.style.wordWrap = 'break-word';
+            logoDiv.style.whiteSpace = 'normal';
 
             // Get initials for the placeholder
             const initials = decodedStationName.split(' ').slice(0, 3).map(word => word[0]).join('').toUpperCase();
-            placeholder.innerHTML = initials;
+            logoDiv.innerHTML = initials;
 
             // Set random background color and text shadow
-            placeholder.style.backgroundColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-            placeholder.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.7)';
+            logoDiv.style.backgroundColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+            logoDiv.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.7)';
+
+             stationItem.appendChild(logoDiv); // Append logo div to station item
+             stationItem.innerHTML += `<span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
 
             // Bind click event to the placeholder
-            placeholder.addEventListener('click', () => {
+            stationItem.addEventListener('click', () => {
                 playStation(station.url, placeholder.style.backgroundColor, decodedStationName, station.bit);
             });
 
             // Replace the image with the placeholder div
-            logoDiv.appendChild(placeholder); // Append placeholder to logo div
+            stationItem.appendChild(logoDiv); // Append placeholder to logo div
         }
 
         stationItem.appendChild(logoDiv); // Append logo div to station item
