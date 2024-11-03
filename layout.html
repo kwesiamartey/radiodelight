@@ -1164,91 +1164,102 @@ function handleImageError(imageElement, stationName, bit, url) {
 
 
 function playStation(url, image, stationName, bit) {
-    if (bit === '00') {
-        openPopupWithData(stationName, image, url);
-    } else if (bit === '001') {
-        openPeacefmPopupWithData(stationName, image, url);
-    } else {
-        const progress = document.getElementById('progress');
-        const playButton = document.querySelector('.play-button');
+        if(bit === '00'){
+                 openPopupWithData(stationName, image, url)
+        }else{
+     const progress = document.getElementById('progress');
+    const playButton = document.querySelector('.play-button');
 
-        // Reset the audio source and destroy any existing HLS instance
-        if (typeof hls !== 'undefined' && hls !== null) {
-            hls.destroy();
-            hls = null;
-        }
-        audioElement.src = ''; // Reset the audio source to clear the existing URL
-
-        // Set station logo, display player, and show progress bar
-        const stationLogo = document.getElementById('stationLogo');
-        stationLogo.src = image;
-        stationLogo.style.display = 'block';
-        document.querySelector('.playing-station-wrap').style.display = 'block';
-        document.querySelector('.footer-div-wraaper').style.display = 'block';
-        progress.style.display = 'block';
-
-        // Handle image loading error
-        stationLogo.onerror = function () {
-            handleImageError(stationLogo, stationName);
-        };
-
-        // Initialize HLS or regular stream
-        const hlsUrl = url;
-
-        if (hlsUrl.endsWith('.m3u8')) {
-            if (Hls.isSupported()) {
-                hls = new Hls();
-                hls.loadSource(hlsUrl);
-                hls.attachMedia(audioElement);
-
-                hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    audioElement.play();
-                    progress.style.display = 'none';
-                    playButton.textContent = '||';
-                    sendEmailNotification(stationName, url, "200");
-                });
-
-                hls.on(Hls.Events.ERROR, (event, data) => {
-                    if (data.fatal) {
-                        switch (data.type) {
-                            case Hls.ErrorTypes.NETWORK_ERROR:
-                                console.error('Network error occurred');
-                                handlePlaybackError(url, stationName);
-                                break;
-                            case Hls.ErrorTypes.MEDIA_ERROR:
-                                console.error('Media error occurred');
-                                hls.recoverMediaError();
-                                handlePlaybackError(url, stationName);
-                                break;
-                            default:
-                                hls.destroy();
-                                break;
-                        }
-                    }
-                });
-            } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
-                audioElement.src = hlsUrl;
-                audioElement.addEventListener('canplay', () => {
-                    audioElement.play();
-                    progress.style.display = 'none';
-                    playButton.textContent = '||';
-                    sendEmailNotification(stationName, url, "200");
-                });
-            } else {
-                console.error('HLS is not supported in this browser.');
-                handlePlaybackError(url, stationName);
-            }
-        } else {
-            audioElement.src = hlsUrl;
-            audioElement.addEventListener('canplay', () => {
-                audioElement.play();
-                progress.style.display = 'none';
-                playButton.textContent = '||';
-                sendEmailNotification(stationName, url, "200");
-            });
-        }
+    // Only destroy HLS instance if it exists
+    if (typeof hls !== 'undefined' && hls !== null) {
+        hls.destroy();
+        hls = null; // Reset hls after destruction
     }
+
+    // Set station logo, display player, and show progress bar
+    document.getElementById('stationLogo').src = image;
+    document.getElementById('stationLogo').style.display = 'block';
+    document.querySelector('.player-container').style.display = 'block';
+    //document.getElementById('playing-station-name').textContent = stationName;
+    document.querySelector('.footer-div-wraaper').style.display = 'block';
+    progress.style.display = 'block';
+
+    // Initialize HLS or regular stream
+    const hlsUrl = url;
+
+    // Check if the stream is HLS (.m3u8) format
+    if (hlsUrl.endsWith('.m3u8')) {
+        // Use HLS.js if the browser does not support native HLS playback
+        if (Hls.isSupported()) {
+            hls = new Hls();
+            hls.loadSource(hlsUrl);
+            hls.attachMedia(audio);
+
+            // Hide progress and start playback when manifest is loaded
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                audio.play();
+                progress.style.display = 'none';  // Hide progress after loading
+                playButton.textContent = '||';   // Set to pause icon
+                 sendEmailNotification(stationName, stationUrl, "200") 
+            });
+
+            // Error handling for HLS.js
+            hls.on(Hls.Events.ERROR, (event, data) => {
+                if (data.fatal) {
+                    switch (data.type) {
+                        case Hls.ErrorTypes.NETWORK_ERROR:
+                            console.error('Network error occurred');
+                             handlePlaybackError(url, stationName)
+                            break;
+                        case Hls.ErrorTypes.MEDIA_ERROR:
+                            console.error('Media error occurred');
+                            hls.recoverMediaError();
+                             handlePlaybackError(url, stationName)
+                            break;
+                        default:
+                            hls.destroy();
+                            break;
+                    }
+                }
+            });
+        } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+            // Use native HLS support for Safari and similar browsers
+            audio.src = hlsUrl;
+            audio.addEventListener('canplay', () => {
+                audio.play();
+                progress.style.display = 'none';  // Hide progress when ready
+                playButton.textContent = '||';   // Set to pause icon
+                sendEmailNotification(stationName, stationUrl, "200") 
+            });
+        } else {
+            // Fallback for older browsers or browsers without HLS support
+            console.error('HLS is not supported in this browser.');
+            handlePlaybackError(url, stationName)
+        }
+    } else {
+        // Handle non-HLS streams (regular audio files)
+        audio.src = hlsUrl;
+        audio.addEventListener('canplay', () => {
+            audio.play();
+            progress.style.display = 'none';  // Hide progress when ready
+            playButton.textContent = '||';   // Set to pause icon
+            sendEmailNotification(stationName, stationUrl, "200") 
+        });
+    }
+
+    // Toggle play/pause on button click
+   // playButton.addEventListener('click', () => {
+    //    if (audio.paused) {
+     //       audio.play();
+     //       playButton.textContent = '❚❚';   // Change to pause icon
+     //   } else {
+      //      audio.pause();
+       //     playButton.textContent = '▶';    // Change to play icon
+      //  }
+    //});
+        }
 }
+
 
     
 
