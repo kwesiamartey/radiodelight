@@ -1111,6 +1111,67 @@ function displayStations(stations) {
 }
 
 
+function createPaginationControls(totalStations, totalPages) {
+    const paginationControls = document.getElementById('paginationControls');
+    paginationControls.innerHTML = ''; // Clear previous controls
+
+    // Display page info (e.g., "Page 1 of 27")
+    const pageInfo = document.createElement('span');
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    paginationControls.appendChild(pageInfo);
+
+    // Helper function to create clickable buttons
+    const createButton = (text, onClick) => {
+        const button = document.createElement('span');
+        button.textContent = text;
+        button.style.cursor = 'pointer';
+        button.style.margin = '0 5px';
+        button.onclick = onClick;
+        paginationControls.appendChild(button);
+    };
+
+    // Previous button
+    if (currentPage > 1) {
+        createButton('<<', () => {
+            currentPage--;
+            displayStations(stationData);
+        });
+    }
+
+    // Show the first 3 pages, then ellipsis, and last page
+    for (let i = 1; i <= totalPages; i++) {
+        if (i === currentPage) {
+            const currentPageButton = document.createElement('span');
+            currentPageButton.textContent = i;
+            currentPageButton.style.fontWeight = 'bold';
+            currentPageButton.style.margin = '0 5px';
+            paginationControls.appendChild(currentPageButton);
+        } else if (i <= 3 || i === totalPages) {
+            // Display first 3 pages or the last page
+            createButton(i, () => {
+                currentPage = i;
+                displayStations(stationData);
+            });
+        } else if (i === 4) {
+            // Add ellipsis after the first 3 pages
+            const ellipsis = document.createElement('span');
+            ellipsis.textContent = '...';
+            ellipsis.style.margin = '0 5px';
+            paginationControls.appendChild(ellipsis);
+        }
+    }
+
+    // Next button
+    if (currentPage < totalPages) {
+        createButton('>>', () => {
+            currentPage++;
+            displayStations(stationData);
+        });
+    }
+}
+    
+
+
 
 function playStation(url, image, stationName, bit) {
     if (bit === '00') {
