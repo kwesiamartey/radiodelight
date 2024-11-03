@@ -1250,66 +1250,67 @@ function playStation(url, image, stationName, bit) {
     
 
 
+function createStationLogoCanvas(stationName) {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
 
-function createPaginationControls(totalStations, totalPages) {
-    const paginationControls = document.getElementById('paginationControls');
-    paginationControls.innerHTML = ''; // Clear previous controls
+    // Set the fixed height and dynamic width based on the container
+    canvas.height = 140;
+    canvas.width = 140; // Default width, but will adjust later
 
-    // Display page info (e.g., "Page 1 of 27")
-    const pageInfo = document.createElement('span');
-    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-    paginationControls.appendChild(pageInfo);
+    // Generate a random background color
+    const randomColor = #${Math.floor(Math.random() * 16777215).toString(16)};
+    context.fillStyle = randomColor;
+    context.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Helper function to create clickable buttons
-    const createButton = (text, onClick) => {
-        const button = document.createElement('span');
-        button.textContent = text;
-        button.style.cursor = 'pointer';
-        button.style.margin = '0 5px';
-        button.onclick = onClick;
-        paginationControls.appendChild(button);
-    };
+    // Get initials from station name
+    const initials = stationName.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
 
-    // Previous button
-    if (currentPage > 1) {
-        createButton('<<', () => {
-            currentPage--;
-            displayStations(stationData);
-        });
-    }
+    // Set text properties
+    context.fillStyle = 'white';
+    context.font = '34px Arial'; // Updated font size to 34px
+    context.textAlign = 'center';
+    context.fontWeight = '600';
+    context.textBaseline = 'middle';
 
-    // Show the first 3 pages, then ellipsis, and last page
-    for (let i = 1; i <= totalPages; i++) {
-        if (i === currentPage) {
-            const currentPageButton = document.createElement('span');
-            currentPageButton.textContent = i;
-            currentPageButton.style.fontWeight = 'bold';
-            currentPageButton.style.margin = '0 5px';
-            paginationControls.appendChild(currentPageButton);
-        } else if (i <= 3 || i === totalPages) {
-            // Display first 3 pages or the last page
-            createButton(i, () => {
-                currentPage = i;
-                displayStations(stationData);
-            });
-        } else if (i === 4) {
-            // Add ellipsis after the first 3 pages
-            const ellipsis = document.createElement('span');
-            ellipsis.textContent = '...';
-            ellipsis.style.margin = '0 5px';
-            paginationControls.appendChild(ellipsis);
-        }
-    }
+    // Add shadow to the text
+    context.shadowColor = '#333';
+    context.shadowOffsetX = 2;
+    context.shadowOffsetY = 2;
+    context.shadowBlur = 5;
 
-    // Next button
-    if (currentPage < totalPages) {
-        createButton('>>', () => {
-            currentPage++;
-            displayStations(stationData);
-        });
-    }
+    // Draw the text
+    context.fillText(initials, canvas.width / 2, canvas.height / 2);
+
+    return canvas.toDataURL(); // Return the data URL of the canvas
 }
 
+function displayStations(stations) {
+    const stationList = document.getElementById('stationListContent');
+    stationList.innerHTML = ''; // Clear current list
+
+    if (stations.length === 0) {
+        stationList.innerHTML = <p>No results found.</p>;
+        return;
+    }
+
+    stations.forEach(station => {
+        const stationItem = document.createElement('div');
+        stationItem.className = 'station-item';
+        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
+
+        // Determine the logo URL or use the canvas
+        const logoUrl = station.logo && station.logo !== 'null' ? station.logo : createStationLogoCanvas(station.name);
+
+        stationItem.innerHTML = 
+            <div style="width: 100%; height: 140px; border-radius: 5px; position: relative; overflow: hidden;">
+                <img style="width: 100%; height: 100%; object-fit: cover;" src="${logoUrl}" alt="${truncatedName}">
+            </div>
+            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>;
+
+        stationList.appendChild(stationItem);
+    });
+}
 
 
 
