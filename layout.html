@@ -901,6 +901,7 @@
     let stationData = []; // Store stations here to avoid multiple fetches
     let selectedCountryPath = 'italyRadioList.json';
     let currentAudio = null; // Added this declaration
+    let audio = new Audio();
     let hls;
     let currentPage = 1;
     const itemsPerPage = 72;
@@ -1109,7 +1110,7 @@ function displayStations(stations) {
 
 
 function handleImageError(imageElement, stationName, bit, url) {
-    // Decode the Unicode string
+     // Decode the Unicode string
     const decodedStationName = decodeURIComponent(stationName.replace(/\\u/g, '%u'));
 
     // Create a div element as a placeholder
@@ -1147,12 +1148,12 @@ function handleImageError(imageElement, stationName, bit, url) {
     // Add text shadow for effect
     placeholder.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.7)';
 
-    // Bind click event to the placeholder to call playStation with a unique URL
-    placeholder.addEventListener('click', () => {
-        // Append a timestamp to ensure a fresh URL
-        const uniqueUrl = `${url}?timestamp=${Date.now()}`;
+    // Add click event listener to trigger playStation function
+    placeholder.onclick = function() {
+        // Make URL unique to refresh the audio stream
+        const uniqueUrl = `${url}?timestamp=${Date.now()}`; // Adding a timestamp to avoid caching issues
         playStation(uniqueUrl, randomColor, decodedStationName, bit);
-    });
+    };
 
     // Replace the image with the placeholder div
     imageElement.parentNode.replaceChild(placeholder, imageElement);
@@ -1311,7 +1312,7 @@ function playStation(url, image, stationName, bit) {
 
         // Handle image loading error
         stationLogo.onerror = function () {
-            handleImageError(stationLogo, stationName);
+            handleImageError(stationLogo, stationName, bit, url);
         };
 
         // Initialize HLS or regular stream
@@ -1370,6 +1371,7 @@ function playStation(url, image, stationName, bit) {
             });
         }
     }
+}
 }
 
 
