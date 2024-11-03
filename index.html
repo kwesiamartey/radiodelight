@@ -1269,22 +1269,32 @@ function createStationLogoCanvas(stationName) {
     canvas.height = 140;
     canvas.width = 140;
 
+    // Generate a random background color
     const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
     context.fillStyle = randomColor;
     context.fillRect(0, 0, canvas.width, canvas.height);
 
-    const initials = stationName.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
+    // Get initials and limit them to a maximum of 3 characters
+    const initials = stationName
+        .split(' ')
+        .map(word => word.charAt(0))
+        .join('')
+        .toUpperCase()
+        .slice(0, 3); // Limit initials to 3 characters
 
+    // Set text properties
     context.fillStyle = '#fff';
     context.textAlign = 'center';
-    context.color = '#fff';
-    context.fontWeight = '800';
     context.font = "60px 'Montserrat', sans-serif";
     context.textBaseline = 'middle';
+
+    // Add shadow to the text
     context.shadowColor = '#333';
     context.shadowOffsetX = 2;
     context.shadowOffsetY = 2;
     context.shadowBlur = 5;
+
+    // Draw the initials in the center of the canvas
     context.fillText(initials, canvas.width / 2, canvas.height / 2);
 
     return canvas.toDataURL();
