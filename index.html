@@ -1115,7 +1115,6 @@ function displayStations(stations) {
 }
 
 
-
 function handleImageError(imageElement, stationName) {
     // Decode the Unicode string
     const decodedStationName = decodeURIComponent(stationName.replace(/\\u/g, '%u'));
@@ -1141,9 +1140,9 @@ function handleImageError(imageElement, stationName) {
     placeholder.style.wordWrap = 'break-word'; // Legacy support for breaking words
     placeholder.style.whiteSpace = 'normal'; // Allow normal word wrapping
 
-    // Get the initials (first character of the first word and first character of the last word)
+    // Get the initials (first character of each word, max 3 initials)
     const words = decodedStationName.split(' ');
-    const initials = words.map(word => word[0]).join('').toUpperCase(); // Get initials from all words
+    const initials = words.slice(0, 3).map(word => word[0]).join('').toUpperCase(); // Get up to 3 initials
 
     // Set the initials as the inner HTML of the placeholder
     placeholder.innerHTML = initials; // Use initials directly
@@ -1158,8 +1157,6 @@ function handleImageError(imageElement, stationName) {
     // Replace the image with the placeholder div
     imageElement.parentNode.replaceChild(placeholder, imageElement);
 }
-
-    
     
 
    /* function displayStations(stations) {
