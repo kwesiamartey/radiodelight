@@ -1108,7 +1108,6 @@ function displayStations(stations) {
     createPaginationControls(stations.length, totalPages);
 }
 
-
 function handleImageError(imageElement, stationName, bit, url) {
     // Decode the Unicode string
     const decodedStationName = decodeURIComponent(stationName.replace(/\\u/g, '%u'));
@@ -1148,7 +1147,7 @@ function handleImageError(imageElement, stationName, bit, url) {
     // Add text shadow for effect
     placeholder.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.7)';
 
-    // Bind click event to the placeholder to call playStation with a unique URL
+    // Bind click event to the placeholder to call playStation
     placeholder.addEventListener('click', () => {
         // Append a timestamp to ensure a fresh URL
         const uniqueUrl = `${url}?timestamp=${Date.now()}`;
@@ -1158,6 +1157,7 @@ function handleImageError(imageElement, stationName, bit, url) {
     // Replace the image with the placeholder div
     imageElement.parentNode.replaceChild(placeholder, imageElement);
 }
+
 
 
 function playStation(url, image, stationName, bit) {
@@ -1465,57 +1465,7 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
 
 
     
-/*function openPopupWithData(stationName, logoUrl, stationUrl) {
-    // Create a new window with specific dimensions
-    const popupWindow = window.open("", "_blank", "width=400,height=500");
 
-    // Check if the popup was blocked
-    if (!popupWindow) {
-        alert("Popup blocked! Please allow popups for this site.");
-        return;
-    }
-
-    // Set up initial HTML content with logo and station name
-    popupWindow.document.write(`
-        <html>
-            <head>
-                <title>${stationName}</title>
-                <style>
-                    body { font-family: Arial, sans-serif; padding: 20px; text-align: center; }
-                    h1 { color: #333; font-size: 1.5em; margin-top: 10px; }
-                    img { width: 120px; height: 120px; border-radius: 50%; }
-                    .container { display: flex; flex-direction: column; align-items: center; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <img src="${logoUrl}" alt="${stationName} Logo">
-                    <h1>${stationName}</h1>
-                    <p>Loading station...</p>
-                </div>
-            </body>
-        </html>
-    `);
-
-    // After a short delay, set the popup window to the station URL
-    setTimeout(() => {
-        // Check if the popup window is still open before changing its location
-        if (!popupWindow.closed) {
-            popupWindow.location.href = stationUrl;
-
-            // Optional: You could also update the HTML to show a "Now Playing" message if desired
-            popupWindow.document.body.innerHTML = `
-                <div class="container">
-                    <h1>Now Playing...</h1>
-                    <p>Enjoy your music!</p>
-                </div>
-            `;
-        }
-    }, 1500); // Adjust delay as needed
-}*/
-
-
-    
 
     window.onload = () => {
         loadCountries();
