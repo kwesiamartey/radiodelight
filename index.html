@@ -1099,23 +1099,24 @@ function displayStations(stations) {
         logoDiv.style.width = '100%';
         logoDiv.style.height = '140px';
         logoDiv.style.borderRadius = '5px 5px 0px 0px';
-        logoDiv.style.backgroundColor = 'white';
-        
-        // Create image element
-        const img = document.createElement('img');
-        img.style.width = '100%';
-        img.style.height = '140px';
-        img.style.padding = '15px';
-        img.style.borderRadius = '5px 5px 0px 0px';
-        img.style.objectFit = 'contain';
-        img.alt = truncatedName;
+        logoDiv.style.display = 'flex';
+        logoDiv.style.justifyContent = 'center';
+        logoDiv.style.alignItems = 'center';
 
         const stationLogo = station.logo; // Store the logo URL for validation
 
         // Check if the image link is valid
         if (stationLogo && stationLogo.startsWith('http')) {
-            img.src = stationLogo; // Set the image source if valid
-            logoDiv.appendChild(img); // Append image to the logo div
+            // Create and append the image
+            const img = document.createElement('img');
+            img.style.width = '100%';
+            img.style.height = '140px';
+            img.style.padding = '15px';
+            img.style.borderRadius = '5px 5px 0px 0px';
+            img.style.objectFit = 'contain';
+            img.alt = truncatedName;
+            img.src = stationLogo; // Set the image source
+            logoDiv.appendChild(img); // Append image to logo div
         } else {
             // Handle invalid logo: create a placeholder
             const decodedStationName = decodeURIComponent(station.name.replace(/\\u/g, '%u'));
@@ -1125,18 +1126,16 @@ function displayStations(stations) {
             // Set random background color and styles
             logoDiv.style.backgroundColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
             logoDiv.style.color = 'white';
-            logoDiv.style.display = 'flex';
-            logoDiv.style.justifyContent = 'center';
-            logoDiv.style.alignItems = 'center';
             logoDiv.style.fontWeight = '600';
             logoDiv.style.fontSize = '60px';
             logoDiv.style.fontFamily = "'Montserrat', sans-serif";
+            logoDiv.style.textAlign = 'center';
+            logoDiv.style.height = '140px'; // Ensure it maintains the same height
         }
 
         // Add click event to the station item
         stationItem.addEventListener('click', () => {
-            // Call playStation regardless of logo presence
-            playStation(station.url, station.logo || logoDiv.style.backgroundColor, station.name, station.bit);
+            playStation(station.url, stationLogo || logoDiv.style.backgroundColor, station.name, station.bit);
         });
 
         stationItem.appendChild(logoDiv); // Append logo div to station item
@@ -1147,8 +1146,6 @@ function displayStations(stations) {
 
     createPaginationControls(stations.length, totalPages);
 }
-
-
 
 
 
