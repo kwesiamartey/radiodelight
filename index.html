@@ -1218,10 +1218,47 @@ function createPaginationControls(totalStations, totalPages) {
 
 
 function playStation(url, image, stationName, bit) {
+    const logoDiv = document.getElementById('logoDiv'); // Ensure this ID matches your HTML structure
+    const stationLogo = document.getElementById('stationLogo'); // Ensure this ID matches your HTML structure
+
+    // Check if the image is valid
+    if (image && image.startsWith('http')) {
+        // If the image is valid, set the image src
+        if (stationLogo) {
+            stationLogo.src = image; // Set the image source
+            stationLogo.style.display = 'block'; // Show the logo image
+        }
+        logoDiv.style.display = 'none'; // Hide the logo div since we're showing an image
+    } else {
+        // Handle the case where the image is invalid: create a placeholder
+        const decodedStationName = decodeURIComponent(stationName.replace(/\\u/g, '%u'));
+        const initials = decodedStationName.split(' ').slice(0, 3).map(word => word[0]).join('').toUpperCase();
+        
+        logoDiv.innerHTML = initials; // Set initials in the logo div
+        
+        // Set random background color and styles for the placeholder
+        logoDiv.style.backgroundColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+        logoDiv.style.color = 'white';
+        logoDiv.style.fontWeight = '600';
+        logoDiv.style.fontSize = '60px';
+        logoDiv.style.fontFamily = "'Montserrat', sans-serif";
+        logoDiv.style.textAlign = 'center';
+        logoDiv.style.height = '140px'; // Ensure it maintains the same height
+        logoDiv.style.display = 'flex'; // Display as flex to center initials
+        logoDiv.style.justifyContent = 'center'; // Center initials horizontally
+        logoDiv.style.alignItems = 'center'; // Center initials vertically
+        
+        // Hide the image logo since we're showing the placeholder
+        if (stationLogo) {
+            stationLogo.style.display = 'none';
+        }
+    }
+
+    // Handle the bit condition as before
     if (bit === '00') {
-        openPopupWithData(stationName, image, url);
+        openPopupWithData(stationName, image || logoDiv.style.backgroundColor, url);
     } else if (bit === '001') {
-        openPeacefmPopupWithData(stationName, image, url);
+        openPeacefmPopupWithData(stationName, image || logoDiv.style.backgroundColor, url);
     } else {
         const progress = document.getElementById('progress');
         const playButton = document.querySelector('.play-button');
@@ -1232,27 +1269,9 @@ function playStation(url, image, stationName, bit) {
             hls = null;
         }
         audio.src = ''; // Reset the audio source to clear the existing URL
-
-        // Set station logo, display player, and show progress bar
-        const stationLogo = document.getElementById('stationLogo');
-        
-        // Check if the image URL is valid
-        if (image && image.startsWith('http')) {
-            stationLogo.src = image;
-        } else {
-            // Fallback to a default image or placeholder
-            stationLogo.src = 'path/to/default/logo.png'; // Set your default logo path here
-        }
-
-        stationLogo.style.display = 'block';
         document.querySelector('.playing-station-wrap').style.display = 'block';
         document.querySelector('.footer-div-wraaper').style.display = 'block';
         progress.style.display = 'block';
-
-        // Handle image loading error
-        stationLogo.onerror = function () {
-            handleImageError(stationLogo, stationName);
-        };
 
         // Initialize HLS or regular stream
         const hlsUrl = url;
@@ -1312,6 +1331,9 @@ function playStation(url, image, stationName, bit) {
     }
 }
 
+
+
+    
 
     
 
