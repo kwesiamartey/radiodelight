@@ -1067,10 +1067,9 @@ function filterStations() {
 
 
 function displayStations(stations) {
-    document.getElementById('footerr').style.display = 'block';
-    document.getElementById('countryTitle').style.display = 'block';
-    document.querySelector('.countryTitle').style.display = 'block';
-    document.getElementById('country_list_wrapper').style.display = 'block';
+    // Display necessary UI elements
+    const elementsToShow = ['footerr', 'countryTitle', 'country_list_wrapper'];
+    elementsToShow.forEach(id => document.getElementById(id).style.display = 'block');
 
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.getElementById('paginationControls');
@@ -1091,9 +1090,7 @@ function displayStations(stations) {
         stationItem.className = 'station-item';
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
 
-        const stationLogo = station.logo; // Store the logo URL for validation
-
-        // Create a div for the logo
+        // Create logo div
         const logoDiv = document.createElement('div');
         logoDiv.style.width = '100%';
         logoDiv.style.height = '140px';
@@ -1109,60 +1106,52 @@ function displayStations(stations) {
         img.style.objectFit = 'contain';
         img.alt = truncatedName;
 
+        const stationLogo = station.logo; // Store the logo URL for validation
+
         // Check if the image link is valid
         if (stationLogo && stationLogo.startsWith('http')) {
             img.src = stationLogo; // Set the image source if valid
+            logoDiv.appendChild(img); // Append image to the logo div
         } else {
-            // Show placeholder if the image link is broken or null
-                          const decodedStationName = decodeURIComponent(stationName.replace(/\\u/g, '%u'));
+            // Handle invalid logo: create a placeholder
+            const decodedStationName = decodeURIComponent(station.name.replace(/\\u/g, '%u'));
 
-                            // Create a div element as a placeholder
-                            const placeholder = document.createElement('div');
-                        
-                            // Set the styles for the placeholder
-                            placeholder.style.width = '100%';
-                            placeholder.style.height = '140px';
-                            placeholder.style.color = 'white';
-                            placeholder.style.display = 'flex';
-                            placeholder.style.flexDirection = 'column';
-                            placeholder.style.justifyContent = 'center';
-                            placeholder.style.alignItems = 'center';
-                            placeholder.style.fontWeight = '600';
-                            placeholder.style.fontSize = '60px';
-                            placeholder.style.fontFamily = "'Montserrat', sans-serif";
-                            placeholder.style.textAlign = 'center';
-                            placeholder.style.padding = '15px';
-                            placeholder.style.boxSizing = 'border-box';
-                            placeholder.style.overflowWrap = 'break-word';
-                            placeholder.style.wordWrap = 'break-word';
-                            placeholder.style.whiteSpace = 'normal';
-                        
-                            // Get the initials (first character of each word, max 3 initials)
-                            const words = decodedStationName.split(' ');
-                            const initials = words.slice(0, 3).map(word => word[0]).join('').toUpperCase();
-                        
-                            // Set the initials as the inner HTML of the placeholder
-                            placeholder.innerHTML = initials;
-                        
-                            // Set random background color
-                            const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
-                            placeholder.style.backgroundColor = randomColor;
-                        
-                            // Add text shadow for effect
-                            placeholder.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.7)';
-                        
-                            // Bind click event to the placeholder to call playStation with a unique URL
-                            placeholder.addEventListener('click', () => {
-                                // Append a timestamp to ensure a fresh URL
-                                const uniqueUrl = url;
-                                playStation(station.url, randomColor, decodedStationName, station.bit);
-                            });
-                        
-                            // Replace the image with the placeholder div
-                            imageElement.parentNode.replaceChild(placeholder, imageElement);
-         }
+            // Create a placeholder div
+            const placeholder = document.createElement('div');
+            placeholder.style.width = '100%';
+            placeholder.style.height = '140px';
+            placeholder.style.color = 'white';
+            placeholder.style.display = 'flex';
+            placeholder.style.flexDirection = 'column';
+            placeholder.style.justifyContent = 'center';
+            placeholder.style.alignItems = 'center';
+            placeholder.style.fontWeight = '600';
+            placeholder.style.fontSize = '60px';
+            placeholder.style.fontFamily = "'Montserrat', sans-serif";
+            placeholder.style.textAlign = 'center';
+            placeholder.style.padding = '15px';
+            placeholder.style.boxSizing = 'border-box';
+            placeholder.style.overflowWrap = 'break-word';
+            placeholder.style.wordWrap = 'break-word';
+            placeholder.style.whiteSpace = 'normal';
 
-        logoDiv.appendChild(img); // Append image to the logo div
+            // Get initials for the placeholder
+            const initials = decodedStationName.split(' ').slice(0, 3).map(word => word[0]).join('').toUpperCase();
+            placeholder.innerHTML = initials;
+
+            // Set random background color and text shadow
+            placeholder.style.backgroundColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+            placeholder.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.7)';
+
+            // Bind click event to the placeholder
+            placeholder.addEventListener('click', () => {
+                playStation(station.url, placeholder.style.backgroundColor, decodedStationName, station.bit);
+            });
+
+            // Replace the image with the placeholder div
+            logoDiv.appendChild(placeholder); // Append placeholder to logo div
+        }
+
         stationItem.appendChild(logoDiv); // Append logo div to station item
         stationItem.innerHTML += `<span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
 
@@ -1177,6 +1166,10 @@ function displayStations(stations) {
     createPaginationControls(stations.length, totalPages);
 }
 
+
+
+
+    
 function handleImageError(imageElement, stationName, bit, url) {
     // Decode the Unicode string
     const decodedStationName = decodeURIComponent(stationName.replace(/\\u/g, '%u'));
