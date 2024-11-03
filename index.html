@@ -782,7 +782,7 @@
         
     <div class="container" style="width:90v" >
           <div id="foo" style="background-color:rgb(77, 100, 111); display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;">
-      <span id="breadcrumbs" style="width:100%;padding:8px;margin:0px;font-size:13px;color:#fff;">Radio Station |  </span>
+      <span id="breadcrumbs" style="width:100%;padding:8px;margin:0px;font-size:13px;color:#fff;display:none;">Radio Station |  </span>
     </div> 
          <h2 class="countryTitle" style="display: none;">Live Italy Radio Station Online</h2>
         <div class="row">
@@ -1127,13 +1127,13 @@ function playStation(url, image, stationName, bit) {
         // Set station logo, display player, and show progress bar
         const stationLogo = document.getElementById('stationLogo');
         document.getElementById('breadcrumbs').style.display = 'block';
-         document.getElementById('countryTitle').style.display = 'none';
+         document.querySelector('.countryTitle').style.display = 'none';
         stationLogo.src = image;
         stationLogo.style.display = 'block';
         document.querySelector('.playing-station-wrap').style.display = 'block';
         document.querySelector('.footer-div-wraaper').style.display = 'block';
         document.getElementById('stationLogo');
-        document.getElementById('breadcrumbs').textContent = 'Radio station | ${stationName}';
+        document.getElementById('breadcrumbs').textContent = 'Radio station | ${stationName} ';
  
         progress.style.display = 'block';
 
