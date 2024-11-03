@@ -1092,18 +1092,11 @@ function displayStations(stations) {
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
 
         stationItem.innerHTML = `
-            <div style="width: 100%; height: 140px; border-radius: 5px 5px 0px 0px;background-color:white;">
-    
-                <!-- Foreground image on top of the blurred background -->
-                <img style="width: 100%;
-                            height: 140px;
-                            padding:15px;
-                            border-radius: 5px 5px 0px 0px;
-                            object-fit: contain;
-                            "  
-                     src="${station.logo}" 
+            <div style="width: 100%; height: 140px; border-radius: 5px 5px 0px 0px; background-color: white;">
+                <img style="width: 100%; height: 140px; padding: 15px; border-radius: 5px 5px 0px 0px; object-fit: contain;"
+                     src="${station.logo}"
                      alt="${truncatedName}"
-                     onerror="handleImageError(this, '${station.name}','${station.bit)}','${station.url}' )">
+                     onerror="handleImageError(this, '${station.name}', '${station.bit}', '${station.url}')">
             </div>
             <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
 
@@ -1113,8 +1106,6 @@ function displayStations(stations) {
 
     createPaginationControls(stations.length, totalPages);
 }
-
-
 
 
 function handleImageError(imageElement, stationName, bit, url) {
@@ -1157,11 +1148,12 @@ function handleImageError(imageElement, stationName, bit, url) {
     placeholder.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.7)';
 
     // Add click event listener to trigger playStation function
-    placeholder.addEventListener('click', () => playStation(url, placeholder.style.backgroundColor, decodedStationName, bit));
+    placeholder.addEventListener('click', () => playStation(url, randomColor, decodedStationName, bit));
 
     // Replace the image with the placeholder div
     imageElement.parentNode.replaceChild(placeholder, imageElement);
 }
+
 
 
 
