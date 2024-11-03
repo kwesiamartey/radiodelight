@@ -901,6 +901,7 @@
     let stationData = []; // Store stations here to avoid multiple fetches
     let selectedCountryPath = 'italyRadioList.json';
     let currentAudio = null; // Added this declaration
+    
     let hls;
     let currentPage = 1;
     const itemsPerPage = 72;
@@ -908,7 +909,7 @@
     const itemsPerPage1 = 30; // Number of countries per page
     const progress = document.getElementById('progress');
     const playButton = document.querySelector('.play-button');
-    const audio = document.getElementById('audio');
+    const audioElement = document.getElementById('audio');
 
 
 function loadCountries() {
@@ -1066,14 +1067,11 @@ function filterStations() {
 }
 
 
-
-
-
-
 function displayStations(stations) {
-    // Show necessary UI elements
-    const elementsToShow = ['footerr', 'countryTitle', 'country_list_wrapper'];
-    elementsToShow.forEach(id => document.getElementById(id).style.display = 'block');
+    document.getElementById('footerr').style.display = 'block';
+    document.getElementById('countryTitle').style.display = 'block';
+    document.querySelector('.countryTitle').style.display = 'block';
+    document.getElementById('country_list_wrapper').style.display = 'block';
 
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.getElementById('paginationControls');
@@ -1094,63 +1092,162 @@ function displayStations(stations) {
         stationItem.className = 'station-item';
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
 
-        // Create logo div
-        const logoDiv = document.createElement('div');
-        logoDiv.style.width = '100%';
-        logoDiv.style.height = '140px';
-        logoDiv.style.borderRadius = '5px 5px 0px 0px';
-        logoDiv.style.display = 'flex';
-        logoDiv.style.justifyContent = 'center';
-        logoDiv.style.alignItems = 'center';
+        stationItem.innerHTML = `
+            <div style="width: 100%; height: 140px; border-radius: 5px 5px 0px 0px; background-color: white;">
+                <img style="width: 100%; height: 140px; padding: 15px; border-radius: 5px 5px 0px 0px; object-fit: contain;"
+                     src="${station.logo}"
+                     alt="${truncatedName}"
+                     onerror="handleImageError(this, '${station.name}', '${station.bit}', '${station.url}')">
+            </div>
+            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
 
-        const stationLogo = station.logo; // Store the logo URL for validation
-
-        // Check if the image link is valid
-        if (stationLogo && stationLogo.startsWith('http')) {
-            // Create and append the image
-            const img = document.createElement('img');
-            img.style.width = '100%';
-            img.style.height = '140px';
-            img.style.padding = '15px';
-            img.style.borderRadius = '5px 5px 0px 0px';
-            img.style.objectFit = 'contain';
-            img.alt = truncatedName;
-            img.src = stationLogo; // Set the image source
-            logoDiv.appendChild(img); // Append image to logo div
-        } else {
-            // Handle invalid logo: create a placeholder
-            const decodedStationName = decodeURIComponent(station.name.replace(/\\u/g, '%u'));
-            const initials = decodedStationName.split(' ').slice(0, 3).map(word => word[0]).join('').toUpperCase();
-            logoDiv.innerHTML = initials;
-
-            // Set random background color and styles
-            logoDiv.style.backgroundColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-            logoDiv.style.color = 'white';
-            logoDiv.style.fontWeight = '600';
-            logoDiv.style.fontSize = '60px';
-            logoDiv.style.fontFamily = "'Montserrat', sans-serif";
-            logoDiv.style.textAlign = 'center';
-            logoDiv.style.height = '140px'; // Ensure it maintains the same height
-        }
-
-        // Add click event to the station item
-        stationItem.addEventListener('click', () => {
-            playStation(station.url, stationLogo || logoDiv.style.backgroundColor, station.name, station.bit);
-        });
-
-        stationItem.appendChild(logoDiv); // Append logo div to station item
-        stationItem.innerHTML += `<span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
-
+        stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.bit));
         stationList.appendChild(stationItem);
     });
 
     createPaginationControls(stations.length, totalPages);
 }
 
+function handleImageError(imageElement, stationName, bit, url) {
+    // Decode the Unicode string
+    const decodedStationName = decodeURIComponent(stationName.replace(/\\u/g, '%u'));
 
+    // Create a div element as a placeholder
+    const placeholder = document.createElement('div');
+
+    // Set the styles for the placeholder
+    placeholder.style.width = '100%';
+    placeholder.style.height = '140px';
+    placeholder.style.color = 'white';
+    placeholder.style.display = 'flex';
+    placeholder.style.flexDirection = 'column';
+    placeholder.style.justifyContent = 'center';
+    placeholder.style.alignItems = 'center';
+    placeholder.style.fontWeight = '600';
+    placeholder.style.fontSize = '60px';
+    placeholder.style.fontFamily = "'Montserrat', sans-serif";
+    placeholder.style.textAlign = 'center';
+    placeholder.style.padding = '15px';
+    placeholder.style.boxSizing = 'border-box';
+    placeholder.style.overflowWrap = 'break-word';
+    placeholder.style.wordWrap = 'break-word';
+    placeholder.style.whiteSpace = 'normal';
+
+    // Get the initials (first character of each word, max 3 initials)
+    const words = decodedStationName.split(' ');
+    const initials = words.slice(0, 3).map(word => word[0]).join('').toUpperCase();
+
+    // Set the initials as the inner HTML of the placeholder
+    placeholder.innerHTML = initials;
+
+    // Set random background color
+    const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+    placeholder.style.backgroundColor = randomColor;
+
+    // Add text shadow for effect
+    placeholder.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.7)';
+
+    // Bind click event to the placeholder to call playStation
+    placeholder.addEventListener('click', () => {
+        // Append a timestamp to ensure a fresh URL
+        const uniqueUrl = `${url}?timestamp=${Date.now()}`;
+        playStation(uniqueUrl, randomColor, decodedStationName, bit);
+    });
+
+    // Replace the image with the placeholder div
+    imageElement.parentNode.replaceChild(placeholder, imageElement);
+}
+
+
+
+function playStation(url, image, stationName, bit) {
+    if (bit === '00') {
+        openPopupWithData(stationName, image, url);
+    } else if (bit === '001') {
+        openPeacefmPopupWithData(stationName, image, url);
+    } else {
+        const progress = document.getElementById('progress');
+        const playButton = document.querySelector('.play-button');
+
+        // Reset the audio source and destroy any existing HLS instance
+        if (typeof hls !== 'undefined' && hls !== null) {
+            hls.destroy();
+            hls = null;
+        }
+        audioElement.src = ''; // Reset the audio source to clear the existing URL
+
+        // Set station logo, display player, and show progress bar
+        const stationLogo = document.getElementById('stationLogo');
+        stationLogo.src = image;
+        stationLogo.style.display = 'block';
+        document.querySelector('.playing-station-wrap').style.display = 'block';
+        document.querySelector('.footer-div-wraaper').style.display = 'block';
+        progress.style.display = 'block';
+
+        // Handle image loading error
+        stationLogo.onerror = function () {
+            handleImageError(stationLogo, stationName);
+        };
+
+        // Initialize HLS or regular stream
+        const hlsUrl = url;
+
+        if (hlsUrl.endsWith('.m3u8')) {
+            if (Hls.isSupported()) {
+                hls = new Hls();
+                hls.loadSource(hlsUrl);
+                hls.attachMedia(audioElement);
+
+                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    audioElement.play();
+                    progress.style.display = 'none';
+                    playButton.textContent = '||';
+                    sendEmailNotification(stationName, url, "200");
+                });
+
+                hls.on(Hls.Events.ERROR, (event, data) => {
+                    if (data.fatal) {
+                        switch (data.type) {
+                            case Hls.ErrorTypes.NETWORK_ERROR:
+                                console.error('Network error occurred');
+                                handlePlaybackError(url, stationName);
+                                break;
+                            case Hls.ErrorTypes.MEDIA_ERROR:
+                                console.error('Media error occurred');
+                                hls.recoverMediaError();
+                                handlePlaybackError(url, stationName);
+                                break;
+                            default:
+                                hls.destroy();
+                                break;
+                        }
+                    }
+                });
+            } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+                audioElement.src = hlsUrl;
+                audioElement.addEventListener('canplay', () => {
+                    audioElement.play();
+                    progress.style.display = 'none';
+                    playButton.textContent = '||';
+                    sendEmailNotification(stationName, url, "200");
+                });
+            } else {
+                console.error('HLS is not supported in this browser.');
+                handlePlaybackError(url, stationName);
+            }
+        } else {
+            audioElement.src = hlsUrl;
+            audioElement.addEventListener('canplay', () => {
+                audioElement.play();
+                progress.style.display = 'none';
+                playButton.textContent = '||';
+                sendEmailNotification(stationName, url, "200");
+            });
+        }
+    }
+}
 
     
-
 
 
 
@@ -1216,142 +1313,21 @@ function createPaginationControls(totalStations, totalPages) {
 
 
 
-
-function playStation(url, image, stationName, bit) {
-    const logoDiv = document.getElementById('logoDiv'); // Ensure this ID matches your HTML structure
-    const stationLogo = document.getElementById('stationLogo'); // Ensure this ID matches your HTML structure
-
-    // Check if the image is valid
-    if (image && image.startsWith('http')) {
-        // If the image is valid, set the image src
-        if (stationLogo) {
-            stationLogo.src = image; // Set the image source
-            stationLogo.style.display = 'block'; // Show the logo image
-        }
-        logoDiv.style.display = 'none'; // Hide the logo div since we're showing an image
-    } else {
-        // Handle the case where the image is invalid: create a placeholder
-        const decodedStationName = decodeURIComponent(stationName.replace(/\\u/g, '%u'));
-        const initials = decodedStationName.split(' ').slice(0, 3).map(word => word[0]).join('').toUpperCase();
-        
-        logoDiv.innerHTML = initials; // Set initials in the logo div
-        
-        // Set random background color and styles for the placeholder
-        logoDiv.style.backgroundColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-        logoDiv.style.color = 'white';
-        logoDiv.style.fontWeight = '600';
-        logoDiv.style.fontSize = '60px';
-        logoDiv.style.fontFamily = "'Montserrat', sans-serif";
-        logoDiv.style.textAlign = 'center';
-        logoDiv.style.height = '140px'; // Ensure it maintains the same height
-        logoDiv.style.display = 'flex'; // Display as flex to center initials
-        logoDiv.style.justifyContent = 'center'; // Center initials horizontally
-        logoDiv.style.alignItems = 'center'; // Center initials vertically
-        
-        // Hide the image logo since we're showing the placeholder
-        if (stationLogo) {
-            stationLogo.style.display = 'none';
-        }
-    }
-
-    // Handle the bit condition as before
-    if (bit === '00') {
-        openPopupWithData(stationName, image || logoDiv.style.backgroundColor, url);
-    } else if (bit === '001') {
-        openPeacefmPopupWithData(stationName, image || logoDiv.style.backgroundColor, url);
-    } else {
-        const progress = document.getElementById('progress');
-        const playButton = document.querySelector('.play-button');
-
-        // Reset the audio source and destroy any existing HLS instance
-        if (typeof hls !== 'undefined' && hls !== null) {
-            hls.destroy();
-            hls = null;
-        }
-        audio.src = ''; // Reset the audio source to clear the existing URL
-        document.querySelector('.playing-station-wrap').style.display = 'block';
-        document.querySelector('.footer-div-wraaper').style.display = 'block';
-        progress.style.display = 'block';
-
-        // Initialize HLS or regular stream
-        const hlsUrl = url;
-
-        if (hlsUrl.endsWith('.m3u8')) {
-            if (Hls.isSupported()) {
-                hls = new Hls();
-                hls.loadSource(hlsUrl);
-                hls.attachMedia(audio);
-
-                hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    audio.play();
-                    progress.style.display = 'none';
-                    playButton.textContent = '||';
-                    sendEmailNotification(stationName, url, "200");
-                });
-
-                hls.on(Hls.Events.ERROR, (event, data) => {
-                    if (data.fatal) {
-                        switch (data.type) {
-                            case Hls.ErrorTypes.NETWORK_ERROR:
-                                console.error('Network error occurred');
-                                handlePlaybackError(url, stationName);
-                                break;
-                            case Hls.ErrorTypes.MEDIA_ERROR:
-                                console.error('Media error occurred');
-                                hls.recoverMediaError();
-                                handlePlaybackError(url, stationName);
-                                break;
-                            default:
-                                hls.destroy();
-                                break;
-                        }
-                    }
-                });
-            } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
-                audio.src = hlsUrl;
-                audio.addEventListener('canplay', () => {
-                    audio.play();
-                    progress.style.display = 'none';
-                    playButton.textContent = '||';
-                    sendEmailNotification(stationName, url, "200");
-                });
-            } else {
-                console.error('HLS is not supported in this browser.');
-                handlePlaybackError(url, stationName);
-            }
-        } else {
-            audio.src = hlsUrl;
-            audio.addEventListener('canplay', () => {
-                audio.play();
-                progress.style.display = 'none';
-                playButton.textContent = '||';
-                sendEmailNotification(stationName, url, "200");
-            });
-        }
-    }
-}
-
-
-
-    
-
-    
-
 function togglePlay() {
     progress.style.display = 'block'; // Show progress initially
 
-    if (audio) {
-        if (audio.paused) {
-            audio.play().then(() => {
+    if (audioElement) {
+        if (audioElement.paused) {
+            audioElement.play().then(() => {
                 playButton.textContent = '||'; // Change button to pause icon
                 progress.style.display = 'none'; // Hide progress once audio starts playing
             }).catch(error => {
                 console.error("Audio play error:", error);
-                handlePlaybackError(audio.src, audio.stationName);
+                handlePlaybackError(audioElement.src, audioElement.stationName);
                 progress.style.display = 'none'; // Hide progress if there's an error
             });
         } else {
-            audio.pause();
+            audioElement.pause();
             playButton.textContent = '▶'; // Change button back to play icon
             progress.style.display = 'none'; // Hide progress when paused
         }
@@ -1489,57 +1465,7 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
 
 
     
-/*function openPopupWithData(stationName, logoUrl, stationUrl) {
-    // Create a new window with specific dimensions
-    const popupWindow = window.open("", "_blank", "width=400,height=500");
 
-    // Check if the popup was blocked
-    if (!popupWindow) {
-        alert("Popup blocked! Please allow popups for this site.");
-        return;
-    }
-
-    // Set up initial HTML content with logo and station name
-    popupWindow.document.write(`
-        <html>
-            <head>
-                <title>${stationName}</title>
-                <style>
-                    body { font-family: Arial, sans-serif; padding: 20px; text-align: center; }
-                    h1 { color: #333; font-size: 1.5em; margin-top: 10px; }
-                    img { width: 120px; height: 120px; border-radius: 50%; }
-                    .container { display: flex; flex-direction: column; align-items: center; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <img src="${logoUrl}" alt="${stationName} Logo">
-                    <h1>${stationName}</h1>
-                    <p>Loading station...</p>
-                </div>
-            </body>
-        </html>
-    `);
-
-    // After a short delay, set the popup window to the station URL
-    setTimeout(() => {
-        // Check if the popup window is still open before changing its location
-        if (!popupWindow.closed) {
-            popupWindow.location.href = stationUrl;
-
-            // Optional: You could also update the HTML to show a "Now Playing" message if desired
-            popupWindow.document.body.innerHTML = `
-                <div class="container">
-                    <h1>Now Playing...</h1>
-                    <p>Enjoy your music!</p>
-                </div>
-            `;
-        }
-    }, 1500); // Adjust delay as needed
-}*/
-
-
-    
 
     window.onload = () => {
         loadCountries();
