@@ -1085,7 +1085,7 @@ function filterStations() {
         const totalPages = Math.ceil(stations.length / itemsPerPage);
         const startIndex = (currentPage - 1) * itemsPerPage;
         const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
-        const logoUrl = station.logo && station.logo !== 'null' ? station.logo : 'white_img.jpg';
+        const logoUrl = station.logo && station.logo !== 'null' ? station.logo : '${white_img.jpg}';
 
         stationsToDisplay.forEach(station => {
             const stationItem = document.createElement('div');
