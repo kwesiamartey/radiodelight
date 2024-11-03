@@ -1133,7 +1133,9 @@ function playStation(url, image, stationName, bit) {
         document.querySelector('.playing-station-wrap').style.display = 'block';
         document.querySelector('.footer-div-wraaper').style.display = 'block';
         document.getElementById('stationLogo');
-        document.getElementById('breadcrumbs').textContent = 'Radio station | ${stationName} ';
+        const breadcrumbs = document.getElementById('#breadcrumbs');
+        const breadcrumbText = `Radio station | ${stationName}`;
+        breadcrumbs.textContent = breadcrumbText;
  
         progress.style.display = 'block';
 
