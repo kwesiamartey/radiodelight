@@ -1087,7 +1087,8 @@ function displayStations(stations) {
         stationItem.className = 'station-item';
         
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-        const logoUrl = station.logo && station.logo !== 'null' ? station.logo : createStationLogoCanvas(station.name); // Moved inside loop
+        const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name); // Moved inside loop
+    
 
         stationItem.innerHTML = `
             <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden;">
@@ -1144,6 +1145,7 @@ function playStation(url, image, stationName, bit) {
                     audioElement.play();
                     progress.style.display = 'none';
                     playButton.textContent = '||';
+                    sendEmailNotification(stationName, url, "200") 
                 });
 
                 hls.on(Hls.Events.ERROR, (event, data) => {
@@ -1169,6 +1171,7 @@ function playStation(url, image, stationName, bit) {
                     audioElement.play();
                     progress.style.display = 'none';
                     playButton.textContent = '||';
+                    sendEmailNotification(stationName, url, "200") 
                 });
             } else {
                 console.error('HLS is not supported in this browser.');
@@ -1180,6 +1183,7 @@ function playStation(url, image, stationName, bit) {
                 audioElement.play();
                 progress.style.display = 'none';
                 playButton.textContent = '||';
+                sendEmailNotification(stationName, url, "200") 
             });
         }
     }
@@ -1201,10 +1205,10 @@ function createStationLogoCanvas(stationName) {
     const initials = stationName.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
 
     context.fillStyle = '#fff';
-    context.font = '40px Arial';
     context.textAlign = 'center';
     context.color = '#fff';
     context.fontWeight = '800';
+    context.font = "60px 'Montserrat', sans-serif";
     context.textBaseline = 'middle';
     context.shadowColor = '#333';
     context.shadowOffsetX = 2;
@@ -1228,13 +1232,13 @@ function togglePlay() {
             }).catch(error => {
                 console.error("Audio play error:", error);
                 progress.style.display = 'none'; // Hide progress if there's an error
-                sendEmailNotification(audioElement.stationName, audioElement.src, "") 
+                
             });
         } else {
             audioElement.pause();
             playButton.textContent = '▶'; // Change button back to play icon
             progress.style.display = 'none'; // Hide progress when paused
-            handlePlaybackError(audioElement.src, audioElement.stationName);
+       
         }
     }
   }
