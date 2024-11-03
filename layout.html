@@ -1063,55 +1063,50 @@ function filterStations() {
 }
 
 
-    function displayStations(stations) {
-        document.getElementById('footerr').style.display = 'block';
-           document.getElementById('countryTitle').style.display = 'block';
-      document.querySelector('.countryTitle').style.display = 'block';
-      document.getElementById('country_list_wrapper').style.display = 'block';
-        const stationList = document.getElementById('stationListContent');
-        const paginationControls = document.getElementById('paginationControls');
-        stationList.innerHTML = ''; // Clear current list
-        paginationControls.innerHTML = ''; // Clear pagination
-
-        if (stations.length === 0) {
-            stationList.innerHTML = `<p>No results found.</p>`;
-            return;
-        }
-
-        const totalPages = Math.ceil(stations.length / itemsPerPage);
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
-
-        const logoUrl = station.logo && station.logo !== 'null' ? station.logo : createStationLogoCanvas(station.name);
-
-        stationsToDisplay.forEach(station => {
-            const stationItem = document.createElement('div');
-            stationItem.className = 'station-item';
-            const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-            stationItem.innerHTML = `<div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden;">
-
+function displayStations(stations) {
+    document.getElementById('footerr').style.display = 'block';
+    document.getElementById('countryTitle').style.display = 'block';
+    document.querySelector('.countryTitle').style.display = 'block';
+    document.getElementById('country_list_wrapper').style.display = 'block';
     
-            <!-- Foreground image on top of the blurred background -->
-            <img style="width: 100%;
-                        height: 140px;
-                      
-                        object-fit: contain;
-                         background-image: url('${logoUrl}');
-                         background-size: cover;
-                        position: relative;
-                        z-index: 1;"  
-                 src="${logoUrl}" 
-                 alt="${truncatedName}">
+    const stationList = document.getElementById('stationListContent');
+    const paginationControls = document.getElementById('paginationControls');
+    stationList.innerHTML = ''; // Clear current list
+    paginationControls.innerHTML = ''; // Clear pagination
+
+    if (stations.length === 0) {
+        stationList.innerHTML = `<p>No results found.</p>`;
+        return;
+    }
+
+    const totalPages = Math.ceil(stations.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
+
+    stationsToDisplay.forEach(station => {
+        const stationItem = document.createElement('div');
+        stationItem.className = 'station-item';
+        
+        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
+        const logoUrl = station.logo && station.logo !== 'null' ? station.logo : createStationLogoCanvas(station.name); // Moved inside loop
+
+        stationItem.innerHTML = `
+            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden;">
+                <img style="width: 100%; height: 140px; object-fit: contain; 
+                            background-image: url('${logoUrl}');
+                            background-size: cover; position: relative; z-index: 1;"  
+                     src="${logoUrl}" 
+                     alt="${truncatedName}">
             </div>
-        <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
+            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
                 
-                stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.bit));
-                stationList.appendChild(stationItem);
-            });
-    
-            createPaginationControls(stations.length, totalPages);
-        }
-    
+        stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.bit));
+        stationList.appendChild(stationItem);
+    });
+
+    createPaginationControls(stations.length, totalPages);
+}
+
 
 
 function playStation(url, image, stationName, bit) {
