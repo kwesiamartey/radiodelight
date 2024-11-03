@@ -1091,22 +1091,46 @@ function displayStations(stations) {
         stationItem.className = 'station-item';
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
 
-        stationItem.innerHTML = `
-            <div style="width: 100%; height: 140px; border-radius: 5px 5px 0px 0px; background-color: white;">
-                <img style="width: 100%; height: 140px; padding: 15px; border-radius: 5px 5px 0px 0px; object-fit: contain;"
-                     src="${station.logo}"
-                     alt="${truncatedName}"
-                     onerror="handleImageError(this, '${station.name}', '${station.bit}', '${station.url}')">
-            </div>
-            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
+        const stationLogo = station.logo; // Store the logo URL for validation
 
-        stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.bit));
+        // Create a div for the logo
+        const logoDiv = document.createElement('div');
+        logoDiv.style.width = '100%';
+        logoDiv.style.height = '140px';
+        logoDiv.style.borderRadius = '5px 5px 0px 0px';
+        logoDiv.style.backgroundColor = 'white';
+
+        // Create image element
+        const img = document.createElement('img');
+        img.style.width = '100%';
+        img.style.height = '140px';
+        img.style.padding = '15px';
+        img.style.borderRadius = '5px 5px 0px 0px';
+        img.style.objectFit = 'contain';
+        img.alt = truncatedName;
+
+        // Check if the image link is valid
+        if (stationLogo && stationLogo.startsWith('http')) {
+            img.src = stationLogo; // Set the image source if valid
+        } else {
+            // Show placeholder if the image link is broken or null
+            handleImageError(logoDiv, station.name, station.bit, station.url);
+        }
+
+        logoDiv.appendChild(img); // Append image to the logo div
+        stationItem.appendChild(logoDiv); // Append logo div to station item
+        stationItem.innerHTML += `<span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
+
+        // Add click event to play station directly
+        stationItem.addEventListener('click', () => {
+            playStation(station.url, station.logo, station.name, station.bit);
+        });
+
         stationList.appendChild(stationItem);
     });
 
     createPaginationControls(stations.length, totalPages);
 }
-
 
 function handleImageError(imageElement, stationName, bit, url) {
     // Decode the Unicode string
@@ -1150,7 +1174,7 @@ function handleImageError(imageElement, stationName, bit, url) {
     // Bind click event to the placeholder to call playStation with a unique URL
     placeholder.addEventListener('click', () => {
         // Append a timestamp to ensure a fresh URL
-        const uniqueUrl = `${url}?timestamp=${Date.now()}`;
+        const uniqueUrl = url;
         playStation(uniqueUrl, randomColor, decodedStationName, bit);
     });
 
