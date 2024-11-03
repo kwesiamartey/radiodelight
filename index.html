@@ -1120,6 +1120,7 @@ function displayStations(stations) {
             // Add click event for valid logo
             logoDiv.addEventListener('click', (event) => {
                 event.stopPropagation(); // Stop the event from bubbling up to stationItem
+                console.log(`Playing station: ${station.name}, URL: ${station.url}`); // Debugging log
                 playStation(station.url, station.logo, station.name, station.bit);
             });
         } else {
@@ -1154,6 +1155,7 @@ function displayStations(stations) {
             // Bind click event to the placeholder
             logoDiv.addEventListener('click', (event) => {
                 event.stopPropagation(); // Prevent bubbling to the stationItem click
+                console.log(`Playing placeholder station: ${decodedStationName}, URL: ${station.url}`); // Debugging log
                 playStation(station.url, randomColor, decodedStationName, station.bit);
             });
         }
@@ -1163,6 +1165,7 @@ function displayStations(stations) {
 
         // Add click event to play station directly from the station item
         stationItem.addEventListener('click', () => {
+            console.log(`Playing station directly: ${station.name}, URL: ${station.url}`); // Debugging log
             playStation(station.url, station.logo || randomColor, station.name, station.bit);
         });
 
@@ -1171,6 +1174,7 @@ function displayStations(stations) {
 
     createPaginationControls(stations.length, totalPages);
 }
+
 
 
 
