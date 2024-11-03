@@ -1070,9 +1070,9 @@ function createStationLogoCanvas(stationName) {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
 
-    // Set canvas size
-    canvas.width = 100%;
+    // Set the fixed height and dynamic width based on the container
     canvas.height = 140;
+    canvas.width = 140; // Default width, but will adjust later
 
     // Generate a random background color
     const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
@@ -1084,7 +1084,7 @@ function createStationLogoCanvas(stationName) {
 
     // Set text properties
     context.fillStyle = 'white';
-    context.font = '24px Arial';
+    context.font = '34px Arial'; // Updated font size to 34px
     context.textAlign = 'center';
     context.textBaseline = 'middle';
 
@@ -1145,7 +1145,7 @@ function createStationLogoCanvas(stationName) {
             </div>
             <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
 
-        stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.bit));
+        stationItem.addEventListener('click', () => playStation(station.url, logoUrl, station.name, station.bit));
         stationList.appendChild(stationItem);
     });
 
