@@ -1066,7 +1066,12 @@ function filterStations() {
 }
 
 
-function displayStations(stations) {
+
+
+
+
+
+     function displayStations(stations) {
     // Display necessary UI elements
     const elementsToShow = ['footerr', 'countryTitle', 'country_list_wrapper'];
     elementsToShow.forEach(id => document.getElementById(id).style.display = 'block');
@@ -1112,6 +1117,11 @@ function displayStations(stations) {
         if (stationLogo && stationLogo.startsWith('http')) {
             img.src = stationLogo; // Set the image source if valid
             logoDiv.appendChild(img); // Append image to the logo div
+
+            // Add click event for valid logo
+            logoDiv.addEventListener('click', () => {
+                playStation(station.url, station.logo, station.name, station.bit);
+            });
         } else {
             // Handle invalid logo: create a placeholder
             const decodedStationName = decodeURIComponent(station.name.replace(/\\u/g, '%u'));
@@ -1137,21 +1147,22 @@ function displayStations(stations) {
             logoDiv.innerHTML = initials;
 
             // Set random background color and text shadow
-            logoDiv.style.backgroundColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+            const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+            logoDiv.style.backgroundColor = randomColor;
             logoDiv.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.7)';
 
             // Bind click event to the placeholder
             logoDiv.addEventListener('click', () => {
-                playStation(station.url, logoDiv.style.backgroundColor, decodedStationName, station.bit);
+                playStation(station.url, randomColor, decodedStationName, station.bit);
             });
         }
 
         stationItem.appendChild(logoDiv); // Append logo div to station item
         stationItem.innerHTML += `<span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
 
-        // Add click event to play station directly
+        // Add click event to play station directly from the station item
         stationItem.addEventListener('click', () => {
-            playStation(station.url, station.logo, station.name, station.bit);
+            playStation(station.url, station.logo || randomColor, station.name, station.bit);
         });
 
         stationList.appendChild(stationItem); // Append the station item to the station list
@@ -1159,7 +1170,6 @@ function displayStations(stations) {
 
     createPaginationControls(stations.length, totalPages);
 }
-
 
 
 
