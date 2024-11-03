@@ -1099,12 +1099,6 @@ function displayStations(stations) {
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
         const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name); // Moved inside loop
 
-         let logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : null;
-
-
-        
-    
-
         stationItem.innerHTML = `
             <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden;">
                 <img style="width: 100%; height: 140px; 
