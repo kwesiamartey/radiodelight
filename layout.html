@@ -1063,115 +1063,18 @@ function filterStations() {
 }
 
 
-function createStationLogoCanvas(stationName) {
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-
-    // Set the fixed height and dynamic width based on the container
-    canvas.height = 140;
-    canvas.width = 140; // Default width, but will adjust later
-
-    // Generate a random background color
-    const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-    context.fillStyle = randomColor;
-    context.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Get initials from station name
-    const initials = stationName.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
-
-    // Set text properties
-    context.fillStyle = 'white';
-    context.font = '34px Arial'; // Updated font size to 34px
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-
-    // Add shadow to the text
-    context.shadowColor = 'rgba(0, 0, 0, 0.5)';
-    context.shadowOffsetX = 2;
-    context.shadowOffsetY = 2;
-    context.shadowBlur = 5;
-
-    // Draw the text
-    context.fillText(initials, canvas.width / 2, canvas.height / 2);
-
-    return canvas.toDataURL(); // Return the data URL of the canvas
-}
-
-    function displayStations(stations) {
-        document.getElementById('footerr').style.display = 'block';
-           document.getElementById('countryTitle').style.display = 'block';
-      document.querySelector('.countryTitle').style.display = 'block';
-      document.getElementById('country_list_wrapper').style.display = 'block';
-        const stationList = document.getElementById('stationListContent');
-        const paginationControls = document.getElementById('paginationControls');
-        stationList.innerHTML = ''; // Clear current list
-        paginationControls.innerHTML = ''; // Clear pagination
-
-        if (stations.length === 0) {
-            stationList.innerHTML = `<p>No results found.</p>`;
-            return;
-        }
-
-        const totalPages = Math.ceil(stations.length / itemsPerPage);
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
-
-        stationsToDisplay.forEach(station => {
-            const stationItem = document.createElement('div');
-            stationItem.className = 'station-item';
-            const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-            stationItem.innerHTML = `<div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden;">
-    <!-- Blurred background with ::before pseudo-element -->
-    <div style="width: 100%; height: 140px; position: absolute; top: 0; left: 0; border-radius: 5px 5px 0px 0px; overflow: hidden;">
-        <div style="
-            background-image: url('${station.logo}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            filter: blur(8px);
-            width: 100%;
-            height: 140px;
-            position: absolute;
-            top: 0; left: 0;
-        "></div>
-    </div>
-    
-    <!-- Foreground image on top of the blurred background -->
-    <img style="width: 100%;
-                height: 140px;
-                transition: all 0.3s ease-in-out;
-                border-radius: 5px 5px 0px 0px;
-                object-fit: scale-down;
-                 background-image: url('${station.logo}');
-                 background-size: cover;
-                position: relative;
-                z-index: 1;"  
-         src="${station.logo}" 
-         alt="${truncatedName}">
-</div>
-<span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
-            
-            stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.bit));
-            stationList.appendChild(stationItem);
-        });
-
-        createPaginationControls(stations.length, totalPages);
-    }
-
 function playStation(url, image, stationName, bit) {
-        if(bit === '00'){
-                 openPopupWithData(stationName, image, url)
-        }else{
-     const progress = document.getElementById('progress');
-    const playButton = document.querySelector('.play-button');
+    if (bit === '00') {
+        openPopupWithData(stationName, image, url);
+    } else if (bit === '001') {
+        openPeacefmPopupWithData(stationName, image, url);
+    } else {
+        if (typeof hls !== 'undefined' && hls !== null) {
+            hls.destroy();
+            hls = null;
+        }
+        audioElement.src = ''; // Reset to clear existing URL
 
-    // Only destroy HLS instance if it exists
-    if (typeof hls !== 'undefined' && hls !== null) {
-        hls.destroy();
-        hls = null; // Reset hls after destruction
-    }
-
-    // Set station logo, display player, and show progress bar
         // Set station logo, display player, and show progress bar
         const stationLogo = document.getElementById('stationLogo');
         stationLogo.src = image;
@@ -1180,84 +1083,62 @@ function playStation(url, image, stationName, bit) {
         document.querySelector('.footer-div-wraaper').style.display = 'block';
         progress.style.display = 'block';
 
-    // Initialize HLS or regular stream
-    const hlsUrl = url;
+        // Update station logo
+        stationLogo.onerror = () => handleImageError(stationLogo, stationName);
 
-    // Check if the stream is HLS (.m3u8) format
-    if (hlsUrl.endsWith('.m3u8')) {
-        // Use HLS.js if the browser does not support native HLS playback
-        if (Hls.isSupported()) {
-            hls = new Hls();
-            hls.loadSource(hlsUrl);
-            hls.attachMedia(audio);
+        // Append timestamp to URL for fresh audio source on each click
+        const uniqueUrl = `${url}?timestamp=${Date.now()}`;
 
-            // Hide progress and start playback when manifest is loaded
-            hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                audio.play();
-                progress.style.display = 'none';  // Hide progress after loading
-                playButton.textContent = '||';   // Set to pause icon
-                 sendEmailNotification(stationName, stationUrl, "200") 
-            });
+        if (uniqueUrl.endsWith('.m3u8')) {
+            if (Hls.isSupported()) {
+                hls = new Hls();
+                hls.loadSource(uniqueUrl);
+                hls.attachMedia(audioElement);
 
-            // Error handling for HLS.js
-            hls.on(Hls.Events.ERROR, (event, data) => {
-                if (data.fatal) {
-                    switch (data.type) {
-                        case Hls.ErrorTypes.NETWORK_ERROR:
-                            console.error('Network error occurred');
-                             handlePlaybackError(url, stationName)
-                            break;
-                        case Hls.ErrorTypes.MEDIA_ERROR:
-                            console.error('Media error occurred');
-                            hls.recoverMediaError();
-                             handlePlaybackError(url, stationName)
-                            break;
-                        default:
-                            hls.destroy();
-                            break;
+                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    audioElement.play();
+                    progress.style.display = 'none';
+                    playButton.textContent = '||';
+                });
+
+                hls.on(Hls.Events.ERROR, (event, data) => {
+                    if (data.fatal) {
+                        switch (data.type) {
+                            case Hls.ErrorTypes.NETWORK_ERROR:
+                                console.error('Network error occurred');
+                                handlePlaybackError(uniqueUrl, stationName);
+                                break;
+                            case Hls.ErrorTypes.MEDIA_ERROR:
+                                hls.recoverMediaError();
+                                handlePlaybackError(uniqueUrl, stationName);
+                                break;
+                            default:
+                                hls.destroy();
+                                break;
+                        }
                     }
-                }
-            });
-        } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
-            // Use native HLS support for Safari and similar browsers
-            audio.src = hlsUrl;
-            audio.addEventListener('canplay', () => {
-                audio.play();
-                progress.style.display = 'none';  // Hide progress when ready
-                playButton.textContent = '||';   // Set to pause icon
-                sendEmailNotification(stationName, stationUrl, "200") 
-            });
+                });
+            } else if (audioElement.canPlayType('application/vnd.apple.mpegurl')) {
+                audioElement.src = uniqueUrl;
+                audioElement.addEventListener('canplay', () => {
+                    audioElement.play();
+                    progress.style.display = 'none';
+                    playButton.textContent = '||';
+                });
+            } else {
+                console.error('HLS is not supported in this browser.');
+                handlePlaybackError(uniqueUrl, stationName);
+            }
         } else {
-            // Fallback for older browsers or browsers without HLS support
-            console.error('HLS is not supported in this browser.');
-            handlePlaybackError(url, stationName)
+            audioElement.src = uniqueUrl;
+            audioElement.addEventListener('canplay', () => {
+                audioElement.play();
+                progress.style.display = 'none';
+                playButton.textContent = '||';
+            });
         }
-    } else {
-        // Handle non-HLS streams (regular audio files)
-        audio.src = hlsUrl;
-        audio.addEventListener('canplay', () => {
-            audio.play();
-            progress.style.display = 'none';  // Hide progress when ready
-            playButton.textContent = '||';   // Set to pause icon
-            sendEmailNotification(stationName, stationUrl, "200") 
-        });
     }
-
-    // Toggle play/pause on button click
-   // playButton.addEventListener('click', () => {
-    //    if (audio.paused) {
-     //       audio.play();
-     //       playButton.textContent = '❚❚';   // Change to pause icon
-     //   } else {
-      //      audio.pause();
-       //     playButton.textContent = '▶';    // Change to play icon
-      //  }
-    //});
-        }
 }
-
-
-    
 
 
 
@@ -1265,83 +1146,27 @@ function createStationLogoCanvas(stationName) {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
 
-    // Set the fixed height and dynamic width based on the container
     canvas.height = 140;
-    canvas.width = 140; // Default width, but can adjust later if needed
+    canvas.width = 140;
 
-    // Generate a random background color
-    const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
     context.fillStyle = randomColor;
     context.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Get initials from station name
     const initials = stationName.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
 
-    // Set text properties
     context.fillStyle = 'white';
-    context.font = '34px Arial'; // Updated font size to 34px
+    context.font = '34px Arial';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
-
-    // Add shadow to the text
-    context.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    context.shadowColor = '#333';
     context.shadowOffsetX = 2;
     context.shadowOffsetY = 2;
     context.shadowBlur = 5;
-
-    // Draw the text
     context.fillText(initials, canvas.width / 2, canvas.height / 2);
 
-    return canvas.toDataURL(); // Return the data URL of the canvas
+    return canvas.toDataURL();
 }
-
-
-
-
-
-
- function displayStations(stations) {
-    document.getElementById('footerr').style.display = 'block';
-    document.getElementById('countryTitle').style.display = 'block';
-    document.querySelector('.countryTitle').style.display = 'block';
-    document.getElementById('country_list_wrapper').style.display = 'block';
-
-    const stationList = document.getElementById('stationListContent');
-    const paginationControls = document.getElementById('paginationControls');
-    stationList.innerHTML = ''; // Clear current list
-    paginationControls.innerHTML = ''; // Clear pagination
-
-    if (stations.length === 0) {
-        stationList.innerHTML = `<p>No results found.</p>`;
-        return;
-    }
-
-    const totalPages = Math.ceil(stations.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
-
-    stationsToDisplay.forEach(station => {
-        const stationItem = document.createElement('div');
-        stationItem.className = 'station-item';
-        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-
-        stationItem.innerHTML = `
-            <div style="width: 100%; height: 140px; border-radius: 5px 5px 0px 0px; background-color: white;">
-                <img style="width: 100%; height: 140px; padding: 15px; border-radius: 5px 5px 0px 0px; object-fit: contain;"
-                     src="${station.logo}"
-                     alt="${truncatedName}"
-                     onerror="handleImageError(this, '${station.name}', '${station.bit}', '${station.url}')">
-            </div>
-            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
-
-        stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.bit));
-        stationList.appendChild(stationItem);
-    });
-
-    createPaginationControls(stations.length, totalPages);
-}
-   
-
 
 
 
