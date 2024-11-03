@@ -909,7 +909,7 @@
     const itemsPerPage1 = 30; // Number of countries per page
     const progress = document.getElementById('progress');
     const playButton = document.querySelector('.play-button');
-    const audio = document.getElementById('audio');
+    const audioElement = document.getElementById('audio');
 
 
 function loadCountries() {
@@ -1068,7 +1068,8 @@ function filterStations() {
 
 
 function displayStations(stations) {
-     document.getElementById('footerr').style.display = 'block';
+    // Ensure footer and country titles are visible
+    document.getElementById('footerr').style.display = 'block';
     document.getElementById('countryTitle').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'block';
     document.getElementById('country_list_wrapper').style.display = 'block';
@@ -1109,8 +1110,9 @@ function displayStations(stations) {
 }
 
 
+// Function to handle image loading errors
 function handleImageError(imageElement, stationName, bit, url) {
-     // Decode the Unicode string
+    // Decode the Unicode string
     const decodedStationName = decodeURIComponent(stationName.replace(/\\u/g, '%u'));
 
     // Create a div element as a placeholder
@@ -1159,133 +1161,7 @@ function handleImageError(imageElement, stationName, bit, url) {
     imageElement.parentNode.replaceChild(placeholder, imageElement);
 }
 
-
-
-
-
-    
-   /* function displayStations(stations) {
-        document.getElementById('footerr').style.display = 'block';
-           document.getElementById('countryTitle').style.display = 'block';
-      document.querySelector('.countryTitle').style.display = 'block';
-      document.getElementById('country_list_wrapper').style.display = 'block';
-        const stationList = document.getElementById('stationListContent');
-        const paginationControls = document.getElementById('paginationControls');
-        stationList.innerHTML = ''; // Clear current list
-        paginationControls.innerHTML = ''; // Clear pagination
-
-        if (stations.length === 0) {
-            stationList.innerHTML = `<p>No results found.</p>`;
-            return;
-        }
-
-        const totalPages = Math.ceil(stations.length / itemsPerPage);
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
-
-        stationsToDisplay.forEach(station => {
-            const stationItem = document.createElement('div');
-            stationItem.className = 'station-item';
-            const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-            stationItem.innerHTML = `<div style="width: 100%; height: 140px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden;">
-    <!-- Blurred background with ::before pseudo-element -->
-    <div style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; border-radius: 5px 5px 0px 0px; overflow: hidden;">
-        <div style="
-            background-color: white;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            filter: blur(8px);
-            width: 100%;
-            height: 140px;
-            position: absolute;
-            top: 0; left: 0;"></div>
-       </div>
-    
-    <!-- Foreground image on top of the blurred background -->
-    <img style="width: 100%;
-                height: 140px;
-                padding:15px;
-                transition: all 0.3s ease-in-out;
-                border-radius: 5px 5px 0px 0px;
-                object-fit: contain;
-                margin:auto;
-                background-size: contain;
-                position: relative;
-                z-index: 1;"  
-         src="${station.logo}" 
-         alt="${truncatedName}">
-    </div>
-        <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
-            
-            stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.bit));
-            stationList.appendChild(stationItem);
-        });
-
-        createPaginationControls(stations.length, totalPages);
-    }*/
-
-function createPaginationControls(totalStations, totalPages) {
-    const paginationControls = document.getElementById('paginationControls');
-    paginationControls.innerHTML = ''; // Clear previous controls
-
-    // Display page info (e.g., "Page 1 of 27")
-    const pageInfo = document.createElement('span');
-    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-    paginationControls.appendChild(pageInfo);
-
-    // Helper function to create clickable buttons
-    const createButton = (text, onClick) => {
-        const button = document.createElement('span');
-        button.textContent = text;
-        button.style.cursor = 'pointer';
-        button.style.margin = '0 5px';
-        button.onclick = onClick;
-        paginationControls.appendChild(button);
-    };
-
-    // Previous button
-    if (currentPage > 1) {
-        createButton('<<', () => {
-            currentPage--;
-            displayStations(stationData);
-        });
-    }
-
-    // Show the first 3 pages, then ellipsis, and last page
-    for (let i = 1; i <= totalPages; i++) {
-        if (i === currentPage) {
-            const currentPageButton = document.createElement('span');
-            currentPageButton.textContent = i;
-            currentPageButton.style.fontWeight = 'bold';
-            currentPageButton.style.margin = '0 5px';
-            paginationControls.appendChild(currentPageButton);
-        } else if (i <= 3 || i === totalPages) {
-            // Display first 3 pages or the last page
-            createButton(i, () => {
-                currentPage = i;
-                displayStations(stationData);
-            });
-        } else if (i === 4) {
-            // Add ellipsis after the first 3 pages
-            const ellipsis = document.createElement('span');
-            ellipsis.textContent = '...';
-            ellipsis.style.margin = '0 5px';
-            paginationControls.appendChild(ellipsis);
-        }
-    }
-
-    // Next button
-    if (currentPage < totalPages) {
-        createButton('>>', () => {
-            currentPage++;
-            displayStations(stationData);
-        });
-    }
-}
-
-
-
+// Function to play the selected station
 function playStation(url, image, stationName, bit) {
     if (bit === '00') {
         openPopupWithData(stationName, image, url);
@@ -1372,29 +1248,93 @@ function playStation(url, image, stationName, bit) {
         }
     }
 }
+
+
+function createPaginationControls(totalStations, totalPages) {
+    const paginationControls = document.getElementById('paginationControls');
+    paginationControls.innerHTML = ''; // Clear previous controls
+
+    // Display page info (e.g., "Page 1 of 27")
+    const pageInfo = document.createElement('span');
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    paginationControls.appendChild(pageInfo);
+
+    // Helper function to create clickable buttons
+    const createButton = (text, onClick) => {
+        const button = document.createElement('span');
+        button.textContent = text;
+        button.style.cursor = 'pointer';
+        button.style.margin = '0 5px';
+        button.onclick = onClick;
+        paginationControls.appendChild(button);
+    };
+
+    // Previous button
+    if (currentPage > 1) {
+        createButton('<<', () => {
+            currentPage--;
+            displayStations(stationData);
+        });
+    }
+
+    // Show the first 3 pages, then ellipsis, and last page
+    for (let i = 1; i <= totalPages; i++) {
+        if (i === currentPage) {
+            const currentPageButton = document.createElement('span');
+            currentPageButton.textContent = i;
+            currentPageButton.style.fontWeight = 'bold';
+            currentPageButton.style.margin = '0 5px';
+            paginationControls.appendChild(currentPageButton);
+        } else if (i <= 3 || i === totalPages) {
+            // Display first 3 pages or the last page
+            createButton(i, () => {
+                currentPage = i;
+                displayStations(stationData);
+            });
+        } else if (i === 4) {
+            // Add ellipsis after the first 3 pages
+            const ellipsis = document.createElement('span');
+            ellipsis.textContent = '...';
+            ellipsis.style.margin = '0 5px';
+            paginationControls.appendChild(ellipsis);
+        }
+    }
+
+    // Next button
+    if (currentPage < totalPages) {
+        createButton('>>', () => {
+            currentPage++;
+            displayStations(stationData);
+        });
+    }
 }
 
 
-function togglePlay() {
-    progress.style.display = 'block'; // Show progress initially
 
-    if (audio) {
-        if (audio.paused) {
-            audio.play().then(() => {
-                playButton.textContent = '||'; // Change button to pause icon
-                progress.style.display = 'none'; // Hide progress once audio starts playing
-            }).catch(error => {
-                console.error("Audio play error:", error);
-                handlePlaybackError(audio.src, audio.stationName);
-                progress.style.display = 'none'; // Hide progress if there's an error
-            });
-        } else {
-            audio.pause();
-            playButton.textContent = '▶'; // Change button back to play icon
-            progress.style.display = 'none'; // Hide progress when paused
+
+
+ function togglePlay() {
+        progress.style.display = 'block';
+        if (audioElement) { // Use audioElement here
+            if (audioElement.paused) {
+                audioElement.play().then(() => {
+                    playButton.textContent = '||'; 
+                    progress.style.display = 'none'; 
+                }).catch(error => {
+                    console.error("Audio play error:", error);
+                    handlePlaybackError(audioElement.src, audioElement.stationName);
+                    progress.style.display = 'none';
+                });
+            } else {
+                audioElement.pause();
+                playButton.textContent = '▶'; 
+                progress.style.display = 'none'; 
+            }
         }
     }
-  }
+
+    // Ensure you have a closing bracket for the last function
+});
 
     function setVolume(value) {
         if (currentAudio) currentAudio.volume = value;
@@ -1518,63 +1458,6 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
     // Optional: Focus on the popup window
     popupWindow.focus();
 }
-
-
-    
-
-
-
-
-
-    
-/*function openPopupWithData(stationName, logoUrl, stationUrl) {
-    // Create a new window with specific dimensions
-    const popupWindow = window.open("", "_blank", "width=400,height=500");
-
-    // Check if the popup was blocked
-    if (!popupWindow) {
-        alert("Popup blocked! Please allow popups for this site.");
-        return;
-    }
-
-    // Set up initial HTML content with logo and station name
-    popupWindow.document.write(`
-        <html>
-            <head>
-                <title>${stationName}</title>
-                <style>
-                    body { font-family: Arial, sans-serif; padding: 20px; text-align: center; }
-                    h1 { color: #333; font-size: 1.5em; margin-top: 10px; }
-                    img { width: 120px; height: 120px; border-radius: 50%; }
-                    .container { display: flex; flex-direction: column; align-items: center; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <img src="${logoUrl}" alt="${stationName} Logo">
-                    <h1>${stationName}</h1>
-                    <p>Loading station...</p>
-                </div>
-            </body>
-        </html>
-    `);
-
-    // After a short delay, set the popup window to the station URL
-    setTimeout(() => {
-        // Check if the popup window is still open before changing its location
-        if (!popupWindow.closed) {
-            popupWindow.location.href = stationUrl;
-
-            // Optional: You could also update the HTML to show a "Now Playing" message if desired
-            popupWindow.document.body.innerHTML = `
-                <div class="container">
-                    <h1>Now Playing...</h1>
-                    <p>Enjoy your music!</p>
-                </div>
-            `;
-        }
-    }, 1500); // Adjust delay as needed
-}*/
 
 
     
