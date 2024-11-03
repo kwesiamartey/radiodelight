@@ -1117,87 +1117,39 @@ function displayStations(stations) {
 
 
 
-    function handleImageError(imageElement, stationName) {
+   function handleImageError(imageElement, stationName) {
     // Create a div element as a placeholder
     const placeholder = document.createElement('div');
     
-    // Set styles for the placeholder
-    placeholder.style.width = '100%';
-    placeholder.style.height = '140px';
-    placeholder.style.backgroundColor = 'white';
-    placeholder.style.color = 'black';
-    placeholder.style.display = 'flex';
-    placeholder.style.flexDirection = 'column';
-    placeholder.style.justifyContent = 'center';
-    placeholder.style.alignItems = 'center';
-    placeholder.style.fontWeight = '600';
-    placeholder.style.fontSize = '18px';
-    placeholder.style.fontFamily = "'Montserrat', sans-serif";
-    placeholder.style.textAlign = 'center';
-    placeholder.style.padding = '15px';
-    placeholder.style.boxSizing = 'border-box';
-    placeholder.style.overflowWrap = 'break-word';
-    placeholder.style.wordWrap = 'break-word';
-    placeholder.style.whiteSpace = 'normal';
-    placeholder.style.position = 'relative'; // Needed for shadow text positioning
+    // Set the styles for the placeholder
+    placeholder.style.width = '100%'; // Set desired width
+    placeholder.style.height = '140px'; // Set desired height
+    placeholder.style.backgroundColor = 'white'; // Background color
+    placeholder.style.color = 'black'; // Text color
+    placeholder.style.display = 'flex'; // Use flexbox for centering
+    placeholder.style.flexDirection = 'column'; // Stack text lines vertically
+    placeholder.style.justifyContent = 'center'; // Center vertically
+    placeholder.style.alignItems = 'center'; // Center horizontally
+    placeholder.style.fontWeight = '600'; // Font weight
+    placeholder.style.fontSize = '60px'; // Font size for initials
+    placeholder.style.fontFamily = "'Montserrat', sans-serif"; // Set Montserrat Bold font
+    placeholder.style.textAlign = 'center'; // Center text alignment
+    placeholder.style.padding = '15px'; // Padding for better text fit
+    placeholder.style.boxSizing = 'border-box'; // Ensure padding is considered in width
+    placeholder.style.overflowWrap = 'break-word'; // Allow breaking of words for overflow
+    placeholder.style.wordWrap = 'break-word'; // Legacy support for breaking words
+    placeholder.style.whiteSpace = 'normal'; // Allow normal word wrapping
 
-    // Extract initials: first letter of the first and last word
+    // Get the initials (first character of the first word and first character of the last word)
     const words = stationName.split(' ');
-    const initials = words.length > 1 
-        ? `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase()
-        : stationName[0].toUpperCase(); // Handle single-word station names
+    const initials = (words.length > 1) ? 
+                     words[0][0] + words[words.length - 1][0] : 
+                     words[0][0] + ''; // Handle single word case
 
-    // Create a div for the shadow text (initials)
-    const shadowText = document.createElement('div');
-    shadowText.textContent = initials;
-    shadowText.style.position = 'absolute';
-    shadowText.style.top = '50%';
-    shadowText.style.left = '50%';
-    shadowText.style.transform = 'translate(-50%, -50%)';
-    shadowText.style.fontSize = '50px'; // Large font for shadow effect
-    shadowText.style.color = 'rgba(0, 0, 0, 0.1)'; // Light gray for shadow effect
-    shadowText.style.fontWeight = '800';
-    shadowText.style.pointerEvents = 'none'; // Allow clicks through the shadow text
+    // Set the initials as the inner HTML of the placeholder
+    placeholder.innerHTML = initials.toUpperCase(); // Convert initials to uppercase
 
-    // Append shadow text to the placeholder
-    placeholder.appendChild(shadowText);
-
-    // Function to wrap text into multiple lines if needed
-    function wrapText(text, maxWidth) {
-        const words = text.split(' ');
-        const lines = [];
-        let currentLine = words[0];
-
-        for (let i = 1; i < words.length; i++) {
-            const word = words[i];
-            const testLine = `${currentLine} ${word}`;
-            placeholder.innerText = testLine;
-            if (placeholder.scrollWidth > maxWidth) {
-                lines.push(currentLine);
-                currentLine = word;
-            } else {
-                currentLine = testLine;
-            }
-        }
-        lines.push(currentLine);
-        return lines;
-    }
-
-    // Wrap the station name text to fit within the placeholder width
-    const lines = wrapText(stationName, 180);
-
-    // Add main station name text
-    placeholder.innerHTML = '';
-    lines.forEach(line => {
-        const lineDiv = document.createElement('div');
-        lineDiv.textContent = line;
-        lineDiv.style.overflowWrap = 'break-word';
-        lineDiv.style.wordWrap = 'break-word';
-        lineDiv.style.whiteSpace = 'normal';
-        placeholder.appendChild(lineDiv);
-    });
-
-    // Replace the image with the placeholder
+    // Replace the image with the placeholder div
     imageElement.parentNode.replaceChild(placeholder, imageElement);
 }
 
