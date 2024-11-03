@@ -126,7 +126,6 @@
         .station-image {
             width: 140px;
             height: 140px;
-            padding:15px;
             background-color:#fff;
             border-radius: 5px;
              object-fit: cover;  /* Ensure the image covers the circle */
@@ -890,10 +889,6 @@
 
 </div><!--content ends-->
 
-    
-
-  <!-- Bottom row: Player -->
-
 </div><!--wrapper ends here-->       
     
 
@@ -1072,7 +1067,7 @@ function displayStations(stations) {
     document.getElementById('countryTitle').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'block';
     document.getElementById('country_list_wrapper').style.display = 'block';
-
+    
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.getElementById('paginationControls');
     stationList.innerHTML = ''; // Clear current list
@@ -1090,72 +1085,25 @@ function displayStations(stations) {
     stationsToDisplay.forEach(station => {
         const stationItem = document.createElement('div');
         stationItem.className = 'station-item';
+        
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
+        const logoUrl = station.logo && station.logo !== 'null' ? station.logo : createStationLogoCanvas(station.name); // Moved inside loop
 
         stationItem.innerHTML = `
-            <div style="width: 100%; height: 140px; border-radius: 5px 5px 0px 0px; background-color: white;">
-                <img style="width: 100%; height: 140px; padding: 15px; border-radius: 5px 5px 0px 0px; object-fit: contain;"
-                     src="${station.logo}"
-                     alt="${truncatedName}"
-                     onerror="handleImageError(this, '${station.name}', '${station.bit}', '${station.url}')">
+            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden;">
+                <img style="width: 100%; height: 140px; 
+                            object-fit: contain; 
+                            background-image: url('${logoUrl}');"  
+                     src="${logoUrl}" 
+                     alt="${truncatedName}">
             </div>
             <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
-
-        stationItem.addEventListener('click', () => playStation(station.url, station.logo, station.name, station.bit));
+                
+        stationItem.addEventListener('click', () => playStation(station.url, logoUrl, station.name, station.bit));
         stationList.appendChild(stationItem);
     });
 
     createPaginationControls(stations.length, totalPages);
-}
-
-function handleImageError(imageElement, stationName, bit, url) {
-    // Decode the Unicode string
-    const decodedStationName = decodeURIComponent(stationName.replace(/\\u/g, '%u'));
-
-    // Create a div element as a placeholder
-    const placeholder = document.createElement('div');
-
-    // Set the styles for the placeholder
-    placeholder.style.width = '100%';
-    placeholder.style.height = '140px';
-    placeholder.style.color = 'white';
-    placeholder.style.display = 'flex';
-    placeholder.style.flexDirection = 'column';
-    placeholder.style.justifyContent = 'center';
-    placeholder.style.alignItems = 'center';
-    placeholder.style.fontWeight = '600';
-    placeholder.style.fontSize = '60px';
-    placeholder.style.fontFamily = "'Montserrat', sans-serif";
-    placeholder.style.textAlign = 'center';
-    placeholder.style.padding = '15px';
-    placeholder.style.boxSizing = 'border-box';
-    placeholder.style.overflowWrap = 'break-word';
-    placeholder.style.wordWrap = 'break-word';
-    placeholder.style.whiteSpace = 'normal';
-
-    // Get the initials (first character of each word, max 3 initials)
-    const words = decodedStationName.split(' ');
-    const initials = words.slice(0, 3).map(word => word[0]).join('').toUpperCase();
-
-    // Set the initials as the inner HTML of the placeholder
-    placeholder.innerHTML = initials;
-
-    // Set random background color
-    const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
-    placeholder.style.backgroundColor = randomColor;
-
-    // Add text shadow for effect
-    placeholder.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.7)';
-
-    // Bind click event to the placeholder to call playStation
-    placeholder.addEventListener('click', () => {
-        // Append a timestamp to ensure a fresh URL
-        const uniqueUrl = `${url}?timestamp=${Date.now()}`;
-        playStation(uniqueUrl, randomColor, decodedStationName, bit);
-    });
-
-    // Replace the image with the placeholder div
-    imageElement.parentNode.replaceChild(placeholder, imageElement);
 }
 
 
@@ -1166,15 +1114,11 @@ function playStation(url, image, stationName, bit) {
     } else if (bit === '001') {
         openPeacefmPopupWithData(stationName, image, url);
     } else {
-        const progress = document.getElementById('progress');
-        const playButton = document.querySelector('.play-button');
-
-        // Reset the audio source and destroy any existing HLS instance
         if (typeof hls !== 'undefined' && hls !== null) {
             hls.destroy();
             hls = null;
         }
-        audioElement.src = ''; // Reset the audio source to clear the existing URL
+        audioElement.src = ''; // Reset to clear existing URL
 
         // Set station logo, display player, and show progress bar
         const stationLogo = document.getElementById('stationLogo');
@@ -1184,25 +1128,22 @@ function playStation(url, image, stationName, bit) {
         document.querySelector('.footer-div-wraaper').style.display = 'block';
         progress.style.display = 'block';
 
-        // Handle image loading error
-        stationLogo.onerror = function () {
-            handleImageError(stationLogo, stationName);
-        };
+        // Update station logo
+        stationLogo.onerror = () => handleImageError(stationLogo, stationName);
 
-        // Initialize HLS or regular stream
-        const hlsUrl = url;
+        // Append timestamp to URL for fresh audio source on each click
+        const uniqueUrl = `${url}?timestamp=${Date.now()}`;
 
-        if (hlsUrl.endsWith('.m3u8')) {
+        if (uniqueUrl.endsWith('.m3u8')) {
             if (Hls.isSupported()) {
                 hls = new Hls();
-                hls.loadSource(hlsUrl);
+                hls.loadSource(uniqueUrl);
                 hls.attachMedia(audioElement);
 
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
                     audioElement.play();
                     progress.style.display = 'none';
                     playButton.textContent = '||';
-                    sendEmailNotification(stationName, url, "200");
                 });
 
                 hls.on(Hls.Events.ERROR, (event, data) => {
@@ -1210,12 +1151,11 @@ function playStation(url, image, stationName, bit) {
                         switch (data.type) {
                             case Hls.ErrorTypes.NETWORK_ERROR:
                                 console.error('Network error occurred');
-                                handlePlaybackError(url, stationName);
+                                handlePlaybackError(uniqueUrl, stationName);
                                 break;
                             case Hls.ErrorTypes.MEDIA_ERROR:
-                                console.error('Media error occurred');
                                 hls.recoverMediaError();
-                                handlePlaybackError(url, stationName);
+                                handlePlaybackError(uniqueUrl, stationName);
                                 break;
                             default:
                                 hls.destroy();
@@ -1223,93 +1163,56 @@ function playStation(url, image, stationName, bit) {
                         }
                     }
                 });
-            } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
-                audioElement.src = hlsUrl;
+            } else if (audioElement.canPlayType('application/vnd.apple.mpegurl')) {
+                audioElement.src = uniqueUrl;
                 audioElement.addEventListener('canplay', () => {
                     audioElement.play();
                     progress.style.display = 'none';
                     playButton.textContent = '||';
-                    sendEmailNotification(stationName, url, "200");
                 });
             } else {
                 console.error('HLS is not supported in this browser.');
-                handlePlaybackError(url, stationName);
+                handlePlaybackError(uniqueUrl, stationName);
             }
         } else {
-            audioElement.src = hlsUrl;
+            audioElement.src = uniqueUrl;
             audioElement.addEventListener('canplay', () => {
                 audioElement.play();
                 progress.style.display = 'none';
                 playButton.textContent = '||';
-                sendEmailNotification(stationName, url, "200");
             });
         }
     }
 }
 
-    
 
 
 function createStationLogoCanvas(stationName) {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
 
-    // Set the fixed height and dynamic width based on the container
     canvas.height = 140;
-    canvas.width = 140; // Default width, but will adjust later
+    canvas.width = 140;
 
-    // Generate a random background color
-    const randomColor = #${Math.floor(Math.random() * 16777215).toString(16)};
+    const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
     context.fillStyle = randomColor;
     context.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Get initials from station name
     const initials = stationName.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
 
-    // Set text properties
-    context.fillStyle = 'white';
-    context.font = '34px Arial'; // Updated font size to 34px
+    context.fillStyle = '#fff';
+    context.font = '40px Arial';
     context.textAlign = 'center';
-    context.fontWeight = '600';
+    context.color = '#fff';
+    context.fontWeight = '800';
     context.textBaseline = 'middle';
-
-    // Add shadow to the text
     context.shadowColor = '#333';
     context.shadowOffsetX = 2;
     context.shadowOffsetY = 2;
     context.shadowBlur = 5;
-
-    // Draw the text
     context.fillText(initials, canvas.width / 2, canvas.height / 2);
 
-    return canvas.toDataURL(); // Return the data URL of the canvas
-}
-
-function displayStations(stations) {
-    const stationList = document.getElementById('stationListContent');
-    stationList.innerHTML = ''; // Clear current list
-
-    if (stations.length === 0) {
-        stationList.innerHTML = <p>No results found.</p>;
-        return;
-    }
-
-    stations.forEach(station => {
-        const stationItem = document.createElement('div');
-        stationItem.className = 'station-item';
-        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-
-        // Determine the logo URL or use the canvas
-        const logoUrl = station.logo && station.logo !== 'null' ? station.logo : createStationLogoCanvas(station.name);
-
-        stationItem.innerHTML = 
-            <div style="width: 100%; height: 140px; border-radius: 5px; position: relative; overflow: hidden;">
-                <img style="width: 100%; height: 100%; object-fit: cover;" src="${logoUrl}" alt="${truncatedName}">
-            </div>
-            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>;
-
-        stationList.appendChild(stationItem);
-    });
+    return canvas.toDataURL();
 }
 
 
@@ -1324,13 +1227,14 @@ function togglePlay() {
                 progress.style.display = 'none'; // Hide progress once audio starts playing
             }).catch(error => {
                 console.error("Audio play error:", error);
-                handlePlaybackError(audioElement.src, audioElement.stationName);
                 progress.style.display = 'none'; // Hide progress if there's an error
+                sendEmailNotification(audioElement.stationName, audioElement.src, "") 
             });
         } else {
             audioElement.pause();
             playButton.textContent = '▶'; // Change button back to play icon
             progress.style.display = 'none'; // Hide progress when paused
+            handlePlaybackError(audioElement.src, audioElement.stationName);
         }
     }
   }
