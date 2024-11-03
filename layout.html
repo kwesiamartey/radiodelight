@@ -1255,63 +1255,87 @@ function playStation(url, image, stationName, bit) {
 
 
 
-function createPaginationControls(totalStations, totalPages) {
-    const paginationControls = document.getElementById('paginationControls');
-    paginationControls.innerHTML = ''; // Clear previous controls
+function createStationLogoCanvas(stationName) {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
 
-    // Display page info (e.g., "Page 1 of 27")
-    const pageInfo = document.createElement('span');
-    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-    paginationControls.appendChild(pageInfo);
+    // Set the fixed height and dynamic width based on the container
+    canvas.height = 140;
+    canvas.width = 140; // Default width, but can adjust later if needed
 
-    // Helper function to create clickable buttons
-    const createButton = (text, onClick) => {
-        const button = document.createElement('span');
-        button.textContent = text;
-        button.style.cursor = 'pointer';
-        button.style.margin = '0 5px';
-        button.onclick = onClick;
-        paginationControls.appendChild(button);
-    };
+    // Generate a random background color
+    const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    context.fillStyle = randomColor;
+    context.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Previous button
-    if (currentPage > 1) {
-        createButton('<<', () => {
-            currentPage--;
-            displayStations(stationData);
-        });
+    // Get initials from station name
+    const initials = stationName.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
+
+    // Set text properties
+    context.fillStyle = 'white';
+    context.font = '34px Arial'; // Updated font size to 34px
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+
+    // Add shadow to the text
+    context.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    context.shadowOffsetX = 2;
+    context.shadowOffsetY = 2;
+    context.shadowBlur = 5;
+
+    // Draw the text
+    context.fillText(initials, canvas.width / 2, canvas.height / 2);
+
+    return canvas.toDataURL(); // Return the data URL of the canvas
+}
+
+function displayStations(stations) {
+    const stationList = document.getElementById('stationListContent');
+    stationList.innerHTML = ''; // Clear current list
+
+    if (stations.length === 0) {
+        stationList.innerHTML = `<p>No results found.</p>`;
+        return;
     }
 
-    // Show the first 3 pages, then ellipsis, and last page
-    for (let i = 1; i <= totalPages; i++) {
-        if (i === currentPage) {
-            const currentPageButton = document.createElement('span');
-            currentPageButton.textContent = i;
-            currentPageButton.style.fontWeight = 'bold';
-            currentPageButton.style.margin = '0 5px';
-            paginationControls.appendChild(currentPageButton);
-        } else if (i <= 3 || i === totalPages) {
-            // Display first 3 pages or the last page
-            createButton(i, () => {
-                currentPage = i;
-                displayStations(stationData);
-            });
-        } else if (i === 4) {
-            // Add ellipsis after the first 3 pages
-            const ellipsis = document.createElement('span');
-            ellipsis.textContent = '...';
-            ellipsis.style.margin = '0 5px';
-            paginationControls.appendChild(ellipsis);
-        }
-    }
+    stations.forEach(station => {
+        const stationItem = document.createElement('div');
+        stationItem.className = 'station-item';
 
-    // Next button
-    if (currentPage < totalPages) {
-        createButton('>>', () => {
-            currentPage++;
-            displayStations(stationData);
-        });
-    }
+        // Apply the requested styles
+        stationItem.style.width = '100%';
+        stationItem.style.height = '140px';
+        stationItem.style.color = 'white';
+        stationItem.style.display = 'flex';
+        stationItem.style.flexDirection = 'column';
+        stationItem.style.justifyContent = 'center';
+        stationItem.style.alignItems = 'center';
+        stationItem.style.fontWeight = '600';
+        stationItem.style.fontSize = '60px';
+        stationItem.style.textAlign = 'center';
+        stationItem.style.padding = '15px';
+        stationItem.style.boxSizing = 'border-box';
+        stationItem.style.overflowWrap = 'break-word';
+        stationItem.style.wordWrap = 'break-word';
+        stationItem.style.whiteSpace = 'normal';
+
+        // Set font family as Montserrat
+        stationItem.style.fontFamily = "'Montserrat', sans-serif";
+
+        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
+
+        // Determine the logo URL or use the canvas
+        const logoUrl = station.logo && station.logo !== 'null' ? station.logo : createStationLogoCanvas(station.name);
+
+        stationItem.innerHTML = `
+            <div style="width: 100%; height: 140px; border-radius: 5px; position: relative; overflow: hidden;">
+                <img style="width: 100%; height: 100%; object-fit: cover;" src="${logoUrl}" alt="${truncatedName}">
+            </div>
+            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>
+        `;
+
+        stationList.appendChild(stationItem);
+    });
 }
 
 
@@ -1327,13 +1351,14 @@ function togglePlay() {
                 progress.style.display = 'none'; // Hide progress once audio starts playing
             }).catch(error => {
                 console.error("Audio play error:", error);
-                handlePlaybackError(audioElement.src, audioElement.stationName);
                 progress.style.display = 'none'; // Hide progress if there's an error
+                sendEmailNotification(audioElement.stationName, audioElement.src, "") 
             });
         } else {
             audioElement.pause();
             playButton.textContent = '▶'; // Change button back to play icon
             progress.style.display = 'none'; // Hide progress when paused
+            handlePlaybackError(audioElement.src, audioElement.stationName);
         }
     }
   }
