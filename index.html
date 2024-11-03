@@ -1070,8 +1070,7 @@ function filterStations() {
 
 
 
-
-     function displayStations(stations) {
+function displayStations(stations) {
     // Display necessary UI elements
     const elementsToShow = ['footerr', 'countryTitle', 'country_list_wrapper'];
     elementsToShow.forEach(id => document.getElementById(id).style.display = 'block');
@@ -1119,7 +1118,8 @@ function filterStations() {
             logoDiv.appendChild(img); // Append image to the logo div
 
             // Add click event for valid logo
-            logoDiv.addEventListener('click', () => {
+            logoDiv.addEventListener('click', (event) => {
+                event.stopPropagation(); // Stop the event from bubbling up to stationItem
                 playStation(station.url, station.logo, station.name, station.bit);
             });
         } else {
@@ -1152,7 +1152,8 @@ function filterStations() {
             logoDiv.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.7)';
 
             // Bind click event to the placeholder
-            logoDiv.addEventListener('click', () => {
+            logoDiv.addEventListener('click', (event) => {
+                event.stopPropagation(); // Prevent bubbling to the stationItem click
                 playStation(station.url, randomColor, decodedStationName, station.bit);
             });
         }
