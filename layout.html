@@ -1195,12 +1195,10 @@ function playStation(url, image, stationName, bit) {
     }
 
     // Set station logo, display player, and show progress bar
-    document.getElementById('stationLogo').src = image;
-    document.getElementById('stationLogo').style.display = 'block';
-    document.querySelector('.player-container').style.display = 'block';
-    //document.getElementById('playing-station-name').textContent = stationName;
-    document.querySelector('.footer-div-wraaper').style.display = 'block';
-    progress.style.display = 'block';
+      stationLogo.style.display = 'block';
+        document.querySelector('.playing-station-wrap').style.display = 'block';
+        document.querySelector('.footer-div-wraaper').style.display = 'block';
+        progress.style.display = 'block';
 
     // Initialize HLS or regular stream
     const hlsUrl = url;
