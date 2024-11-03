@@ -1151,41 +1151,6 @@ const canvas = document.createElement('canvas');
 }
 
 
-function handleImageError(imageElement, stationName, bit, url) {
-    // Decode the Unicode string
-        const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-
-    // Set the fixed height and dynamic width based on the container
-    canvas.height = 140;
-    canvas.width = 140; // Default width, but will adjust later
-
-    // Generate a random background color
-    const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-    context.fillStyle = randomColor;
-    context.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Get initials from station name
-    const initials = stationName.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
-
-    // Set text properties
-    context.fillStyle = 'white';
-    context.font = 434px Arial'; // Updated font size to 34px
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-
-    // Add shadow to the text
-    context.shadowColor = 'rgba(0, 0, 0, 0.5)';
-    context.shadowOffsetX = 2;
-    context.shadowOffsetY = 2;
-    context.shadowBlur = 5;
-
-    // Draw the text
-    context.fillText(initials, canvas.width / 2, canvas.height / 2);
-
-    return canvas.toDataURL(); // Return the data URL of the canvas
-}
-
 
 
 function playStation(url, image, stationName, bit) {
