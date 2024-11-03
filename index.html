@@ -1147,24 +1147,16 @@ function handleImageError(imageElement, stationName, bit, url) {
     // Add text shadow for effect
     placeholder.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.7)';
 
-    // Set the onclick event to reset and play new URL
-    placeholder.onclick = () => {
-        // Generate a unique URL each time the station is clicked
-        const resetUrl = url + `?timestamp=${new Date().getTime()}`;
-
-        // Stop any currently playing station
-        if (typeof stopCurrentStation === 'function') {
-            stopCurrentStation();
-        }
-
-        // Play the station with the reset URL
-        playStation(resetUrl, randomColor, decodedStationName, bit);
-    };
+    // Bind click event to the placeholder to call playStation with a unique URL
+    placeholder.addEventListener('click', () => {
+        // Append a timestamp to ensure a fresh URL
+        const uniqueUrl = `${url}?timestamp=${Date.now()}`;
+        playStation(uniqueUrl, randomColor, decodedStationName, bit);
+    });
 
     // Replace the image with the placeholder div
     imageElement.parentNode.replaceChild(placeholder, imageElement);
 }
-
 
 
 
