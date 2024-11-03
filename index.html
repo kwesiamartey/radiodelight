@@ -1143,12 +1143,10 @@ function handleImageError(imageElement, stationName) {
 
     // Get the initials (first character of the first word and first character of the last word)
     const words = decodedStationName.split(' ');
-    const initials = (words.length > 1) ? 
-                     words[0][0] + words[words.length - 1][0] : 
-                     words[0][0] + ''; // Handle single word case
+    const initials = words.map(word => word[0]).join('').toUpperCase(); // Get initials from all words
 
     // Set the initials as the inner HTML of the placeholder
-    placeholder.innerHTML = initials.toUpperCase(); // Convert initials to uppercase
+    placeholder.innerHTML = initials; // Use initials directly
 
     // Set random background color
     const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
@@ -1160,8 +1158,6 @@ function handleImageError(imageElement, stationName) {
     // Replace the image with the placeholder div
     imageElement.parentNode.replaceChild(placeholder, imageElement);
 }
-
-
 
     
     
