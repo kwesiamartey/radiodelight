@@ -1117,15 +1117,14 @@ function displayStations(stations) {
 
 
 
-   function handleImageError(imageElement, stationName) {
+  function handleImageError(imageElement, stationName) {
     // Create a div element as a placeholder
     const placeholder = document.createElement('div');
-    
+
     // Set the styles for the placeholder
     placeholder.style.width = '100%'; // Set desired width
     placeholder.style.height = '140px'; // Set desired height
-    placeholder.style.backgroundColor = 'white'; // Background color
-    placeholder.style.color = 'black'; // Text color
+    placeholder.style.color = 'white'; // Text color
     placeholder.style.display = 'flex'; // Use flexbox for centering
     placeholder.style.flexDirection = 'column'; // Stack text lines vertically
     placeholder.style.justifyContent = 'center'; // Center vertically
@@ -1149,10 +1148,16 @@ function displayStations(stations) {
     // Set the initials as the inner HTML of the placeholder
     placeholder.innerHTML = initials.toUpperCase(); // Convert initials to uppercase
 
+    // Set random background color
+    const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+    placeholder.style.backgroundColor = randomColor;
+
+    // Add text shadow for effect
+    placeholder.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.7)';
+
     // Replace the image with the placeholder div
     imageElement.parentNode.replaceChild(placeholder, imageElement);
 }
-
 
 
 
