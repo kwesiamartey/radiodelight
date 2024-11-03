@@ -1215,6 +1215,8 @@ function createPaginationControls(totalStations, totalPages) {
 
 
 
+
+
 function playStation(url, image, stationName, bit) {
     if (bit === '00') {
         openPopupWithData(stationName, image, url);
@@ -1233,7 +1235,15 @@ function playStation(url, image, stationName, bit) {
 
         // Set station logo, display player, and show progress bar
         const stationLogo = document.getElementById('stationLogo');
-        stationLogo.src = image;
+        
+        // Check if the image URL is valid
+        if (image && image.startsWith('http')) {
+            stationLogo.src = image;
+        } else {
+            // Fallback to a default image or placeholder
+            stationLogo.src = 'path/to/default/logo.png'; // Set your default logo path here
+        }
+
         stationLogo.style.display = 'block';
         document.querySelector('.playing-station-wrap').style.display = 'block';
         document.querySelector('.footer-div-wraaper').style.display = 'block';
@@ -1302,6 +1312,8 @@ function playStation(url, image, stationName, bit) {
     }
 }
 
+
+    
 
 function togglePlay() {
     progress.style.display = 'block'; // Show progress initially
