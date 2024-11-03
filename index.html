@@ -1147,12 +1147,16 @@ function handleImageError(imageElement, stationName, bit, url) {
     // Add text shadow for effect
     placeholder.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.7)';
 
-    // Add click event listener to trigger playStation function
-    placeholder.addEventListener('click', () => playStation(url, randomColor, decodedStationName, bit));
+    // Add click event listener to trigger playStation function with a reset URL
+    placeholder.addEventListener('click', () => {
+        const resetUrl = url + `?timestamp=${new Date().getTime()}`; // Append timestamp to reset the URL
+        playStation(resetUrl, randomColor, decodedStationName, bit);
+    });
 
     // Replace the image with the placeholder div
     imageElement.parentNode.replaceChild(placeholder, imageElement);
 }
+
 
 
 
