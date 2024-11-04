@@ -1213,7 +1213,7 @@ function playStation(url, image, stationName, bit, country) {
 
 
          // Add error handling to image to use 'mast.jpg' if all else fails
-    const imgElement = stationItem.querySelector('img');
+    const imgElement = stationLogo;
     imgElement.addEventListener('error', () => {
         imgElement.src = 'mast.jpg';
     });
