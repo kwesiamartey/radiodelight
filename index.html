@@ -1103,7 +1103,7 @@ function displayStations(stations) {
             </div>
             <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
                 
-        stationItem.addEventListener('click', () => playStation(station.url, logoUrl, station.name, station.bit));
+        stationItem.addEventListener('click', () => playStation(station.url, logoUrl, station.name, station.bit, station.location));
         stationList.appendChild(stationItem);
     });
 
@@ -1173,7 +1173,7 @@ function createPaginationControls(totalStations, totalPages) {
 
 
 
-function playStation(url, image, stationName, bit) {
+function playStation(url, image, stationName, bit, country) {
     if (bit === '00') {
         openPopupWithData(stationName, image, url);
     } else if (bit === '001') {
@@ -1195,7 +1195,7 @@ function playStation(url, image, stationName, bit) {
         document.querySelector('.footer-div-wraaper').style.display = 'block';
         document.getElementById('stationLogo');
         const breadcrumbs = document.getElementById('breadcrumbs');
-        const breadcrumbText = `Radio station | ${stationName}`;
+        const breadcrumbText = `Radio station | ${country} |${stationName}`;
         breadcrumbs.textContent = breadcrumbText;
  
         progress.style.display = 'block';
