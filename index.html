@@ -1211,9 +1211,6 @@ function playStation(url, image, stationName, bit, country) {
  
         progress.style.display = 'block';
 
-        // Update station logo
-        stationLogo.onerror = () => handleImageError(stationLogo, stationName);
-
         // Append timestamp to URL for fresh audio source on each click
         const uniqueUrl = `${url}?timestamp=${Date.now()}`;
 
@@ -1227,7 +1224,7 @@ function playStation(url, image, stationName, bit, country) {
                     audioElement.play();
                     progress.style.display = 'none';
                     playButton.textContent = '||';
-                    sendEmailNotification(stationName, url, "200") 
+                    sendEmailNotification(stationName, url, "Success") 
                 });
 
                 hls.on(Hls.Events.ERROR, (event, data) => {
@@ -1253,7 +1250,7 @@ function playStation(url, image, stationName, bit, country) {
                     audioElement.play();
                     progress.style.display = 'none';
                     playButton.textContent = '||';
-                    sendEmailNotification(stationName, url, "200") 
+                    sendEmailNotification(stationName, url, "Success") 
                 });
             } else {
                 console.error('HLS is not supported in this browser.');
@@ -1265,7 +1262,7 @@ function playStation(url, image, stationName, bit, country) {
                 audioElement.play();
                 progress.style.display = 'none';
                 playButton.textContent = '||';
-                sendEmailNotification(stationName, url, "200") 
+                sendEmailNotification(stationName, url, "Success") 
             });
         }
     }
