@@ -1090,7 +1090,7 @@ function displayStations(stations) {
         stationItem.className = 'station-item';
         
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-        const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : 'mast.jpg'; // createStationLogoCanvas(station.name) Moved inside loop
+        const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : 'createStationLogoCanvas(station.name); //mast.jpg createStationLogoCanvas(station.name) Moved inside loop
     
 
         stationItem.innerHTML = `
