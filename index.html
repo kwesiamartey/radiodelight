@@ -1091,6 +1091,68 @@ function displayStations(stations) {
         stationItem.className = 'station-item';
 
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
+        let logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name); // Default to mast.jpg if logo is empty
+
+        stationItem.innerHTML = `
+            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: white;">
+                <img style="width: 100%; height: 140px; object-fit: contain;"  
+                     src="${logoUrl}" 
+                     alt="${truncatedName}">
+            </div>
+            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
+
+        // Reference the image element to handle loading and errors
+        const imgElement = stationItem.querySelector('img');
+
+        // Use the onload and onerror events to determine the final src
+        imgElement.onload = () => {
+            // Image loaded successfully, pass the final src to playStation
+            stationItem.addEventListener('click', () => playStation(station.url, imgElement.src, station.name, station.bit, station.location));
+        };
+
+        imgElement.onerror = () => {
+            // If the image fails to load, fall back to mast2.jpg and update the event listener
+            imgElement.src = 'mast2.jpg';
+            stationItem.addEventListener('click', () => playStation(station.url, imgElement.src, station.name, station.bit, station.location));
+        };
+
+        stationList.appendChild(stationItem);
+    });
+
+    createPaginationControls(stations.length, totalPages);
+}
+
+
+
+
+    
+
+
+/*function displayStations(stations) {
+    document.getElementById('footerr').style.display = 'block';
+    document.getElementById('countryTitle').style.display = 'block';
+    document.querySelector('.countryTitle').style.display = 'block';
+    document.getElementById('country_list_wrapper').style.display = 'block';
+    
+    const stationList = document.getElementById('stationListContent');
+    const paginationControls = document.getElementById('paginationControls');
+    stationList.innerHTML = ''; // Clear current list
+    paginationControls.innerHTML = ''; // Clear pagination
+
+    if (stations.length === 0) {
+        stationList.innerHTML = `<p>No results found.</p>`;
+        return;
+    }
+
+    const totalPages = Math.ceil(stations.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
+
+    stationsToDisplay.forEach(station => {
+        const stationItem = document.createElement('div');
+        stationItem.className = 'station-item';
+
+        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
         const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo :  createStationLogoCanvas(station.name); // Default to mast.jpg if logo is empty
 
         stationItem.innerHTML = `
@@ -1113,7 +1175,7 @@ function displayStations(stations) {
     });
 
     createPaginationControls(stations.length, totalPages);
-}
+}*/
 
     
 
