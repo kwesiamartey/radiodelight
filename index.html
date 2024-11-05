@@ -1104,19 +1104,18 @@ function displayStations(stations) {
           <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
 
         const imgElement = stationItem.querySelector('img');
-        
-        // Add error handling to image
-        imgElement.onerror = () => {
-            imgElement.onerror = null; // Prevent infinite loop
-            imgElement.src = 'fallback-logo.jpg'; // Set fallback image
 
-            // Optional: Use canvas as a final fallback if fallback-logo.jpg also fails
-            imgElement.onload = () => {
-                if (imgElement.naturalWidth === 0 || imgElement.naturalHeight === 0) {
-                    imgElement.src = createStationLogoCanvas(station.name);
-                }
-            };
-        };
+        // Add error handling and load check for broken or missing images
+        imgElement.addEventListener('error', () => {
+            imgElement.src = 'fallback-logo.jpg'; // Set fallback image
+        });
+
+        imgElement.addEventListener('load', () => {
+            // Check if the image loaded is broken by verifying natural dimensions
+            if (imgElement.naturalWidth === 0 || imgElement.naturalHeight === 0) {
+                imgElement.src = createStationLogoCanvas(station.name); // Use canvas fallback
+            }
+        });
 
         // Add click event to play station
         stationItem.addEventListener('click', () => playStation(station.url, logoUrl, station.name, station.bit, station.location));
@@ -1127,7 +1126,6 @@ function displayStations(stations) {
 
     createPaginationControls(stations.length, totalPages);
 }
-
 
     
 
