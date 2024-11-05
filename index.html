@@ -1212,11 +1212,6 @@ function playStation(url, image, stationName, bit, country) {
         progress.style.display = 'block';
 
 
-         // Add error handling to image to use 'mast.jpg' if all else fails
-    const imgElement = stationLogo;
-    imgElement.addEventListener('error', () => {
-        imgElement.src = 'mast.jpg';
-    });
 
 
         // Append timestamp to URL for fresh audio source on each click
