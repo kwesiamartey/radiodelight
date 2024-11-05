@@ -1202,7 +1202,6 @@ function createPaginationControls(totalStations, totalPages) {
     
 
 
-
 function playStation(url, image, stationName, bit, country) {
     if (bit === '00') {
         openPopupWithData(stationName, image, url);
@@ -1218,16 +1217,25 @@ function playStation(url, image, stationName, bit, country) {
         // Set station logo, display player, and show progress bar
         const stationLogo = document.getElementById('stationLogo');
         document.getElementById('breadcrumbs').style.display = 'block';
-         document.querySelector('.countryTitle').style.display = 'none';
-        stationLogo.src = image;
+        document.querySelector('.countryTitle').style.display = 'none';
+
+        // Validate logo URL before setting the src attribute
+        checkImageUrl(image)
+            .then(validUrl => {
+                stationLogo.src = validUrl;
+            })
+            .catch(() => {
+                stationLogo.src = 'mast.jpg'; // Use fallback if image URL fails
+            });
+
         stationLogo.style.display = 'block';
         document.querySelector('.playing-station-wrap').style.display = 'block';
         document.querySelector('.footer-div-wraaper').style.display = 'block';
-        document.getElementById('stationLogo');
+
         const breadcrumbs = document.getElementById('breadcrumbs');
-        const breadcrumbText = `Radio station | ${country} |${stationName}`;
+        const breadcrumbText = `Radio station | ${country} | ${stationName}`;
         breadcrumbs.textContent = breadcrumbText;
- 
+
         progress.style.display = 'block';
 
         // Append timestamp to URL for fresh audio source on each click
@@ -1243,7 +1251,7 @@ function playStation(url, image, stationName, bit, country) {
                     audioElement.play();
                     progress.style.display = 'none';
                     playButton.textContent = '||';
-                    sendEmailNotification(stationName, url, "success") 
+                    sendEmailNotification(stationName, url, "success");
                 });
 
                 hls.on(Hls.Events.ERROR, (event, data) => {
@@ -1269,7 +1277,7 @@ function playStation(url, image, stationName, bit, country) {
                     audioElement.play();
                     progress.style.display = 'none';
                     playButton.textContent = '||';
-                    sendEmailNotification(stationName, url, "success") 
+                    sendEmailNotification(stationName, url, "success");
                 });
             } else {
                 console.error('HLS is not supported in this browser.');
@@ -1281,11 +1289,12 @@ function playStation(url, image, stationName, bit, country) {
                 audioElement.play();
                 progress.style.display = 'none';
                 playButton.textContent = '||';
-                sendEmailNotification(stationName, url, "success") 
+                sendEmailNotification(stationName, url, "success");
             });
         }
     }
 }
+
 
 
 
