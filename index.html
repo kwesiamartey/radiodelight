@@ -1064,6 +1064,7 @@ function filterStations() {
 }
 
 
+
 function displayStations(stations) {
     document.getElementById('footerr').style.display = 'block';
     document.getElementById('countryTitle').style.display = 'block';
@@ -1127,7 +1128,7 @@ function displayStations(stations) {
 
             // Add click event to play station
             stationItem.addEventListener('click', () => {
-                playStation(station.url, 'fallback-logo.jpg', station.name, station.bit, station.location); // Use fallback image
+                playStation(station.url, 'mast.jpg', station.name, station.bit, station.location); // Use fallback image
             });
 
             // Append station item to list
@@ -1137,6 +1138,9 @@ function displayStations(stations) {
 
     createPaginationControls(stations.length, totalPages);
 }
+
+
+
     
 
 // Function to check if the image URL is accessible
