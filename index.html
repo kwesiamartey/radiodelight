@@ -1201,6 +1201,7 @@ function createPaginationControls(totalStations, totalPages) {
 }
     
 
+
 function playStation(url, image, stationName, bit, country) {
     if (bit === '00') {
         openPopupWithData(stationName, image, url);
@@ -1221,7 +1222,7 @@ function playStation(url, image, stationName, bit, country) {
         checkImageUrl(image)
             .then(validUrl => {
                 // If valid, set it; otherwise, use fallback or canvas logo
-                stationLogo.src = (validUrl && validUrl !== null ) ?  image  : createStationLogoCanvas(stationName);
+                stationLogo.src = (validUrl && validUrl !== 'mast.jpg') ? validUrl : createStationLogoCanvas(stationName);
             })
             .catch(() => {
                 // Use fallback logo if check fails
@@ -1294,7 +1295,7 @@ function playStation(url, image, stationName, bit, country) {
         }
     }
 }
-
+    
 
 
 
