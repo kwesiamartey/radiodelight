@@ -1071,7 +1071,7 @@ function displayStations(stations) {
     document.getElementById('countryTitle').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'block';
     document.getElementById('country_list_wrapper').style.display = 'block';
-    
+
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.getElementById('paginationControls');
     stationList.innerHTML = ''; // Clear current list
@@ -1091,7 +1091,7 @@ function displayStations(stations) {
         stationItem.className = 'station-item';
 
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-        let logoUrl = station.logo && station.logo.trim() !== '' ? station.logo :  createStationLogoCanvas(station.name)'; // Default to mast.jpg if logo is empty
+        const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo :  createStationLogoCanvas(station.name); // Default to mast.jpg if logo is empty
 
         stationItem.innerHTML = `
             <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: white;">
@@ -1104,28 +1104,23 @@ function displayStations(stations) {
         // Reference the image element to handle loading and errors
         const imgElement = stationItem.querySelector('img');
 
-
-                // Set a timeout to quickly switch to fallback if image loading is slow
+        // Set a timeout to quickly switch to fallback if image loading is slow
         const loadTimeout = setTimeout(() => {
             imgElement.src = 'mast2.jpg'; // Switch to fallback after 3 seconds
         }, 3000);
 
         // Clear timeout if image loads successfully
-        imgElement.onload = () => clearTimeout(loadTimeout);
+        imgElement.onload = () => {
+            clearTimeout(loadTimeout);
+            stationItem.addEventListener('click', () => playStation(station.url, imgElement.src, station.name, station.bit, station.location));
+        };
 
         // If loading fails, use `mast2.jpg` as fallback
         imgElement.onerror = () => {
             clearTimeout(loadTimeout);
             imgElement.src = 'mast.jpg';
-            stationItem.addEventListener('click', () => playStation(station.url, imgElement.src, station.name, station.bit, station.location));
+            stationItem.addEventListener('click', () => playStation(station.url, 'mast.jpg', station.name, station.bit, station.location));
         };
-
-             // Use the onload and onerror events to determine the final src
-        imgElement.onload = () => {
-            // Image loaded successfully, pass the final src to playStation
-            stationItem.addEventListener('click', () => playStation(station.url, imgElement.src, station.name, station.bit, station.location));
-        };
-
 
         stationList.appendChild(stationItem);
     });
