@@ -1107,7 +1107,7 @@ function displayStations(stations) {
     // Add error handling to image to use 'mast.jpg' if all else fails
     const imgElement = stationItem.querySelector('img');
     imgElement.addEventListener('error', () => {
-        imgElement.src = 'mast.jpg';
+       createStationLogoCanvas(station.name);
     });
 
     // Add click event to play station
