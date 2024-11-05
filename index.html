@@ -1221,7 +1221,7 @@ function playStation(url, image, stationName, bit, country) {
         checkImageUrl(image)
             .then(validUrl => {
                 // If valid, set it; otherwise, use fallback or canvas logo
-                stationLogo.src = (validUrl && validUrl !== "" ) ?  image  : createStationLogoCanvas(stationName);
+                stationLogo.src = (validUrl && validUrl !== null ) ?  image  : createStationLogoCanvas(stationName);
             })
             .catch(() => {
                 // Use fallback logo if check fails
