@@ -1069,7 +1069,7 @@ function displayStations(stations) {
     document.getElementById('countryTitle').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'block';
     document.getElementById('country_list_wrapper').style.display = 'block';
-
+    
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.getElementById('paginationControls');
     stationList.innerHTML = ''; // Clear current list
@@ -1087,41 +1087,52 @@ function displayStations(stations) {
     stationsToDisplay.forEach(station => {
         const stationItem = document.createElement('div');
         stationItem.className = 'station-item';
-
+        
         // Truncate name if too long
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
 
-        // Set logo URL or fallback using canvas
+        // Check if logo exists, otherwise generate fallback using canvas or use 'mast.jpg'
         let logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name);
 
-        // HTML structure for each station item
-        stationItem.innerHTML = `
-          <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px;background-color: white;">
-            <img style="width: 100%; height: 140px; object-fit: fill; background-size: contain; background-position: center;"  
-                 src="${logoUrl}" 
-                 alt="${truncatedName}">
-          </div>
-          <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
+        // Check if the logo URL is valid
+        checkImageUrl(logoUrl).then(validLogoUrl => {
+            // HTML structure for each station item
+            stationItem.innerHTML = `
+              <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px;background-color: white;">
+                <img style="width: 100%; height: 140px; object-fit: fill; background-size: contain; background-position: center;"  
+                     src="${validLogoUrl}" 
+                     alt="${truncatedName}"
+                     onerror="this.onerror=null; this.src='fallback-logo.jpg';">
+              </div>
+              <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
 
-        const imgElement = stationItem.querySelector('img');
+            // Add click event to play station
+            stationItem.addEventListener('click', () => {
+                const imgElement = stationItem.querySelector('img'); // Select the img element
+                const currentLogoUrl = imgElement.src; // Get the current src of the image
+                playStation(station.url, currentLogoUrl, station.name, station.bit, station.location); // Pass the image URL
+            });
 
-        // Add error handling and load check for broken or missing images
-        imgElement.addEventListener('error', () => {
-            imgElement.src = 'mast.jpg'; // Set fallback image
+            // Append station item to list
+            stationList.appendChild(stationItem);
+        }).catch(() => {
+            // If the logo URL check fails, use fallback logo directly
+            stationItem.innerHTML = `
+              <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px;background-color: white;">
+                <img style="width: 100%; height: 140px; object-fit: fill; background-size: contain; background-position: center;"  
+                     src="fallback-logo.jpg" 
+                     alt="${truncatedName}">
+              </div>
+              <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
+
+            // Add click event to play station
+            stationItem.addEventListener('click', () => {
+                playStation(station.url, 'fallback-logo.jpg', station.name, station.bit, station.location); // Use fallback image
+            });
+
+            // Append station item to list
+            stationList.appendChild(stationItem);
         });
-
-        imgElement.addEventListener('load', () => {
-            // Check if the image loaded is broken by verifying natural dimensions
-            if (imgElement.naturalWidth === 0 || imgElement.naturalHeight === 0) {
-                imgElement.src = createStationLogoCanvas(station.name); // Use canvas fallback
-            }
-        });
-
-        // Add click event to play station
-        stationItem.addEventListener('click', () => playStation(station.url, logoUrl, station.name, station.bit, station.location));
-
-        // Append station item to list
-        stationList.appendChild(stationItem);
     });
 
     createPaginationControls(stations.length, totalPages);
