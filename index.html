@@ -1066,21 +1066,12 @@ function filterStations() {
 
 
 
-async function validateImageUrl(url) {
-    try {
-        const response = await fetch(url, { method: 'HEAD' });
-        return response.ok ? url : 'mast2.jpg';
-    } catch {
-        return 'mast2.jpg';
-    }
-}
-
 async function displayStations(stations) {
     document.getElementById('footerr').style.display = 'block';
     document.getElementById('countryTitle').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'block';
     document.getElementById('country_list_wrapper').style.display = 'block';
-
+    
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.getElementById('paginationControls');
     stationList.innerHTML = ''; // Clear current list
@@ -1101,37 +1092,45 @@ async function displayStations(stations) {
 
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
 
-        // Check if the logo URL is valid, otherwise set to fallback
-        const logoUrl = station.logo && station.logo.trim() !== '' 
-            ? await validateImageUrl(station.logo) 
-            :  createStationLogoCanvas(station.name);
+        // Set up default logo image to `mast.jpg`
+        let initialLogoUrl = 'mast.jpg'; 
+        
+        if (station.logo && station.logo.trim() !== '') {
+            try {
+                const response = await fetch(station.logo, { method: 'HEAD' });
+                if (response.ok) {
+                    // If the logo URL is valid, use it
+                    initialLogoUrl = station.logo;
+                } else {
+                    // Use mast2.jpg if the logo URL fails
+                    initialLogoUrl = 'mast2.jpg';
+                }
+            } catch {
+                initialLogoUrl = 'mast2.jpg';
+            }
+        }
 
+        // Create the img element with `initialLogoUrl` as src
+        const imgElement = document.createElement('img');
+        imgElement.style = 'width: 100%; height: 140px; object-fit: contain;';
+        imgElement.src = initialLogoUrl;
+        imgElement.alt = truncatedName;
+
+        // Handle failed image loading
+        imgElement.onerror = () => {
+            imgElement.src = 'mast2.jpg'; // Set to mast2.jpg if loading fails
+        };
+
+        // Build station item inner HTML structure
         stationItem.innerHTML = `
-            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: white; background-size: cover; background-position: center;">
-                <img style="width: 100%; height: 140px; object-fit: contain;"  
-                     src="${logoUrl}" 
-                     alt="${truncatedName}">
+            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: white;">
             </div>
             <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
         
-        // Image element for station logo
-        const imgElement = stationItem.querySelector('img');
-        
-        // Set a timeout to quickly switch to fallback if image loading is slow
-        const loadTimeout = setTimeout(() => {
-            imgElement.src = 'mast.jpg'; // Switch to fallback after 3 seconds
-        }, 3000);
+        // Append the img element inside the div
+        stationItem.querySelector('div').appendChild(imgElement);
 
-        // Clear timeout if image loads successfully
-        imgElement.onload = () => clearTimeout(loadTimeout);
-
-        // If loading fails, use `mast2.jpg` as fallback
-        imgElement.onerror = () => {
-            clearTimeout(loadTimeout);
-            imgElement.src = 'mast2.jpg';
-        };
-
-        // Use the final image source for `playStation` function
+        // Set up click handler to pass the current `imgElement.src`
         stationItem.addEventListener('click', () => playStation(station.url, imgElement.src, station.name, station.bit, station.location));
         
         stationList.appendChild(stationItem);
@@ -1139,7 +1138,6 @@ async function displayStations(stations) {
 
     createPaginationControls(stations.length, totalPages);
 }
-
 
 
     
