@@ -1063,7 +1063,6 @@ function filterStations() {
     displayStations(filteredStations);
 }
 
-
 function displayStations(stations) {
     document.getElementById('footerr').style.display = 'block';
     document.getElementById('countryTitle').style.display = 'block';
@@ -1113,8 +1112,13 @@ function displayStations(stations) {
                 imgElement.src = createStationLogoCanvas(station.name); // Fallback to canvas if URL fails
             });
 
-        // Add click event to play station
-        stationItem.addEventListener('click', () => playStation(station.url, logoUrl, station.name, station.bit, station.location));
+        // Add click event with logo URL validation
+        stationItem.addEventListener('click', () => {
+            // Validate logo URL for playStation function
+            checkImageUrl(logoUrl)
+                .then(validUrl => playStation(station.url, validUrl, station.name, station.bit, station.location))
+                .catch(() => playStation(station.url, createStationLogoCanvas(station.name), station.name, station.bit, station.location));
+        });
 
         // Append station item to list
         stationList.appendChild(stationItem);
