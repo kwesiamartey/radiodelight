@@ -24,6 +24,7 @@
         <link rel="mask-icon" href="logo.png" >
         <link rel="manifest" href="manifest.json">
 
+
     
     <!-- Open Graph -->
         <meta property="og:title" content="Listen to Live World-wide Radio Stations Online | Free Internet Radio">
@@ -1064,7 +1065,6 @@ function filterStations() {
 }
 
 
-
 function displayStations(stations) {
     document.getElementById('footerr').style.display = 'block';
     document.getElementById('countryTitle').style.display = 'block';
@@ -1089,70 +1089,27 @@ function displayStations(stations) {
         const stationItem = document.createElement('div');
         stationItem.className = 'station-item';
         
-        // Truncate name if too long
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
+        const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name); // Moved inside loop
+    
 
-        // Check if logo exists, otherwise generate fallback using canvas or use 'mast.jpg'
-        let logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name);
-
-        // Check if the logo URL is valid
-        checkImageUrl(logoUrl).then(validLogoUrl => {
-            // HTML structure for each station item
-            stationItem.innerHTML = `
-              <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px;background-color: white;">
-                <img style="width: 100%; height: 140px; object-fit: fill; background-size: contain; background-position: center;"  
-                     src="${validLogoUrl}" 
-                     alt="${truncatedName}"
-                     onerror="this.onerror=null; this.src='fallback-logo.jpg';">
-              </div>
-              <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
-
-            // Add click event to play station
-            stationItem.addEventListener('click', () => {
-                const imgElement = stationItem.querySelector('img'); // Select the img element
-                const currentLogoUrl = imgElement.src; // Get the current src of the image
-                playStation(station.url, currentLogoUrl, station.name, station.bit, station.location); // Pass the image URL
-            });
-
-            // Append station item to list
-            stationList.appendChild(stationItem);
-        }).catch(() => {
-            // If the logo URL check fails, use fallback logo directly
-            stationItem.innerHTML = `
-              <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px;background-color: white;">
-                <img style="width: 100%; height: 140px; object-fit: fill; background-size: contain; background-position: center;"  
-                     src="fallback-logo.jpg" 
+        stationItem.innerHTML = `
+            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden;background-image:url('mast.jpg');">
+                <img style="width: 100%; height: 140px; 
+                            object-fit: contain; 
+                            background-image: url('${logoUrl}');"  
+                     src="${logoUrl}" 
                      alt="${truncatedName}">
-              </div>
-              <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
-
-            // Add click event to play station
-            stationItem.addEventListener('click', () => {
-                playStation(station.url, 'mast.jpg', station.name, station.bit, station.location); // Use fallback image
-            });
-
-            // Append station item to list
-            stationList.appendChild(stationItem);
-        });
+            </div>
+            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
+                
+        stationItem.addEventListener('click', () => playStation(station.url, logoUrl, station.name, station.bit, station.location));
+        stationList.appendChild(stationItem);
     });
 
     createPaginationControls(stations.length, totalPages);
 }
 
-
-
-    
-
-// Function to check if the image URL is accessible
-function checkImageUrl(url) {
-    return fetch(url, { method: 'HEAD', mode: 'no-cors' })
-        .then(response => {
-            if (!response.ok) throw new Error('Image URL not accessible');
-            return url;
-        })
-        .catch(() => 'mast.jpg'); // Use fallback if inaccessible
-}
-    
 
 function createPaginationControls(totalStations, totalPages) {
     const paginationControls = document.getElementById('paginationControls');
@@ -1215,68 +1172,92 @@ function createPaginationControls(totalStations, totalPages) {
     
 
 
-function displayStations(stations) {
-    document.getElementById('footerr').style.display = 'block';
-    document.getElementById('countryTitle').style.display = 'block';
-    document.querySelector('.countryTitle').style.display = 'block';
-    document.getElementById('country_list_wrapper').style.display = 'block';
 
-    const stationList = document.getElementById('stationListContent');
-    const paginationControls = document.getElementById('paginationControls');
-    stationList.innerHTML = ''; // Clear current list
-    paginationControls.innerHTML = ''; // Clear pagination
+function playStation(url, image, stationName, bit, country) {
+    if (bit === '00') {
+        openPopupWithData(stationName, image, url);
+    } else if (bit === '001') {
+        openPeacefmPopupWithData(stationName, image, url);
+    } else {
+        if (typeof hls !== 'undefined' && hls !== null) {
+            hls.destroy();
+            hls = null;
+        }
+        audioElement.src = ''; // Reset to clear existing URL
 
-    if (stations.length === 0) {
-        stationList.innerHTML = `<p>No results found.</p>`;
-        return;
-    }
+        // Set station logo, display player, and show progress bar
+        const stationLogo = document.getElementById('stationLogo');
+        document.getElementById('breadcrumbs').style.display = 'block';
+         document.querySelector('.countryTitle').style.display = 'none';
+        stationLogo.src = image;
+        stationLogo.style.display = 'block';
+        document.querySelector('.playing-station-wrap').style.display = 'block';
+        document.querySelector('.footer-div-wraaper').style.display = 'block';
+        document.getElementById('stationLogo');
+        const breadcrumbs = document.getElementById('breadcrumbs');
+        const breadcrumbText = `Radio station | ${country} |${stationName}`;
+        breadcrumbs.textContent = breadcrumbText;
+ 
+        progress.style.display = 'block';
 
-    const totalPages = Math.ceil(stations.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
+        // Update station logo
+        stationLogo.onerror = () => handleImageError(stationLogo, stationName);
 
-    stationsToDisplay.forEach(station => {
-        const stationItem = document.createElement('div');
-        stationItem.className = 'station-item';
+        // Append timestamp to URL for fresh audio source on each click
+        const uniqueUrl = `${url}?timestamp=${Date.now()}`;
 
-        // Truncate name if too long
-        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
+        if (uniqueUrl.endsWith('.m3u8')) {
+            if (Hls.isSupported()) {
+                hls = new Hls();
+                hls.loadSource(uniqueUrl);
+                hls.attachMedia(audioElement);
 
-        // Set logo URL or fallback using canvas
-        let logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    audioElement.play();
+                    progress.style.display = 'none';
+                    playButton.textContent = '||';
+                    sendEmailNotification(stationName, url, "200") 
+                });
 
-        // HTML structure for each station item
-        stationItem.innerHTML = `
-          <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px;background-color: white;">
-            <img style="width: 100%; height: 140px; object-fit: fill; background-size: contain; background-position: center;"
-                 alt="${truncatedName}">
-          </div>
-          <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
-
-        const imgElement = stationItem.querySelector('img');
-
-        // Test URL before setting the src attribute
-        checkImageUrl(logoUrl)
-            .then(url => {
-                imgElement.src = url; // Set URL if accessible
-            })
-            .catch(() => {
-                imgElement.src = createStationLogoCanvas(station.name); // Fallback to canvas if URL fails
+                hls.on(Hls.Events.ERROR, (event, data) => {
+                    if (data.fatal) {
+                        switch (data.type) {
+                            case Hls.ErrorTypes.NETWORK_ERROR:
+                                console.error('Network error occurred');
+                                handlePlaybackError(uniqueUrl, stationName);
+                                break;
+                            case Hls.ErrorTypes.MEDIA_ERROR:
+                                hls.recoverMediaError();
+                                handlePlaybackError(uniqueUrl, stationName);
+                                break;
+                            default:
+                                hls.destroy();
+                                break;
+                        }
+                    }
+                });
+            } else if (audioElement.canPlayType('application/vnd.apple.mpegurl')) {
+                audioElement.src = uniqueUrl;
+                audioElement.addEventListener('canplay', () => {
+                    audioElement.play();
+                    progress.style.display = 'none';
+                    playButton.textContent = '||';
+                    sendEmailNotification(stationName, url, "200") 
+                });
+            } else {
+                console.error('HLS is not supported in this browser.');
+                handlePlaybackError(uniqueUrl, stationName);
+            }
+        } else {
+            audioElement.src = uniqueUrl;
+            audioElement.addEventListener('canplay', () => {
+                audioElement.play();
+                progress.style.display = 'none';
+                playButton.textContent = '||';
+                sendEmailNotification(stationName, url, "200") 
             });
-
-        // Add click event with logo URL validation
-        stationItem.addEventListener('click', () => {
-            // Validate logo URL for playStation function
-            checkImageUrl(logoUrl)
-                .then(validUrl => playStation(station.url, validUrl, station.name, station.bit, station.location))
-                .catch(() => playStation(station.url, createStationLogoCanvas(station.name), station.name, station.bit, station.location));
-        });
-
-        // Append station item to list
-        stationList.appendChild(stationItem);
-    });
-
-    createPaginationControls(stations.length, totalPages);
+        }
+    }
 }
 
 
@@ -1304,8 +1285,7 @@ function createStationLogoCanvas(stationName) {
     // Set text properties
     context.fillStyle = '#fff';
     context.textAlign = 'center';
-    context.fontWeight = 600;
-    context.font = "54px 'Montserrat', sans-serif";
+    context.font = "60px 'Montserrat', sans-serif";
     context.textBaseline = 'middle';
 
     // Add shadow to the text
