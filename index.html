@@ -1089,51 +1089,22 @@ function displayStations(stations) {
         const stationItem = document.createElement('div');
         stationItem.className = 'station-item';
         
-        // Truncate name if too long
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
+        const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name); // Moved inside loop
+    
 
-        // Check if logo exists, otherwise generate fallback using canvas or use 'mast.jpg'
-        let logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name);
-
-        // Check if the logo URL is valid
-        checkImageUrl(logoUrl).then(validLogoUrl => {
-            // HTML structure for each station item
-            stationItem.innerHTML = `
-              <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px;background-color: white;">
-                <img style="width: 100%; height: 140px; object-fit: fill; background-size: contain; background-position: center;"  
-                     src="${validLogoUrl}" 
-                     alt="${truncatedName}"
-                     onerror="this.onerror=null; this.src='fallback-logo.jpg';">
-              </div>
-              <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
-
-            // Add click event to play station
-            stationItem.addEventListener('click', () => {
-                const imgElement = stationItem.querySelector('img'); // Select the img element
-                const currentLogoUrl = imgElement.src; // Get the current src of the image
-                playStation(station.url, currentLogoUrl, station.name, station.bit, station.location); // Pass the image URL
-            });
-
-            // Append station item to list
-            stationList.appendChild(stationItem);
-        }).catch(() => {
-            // If the logo URL check fails, use fallback logo directly
-            stationItem.innerHTML = `
-              <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px;background-color: white;">
-                <img style="width: 100%; height: 140px; object-fit: fill; background-size: contain; background-position: center;"  
-                     src="fallback-logo.jpg" 
+        stationItem.innerHTML = `
+            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden;background-image:url('mast.jpg');">
+                <img style="width: 100%; height: 140px; 
+                            object-fit: contain; 
+                            background-image: url('${logoUrl}');"  
+                     src="${logoUrl}" 
                      alt="${truncatedName}">
-              </div>
-              <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
-
-            // Add click event to play station
-            stationItem.addEventListener('click', () => {
-                playStation(station.url, 'fallback-logo.jpg', station.name, station.bit, station.location); // Use fallback image
-            });
-
-            // Append station item to list
-            stationList.appendChild(stationItem);
-        });
+            </div>
+            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
+                
+        stationItem.addEventListener('click', () => playStation(station.url, logoUrl, station.name, station.bit, station.location));
+        stationList.appendChild(stationItem);
     });
 
     createPaginationControls(stations.length, totalPages);
