@@ -1064,7 +1064,6 @@ function filterStations() {
 }
 
 
-
 function displayStations(stations) {
     document.getElementById('footerr').style.display = 'block';
     document.getElementById('countryTitle').style.display = 'block';
@@ -1098,21 +1097,25 @@ function displayStations(stations) {
         // HTML structure for each station item
         stationItem.innerHTML = `
           <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px;background-color: white;">
-            <img style="width: 100%; height: 140px; object-fit: fill; background-size: contain; background-position: center;"
+            <img style="width: 100%; height: 140px; object-fit: fill; background-size: contain; background-position: center;"  
+                 src="${logoUrl}" 
                  alt="${truncatedName}">
           </div>
           <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
 
         const imgElement = stationItem.querySelector('img');
 
-        // Test URL before setting the src attribute
-        checkImageUrl(logoUrl)
-            .then(url => {
-                imgElement.src = url; // Set URL if accessible
-            })
-            .catch(() => {
-                imgElement.src = createStationLogoCanvas(station.name); // Fallback to canvas if URL fails
-            });
+        // Add error handling and load check for broken or missing images
+        imgElement.addEventListener('error', () => {
+            imgElement.src = 'fallback-logo.jpg'; // Set fallback image
+        });
+
+        imgElement.addEventListener('load', () => {
+            // Check if the image loaded is broken by verifying natural dimensions
+            if (imgElement.naturalWidth === 0 || imgElement.naturalHeight === 0) {
+                imgElement.src = createStationLogoCanvas(station.name); // Use canvas fallback
+            }
+        });
 
         // Add click event to play station
         stationItem.addEventListener('click', () => playStation(station.url, logoUrl, station.name, station.bit, station.location));
@@ -1123,6 +1126,7 @@ function displayStations(stations) {
 
     createPaginationControls(stations.length, totalPages);
 }
+
 
     
 
