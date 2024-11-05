@@ -1127,7 +1127,7 @@ function displayStations(stations) {
 
             // Add click event to play station
             stationItem.addEventListener('click', () => {
-                playStation(station.url, 'mast.jpg', station.name, station.bit, station.location); // Use fallback image
+                playStation(station.url, 'fallback-logo.jpg', station.name, station.bit, station.location); // Use fallback image
             });
 
             // Append station item to list
@@ -1137,8 +1137,6 @@ function displayStations(stations) {
 
     createPaginationControls(stations.length, totalPages);
 }
-
-
     
 
 // Function to check if the image URL is accessible
@@ -1233,7 +1231,7 @@ function playStation(url, image, stationName, bit, country) {
         checkImageUrl(image)
             .then(validUrl => {
                 // If valid, set it; otherwise, use fallback or canvas logo
-                stationLogo.src = (validUrl && validUrl !== '') ? validUrl : createStationLogoCanvas(stationName);
+                stationLogo.src = (validUrl && validUrl !== 'mast.jpg') ? validUrl : createStationLogoCanvas(stationName);
             })
             .catch(() => {
                 // Use fallback logo if check fails
