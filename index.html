@@ -1066,7 +1066,7 @@ function filterStations() {
 
 
 
-async function displayStations(stations) {
+function displayStations(stations) {
     document.getElementById('footerr').style.display = 'block';
     document.getElementById('countryTitle').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'block';
@@ -1086,58 +1086,42 @@ async function displayStations(stations) {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
 
-    for (const station of stationsToDisplay) {
+    stationsToDisplay.forEach(station => {
         const stationItem = document.createElement('div');
         stationItem.className = 'station-item';
 
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
+        let logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : 'mast.jpg'; // Default to mast.jpg if logo is empty
 
-        // Set up default logo image to `mast.jpg`
-        let initialLogoUrl = 'mast.jpg'; 
-        
-        if (station.logo && station.logo.trim() !== '') {
-            try {
-                const response = await fetch(station.logo, { method: 'HEAD' });
-                if (response.ok) {
-                    // If the logo URL is valid, use it
-                    initialLogoUrl = station.logo;
-                } else {
-                    // Use mast2.jpg if the logo URL fails
-                    initialLogoUrl = 'mast2.jpg';
-                }
-            } catch {
-                initialLogoUrl = 'mast2.jpg';
-            }
-        }
-
-        // Create the img element with `initialLogoUrl` as src
-        const imgElement = document.createElement('img');
-        imgElement.style = 'width: 100%; height: 140px; object-fit: contain;';
-        imgElement.src = initialLogoUrl;
-        imgElement.alt = truncatedName;
-
-        // Handle failed image loading
-        imgElement.onerror = () => {
-            imgElement.src = 'mast2.jpg'; // Set to mast2.jpg if loading fails
-        };
-
-        // Build station item inner HTML structure
         stationItem.innerHTML = `
             <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: white;">
+                <img style="width: 100%; height: 140px; object-fit: contain;"  
+                     src="${logoUrl}" 
+                     alt="${truncatedName}">
             </div>
             <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
-        
-        // Append the img element inside the div
-        stationItem.querySelector('div').appendChild(imgElement);
 
-        // Set up click handler to pass the current `imgElement.src`
-        stationItem.addEventListener('click', () => playStation(station.url, imgElement.src, station.name, station.bit, station.location));
-        
+        // Reference the image element to handle loading and errors
+        const imgElement = stationItem.querySelector('img');
+
+        // Use the onload and onerror events to determine the final src
+        imgElement.onload = () => {
+            // Image loaded successfully, pass the final src to playStation
+            stationItem.addEventListener('click', () => playStation(station.url, imgElement.src, station.name, station.bit, station.location));
+        };
+
+        imgElement.onerror = () => {
+            // If the image fails to load, fall back to mast2.jpg and update the event listener
+            imgElement.src = 'mast2.jpg';
+            stationItem.addEventListener('click', () => playStation(station.url, imgElement.src, station.name, station.bit, station.location));
+        };
+
         stationList.appendChild(stationItem);
-    }
+    });
 
     createPaginationControls(stations.length, totalPages);
 }
+
 
 
     
