@@ -1185,93 +1185,69 @@ function createPaginationControls(totalStations, totalPages) {
 
 
 
-function playStation(url, image, stationName, bit, country) {
-    if (bit === '00') {
-        openPopupWithData(stationName, image, url);
-    } else if (bit === '001') {
-        openPeacefmPopupWithData(stationName, image, url);
-    } else {
-        if (typeof hls !== 'undefined' && hls !== null) {
-            hls.destroy();
-            hls = null;
-        }
-        audioElement.src = ''; // Reset to clear existing URL
+function displayStations(stations) {
+    document.getElementById('footerr').style.display = 'block';
+    document.getElementById('countryTitle').style.display = 'block';
+    document.querySelector('.countryTitle').style.display = 'block';
+    document.getElementById('country_list_wrapper').style.display = 'block';
 
-        // Set station logo, display player, and show progress bar
-        const stationLogo = document.getElementById('stationLogo');
-        document.getElementById('breadcrumbs').style.display = 'block';
-         document.querySelector('.countryTitle').style.display = 'none';
-        stationLogo.src = image;
-        stationLogo.style.display = 'block';
-        document.querySelector('.playing-station-wrap').style.display = 'block';
-        document.querySelector('.footer-div-wraaper').style.display = 'block';
-        document.getElementById('stationLogo');
-        const breadcrumbs = document.getElementById('breadcrumbs');
-        const breadcrumbText = `Radio station | ${country} |${stationName}`;
-        breadcrumbs.textContent = breadcrumbText;
- 
-        progress.style.display = 'block';
+    const stationList = document.getElementById('stationListContent');
+    const paginationControls = document.getElementById('paginationControls');
+    stationList.innerHTML = ''; // Clear current list
+    paginationControls.innerHTML = ''; // Clear pagination
 
-        // Update station logo
-        stationLogo.onerror = () => handleImageError(stationLogo, stationName);
-
-        // Append timestamp to URL for fresh audio source on each click
-        const uniqueUrl = `${url}?timestamp=${Date.now()}`;
-
-        if (uniqueUrl.endsWith('.m3u8')) {
-            if (Hls.isSupported()) {
-                hls = new Hls();
-                hls.loadSource(uniqueUrl);
-                hls.attachMedia(audioElement);
-
-                hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    audioElement.play();
-                    progress.style.display = 'none';
-                    playButton.textContent = '||';
-                    sendEmailNotification(stationName, url, "200") 
-                });
-
-                hls.on(Hls.Events.ERROR, (event, data) => {
-                    if (data.fatal) {
-                        switch (data.type) {
-                            case Hls.ErrorTypes.NETWORK_ERROR:
-                                console.error('Network error occurred');
-                                handlePlaybackError(uniqueUrl, stationName);
-                                break;
-                            case Hls.ErrorTypes.MEDIA_ERROR:
-                                hls.recoverMediaError();
-                                handlePlaybackError(uniqueUrl, stationName);
-                                break;
-                            default:
-                                hls.destroy();
-                                break;
-                        }
-                    }
-                });
-            } else if (audioElement.canPlayType('application/vnd.apple.mpegurl')) {
-                audioElement.src = uniqueUrl;
-                audioElement.addEventListener('canplay', () => {
-                    audioElement.play();
-                    progress.style.display = 'none';
-                    playButton.textContent = '||';
-                    sendEmailNotification(stationName, url, "200") 
-                });
-            } else {
-                console.error('HLS is not supported in this browser.');
-                handlePlaybackError(uniqueUrl, stationName);
-            }
-        } else {
-            audioElement.src = uniqueUrl;
-            audioElement.addEventListener('canplay', () => {
-                audioElement.play();
-                progress.style.display = 'none';
-                playButton.textContent = '||';
-                sendEmailNotification(stationName, url, "200") 
-            });
-        }
+    if (stations.length === 0) {
+        stationList.innerHTML = `<p>No results found.</p>`;
+        return;
     }
-}
 
+    const totalPages = Math.ceil(stations.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
+
+    stationsToDisplay.forEach(station => {
+        const stationItem = document.createElement('div');
+        stationItem.className = 'station-item';
+        
+        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
+        const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : null; // Get logo URL or null
+
+        // Create a new image element
+        const imgElement = document.createElement('img');
+        imgElement.alt = truncatedName;
+        imgElement.style.width = '100%';
+        imgElement.style.height = '140px';
+        imgElement.style.objectFit = 'contain';
+
+        // Set the image source based on the logoUrl
+        if (logoUrl) {
+            imgElement.src = logoUrl;
+            // Handle image load error
+            imgElement.onerror = () => {
+                imgElement.src = 'mast.jpg'; // Default image when the logo can't be loaded
+            };
+        } else {
+            imgElement.src = 'mast_2.jpg'; // Default image when logoUrl is null or empty
+        }
+
+        const stationDiv = document.createElement('div');
+        stationDiv.style.width = '100%';
+        stationDiv.style.height = '138px';
+        stationDiv.style.borderRadius = '5px 5px 0 0';
+        stationDiv.style.position = 'relative';
+        stationDiv.style.overflow = 'hidden';
+        stationDiv.style.backgroundImage = 'url(mast.jpg)'; // Fallback background
+
+        stationDiv.appendChild(imgElement);
+        stationItem.appendChild(stationDiv);
+        stationItem.innerHTML += `<span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
+                
+        stationItem.addEventListener('click', () => playStation(station.url, logoUrl, station.name, station.bit, station.location));
+        stationList.appendChild(stationItem);
+    });
+
+    createPaginationControls(stations.length, totalPages);
+}
 
 
 function createStationLogoCanvas(stationName) {
