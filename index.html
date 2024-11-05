@@ -1215,15 +1215,12 @@ function createPaginationControls(totalStations, totalPages) {
     
 
 
-
-
-
 function displayStations(stations) {
     document.getElementById('footerr').style.display = 'block';
     document.getElementById('countryTitle').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'block';
     document.getElementById('country_list_wrapper').style.display = 'block';
-    
+
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.getElementById('paginationControls');
     stationList.innerHTML = ''; // Clear current list
@@ -1241,27 +1238,46 @@ function displayStations(stations) {
     stationsToDisplay.forEach(station => {
         const stationItem = document.createElement('div');
         stationItem.className = 'station-item';
-        
-        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-        const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name); // Moved inside loop
-    
 
+        // Truncate name if too long
+        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
+
+        // Set logo URL or fallback using canvas
+        let logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name);
+
+        // HTML structure for each station item
         stationItem.innerHTML = `
-             <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px;background-color: white;">
-                <img style="width: 100%; height: 140px; object-fit: fill; background-size: contain; background-position: center;"  
-                     src="${validLogoUrl}" 
-                     alt="${truncatedName}"
-                     onerror="this.onerror=null; this.src='fallback-logo.jpg';">
-              </div>
-               <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
-                
-        stationItem.addEventListener('click', () => playStation(station.url, logoUrl, station.name, station.bit, station.location));
+          <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px;background-color: white;">
+            <img style="width: 100%; height: 140px; object-fit: fill; background-size: contain; background-position: center;"
+                 alt="${truncatedName}">
+          </div>
+          <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
+
+        const imgElement = stationItem.querySelector('img');
+
+        // Test URL before setting the src attribute
+        checkImageUrl(logoUrl)
+            .then(url => {
+                imgElement.src = url; // Set URL if accessible
+            })
+            .catch(() => {
+                imgElement.src = createStationLogoCanvas(station.name); // Fallback to canvas if URL fails
+            });
+
+        // Add click event with logo URL validation
+        stationItem.addEventListener('click', () => {
+            // Validate logo URL for playStation function
+            checkImageUrl(logoUrl)
+                .then(validUrl => playStation(station.url, validUrl, station.name, station.bit, station.location))
+                .catch(() => playStation(station.url, createStationLogoCanvas(station.name), station.name, station.bit, station.location));
+        });
+
+        // Append station item to list
         stationList.appendChild(stationItem);
     });
 
     createPaginationControls(stations.length, totalPages);
 }
-    
 
 
 
