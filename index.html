@@ -1227,7 +1227,7 @@ function playStation(url, image, stationName, bit, country) {
                     audioElement.play();
                     progress.style.display = 'none';
                     playButton.textContent = '||';
-                    sendEmailNotification(stationName, url, "Success") 
+                    sendEmailNotification(stationName, url, "success") 
                 });
 
                 hls.on(Hls.Events.ERROR, (event, data) => {
@@ -1253,7 +1253,7 @@ function playStation(url, image, stationName, bit, country) {
                     audioElement.play();
                     progress.style.display = 'none';
                     playButton.textContent = '||';
-                    sendEmailNotification(stationName, url, "Success") 
+                    sendEmailNotification(stationName, url, "success") 
                 });
             } else {
                 console.error('HLS is not supported in this browser.');
@@ -1265,7 +1265,7 @@ function playStation(url, image, stationName, bit, country) {
                 audioElement.play();
                 progress.style.display = 'none';
                 playButton.textContent = '||';
-                sendEmailNotification(stationName, url, "Success") 
+                sendEmailNotification(stationName, url, "success") 
             });
         }
     }
