@@ -1097,7 +1097,7 @@ function displayStations(stations) {
 
     // HTML structure for each station item
     stationItem.innerHTML = `
-      <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px;background-color: white;">
+      <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px;background-image: url('mast.jpg');">
         <img style="width: 100%; height: 140px; object-fit: fill;  background-size: contain; background-position: center;"  
              src="${logoUrl}" 
              alt="${truncatedName}">
@@ -1210,9 +1210,6 @@ function playStation(url, image, stationName, bit, country) {
         breadcrumbs.textContent = breadcrumbText;
  
         progress.style.display = 'block';
-
-
-
 
         // Append timestamp to URL for fresh audio source on each click
         const uniqueUrl = `${url}?timestamp=${Date.now()}`;
