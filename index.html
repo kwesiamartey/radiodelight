@@ -1222,10 +1222,12 @@ function playStation(url, image, stationName, bit, country) {
         // Validate logo URL before setting the src attribute
         checkImageUrl(image)
             .then(validUrl => {
+                // If valid URL, set as station logo
                 stationLogo.src = validUrl;
             })
             .catch(() => {
-                stationLogo.src = 'mast.jpg'; // Use fallback if image URL fails
+                // Use fallback if image URL fails
+                stationLogo.src = 'fallback-logo.jpg';
             });
 
         stationLogo.style.display = 'block';
@@ -1294,7 +1296,6 @@ function playStation(url, image, stationName, bit, country) {
         }
     }
 }
-
 
 
 
