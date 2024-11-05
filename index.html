@@ -1105,7 +1105,7 @@ function displayStations(stations) {
         const imgElement = stationItem.querySelector('img');
         imgElement.onerror = () => {
             // If image fails to load, set it to mast2.jpg
-            imgElement.src = 'mast2.jpg';
+            imgElement.src = 'mast.jpg';
         };
 
         stationItem.addEventListener('click', () => playStation(station.url, logoUrl, station.name, station.bit, station.location));
