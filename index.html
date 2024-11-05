@@ -1102,6 +1102,17 @@ function displayStations(stations) {
                      alt="${truncatedName}">
             </div>
             <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
+
+        const imgElement = stationItem.querySelector('img');
+
+        // Test URL before setting the src attribute
+        checkImageUrl(logoUrl)
+            .then(url => {
+                imgElement.src = url; // Set URL if accessible
+            })
+            .catch(() => {
+                imgElement.src = createStationLogoCanvas(station.name); // Fallback to canvas if URL fails
+            });
                 
         stationItem.addEventListener('click', () => playStation(station.url, logoUrl, station.name, station.bit, station.location));
         stationList.appendChild(stationItem);
@@ -1110,6 +1121,17 @@ function displayStations(stations) {
     createPaginationControls(stations.length, totalPages);
 }
 
+
+// Function to check if the image URL is accessible
+function checkImageUrl(url) {
+    return fetch(url, { method: 'HEAD', mode: 'no-cors' })
+        .then(response => {
+            if (!response.ok) throw new Error('Image URL not accessible');
+            return url;
+        })
+        .catch(() => 'mast.jpg'); // Use fallback if inaccessible
+}
+    
 
 function createPaginationControls(totalStations, totalPages) {
     const paginationControls = document.getElementById('paginationControls');
