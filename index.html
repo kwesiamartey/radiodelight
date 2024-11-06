@@ -1041,19 +1041,35 @@ function setupPaginationButtons(data, totalPages) {
     }
 }
 
+
+
 async function fetchStations(countryPath = selectedCountryPath) {
     try {
+        // Fetching data from the specified path
         const response = await fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`);
+        
+        // Check if the response was successful
         if (!response.ok) throw new Error('Network response was not ok');
 
+        // Parse the JSON data
         const data = await response.json();
+
+        // Filter out stations with the name "Local Fm"
         stationData = data.filter(station => station.name !== 'Local Fm');
+
+        // Display the stations after filtering
         displayStations(stationData);
     } catch (error) {
+        // Log any error encountered during fetch or processing
         console.error('Error fetching station data:', error);
+
+        // Optionally, handle retry logic if desired
+        // setTimeout(() => fetchStations(countryPath), 3000); // Retry after 3 seconds
     }
 }
 
+
+    
 
 function filterStations() {
     const query = document.getElementById('searchInput').value.toLowerCase();
