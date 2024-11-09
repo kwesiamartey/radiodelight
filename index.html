@@ -908,6 +908,8 @@
     const progress = document.getElementById('progress');
     const playButton = document.querySelector('.play-button');
     const audioElement = document.getElementById('audio');
+    let currentHowl = null; // Store the current Howl instance globally
+    let isPlaying = false; // Track the play/pause state
 
 
 function loadCountries() {
@@ -1207,7 +1209,7 @@ function createPaginationControls(totalStations, totalPages) {
 
 
 
- function playStation(url, image, stationName, bit, country) {
+function playStation(url, image, stationName, bit, country) {
     if (bit === '00') {
         openPopupWithData(stationName, image, url);
     } else if (bit === '001') {
@@ -1217,6 +1219,14 @@ function createPaginationControls(totalStations, totalPages) {
         if (typeof hls !== 'undefined' && hls !== null) {
             hls.destroy();
             hls = null;
+        }
+
+        // Check if the station is already playing
+        if (currentHowl && isPlaying) {
+            currentHowl.pause(); // Pause playback if currently playing
+            isPlaying = false;
+            playButton.textContent = 'Play'; // Update play button to show "Play"
+            return;
         }
 
         // Reset the audio element to clear existing source
@@ -1245,23 +1255,23 @@ function createPaginationControls(totalStations, totalPages) {
 
         // Check if the stream URL is an HLS (.m3u8) stream
         if (uniqueUrl.endsWith('.m3u8')) {
-            // If HLS.js is supported, load the stream using HLS.js
             if (Hls.isSupported()) {
                 hls = new Hls();
                 hls.loadSource(uniqueUrl);
                 hls.attachMedia(audioElement);
 
                 // Use Howler.js to control playback
-                const howl = new Howl({
-                    src: [audioElement],  // Use the dynamically created audio element as the source
-                    html5: true,          // Force HTML5 for streaming compatibility
-                    volume: 1.0,          // Set the initial volume (adjust as needed)
+                currentHowl = new Howl({
+                    src: [audioElement],
+                    html5: true,
+                    volume: 1.0,
                 });
 
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    howl.play();  // Start playback once the stream is ready
+                    currentHowl.play();
+                    isPlaying = true;
+                    playButton.textContent = '||'; // Update play button to show "Pause"
                     progress.style.display = 'none';
-                    playButton.textContent = '||';  // Update play button to indicate pause state
                     const stationDetails = `${stationName} (${country})`;
                     sendEmailNotification(stationDetails, url, "success");
                 });
@@ -1283,14 +1293,13 @@ function createPaginationControls(totalStations, totalPages) {
                         }
                     }
                 });
-
             } else if (audioElement.canPlayType('application/vnd.apple.mpegurl')) {
-                // If HLS.js is not supported but the browser supports HLS, use the audio element directly
                 audioElement.src = uniqueUrl;
                 audioElement.addEventListener('canplay', () => {
                     audioElement.play();
-                    progress.style.display = 'none';
+                    isPlaying = true;
                     playButton.textContent = '||';
+                    progress.style.display = 'none';
                     const stationDetails = `${stationName} (${country})`;
                     sendEmailNotification(stationDetails, url, "success");
                 });
@@ -1299,24 +1308,27 @@ function createPaginationControls(totalStations, totalPages) {
                 handlePlaybackError(uniqueUrl, stationName);
             }
         } else {
-            // If the stream is not HLS, use Howler.js directly with the URL
-            const howl = new Howl({
+            currentHowl = new Howl({
                 src: [uniqueUrl],
-                html5: true,  // Force HTML5 for streaming compatibility
-                volume: 1.0,  // Set the initial volume (adjust as needed)
+                html5: true,
+                volume: 1.0,
             });
 
-            howl.once('play', () => {
+            currentHowl.once('play', () => {
+                isPlaying = true;
+                playButton.textContent = '||';
                 progress.style.display = 'none';
-                playButton.textContent = '||';  // Update play button
                 const stationDetails = `${stationName} (${country})`;
                 sendEmailNotification(stationDetails, url, "success");
             });
 
-            howl.play();
+            currentHowl.play();
         }
     }
 }
+
+
+
    
 
 
