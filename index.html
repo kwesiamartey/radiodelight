@@ -1125,7 +1125,7 @@ function displayStations(stations) {
         // Set a timeout to quickly switch to fallback if image loading is slow
         const loadTimeout = setTimeout(() => {
             imgElement.src = 'mast2.jpg'; // Switch to fallback after 3 seconds
-        }, 5500);
+        }, 10500);
 
         // Clear timeout if image loads successfully
         imgElement.onload = () => {
