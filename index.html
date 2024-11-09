@@ -1203,11 +1203,125 @@ function createPaginationControls(totalStations, totalPages) {
         });
     }
 }
-    
 
 
 
-function playStation(url, image, stationName, bit, country) {
+
+ function playStation(url, image, stationName, bit, country) {
+    if (bit === '00') {
+        openPopupWithData(stationName, image, url);
+    } else if (bit === '001') {
+        openPeacefmPopupWithData(stationName, image, url);
+    } else {
+        // Clear any existing HLS instance if it exists
+        if (typeof hls !== 'undefined' && hls !== null) {
+            hls.destroy();
+            hls = null;
+        }
+
+        // Reset the audio element to clear existing source
+        audioElement.src = ''; 
+
+        // Set the station logo, show the player, and show progress bar
+        const stationLogo = document.getElementById('stationLogo');
+        document.getElementById('breadcrumbs').style.display = 'block';
+        document.querySelector('.countryTitle').style.display = 'none';
+        stationLogo.src = image;
+        stationLogo.style.display = 'block';
+        document.querySelector('.playing-station-wrap').style.display = 'block';
+        document.querySelector('.footer-div-wraaper').style.display = 'block';
+        document.getElementById('stationLogo');
+        const breadcrumbs = document.getElementById('breadcrumbs');
+        const breadcrumbText = `Radio station | ${country} |${stationName}`;
+        breadcrumbs.textContent = breadcrumbText;
+
+        progress.style.display = 'block';
+
+        // Update station logo error handling
+        stationLogo.onerror = () => handleImageError(stationLogo, stationName);
+
+        // Append timestamp to the URL for a fresh source on each click
+        const uniqueUrl = `${url}?timestamp=${Date.now()}`;
+
+        // Check if the stream URL is an HLS (.m3u8) stream
+        if (uniqueUrl.endsWith('.m3u8')) {
+            // If HLS.js is supported, load the stream using HLS.js
+            if (Hls.isSupported()) {
+                hls = new Hls();
+                hls.loadSource(uniqueUrl);
+                hls.attachMedia(audioElement);
+
+                // Use Howler.js to control playback
+                const howl = new Howl({
+                    src: [audioElement],  // Use the dynamically created audio element as the source
+                    html5: true,          // Force HTML5 for streaming compatibility
+                    volume: 1.0,          // Set the initial volume (adjust as needed)
+                });
+
+                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    howl.play();  // Start playback once the stream is ready
+                    progress.style.display = 'none';
+                    playButton.textContent = '||';  // Update play button to indicate pause state
+                    const stationDetails = `${stationName} (${country})`;
+                    sendEmailNotification(stationDetails, url, "success");
+                });
+
+                hls.on(Hls.Events.ERROR, (event, data) => {
+                    if (data.fatal) {
+                        switch (data.type) {
+                            case Hls.ErrorTypes.NETWORK_ERROR:
+                                console.error('Network error occurred');
+                                handlePlaybackError(uniqueUrl, stationName);
+                                break;
+                            case Hls.ErrorTypes.MEDIA_ERROR:
+                                hls.recoverMediaError();
+                                handlePlaybackError(uniqueUrl, stationName);
+                                break;
+                            default:
+                                hls.destroy();
+                                break;
+                        }
+                    }
+                });
+
+            } else if (audioElement.canPlayType('application/vnd.apple.mpegurl')) {
+                // If HLS.js is not supported but the browser supports HLS, use the audio element directly
+                audioElement.src = uniqueUrl;
+                audioElement.addEventListener('canplay', () => {
+                    audioElement.play();
+                    progress.style.display = 'none';
+                    playButton.textContent = '||';
+                    const stationDetails = `${stationName} (${country})`;
+                    sendEmailNotification(stationDetails, url, "success");
+                });
+            } else {
+                console.error('HLS is not supported in this browser.');
+                handlePlaybackError(uniqueUrl, stationName);
+            }
+        } else {
+            // If the stream is not HLS, use Howler.js directly with the URL
+            const howl = new Howl({
+                src: [uniqueUrl],
+                html5: true,  // Force HTML5 for streaming compatibility
+                volume: 1.0,  // Set the initial volume (adjust as needed)
+            });
+
+            howl.once('play', () => {
+                progress.style.display = 'none';
+                playButton.textContent = '||';  // Update play button
+                const stationDetails = `${stationName} (${country})`;
+                sendEmailNotification(stationDetails, url, "success");
+            });
+
+            howl.play();
+        }
+    }
+}
+   
+
+
+
+/*function playStation(url, image, stationName, bit, country) {
     if (bit === '00') {
         openPopupWithData(stationName, image, url);
     } else if (bit === '001') {
@@ -1295,7 +1409,7 @@ function playStation(url, image, stationName, bit, country) {
             });
         }
     }
-}
+}*/
 
 
 
@@ -1501,8 +1615,9 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
     };
 </script>
 <!-- Include HLS.js for .m3u8 support -->
+<script src="https://cdn.jsdelivr.net/npm/howler"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+ <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 
 <!-- Include SoundManager2 for standard audio format support -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/soundmanager2/2.97a.20170601/script/soundmanager2.min.js"></script>
