@@ -1058,8 +1058,20 @@ function setupPaginationButtons(data, totalPages) {
 
 async function fetchStations(countryPath = selectedCountryPath) {
     try {
+
+       const baseUrl =  "https://lornamobileappsdev.uk/mobileAppsWebsite/usaRadioList.json";
+
+        const baseUrl2 =  `https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`;
+
+        if(countryPath == "unitedStateRadioList.json"){
+
+             const response = await fetch(baseUrl);
+        }else{
+
+             const response = await fetch(baseUrl2);
+        }
         // Fetching data from the specified path
-        const response = await fetch(`https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`);
+       
         
         // Check if the response was successful
         if (!response.ok) throw new Error('Network response was not ok');
