@@ -419,6 +419,12 @@
              margin-bottom:12px;
              font-size:1.0rem;
          }
+
+        #downloadTitle{
+            color: #f4f4f4;
+             margin-bottom:12px;
+             font-size:1.0rem;
+        }
      
         /* Second column: Play button and progress ring */
         .play-control {
@@ -835,7 +841,7 @@
                 <br>
                 <div id="paginationControls1"></div>
                 <br>
-                <p id="countryTitle" style="display: none;background-color:#1c313a;padding:6px 12px;border-radius:4px;">Download mobile app</p>
+                <p id="downloadTitle" style="display: none;background-color:#1c313a;padding:6px 12px;border-radius:4px;">Download mobile app</p>
                  <a href="https://play.google.com/store/apps/details?id=com.lornamobileappsdev.moldova"><img src="get_playstore.jpeg" style="width:100%;"/>
              </div>
 
@@ -1093,6 +1099,7 @@ function displayStations(stations) {
     document.getElementById('footerr').style.display = 'block';
     document.getElementById('countryTitle').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'block';
+     document.getElementById('.downloadTitle').style.display = 'block';
     document.getElementById('country_list_wrapper').style.display = 'block';
 
     const stationList = document.getElementById('stationListContent');
