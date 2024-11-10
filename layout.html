@@ -1057,40 +1057,38 @@ function setupPaginationButtons(data, totalPages) {
 
 
 async function fetchStations(countryPath = selectedCountryPath) {
-    try {
+   try {
+    const baseUrl = "https://lornamobileappsdev.uk/mobileAppsWebsite/usaRadioList.json";
+    const baseUrl2 = `https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`;
 
-       const baseUrl =  "https://lornamobileappsdev.uk/mobileAppsWebsite/usaRadioList.json";
+    let response; // Declare response variable
 
-        const baseUrl2 =  `https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`;
-
-        if(countryPath == "unitedStateRadioList.json"){
-
-             const response = await fetch(baseUrl);
-        }else{
-
-             const response = await fetch(baseUrl2);
-        }
-        // Fetching data from the specified path
-       
-        
-        // Check if the response was successful
-        if (!response.ok) throw new Error('Network response was not ok');
-
-        // Parse the JSON data
-        const data = await response.json();
-
-        // Filter out stations with the name "Local Fm"
-        stationData = data.filter(station => station.name !== 'Local Fm');
-
-        // Display the stations after filtering
-        displayStations(stationData);
-    } catch (error) {
-        // Log any error encountered during fetch or processing
-        console.error('Error fetching station data:', error);
-
-        // Optionally, handle retry logic if desired
-        // setTimeout(() => fetchStations(countryPath), 3000); // Retry after 3 seconds
+    if (countryPath === "unitedStateRadioList.json") {
+        response = await fetch(baseUrl);
+    } else {
+        response = await fetch(baseUrl2);
     }
+
+    // Check if the response was successful
+    if (!response.ok) throw new Error('Network response was not ok');
+
+    // Parse the JSON data
+    const data = await response.json();
+
+    // Filter out stations with the name "Local Fm"
+    const stationData = data.filter(station => station.name !== 'Local Fm');
+
+    // Display the stations after filtering
+    displayStations(stationData);
+
+} catch (error) {
+    // Log any error encountered during fetch or processing
+    console.error('Error fetching station data:', error);
+
+    // Optionally, handle retry logic if desired
+    // setTimeout(() => fetchStations(countryPath), 3000); // Retry after 3 seconds
+}
+
 }
 
 
