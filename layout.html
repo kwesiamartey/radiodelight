@@ -949,7 +949,7 @@ function renderCountryList(data, page, totalPages) {
         listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag">`;
         listItem.addEventListener('click', () => {
             selectedCountryPath = country.url;
-            fetchStations(selectedCountryPath);
+            fetchStations(selectedCountryPath, 3, 3000,  1000);
             document.querySelector('.countryTitle').textContent = `Live ${country.name} Radio Station Online`;
         });
         countryList.appendChild(listItem);
