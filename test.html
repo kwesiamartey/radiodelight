@@ -735,178 +735,144 @@
 </div>
 <!----------the player ends here ------->
 
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/soundmanager2/2.97a.20170601/script/soundmanager2.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+
 <script>
-var index = 0;
-var activeStreamID = "";
-var activeStreamURL = "";
-let streams = [];
-let audio = document.getElementById("audio");
-let isHLS = false;
-let isPlaying = false;
-var hls = null;
-let streamsSize = 0;
-let button = document.getElementById("playButton");
+    var index = 0;
+    var activeStreamID = "";
+    var activeStreamURL = "";
+    let streams = [];
+    let audio = null;
+    let isHLS = false;
+    let isPlaying = false;
+    var hls = null;
+    let player = document.querySelector("#audio");
+    let button = document.querySelector("#playButton");
 
-// Initialize SoundManager and stream data on document ready
-$(document).ready(function () {
-    getStreams();
-});
-
-function getStreams() {
-    var apiUrl = 'http://stream.dbmedia.se/crr96';
-    fetch(apiUrl)
-        .then((res) => res.json())
-        .then((data) => onStreamDataSuccess(data))
-        .catch(function(error) {
-            console.log(error);
-        });
-}
-
-function onStreamDataSuccess(data) {
-    for (let i = 0; i < data.length; i++) {
-        streams.push({"id": "stream" + i , "url": data[i].url});
-    }
-    streamsSize = data.length;
-    initSoundManager();
-}
-
-function playHlsStream(stream) {
-    button.innerHTML = "<i class=\"icon loading_icon bx bx-loader-alt\"></i>";
-    button.onclick = stopAudio;
-    if(Hls.isSupported()) {
-        hls = new Hls();
-        hls.loadSource(stream);
-        hls.attachMedia(audio);
-        hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-            console.log("HLS.js is bound to the audio element!");
-            isHLS = true;
-            activeStreamURL = stream;
-            playWithPromise();
-            addVolumeSlider();
-        });
-        hls.on(Hls.Events.ERROR,function(event, data){
-            console.log("HLS error: " + data.type + ", Details: " + data.details);
-        });
-    } else {
-        console.log("HLS is not supported.");
-    }
-}
-
-function playStream() {
-    activeStreamURL = streams[index].url;
-    audio = soundManager.createSound({
-        id: streams[index].id,
-        url: streams[index].url,
-        onerror: function(code, description) {
-            if((streams[index].url).includes(".m3u")){
-                soundManager.destroySound(this.id);
-                playHlsStream(this.url);
-                index++;
-            } else {
-                index++;
-                if(index != streamsSize) {
-                    soundManager.destroySound(this.id);
-                    playStream();
-                }
-            }
-        },
-        onplay: function() {
-            addVolumeSlider();
-        },
-        whileplaying: function() {
-            if (this.bytesLoaded !== null && !isPlaying) {
-                activeStreamID =  this.id;
-                button.innerHTML = "<i class=\"icon stop_icon bx bx-pause\"></i>";
-                button.onclick = stopAudio;
-                isPlaying = true;
-            }
-        },
-        onstop: function() {
-            setButtonPlay();
-        }
+    $(document).ready(function () {
+        getStreams();
     });
-    audio.play();
-}
 
-function initSoundManager() {
-    soundManager.setup({
-        waitForWindowLoad: true,
-        onready: function() {
-            const browser = bowser.getParser(window.navigator.userAgent);
-            if (browser.getBrowserName() === "Safari" || browser.getBrowserName() === "Firefox") {
+    function getStreams() {
+        var apiUrl = 'http://stream.dbmedia.se/crr96';
+        fetch(apiUrl)
+            .then((res) => res.json())
+            .then((data) => onStreamDataSuccess(data))
+            .catch(function(error) {
+                console.log(error);
+            });
+    }
+
+    function onStreamDataSuccess(data) {
+        for (let i = 0; i < data.length; i++) {
+            streams.push({"id": "stream" + i , "url": data[i].url});
+        }
+        initSoundManager();
+    }
+
+    function togglePlay() {
+        if (isPlaying) {
+            stopAudio();
+        } else {
+            playAudio();
+        }
+    }
+
+    function playHlsStream(stream) {
+        button.innerHTML = "Loading...";
+        button.onclick = stopAudio;
+
+        if (Hls.isSupported()) {
+            hls = new Hls();
+            hls.loadSource(stream);
+            hls.attachMedia(player);
+            hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+                isHLS = true;
+                activeStreamURL = stream;
+                playWithPromise();
+            });
+            hls.on(Hls.Events.ERROR, function(event, data) {
+                console.log("HLS error:", data);
+            });
+        }
+    }
+
+    function playStream() {
+        audio = soundManager.createSound({
+            id: streams[index].id,
+            url: streams[index].url,
+            onplay: function() {
+                setVolume(document.getElementById("volumeControl").value);
+            },
+            whileplaying: function() {
+                if (!isPlaying) {
+                    button.innerHTML = "Pause";
+                    button.onclick = stopAudio;
+                    isPlaying = true;
+                }
+            },
+            onstop: function() {
                 setButtonPlay();
-            } else {
+            }
+        });
+        audio.play();
+    }
+
+    function initSoundManager() {
+        soundManager.setup({
+            onready: function() {
                 playStream();
             }
-        }
-    });
-}
-
-function stopAudio() {
-    if(!isHLS) {
-        soundManager.stopAll();
-        for (let i = 0; i <= index; i++) {
-            soundManager.destroySound("stream" + i);
-        }
-        index = 0;
-    } else {
-        audio.pause();
-        hls.detachMedia(audio);
-    }
-    setButtonPlay();
-    isPlaying = false;
-}
-
-function playAudio() {
-    if(!isHLS) {
-        playStream();
-    } else {
-        if(activeStreamURL === "") {
-            index = 0;
-            playStream();
-        } else {
-            playHlsStream(activeStreamURL);
-        }
-    }
-    isPlaying = true;
-}
-
-function playWithPromise() {
-    const promise = audio.play();
-    if (promise !== undefined) {
-        promise.then(function() {
-            button.innerHTML = "<i class=\"icon stop_icon bx bx-pause\"></i>";
-            button.onclick = stopAudio;
-        }).catch(error => {
-            audio.pause();
-            hls.detachMedia(audio);
-            setButtonPlay();
         });
-    } else if (audio.getAttribute("autoplay") !== "true") {
-        audio.setAttribute("autoplay", true);
     }
-}
 
-function setButtonPlay() {
-    button.innerHTML = "<i class=\"icon play_icon bx bx-play\"></i>";
-    button.onclick = playAudio;
-}
-
-function setVolume(value) {
-    audio.volume = value;
-    if (audio.setVolume) {
-        audio.setVolume(value * 100);
+    function stopAudio() {
+        if (!isHLS) {
+            soundManager.stopAll();
+            soundManager.destroySound(activeStreamID);
+            index = 0;
+        } else {
+            player.pause();
+            hls.detachMedia(player);
+        }
+        setButtonPlay();
+        isPlaying = false;
     }
-}
 
-
- function togglePlay() {
-    if (isPlaying) {
-        stopAudio();
-    } else {
-        playAudio();
+    function playAudio() {
+        if (isHLS && activeStreamURL) {
+            playHlsStream(activeStreamURL);
+        } else {
+            playStream();
+        }
     }
-} 
+
+    function playWithPromise() {
+        const promise = player.play();
+        if (promise !== undefined) {
+            promise.then(() => {
+                button.innerHTML = "Pause";
+                button.onclick = stopAudio;
+                isPlaying = true;
+            }).catch(error => {
+                setButtonPlay();
+            });
+        }
+    }
+
+    function setButtonPlay() {
+        button.innerHTML = "Play";
+        button.onclick = playAudio;
+    }
+
+    function setVolume(volume) {
+        player.volume = volume;
+        if (audio) {
+            audio.setVolume(volume * 100); // SoundManager2 expects volume in range 0-100
+        }
+    }
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
