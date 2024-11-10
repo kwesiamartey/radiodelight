@@ -772,9 +772,9 @@
   </div>
   
   <!-- Additional info section under player-header -->
-  <div id="foo" style="background-color:#0b57d0; display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;">
+  <!--<div id="foo" style="background-color:#0b57d0; display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;">
       <span style="padding:0px;margin:0px;font-size:13px;">This website functions best on Chrome / Firefox / Opera.</span>
-  </div>  
+  </div>  -->
        <!-- Centered "mmi" Element -->
 </div>
 
@@ -1250,7 +1250,7 @@ function playStation(url, image, stationName, bit, country) {
 
         // Append timestamp to URL for fresh audio source on each click
         const uniqueUrl = `${url}?timestamp=${Date.now()}`;
-
+        const stationDetails = `${stationName} (${country}) (Web)`;
         if (uniqueUrl.endsWith('.m3u8')) {
             if (Hls.isSupported()) {
                 hls = new Hls();
@@ -1261,7 +1261,8 @@ function playStation(url, image, stationName, bit, country) {
                     audioElement.play();
                     progress.style.display = 'none';
                     playButton.textContent = '||';
-                    sendEmailNotification(stationName, url, "200");
+                   
+                    sendEmailNotification(stationDetails, url, "success");
                 });
 
                 hls.on(Hls.Events.ERROR, (event, data) => {
@@ -1269,11 +1270,13 @@ function playStation(url, image, stationName, bit, country) {
                         switch (data.type) {
                             case Hls.ErrorTypes.NETWORK_ERROR:
                                 console.error('Network error occurred');
-                                handlePlaybackError(uniqueUrl, stationName);
+                              
+                                handlePlaybackError(uniqueUrl, stationDetails);
                                 break;
                             case Hls.ErrorTypes.MEDIA_ERROR:
                                 hls.recoverMediaError();
-                                handlePlaybackError(uniqueUrl, stationName);
+                              
+                                handlePlaybackError(uniqueUrl, stationDetails);
                                 break;
                             default:
                                 hls.destroy();
@@ -1287,7 +1290,8 @@ function playStation(url, image, stationName, bit, country) {
                     audioElement.play();
                     progress.style.display = 'none';
                     playButton.textContent = '||';
-                    sendEmailNotification(stationName, url, "200");
+                   
+                    sendEmailNotification(stationDetails, url, "success");
                 });
             } else {
                 console.error('HLS is not supported in this browser. Attempting SoundManager2 fallback.');
@@ -1304,9 +1308,11 @@ function playStation(url, image, stationName, bit, country) {
                                     this.play();
                                     progress.style.display = 'none';
                                     playButton.textContent = '||';
-                                    sendEmailNotification(stationName, url, "200");
+                                    
+                                    sendEmailNotification(stationDetails, url, "success");
                                 } else {
-                                    handlePlaybackError(uniqueUrl, stationName);
+                                
+                                    handlePlaybackError(uniqueUrl, stationDetails);
                                     console.error('SoundManager2 failed to load the audio.');
                                 }
                             },
@@ -1318,7 +1324,8 @@ function playStation(url, image, stationName, bit, country) {
                     },
                     ontimeout: function() {
                         console.error('SoundManager2 could not be loaded.');
-                        handlePlaybackError(uniqueUrl, stationName);
+                     
+                        handlePlaybackError(uniqueUrl, stationDetails);
                     }
                 });
             }
@@ -1328,7 +1335,8 @@ function playStation(url, image, stationName, bit, country) {
                 audioElement.play();
                 progress.style.display = 'none';
                 playButton.textContent = '||';
-                sendEmailNotification(stationName, url, "200");
+                
+                sendEmailNotification(stationDetails, url, "success");
             });
         }
     }
