@@ -1,6 +1,10 @@
 <html>
 
   <head>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://code.jquery.com/jquery-1.7.2.min.js"></script>
+    <!-- Include SoundManager2 for standard audio format support -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/soundmanager2/2.97a.20170601/script/soundmanager2.min.js"></script>
 
     <style>
        html, body {
@@ -699,10 +703,8 @@
 
   <body>
 
-
-
- <!------- the player start here ---->
-<div class="footer-div-wraaper" style="">
+<!------- the player start here ---->
+<div class="footer-div-wrapper" style="">
     <div class="col playing-station-wrap" style="background-color: #142229; align-items: center; justify-content: center;margin:auto;">
         <div class="row" style="display: flex; align-items: center; height: auto; width: 100%;">
             
@@ -717,7 +719,7 @@
                 <div class="col" style="display: flex; align-items: center; justify-content: center;">
                     <div class="play-control" style="display: flex; align-items: center; justify-content: center;">
                         <div class="progress-ring" id="progress"></div>
-                        <button class="play-button" onclick="togglePlay()">▶</button>
+                        <button id="playButton" class="play-button" onclick="togglePlay()">▶</button>
                         <audio id="audio" preload="metadata" style="display: none;"></audio>
                     </div>
                 </div>
@@ -731,43 +733,32 @@
         </div>
     </div>
 </div>
- <!----------the player ends here ------->
-
-
-
-    
-
-
-
+<!----------the player ends here ------->
 
 <script>
 var index = 0;
 var activeStreamID = "";
 var activeStreamURL = "";
 let streams = [];
-let audio = null;
+let audio = document.getElementById("audio");
 let isHLS = false;
 let isPlaying = false;
 var hls = null;
 let streamsSize = 0;
-let player = document.querySelector("#audio");
-let button = document.querySelector("play-button");
+let button = document.getElementById("playButton");
 
-
+// Initialize SoundManager and stream data on document ready
 $(document).ready(function () {
     getStreams();
 });
 
 function getStreams() {
-    // Get the radio station name, last element of the current url
-    //var currentRadioStation = window.location.href.split("/")[3];
-   // var apiUrl = window.location.origin + "/streams/" + currentRadioStation;
-    var apiUrl = 'http://stream.dbmedia.se/crr96'
+    var apiUrl = 'http://stream.dbmedia.se/crr96';
     fetch(apiUrl)
         .then((res) => res.json())
         .then((data) => onStreamDataSuccess(data))
         .catch(function(error) {
-            console.log(error)
+            console.log(error);
         });
 }
 
@@ -780,59 +771,29 @@ function onStreamDataSuccess(data) {
 }
 
 function playHlsStream(stream) {
-    if (button.innerHTML != "<i class=\"icon loading_icon bx bx-loader-alt\"></i>") {
-        button.innerHTML = "<i class=\"icon loading_icon bx bx-loader-alt\"></i>";
-    }
+    button.innerHTML = "<i class=\"icon loading_icon bx bx-loader-alt\"></i>";
     button.onclick = stopAudio;
     if(Hls.isSupported()) {
         hls = new Hls();
         hls.loadSource(stream);
-        hls.attachMedia(player);
+        hls.attachMedia(audio);
         hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-            console.log("video and hls.js are now bound together!");
+            console.log("HLS.js is bound to the audio element!");
             isHLS = true;
-            //button.innerHTML = "<i class=\"icon stop_icon bx bx-pause\"></i>";
-            //button.onclick = stopAudio;
             activeStreamURL = stream;
             playWithPromise();
             addVolumeSlider();
-        });
-        hls.on(Hls.Events.MANIFEST_LOADING, function () {
-            if (button.innerHTML != "<i class=\"icon loading_icon bx bx-loader-alt\"></i>") {
-                button.innerHTML = "<i class=\"icon loading_icon bx bx-loader-alt\"></i>";
-            }
-            button.onclick = stopAudio;
-        });
-        hls.on(Hls.Events.MANIFEST_PARSED,function() {
-            console.log("Manifest loaded, found " + data.levels.length + " quality level");
-            isHLS = true;
-            //button.innerHTML = "<i class=\"icon stop_icon bx bx-pause\"></i>";
-            //button.onclick = stopAudio;
-            activeStreamURL = stream;
-            playWithPromise();
-            addVolumeSlider();
-            activeStreamURL = stream;
-        });
-        hls.on(Hls.Events.MEDIA_DETACHING, function(){
-            console.log("media detached");
-            setButtonPlay();
         });
         hls.on(Hls.Events.ERROR,function(event, data){
-            console.log("Type: " + data.type + ", Details: " + data.details);
-            //button.innerHTML = "<i class=\"icon stop_icon bx bx-pause\"></i>";
-            //button.onclick = stopAudio;
-        })
+            console.log("HLS error: " + data.type + ", Details: " + data.details);
+        });
     } else {
-        // Not supported handling
-        if (button.innerHTML != "<i class=\"icon loading_icon bx bx-loader-alt\"></i>") {
-            button.innerHTML = "<i class=\"icon loading_icon bx bx-loader-alt\"></i>";
-        }
-        button.onclick = stopAudio;
+        console.log("HLS is not supported.");
     }
 }
 
 function playStream() {
-    //activeStreamURL = streams[index].url;
+    activeStreamURL = streams[index].url;
     audio = soundManager.createSound({
         id: streams[index].id,
         url: streams[index].url,
@@ -843,18 +804,11 @@ function playStream() {
                 index++;
             } else {
                 index++;
-                if(index != (streamsSize)) {
+                if(index != streamsSize) {
                     soundManager.destroySound(this.id);
                     playStream();
                 }
             }
-        },
-        onbufferchange: function() {
-            if (button.innerHTML != "<i class=\"icon loading_icon bx bx-loader-alt\"></i>") {
-                button.innerHTML = "<i class=\"icon loading_icon bx bx-loader-alt\"></i>";
-            }
-            button.onclick = stopAudio;
-            isPlaying = false;
         },
         onplay: function() {
             addVolumeSlider();
@@ -865,7 +819,6 @@ function playStream() {
                 button.innerHTML = "<i class=\"icon stop_icon bx bx-pause\"></i>";
                 button.onclick = stopAudio;
                 isPlaying = true;
-                activeStreamURL = streams[index].url;
             }
         },
         onstop: function() {
@@ -879,172 +832,76 @@ function initSoundManager() {
     soundManager.setup({
         waitForWindowLoad: true,
         onready: function() {
-        const browser = bowser.getParser(window.navigator.userAgent);
-        if (browser.getBrowserName() == "Safari" || browser.getBrowserName() == "Firefox") {
-            // Set play button to require the user gesture click
-            setButtonPlay();
-        } else {
-            playStream();
+            const browser = bowser.getParser(window.navigator.userAgent);
+            if (browser.getBrowserName() === "Safari" || browser.getBrowserName() === "Firefox") {
+                setButtonPlay();
+            } else {
+                playStream();
+            }
         }
-    }
     });
 }
 
 function stopAudio() {
     if(!isHLS) {
         soundManager.stopAll();
-        // Make sure one more time that all SM sounds have been destroyed/erased from memory
         for (let i = 0; i <= index; i++) {
             soundManager.destroySound("stream" + i);
         }
-        //soundManager.destroySound(activeStreamID);
         index = 0;
     } else {
-        player.pause();
-        hls.detachMedia(player);
+        audio.pause();
+        hls.detachMedia(audio);
     }
-    return false;
+    setButtonPlay();
+    isPlaying = false;
 }
 
 function playAudio() {
     if(!isHLS) {
         playStream();
     } else {
-        // If the activeStreamURL is still empty, it means that the connection was paused before finding a valid stream to be played
-        if(activeStreamURL == "") {
-            index=0;
+        if(activeStreamURL === "") {
+            index = 0;
             playStream();
         } else {
             playHlsStream(activeStreamURL);
         }
     }
-    return false;
+    isPlaying = true;
 }
 
-// Play audio with promise
 function playWithPromise() {
-    // Get promise for play event on the HTMLAudioElement
-    const promise = player.play();
-    // Use promise to track autoplay policy if supported
+    const promise = audio.play();
     if (promise !== undefined) {
         promise.then(function() {
             button.innerHTML = "<i class=\"icon stop_icon bx bx-pause\"></i>";
             button.onclick = stopAudio;
         }).catch(error => {
-            // Auto-play was prevented
-            // Show paused UI.
-            player.pause();
-            hls.detachMedia(player);
+            audio.pause();
+            hls.detachMedia(audio);
             setButtonPlay();
         });
-    // Check if auto-play is set on the HTMLAudioElement
-    } else if (player.getAttribute("autoplay") !== "true") {
-        // Setting auto-play on the HTMLAudioElement is required for the Android Samsung and stock browser
-        player.setAttribute("autoplay", true);
-        const browser = bowser.getParser(window.navigator.userAgent);
-        // Catch iOS never supports autoplay, catch if promises are not supported
-        if (browser.getBrowserName() == "Safari") {
-            // Set play button to require the user gesture click
-            setButtonPlay();
-        }
+    } else if (audio.getAttribute("autoplay") !== "true") {
+        audio.setAttribute("autoplay", true);
     }
 }
 
-/**
- * Play button
- */
 function setButtonPlay() {
     button.innerHTML = "<i class=\"icon play_icon bx bx-play\"></i>";
     button.onclick = playAudio;
 }
 
-/**
- *  ------------------------
- *  -- VOLUME SLIDER CODE --
- *  ------------------------
- */
-
-/**
- * Add volume slider
- */
-function addVolumeSlider() {
-    const slider = document.getElementById("radio-slider");
-    changeVolume(localStorage.getItem("volume"));
-    slider.addEventListener("input", (e) => {
-        changeVolume(e.target.value, true);
-    });
-}
-
-/**
- * Change volume
- */
-function changeVolume(vol, isUserInteraction) {
-    const volume = isNumeric(parseInt(vol)) ? parseInt(vol) : 100;
-    const slider = document.getElementById("radio-slider");
-    const browser = bowser.getParser(window.navigator.userAgent);
-    // Apply to slider
-    slider.value = volume;
-    // Mute
-    if (volume === 0) {
-        // Get last volume
-        let volumeUnMute = getVolume("volume", false);
-        // Prevent 0 as last volume
-        volumeUnMute = volumeUnMute > 0 ? volumeUnMute : browser.getOSName(true) == "ios" ? 100 : 50;
-        // Save last volume as unmute volume
-        localStorage.setItem("volume_unmute", volumeUnMute);
-        // Set speaker icon off and mute
-        if (!player.muted) {
-            //setButtonMute();
-            // Use mute on iOS because the volume property is not settable in JavaScript
-            //bowser.ios && bowser.osversion.split(".")[0] < 10 ? player.pause(): player.muted = true;
-        }
+function setVolume(value) {
+    audio.volume = value;
+    if (audio.setVolume) {
+        audio.setVolume(value * 100);
     }
-
-    // Save new volume value
-    localStorage.setItem("volume", volume);
-    // Apply new volume if HLS
-    player.volume = volume / 100;
-    //Apply new volume if SoundManager
-    if(audio != null) {
-        audio.setVolume(volume);
-    }
-
-    return volume;
 }
-
-/**
- * Get volume
- */
-function getVolume(key, normalized) {
-    let volume = 100;
-    // Get volume value
-    volume = localStorage.getItem(key);
-    // Volume value must be an integer
-    volume = parseInt(volume);
-    // Validate volume value
-    volume = isNumeric(volume) && volume >= 0 && volume <= 100 ? volume : 100;
-    return normalized ? volume / 100 : volume;
-}
-
-/**
- * Check if number is numeric
- */
-function isNumeric(n) {
-    return !isNaN(parseFloat(n)) && isFinite(n);
-}
-    </script>
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
-
-<!-- Include SoundManager2 for standard audio format support -->
+<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/soundmanager2/2.97a.20170601/script/soundmanager2.min.js"></script>
-    
-  </body>
-
-  
+</body>
 </html>
-
-
-
-
