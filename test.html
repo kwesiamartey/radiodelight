@@ -898,6 +898,15 @@ function setVolume(value) {
         audio.setVolume(value * 100);
     }
 }
+
+
+ function togglePlay() {
+    if (isPlaying) {
+        stopAudio();
+    } else {
+        playAudio();
+    }
+} 
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
