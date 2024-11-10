@@ -760,8 +760,9 @@ $(document).ready(function () {
 
 function getStreams() {
     // Get the radio station name, last element of the current url
-    var currentRadioStation = window.location.href.split("/")[3];
-    var apiUrl = window.location.origin + "/streams/" + currentRadioStation;
+    //var currentRadioStation = window.location.href.split("/")[3];
+   // var apiUrl = window.location.origin + "/streams/" + currentRadioStation;
+    var apiUrl = 'http://stream.dbmedia.se/crr96'
     fetch(apiUrl)
         .then((res) => res.json())
         .then((data) => onStreamDataSuccess(data))
