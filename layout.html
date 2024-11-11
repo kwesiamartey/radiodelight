@@ -1071,7 +1071,7 @@ async function fetchStations(countryPath = selectedCountryPath, retries = 3, del
         console.warn('Failed to fetch entire dataset, switching to chunked loading...');
         
         // If fetching the entire dataset fails, use chunked loading
-        stationData = await fetchStationsInChunks(url, chunkSize);
+        stationData = await fetchStationsInChunks(baseUrl2, chunkSize);
         displayStations(stationData);
     }
 }
