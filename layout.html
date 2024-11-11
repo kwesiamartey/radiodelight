@@ -907,7 +907,7 @@
 
 <script>
     let stationData = []; // Store stations here to avoid multiple fetches
-    let selectedCountryPath = localStorage.getItem('selectedCountryPath') || "unitedStateRadioList.json";    //"italyRadioList.json";
+    let selectedCountryPath = localStorage.getItem('selectedCountryPath') || "italyRadioList.json";
     //let selectedCountryPath = '';
     let currentAudio = null; // Added this declaration
     
@@ -1064,7 +1064,7 @@ async function fetchStations(countryPath = selectedCountryPath, retries = 3, del
 
     try {
         // Attempt to fetch the entire dataset at once
-        const stationData = await fetchWithRetry(url, retries, delay);
+        const stationData = await fetchWithRetry(baseUrl2, retries, delay);
 
         // If data is successfully fetched, display it
         displayStations(stationData);
