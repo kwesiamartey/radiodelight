@@ -1056,27 +1056,24 @@ function setupPaginationButtons(data, totalPages) {
 
 
 // Function to fetch stations with retry logic
+
 async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 3000, chunkSize = 1000) {
     const baseUrl = "https://lornamobileappsdev.uk/mobileAppsWebsite/usaRadioList.json";
     const baseUrl2 = `https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`;
     const url = countryPath === "unitedStateRadioList.json" ? baseUrl : baseUrl2;
 
     try {
-        // Determine if chunk loading should be used (if API supports pagination)
-        const isChunkedLoading = true; // Change to false if the API does not support `offset` and `limit` params
+        // Attempt to fetch the entire dataset at once
+        const stationData = await fetchWithRetry(url, retries, delay);
 
-        // Fetch data with or without chunked loading
-        let stationData;
-        if (isChunkedLoading) {
-            stationData = await fetchStationsInChunks(url, chunkSize);
-        } else {
-            stationData = await fetchWithRetry(url, retries, delay);
-        }
-
-        // Display the stations
+        // If data is successfully fetched, display it
         displayStations(stationData);
     } catch (error) {
-        console.error('Failed to fetch station data:', error);
+        console.warn('Failed to fetch entire dataset, switching to chunked loading...');
+        
+        // If fetching the entire dataset fails, use chunked loading
+        const stationData = await fetchStationsInChunks(url, chunkSize);
+        displayStations(stationData);
     }
 }
 
@@ -1126,6 +1123,7 @@ async function fetchStationsInChunks(url, chunkSize) {
         throw error;
     }
 }
+
 
     
 
