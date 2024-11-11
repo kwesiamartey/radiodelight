@@ -1058,7 +1058,6 @@ function setupPaginationButtons(data, totalPages) {
 // Function to fetch stations with retry logic
 
 async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 3000, chunkSize = 1000) {
-    const baseUrl = "https://lornamobileappsdev.uk/mobileAppsWebsite/usaRadioList.json";
     const baseUrl2 = `https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`;
     const url = countryPath == "unitedStateRadioList.json" ? baseUrl : baseUrl2;
 
