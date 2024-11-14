@@ -1260,7 +1260,6 @@ function createPaginationControls(totalStations, totalPages) {
 }
 
 
-
 function playStation(url, image, stationName, bit, country) {
     if (bit === '00') {
         openPopupWithData(stationName, image, url);
@@ -1292,6 +1291,7 @@ function playStation(url, image, stationName, bit, country) {
         // Append timestamp to URL for fresh audio source on each click
         const uniqueUrl = `${url}?timestamp=${Date.now()}`;
         const stationDetails = `${stationName} (${country}) (Web)`;
+
         if (uniqueUrl.endsWith('.m3u8')) {
             if (Hls.isSupported()) {
                 hls = new Hls();
@@ -1311,12 +1311,10 @@ function playStation(url, image, stationName, bit, country) {
                         switch (data.type) {
                             case Hls.ErrorTypes.NETWORK_ERROR:
                                 console.error('Network error occurred');
-                              
                                 handlePlaybackError(uniqueUrl, stationDetails);
                                 break;
                             case Hls.ErrorTypes.MEDIA_ERROR:
                                 hls.recoverMediaError();
-                              
                                 handlePlaybackError(uniqueUrl, stationDetails);
                                 break;
                             default:
@@ -1349,10 +1347,8 @@ function playStation(url, image, stationName, bit, country) {
                                     this.play();
                                     progress.style.display = 'none';
                                     playButton.textContent = '||';
-                                    
                                     sendEmailNotification(stationDetails, url, "success");
                                 } else {
-                                
                                     handlePlaybackError(uniqueUrl, stationDetails);
                                     console.error('SoundManager2 failed to load the audio.');
                                 }
@@ -1365,7 +1361,6 @@ function playStation(url, image, stationName, bit, country) {
                     },
                     ontimeout: function() {
                         console.error('SoundManager2 could not be loaded.');
-                     
                         handlePlaybackError(uniqueUrl, stationDetails);
                     }
                 });
@@ -1376,7 +1371,6 @@ function playStation(url, image, stationName, bit, country) {
                 audioElement.play();
                 progress.style.display = 'none';
                 playButton.textContent = '||';
-                
                 sendEmailNotification(stationDetails, url, "success");
             });
         }
