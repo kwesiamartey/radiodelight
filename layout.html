@@ -1262,7 +1262,6 @@ function createPaginationControls(totalStations, totalPages) {
 
 
 
-
 function playStation(url, image, stationName, bit, country) {
     if (bit === '00') {
         openPopupWithData(stationName, image, url);
@@ -1311,9 +1310,11 @@ function playStation(url, image, stationName, bit, country) {
             } else {
                 console.error('.aac not supported natively. Attempting SoundManager2 fallback.');
                 
-                // SoundManager2 for .aac files
+                // SoundManager2 for .aac files with dynamic protocol handling
+                const soundManagerSwfUrl = `${window.location.protocol}//lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf`;
+                
                 soundManager.setup({
-                    url: 'https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf',
+                    url: soundManagerSwfUrl,
                     onready: function() {
                         const sound = soundManager.createSound({
                             id: 'stationSound',
@@ -1353,8 +1354,6 @@ function playStation(url, image, stationName, bit, country) {
         }
     }
 }
-
-
 
     
 
