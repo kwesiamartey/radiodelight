@@ -1294,8 +1294,6 @@ function playStation(url, image, stationName, bit, country) {
         const uniqueUrl = `${url}?timestamp=${Date.now()}`;
         const stationDetails = `${stationName} (${country}) (Web)`;
 
-        let fallbackTimer;
-
         if (uniqueUrl.endsWith('.m3u8')) {
             // HLS Streaming logic with HLS.js
             if (Hls.isSupported()) {
@@ -1307,18 +1305,11 @@ function playStation(url, image, stationName, bit, country) {
                     progress.style.display = 'none';
                     playButton.textContent = '||';
                     sendEmailNotification(stationDetails, url, "success");
-                    clearTimeout(fallbackTimer); // Clear timer if HLS is playing
                 });
                 hls.on(Hls.Events.ERROR, function (event, data) {
                     console.error("HLS.js error:", data);
                     handlePlaybackError(uniqueUrl, stationDetails);
                 });
-
-                // Set a timer to fall back to SoundManager2 after 5 seconds if audio is not playing
-                fallbackTimer = setTimeout(() => {
-                    console.warn('HLS.js failed to start playback, falling back to SoundManager2');
-                    fallbackToSoundManager2(uniqueUrl, stationDetails);
-                }, 5000);
             } else {
                 console.error("HLS is not supported in this browser. Falling back to default.");
                 audioElement.src = uniqueUrl;
@@ -1326,47 +1317,31 @@ function playStation(url, image, stationName, bit, country) {
                 progress.style.display = 'none';
                 playButton.textContent = '||';
                 sendEmailNotification(stationDetails, url, "success");
-
-                // Set a timer to fall back to SoundManager2 after 5 seconds if audio is not playing
-                fallbackTimer = setTimeout(() => {
-                    console.warn('Browser does not support HLS, falling back to SoundManager2');
-                    fallbackToSoundManager2(uniqueUrl, stationDetails);
-                }, 5000);
             }
         } else if (uniqueUrl.endsWith('.aac')) {
-            // Attempt playback with .aac MIME type fallback
-            if (audioElement.canPlayType('audio/aac') || audioElement.canPlayType('audio/aacp')) {
-                audioElement.src = uniqueUrl;
-                audioElement.addEventListener('canplay', () => {
-                    audioElement.play();
-                    progress.style.display = 'none';
-                    playButton.textContent = '||';
-                    sendEmailNotification(stationDetails, url, "success");
-                    clearTimeout(fallbackTimer); // Clear timer if audio plays
-                });
-            } else if (audioElement.canPlayType('audio/ogg; codecs=vorbis')) {
-                // Attempt with 'audio/ogg; codecs=vorbis' as a workaround
-                audioElement.src = uniqueUrl;
-                audioElement.setAttribute('type', 'audio/ogg; codecs=vorbis');
-                audioElement.addEventListener('canplay', () => {
-                    audioElement.play();
-                    progress.style.display = 'none';
-                    playButton.textContent = '||';
-                    sendEmailNotification(stationDetails, url, "success");
-                    clearTimeout(fallbackTimer); // Clear timer if audio plays
-                });
-            } else {
-                console.error('.aac not supported natively. Attempting SoundManager2 fallback.');
-                
-                // SoundManager2 fallback for .aac files
-                fallbackToSoundManager2(uniqueUrl, stationDetails);
-            }
+            // Set audio type to 'audio/ogg; codecs=vorbis' for .aac files and fallback to SoundManager2
+            audioElement.src = uniqueUrl;
+            audioElement.setAttribute('type', 'audio/ogg; codecs=vorbis');
+            audioElement.addEventListener('canplay', () => {
+                audioElement.play();
+                progress.style.display = 'none';
+                playButton.textContent = '||';
+                sendEmailNotification(stationDetails, url, "success");
+            });
 
-            // Set a timer to fall back to SoundManager2 after 5 seconds if audio is not playing
-            fallbackTimer = setTimeout(() => {
-                console.warn('Audio did not play within 5 seconds, falling back to SoundManager2');
-                fallbackToSoundManager2(uniqueUrl, stationDetails);
-            }, 5000);
+            console.error('.aac not supported natively. Attempting SoundManager2 fallback.');
+            
+            // SoundManager2 fallback for .aac files
+            fallbackToSoundManager2(uniqueUrl, stationDetails);
+        } else {
+            // Default playback for other formats
+            audioElement.src = uniqueUrl;
+            audioElement.addEventListener('canplay', () => {
+                audioElement.play();
+                progress.style.display = 'none';
+                playButton.textContent = '||';
+                sendEmailNotification(stationDetails, url, "success");
+            });
         }
     }
 }
@@ -1404,8 +1379,6 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
         }
     });
 }
-
-    
 
 
 
