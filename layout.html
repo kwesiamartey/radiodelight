@@ -1295,7 +1295,29 @@ function playStation(url, image, stationName, bit, country) {
         const stationDetails = `${stationName} (${country}) (Web)`;
 
         if (uniqueUrl.endsWith('.m3u8')) {
-            // HLS Streaming logic...
+            // HLS Streaming logic with HLS.js
+            if (Hls.isSupported()) {
+                hls = new Hls();
+                hls.loadSource(uniqueUrl);
+                hls.attachMedia(audioElement);
+                hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+                    audioElement.play();
+                    progress.style.display = 'none';
+                    playButton.textContent = '||';
+                    sendEmailNotification(stationDetails, url, "success");
+                });
+                hls.on(Hls.Events.ERROR, function (event, data) {
+                    console.error("HLS.js error:", data);
+                    handlePlaybackError(uniqueUrl, stationDetails);
+                });
+            } else {
+                console.error("HLS is not supported in this browser. Falling back to default.");
+                audioElement.src = uniqueUrl;
+                audioElement.play();
+                progress.style.display = 'none';
+                playButton.textContent = '||';
+                sendEmailNotification(stationDetails, url, "success");
+            }
         } else if (uniqueUrl.endsWith('.aac')) {
             // Attempt playback with .aac MIME type fallback
             if (audioElement.canPlayType('audio/aac') || audioElement.canPlayType('audio/aacp')) {
@@ -1365,8 +1387,6 @@ function playStation(url, image, stationName, bit, country) {
 }
 
     
-
-
 
 
 
