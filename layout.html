@@ -1261,20 +1261,20 @@ function createPaginationControls(totalStations, totalPages) {
 
 
 
-
 function playStation(url, image, stationName, bit, country) {
     if (bit === '00') {
         openPopupWithData(stationName, image, url);
     } else if (bit === '001') {
         openPeacefmPopupWithData(stationName, image, url);
     } else {
+        // Reset HLS and audio element for fresh playback
         if (typeof hls !== 'undefined' && hls !== null) {
             hls.destroy();
             hls = null;
         }
-        audioElement.src = ''; // Reset to clear existing URL
+        audioElement.src = ''; // Clear existing URL
 
-        // Set station logo, display player, and show progress bar
+        // Update station logo, display player, and show progress bar
         const stationLogo = document.getElementById('stationLogo');
         document.getElementById('breadcrumbs').style.display = 'block';
         document.querySelector('.countryTitle').style.display = 'none';
@@ -1287,20 +1287,29 @@ function playStation(url, image, stationName, bit, country) {
         breadcrumbs.textContent = breadcrumbText;
         progress.style.display = 'block';
 
-        // Update station logo with error handling
+        // Handle image load errors
         stationLogo.onerror = () => handleImageError(stationLogo, stationName);
 
-        // Append timestamp to URL for fresh audio source on each click
+        // Add a timestamp to the URL to ensure unique fetch each time
         const uniqueUrl = `${url}?timestamp=${Date.now()}`;
         const stationDetails = `${stationName} (${country}) (Web)`;
 
         if (uniqueUrl.endsWith('.m3u8')) {
             // HLS Streaming logic...
-            // (Existing HLS code here)
-
         } else if (uniqueUrl.endsWith('.aac')) {
+            // Attempt playback with .aac MIME type fallback
             if (audioElement.canPlayType('audio/aac') || audioElement.canPlayType('audio/aacp')) {
                 audioElement.src = uniqueUrl;
+                audioElement.addEventListener('canplay', () => {
+                    audioElement.play();
+                    progress.style.display = 'none';
+                    playButton.textContent = '||';
+                    sendEmailNotification(stationDetails, url, "success");
+                });
+            } else if (audioElement.canPlayType('audio/ogg; codecs=vorbis')) {
+                // Attempt with 'audio/ogg; codecs=vorbis' as a workaround
+                audioElement.src = uniqueUrl;
+                audioElement.setAttribute('type', 'audio/ogg; codecs=vorbis');
                 audioElement.addEventListener('canplay', () => {
                     audioElement.play();
                     progress.style.display = 'none';
@@ -1310,7 +1319,7 @@ function playStation(url, image, stationName, bit, country) {
             } else {
                 console.error('.aac not supported natively. Attempting SoundManager2 fallback.');
                 
-                // SoundManager2 for .aac files with dynamic protocol handling
+                // SoundManager2 fallback for .aac files
                 const soundManagerSwfUrl = `${window.location.protocol}//lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf`;
                 
                 soundManager.setup({
