@@ -1116,7 +1116,7 @@ async function fetchWithRetry(url, retries, delay) {
 
 // Function for chunk loading
 async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 3000, chunkSize = 1000) {
-    const baseUrl2 = https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath};
+    const baseUrl2 = `https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`;
 
     try {
         // Attempt to fetch the entire dataset at once
