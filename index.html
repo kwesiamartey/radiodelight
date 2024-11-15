@@ -1061,24 +1061,40 @@ function setupPaginationButtons(data, totalPages) {
 
 
 // Function to fetch stations with retry logic
-
-async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 3000, chunkSize = 1000) {
+async function fetchStations(
+    countryPath = selectedCountryPath,
+    retries = 3,
+    delay = 3000,
+    chunkSize = 1000
+) {
     const baseUrl2 = `https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`;
 
     try {
         // Attempt to fetch the entire dataset at once
         stationData = await fetchWithRetry(baseUrl2, retries, delay);
 
-        // If data is successfully fetched, display it
+        // Sort data in descending order based on the desired property (e.g., `name` or `added`)
+        stationData.sort((a, b) => (a.name < b.name ? 1 : -1));
+
+        // Display the sorted stations
         displayStations(stationData);
     } catch (error) {
         console.warn('Failed to fetch entire dataset, switching to chunked loading...');
-        
+
         // If fetching the entire dataset fails, use chunked loading
         stationData = await fetchStationsInChunks(baseUrl2, chunkSize);
+
+        // Sort data in descending order based on the desired property
+        stationData.sort((a, b) => (a.name < b.name ? 1 : -1));
+
+        // Display the sorted stations
         displayStations(stationData);
     }
 }
+
+
+
+    
 
 // Function to fetch data with retries
 async function fetchWithRetry(url, retries, delay) {
@@ -1110,7 +1126,7 @@ async function fetchStationsInChunks(url, chunkSize) {
             if (!response.ok) throw new Error('Network response was not ok');
 
             const data = await response.json();
-            const filteredData = data.filter(station => station.name !== 'Local Fm');
+            const filteredData = data.filter(station => station.name !== 'Local Fm' && station.added !== 1);
             allStations = allStations.concat(filteredData);
 
             if (data.length < chunkSize) {
@@ -1265,20 +1281,20 @@ function createPaginationControls(totalStations, totalPages) {
 }
 
 
-
 function playStation(url, image, stationName, bit, country) {
     if (bit === '00') {
         openPopupWithData(stationName, image, url);
     } else if (bit === '001') {
         openPeacefmPopupWithData(stationName, image, url);
     } else {
+        // Reset HLS and audio element for fresh playback
         if (typeof hls !== 'undefined' && hls !== null) {
             hls.destroy();
             hls = null;
         }
-        audioElement.src = ''; // Reset to clear existing URL
+        audioElement.src = ''; // Clear existing URL
 
-        // Set station logo, display player, and show progress bar
+        // Update station logo, display player, and show progress bar
         const stationLogo = document.getElementById('stationLogo');
         document.getElementById('breadcrumbs').style.display = 'block';
         document.querySelector('.countryTitle').style.display = 'none';
@@ -1291,101 +1307,97 @@ function playStation(url, image, stationName, bit, country) {
         breadcrumbs.textContent = breadcrumbText;
         progress.style.display = 'block';
 
-        // Update station logo with error handling
+        // Handle image load errors
         stationLogo.onerror = () => handleImageError(stationLogo, stationName);
 
-        // Append timestamp to URL for fresh audio source on each click
+        // Add a timestamp to the URL to ensure unique fetch each time
         const uniqueUrl = `${url}?timestamp=${Date.now()}`;
         const stationDetails = `${stationName} (${country}) (Web)`;
+
         if (uniqueUrl.endsWith('.m3u8')) {
+            // HLS Streaming logic with HLS.js
             if (Hls.isSupported()) {
                 hls = new Hls();
                 hls.loadSource(uniqueUrl);
                 hls.attachMedia(audioElement);
-
-                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                hls.on(Hls.Events.MEDIA_ATTACHED, function () {
                     audioElement.play();
                     progress.style.display = 'none';
                     playButton.textContent = '||';
-                   
                     sendEmailNotification(stationDetails, url, "success");
                 });
-
-                hls.on(Hls.Events.ERROR, (event, data) => {
-                    if (data.fatal) {
-                        switch (data.type) {
-                            case Hls.ErrorTypes.NETWORK_ERROR:
-                                console.error('Network error occurred');
-                              
-                                handlePlaybackError(uniqueUrl, stationDetails);
-                                break;
-                            case Hls.ErrorTypes.MEDIA_ERROR:
-                                hls.recoverMediaError();
-                              
-                                handlePlaybackError(uniqueUrl, stationDetails);
-                                break;
-                            default:
-                                hls.destroy();
-                                break;
-                        }
-                    }
-                });
-            } else if (audioElement.canPlayType('application/vnd.apple.mpegurl')) {
-                audioElement.src = uniqueUrl;
-                audioElement.addEventListener('canplay', () => {
-                    audioElement.play();
-                    progress.style.display = 'none';
-                    playButton.textContent = '||';
-                   
-                    sendEmailNotification(stationDetails, url, "success");
+                hls.on(Hls.Events.ERROR, function (event, data) {
+                    console.error("HLS.js error:", data);
+                    handlePlaybackError(uniqueUrl, stationDetails);
                 });
             } else {
-                console.error('HLS is not supported in this browser. Attempting SoundManager2 fallback.');
-
-                // Use SoundManager2 fallback if HLS is not supported
-                soundManager.setup({
-                    url: '/path/to/soundmanager2.swf',
-                    onready: function() {
-                        const sound = soundManager.createSound({
-                            id: 'stationSound',
-                            url: uniqueUrl,
-                            onload: function(success) {
-                                if (success) {
-                                    this.play();
-                                    progress.style.display = 'none';
-                                    playButton.textContent = '||';
-                                    
-                                    sendEmailNotification(stationDetails, url, "success");
-                                } else {
-                                
-                                    handlePlaybackError(uniqueUrl, stationDetails);
-                                    console.error('SoundManager2 failed to load the audio.');
-                                }
-                            },
-                            onfinish: function() {
-                                playButton.textContent = '▶'; // Reset play button when finished
-                            }
-                        });
-                        sound.play();
-                    },
-                    ontimeout: function() {
-                        console.error('SoundManager2 could not be loaded.');
-                     
-                        handlePlaybackError(uniqueUrl, stationDetails);
-                    }
-                });
+                console.error("HLS is not supported in this browser. Falling back to default.");
+                audioElement.src = uniqueUrl;
+                audioElement.play();
+                progress.style.display = 'none';
+                playButton.textContent = '||';
+                sendEmailNotification(stationDetails, url, "success");
             }
+        } else if (uniqueUrl.endsWith('.aac')) {
+            // Set audio type to 'audio/ogg; codecs=vorbis' for .aac files and fallback to SoundManager2
+            audioElement.src = uniqueUrl;
+            audioElement.setAttribute('type', 'audio/ogg; codecs=vorbis');
+            audioElement.addEventListener('canplay', () => {
+                audioElement.play();
+                progress.style.display = 'none';
+                playButton.textContent = '||';
+                sendEmailNotification(stationDetails, url, "success");
+            });
+
+            console.error('.aac not supported natively. Attempting SoundManager2 fallback.');
+            
+            // SoundManager2 fallback for .aac files
+            fallbackToSoundManager2(uniqueUrl, stationDetails);
         } else {
+            // Default playback for other formats
             audioElement.src = uniqueUrl;
             audioElement.addEventListener('canplay', () => {
                 audioElement.play();
                 progress.style.display = 'none';
                 playButton.textContent = '||';
-                
                 sendEmailNotification(stationDetails, url, "success");
             });
         }
     }
+}
+
+function fallbackToSoundManager2(uniqueUrl, stationDetails) {
+    // SoundManager2 fallback logic
+    const soundManagerSwfUrl = `${window.location.protocol}//lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf`;
+    
+    soundManager.setup({
+        url: soundManagerSwfUrl,
+        onready: function() {
+            const sound = soundManager.createSound({
+                id: 'stationSound',
+                url: uniqueUrl,
+                onload: function(success) {
+                    if (success) {
+                        this.play();
+                        progress.style.display = 'none';
+                        playButton.textContent = '||';
+                        sendEmailNotification(stationDetails, uniqueUrl, "success");
+                    } else {
+                        handlePlaybackError(uniqueUrl, stationDetails);
+                        console.error('SoundManager2 failed to load the audio.');
+                    }
+                },
+                onfinish: function() {
+                    playButton.textContent = '▶'; // Reset play button when finished
+                }
+            });
+            sound.play();
+        },
+        ontimeout: function() {
+            console.error('SoundManager2 could not be loaded.');
+            handlePlaybackError(uniqueUrl, stationDetails);
+        }
+    });
 }
 
 
