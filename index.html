@@ -1115,34 +1115,23 @@ async function fetchWithRetry(url, retries, delay) {
 }
 
 // Function for chunk loading
-async function fetchStationsInChunks(url, chunkSize) {
-    let offset = 0;
-    let hasMoreData = true;
-    let allStations = [];
+async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 3000, chunkSize = 1000) {
+    const baseUrl2 = https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath};
 
     try {
-        while (hasMoreData) {
-            const response = await fetch(`${url}&offset=${offset}&limit=${chunkSize}`);
-            if (!response.ok) throw new Error('Network response was not ok');
+        // Attempt to fetch the entire dataset at once
+        stationData = await fetchWithRetry(baseUrl2, retries, delay);
 
-            const data = await response.json();
-            const filteredData = data.filter(station => station.name !== 'Local Fm' && station.added !== 1);
-            allStations = allStations.concat(filteredData);
-
-            if (data.length < chunkSize) {
-                hasMoreData = false; // No more data to load
-            } else {
-                offset += chunkSize; // Move to the next chunk
-            }
-        }
-
-        return allStations;
+        // If data is successfully fetched, display it
+        displayStations(stationData);
     } catch (error) {
-        console.error('Error fetching station data in chunks:', error);
-        throw error;
+        console.warn('Failed to fetch entire dataset, switching to chunked loading...');
+        
+        // If fetching the entire dataset fails, use chunked loading
+        stationData = await fetchStationsInChunks(baseUrl2, chunkSize);
+        displayStations(stationData);
     }
 }
-
 
     
 
