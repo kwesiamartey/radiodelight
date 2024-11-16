@@ -1290,43 +1290,73 @@ async function getStreamContentType(url) {
     }
 }
 
-// Function to handle playback
-async function playStation(url, stationName, bit, country) {
-    const uniqueUrl = `${url}?timestamp=${Date.now()}`;
-    const stationDetails = `${stationName} (${country})`;
 
-    try {
-        console.log(`Attempting to play: ${stationDetails} | URL: ${uniqueUrl}`);
-        let contentType = '';
-        try {
-            contentType = await getStreamContentType(uniqueUrl);
-            console.log(`Detected Content-Type: ${contentType}`);
-        } catch (error) {
-            console.warn('Falling back to URL extension.');
-            if (uniqueUrl.endsWith('.m3u8')) contentType = 'application/vnd.apple.mpegurl';
-            else if (uniqueUrl.endsWith('.aac')) contentType = 'audio/aac';
-            else if (uniqueUrl.endsWith('.mp3')) contentType = 'audio/mpeg';
+
+
+
+function playStation(url, image, stationName, bit, country) {
+    if (bit === '00') {
+        openPopupWithData(stationName, image, url);
+    } else if (bit === '001') {
+        openPeacefmPopupWithData(stationName, image, url);
+    } else {
+        // Reset HLS and audio element for fresh playback
+        if (typeof hls !== 'undefined' && hls !== null) {
+            hls.destroy();
+            hls = null;
         }
+        audioElement.src = ''; // Clear existing URL
 
-        // Playback logic based on content type
-        if (contentType.includes('application/vnd.apple.mpegurl') || uniqueUrl.endsWith('.m3u8')) {
-            console.log('Playing with HLS.js');
-            playWithHLS(uniqueUrl, stationDetails);
-        } else if (contentType.includes('audio/aac') || uniqueUrl.endsWith('.aac')) {
+        // Update station logo, display player, and show progress bar
+        const stationLogo = document.getElementById('stationLogo');
+        document.getElementById('breadcrumbs').style.display = 'block';
+        document.querySelector('.countryTitle').style.display = 'none';
+        stationLogo.src = image;
+        stationLogo.style.display = 'block';
+        document.querySelector('.playing-station-wrap').style.display = 'block';
+        document.querySelector('.footer-div-wraaper').style.display = 'block';
+        const breadcrumbs = document.getElementById('breadcrumbs');
+        const breadcrumbText = `Radio station | ${country} | ${stationName}`;
+        breadcrumbs.textContent = breadcrumbText;
+        progress.style.display = 'block';
+
+        // Handle image load errors
+        stationLogo.onerror = () => handleImageError(stationLogo, stationName);
+
+        // Add a timestamp to the URL to ensure unique fetch each time
+        const uniqueUrl = `${url}?timestamp=${Date.now()}`;
+        const stationDetails = `${stationName} (${country}) (Web)`;
+
+        if (uniqueUrl.includes('application/vnd.apple.mpegurl') || uniqueUrl.endsWith('.m3u8')) {
+            // HLS Streaming logic with HLS.js
+            if (Hls.isSupported()) {
+                console.log('Playing with HLS.js');
+                playWithHLS(uniqueUrl, stationDetails);
+            } else {
+                console.error("HLS is not supported in this browser. Falling back to default.");
+                audioElement.src = uniqueUrl;
+                audioElement.play();
+                progress.style.display = 'none';
+                playButton.textContent = '||';
+                handlePlaybackError(url, stationDetails);
+            }
+        } else if (uniqueUrl.includes('audio/aac') || uniqueUrl.endsWith('.aac')) {
+            // Set audio type to 'audio/ogg; codecs=vorbis' for .aac files and fallback to SoundManager2
             console.log('Playing with HTML5 (AAC)');
             playWithHTML5(uniqueUrl, stationDetails, 'audio/aac');
-        } else if (contentType.includes('audio/mpeg') || uniqueUrl.endsWith('.mp3')) {
+            sendEmailNotification(stationDetails, url, "success");
+            console.error('.aac not supported natively. Attempting SoundManager2 fallback.');
+        
+        }  else if (contentType.includes('audio/mpeg') || uniqueUrl.endsWith('.mp3')) {
             console.log('Playing with HTML5 (MP3)');
             playWithHTML5(uniqueUrl, stationDetails, 'audio/mpeg');
         } else {
             console.warn('Unknown content type, falling back to SoundManager2');
             fallbackToSoundManager2(uniqueUrl, stationDetails);
         }
-    } catch (error) {
-        console.error('Error handling playback:', error);
-        handlePlaybackError(uniqueUrl, stationDetails);
     }
 }
+
 
 // Function to play using HLS.js
 function playWithHLS(url, stationDetails) {
@@ -1352,7 +1382,10 @@ function playWithHLS(url, stationDetails) {
 function playWithHTML5(url, stationDetails, mimeType) {
     audioElement.src = url;
     audioElement.type = mimeType;
+    audioElement.setAttribute('type', 'audio/ogg; codecs=vorbis');
     audioElement.addEventListener('canplay', () => {
+        progress.style.display = 'none';
+        playButton.textContent = '||';
         audioElement.play();
         console.log(`${mimeType} playback started`);
     });
