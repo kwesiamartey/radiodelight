@@ -1,11 +1,83 @@
-<html>
-    <head></head>
-    <body>
-<object type="application/x-shockwave-flash" data="https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf" width="200" height="200">
-    <param name="movie" value="https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf">
-    <param name="quality" value="high">
-    <param name="wmode" value="transparent">
-</object>
-        
-    </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoundManager2 Audio Player</title>
+    <script src="https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/script/soundmanager2.js"></script>
+</head>
+<body>
+    <div id="player-container">
+        <button id="playButton">▶</button>
+        <div id="progress" style="display: none;">Loading...</div>
+    </div>
+
+    <!-- Flash Object Fallback -->
+    <object 
+        type="application/x-shockwave-flash" 
+        data="https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf" 
+        width="0" 
+        height="0">
+        <param name="movie" value="https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf">
+        <param name="quality" value="high">
+        <param name="wmode" value="transparent">
+    </object>
+
+    <script>
+        // Prefer HTML5 but use Flash as a fallback
+        soundManager.useHTML5Audio = true; // Prefer HTML5 audio
+        soundManager.useFlashBlock = false; // Avoid forcing Flash
+        soundManager.preferFlash = false; // Default to HTML5
+
+        // Set up SoundManager2
+        soundManager.setup({
+            url: 'https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/', // Path to SWF folder
+            flashVersion: 9, // Minimum Flash version
+            debugMode: false, // Disable debug logs (set to true for debugging)
+            onready: function () {
+                console.log('SoundManager2 is ready!');
+
+                // Attach event listener to the play button
+                const playButton = document.getElementById('playButton');
+                const progress = document.getElementById('progress');
+                let sound;
+
+                playButton.addEventListener('click', function () {
+                    if (!sound) {
+                        progress.style.display = 'block'; // Show loading progress
+                        sound = soundManager.createSound({
+                            id: 'stationSound',
+                            url: 'http://s6-webradio.antenne.de/antenne?timestamp=1731761470675', // Replace with your stream URL
+                            autoPlay: true,
+                            onload: function (success) {
+                                if (success) {
+                                    console.log('Audio loaded and playing!');
+                                    progress.style.display = 'none';
+                                    playButton.textContent = '||'; // Pause button
+                                } else {
+                                    console.error('Failed to load audio.');
+                                    progress.style.display = 'none';
+                                    alert('Error: Unable to load audio.');
+                                }
+                            },
+                            onfinish: function () {
+                                playButton.textContent = '▶'; // Reset to play button
+                            }
+                        });
+                    } else if (sound.playState === 1) {
+                        sound.pause();
+                        playButton.textContent = '▶';
+                    } else {
+                        sound.play();
+                        playButton.textContent = '||';
+                    }
+                });
+            },
+            ontimeout: function () {
+                console.error('SoundManager2 setup failed or timed out.');
+                alert('Error: Unable to initialize audio playback.');
+            }
+        });
+    </script>
+</body>
 </html>
