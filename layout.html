@@ -1457,8 +1457,8 @@ function fallbackToSoundManager2(url, image, stationName, bit, country) {
     // Update station logo, breadcrumbs, and display elements
     const stationLogo = document.getElementById('stationLogo');
     const breadcrumbs = document.getElementById('breadcrumbs');
-    //const playButton = document.querySelector('.play-button');
-   // onst progress = document.getElementById('progress');
+    const playButton = document.querySelector('.play-button');
+    const progress = document.getElementById('progress');
 
     stationLogo.src = image;
     stationLogo.style.display = 'block';
@@ -1477,13 +1477,18 @@ function fallbackToSoundManager2(url, image, stationName, bit, country) {
 
     let sound = null; // Current sound instance
 
+    // Function to stop the current audio
+    function stopCurrentAudio() {
+        if (sound) {
+            sound.stop(); // Stop playback
+            sound.destruct(); // Fully clean up the old sound instance
+            sound = null; // Reset the sound reference
+        }
+    }
+
     // Function to play the audio
     function playAudio(currentUrl) {
-        progress.style.display = 'block';
-        if (sound) {
-            sound.stop(); // Stop any currently playing audio
-            sound.destruct(); // Fully clean up the old sound instance
-        }
+        stopCurrentAudio(); // Stop any currently playing audio
 
         sound = soundManager.createSound({
             id: 'stationSound',
@@ -1509,6 +1514,7 @@ function fallbackToSoundManager2(url, image, stationName, bit, country) {
     // Click event for play button
     playButton.onclick = () => {
         if (!sound || sound.playState === 0) {
+            progress.style.display = 'block';
             playAudio(`${url}?timestamp=${Date.now()}`); // Play the initial URL
         } else if (sound.paused) {
             sound.play();
@@ -1542,6 +1548,7 @@ function fallbackToSoundManager2(url, image, stationName, bit, country) {
         ontimeout: function () {
             console.error('SoundManager2 setup timed out.');
             alert('Error: Unable to initialize audio playback.');
+            stopCurrentAudio();
         }
     });
 }
