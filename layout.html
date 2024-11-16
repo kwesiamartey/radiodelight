@@ -1329,17 +1329,8 @@ function playStation(url, image, stationName, bit, country) {
 
         if (uniqueUrl.includes('application/vnd.apple.mpegurl') || uniqueUrl.endsWith('.m3u8')) {
             // HLS Streaming logic with HLS.js
-            if (Hls.isSupported()) {
-                console.log('Playing with HLS.js');
-                playWithHLS(uniqueUrl, stationDetails);
-            } else {
-                console.error("HLS is not supported in this browser. Falling back to default.");
-                audioElement.src = uniqueUrl;
-                audioElement.stop();
-                progress.style.display = 'none';
-                playButton.textContent = '▶';
-                handlePlaybackError(url, stationDetails);
-            }
+            console.log('Playing with HLS.js');
+            playWithHLS(uniqueUrl, stationDetails);
         } else if (uniqueUrl.includes('audio/aac') || uniqueUrl.endsWith('.aac')) {
             // Set audio type to 'audio/ogg; codecs=vorbis' for .aac files and fallback to SoundManager2
             console.log('Playing with HTML5 (AAC)');
@@ -1375,6 +1366,9 @@ function playWithHLS(url, stationDetails) {
             handlePlaybackError(url, stationDetails);
         });
     } else {
+        audioElement.stop();
+        progress.style.display = 'none';
+        playButton.textContent = '||';
         console.error('HLS.js not supported in this browser. Falling back to default.');
     
     }
@@ -1405,6 +1399,8 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
 
     let sound; // Declare the sound variable outside the setup
 
+     const urll = `${uniqueUrl}?timestamp=${Date.now()}`;
+
     // Set up SoundManager2
     soundManager.setup({
         url: 'https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/', // Path to SWF folder
@@ -1418,7 +1414,7 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
 
             // Function to play audio with the current uniqueUrl
             function playAudio(url) {
-                console.log(`Playing URL: ${url}`);
+                console.log(`Playing URL: ${urll}`);
 
                 if (sound) {
                     sound.stop(); // Stop the existing sound instance
@@ -1428,7 +1424,7 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                 // Create a new sound instance with the updated URL
                 sound = soundManager.createSound({
                     id: 'stationSound',
-                    url: url, // Use the updated uniqueUrl
+                    url: urll, // Use the updated uniqueUrl
                     autoPlay: true,
                     onload: function (success) {
                         if (success) {
@@ -1451,7 +1447,7 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
             playButton.addEventListener('click', function () {
                 if (!sound || sound.playState === 0) {
                     progress.style.display = 'block'; // Show loading progress
-                    playAudio(uniqueUrl); // Play the current uniqueUrl
+                    playAudio(url); // Play the current uniqueUrl
                 } else if (sound.paused) {
                     sound.play();
                     playButton.textContent = '||';
