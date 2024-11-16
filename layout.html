@@ -1454,15 +1454,15 @@ function playWithHTML5(url, image, stationName, bit, country) {
 function fallbackToSoundManager2(url, image, stationName, bit, country) {
     const stationDetails = `${stationName} (${country}) (Web)`;
 
-    // Update station logo, display player, and show progress bar
+    // Update station logo, breadcrumbs, and display elements
     const stationLogo = document.getElementById('stationLogo');
     const breadcrumbs = document.getElementById('breadcrumbs');
-    const playButton = document.querySelector('.play-button');
-    const progress = document.getElementById('progress');
+    //const playButton = document.querySelector('.play-button');
+   // onst progress = document.getElementById('progress');
 
     stationLogo.src = image;
     stationLogo.style.display = 'block';
-    document.getElementById('breadcrumbs').style.display = 'block';
+    breadcrumbs.style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'none';
     document.querySelector('.playing-station-wrap').style.display = 'block';
     document.querySelector('.footer-div-wraaper').style.display = 'block';
@@ -1471,26 +1471,20 @@ function fallbackToSoundManager2(url, image, stationName, bit, country) {
     // Handle image load errors
     stationLogo.onerror = () => handleImageError(stationLogo, stationName);
 
-    // Prefer HTML5 but use Flash as a fallback
+    // SoundManager2 setup
     soundManager.useHTML5Audio = true;
-    soundManager.useFlashBlock = false;
     soundManager.preferFlash = false;
 
-    // Add timestamp to URL for cache-busting
-    let updatedUrl = `${url}?timestamp=${Date.now()}`;
+    let sound = null; // Current sound instance
 
-    let sound; // Declare the sound variable
-
-    // Function to play audio with the updated URL
+    // Function to play the audio
     function playAudio(currentUrl) {
-        console.log(`Playing URL: ${currentUrl}`);
-
+        progress.style.display = 'block';
         if (sound) {
-            sound.stop(); // Stop the existing sound instance
-            sound.destruct(); // Destroy the existing sound instance
+            sound.stop(); // Stop any currently playing audio
+            sound.destruct(); // Fully clean up the old sound instance
         }
 
-        // Create a new sound instance with the current URL
         sound = soundManager.createSound({
             id: 'stationSound',
             url: currentUrl,
@@ -1499,7 +1493,7 @@ function fallbackToSoundManager2(url, image, stationName, bit, country) {
                 if (success) {
                     console.log('Audio loaded and playing!');
                     progress.style.display = 'none';
-                    playButton.textContent = '||'; // Pause button
+                    playButton.textContent = '||'; // Show pause button
                 } else {
                     console.error('Failed to load audio.');
                     progress.style.display = 'none';
@@ -1507,32 +1501,32 @@ function fallbackToSoundManager2(url, image, stationName, bit, country) {
                 }
             },
             onfinish: function () {
-                playButton.textContent = '▶'; // Reset to play button
+                playButton.textContent = '▶'; // Reset to play button when finished
             }
         });
     }
 
-    // Attach click event listener to the play button
+    // Click event for play button
     playButton.onclick = () => {
         if (!sound || sound.playState === 0) {
-            progress.style.display = 'block'; // Show loading progress
-            playAudio(updatedUrl); // Play the updated URL
+            playAudio(`${url}?timestamp=${Date.now()}`); // Play the initial URL
         } else if (sound.paused) {
             sound.play();
-            playButton.textContent = '||'; // Pause button
+            playButton.textContent = '||';
         } else {
             sound.pause();
-            playButton.textContent = '▶'; // Play button
+            playButton.textContent = '▶';
         }
     };
 
-    // Update the URL dynamically whenever the station changes
-    const stationItem = document.querySelectorAll('.station-item');
-    stationItem.forEach(item => {
+    // Click event for station items to change station
+    const stationItems = document.querySelectorAll('.station-item');
+    stationItems.forEach(item => {
         item.addEventListener('click', () => {
-            updatedUrl = `${url}?timestamp=${Date.now()}`; // Update the URL with a new timestamp
-            console.log(`Updated URL: ${updatedUrl}`);
-            playAudio(updatedUrl); // Play the updated URL
+            const newUrl = `${url}?timestamp=${Date.now()}`;
+            console.log(`Switching to new URL: ${newUrl}`);
+            progress.style.display = 'block'; // Show loading progress
+            playAudio(newUrl); // Play the updated URL
         });
     });
 
@@ -1543,15 +1537,14 @@ function fallbackToSoundManager2(url, image, stationName, bit, country) {
         debugMode: false,
         onready: function () {
             console.log('SoundManager2 is ready!');
-            playAudio(updatedUrl); // Play the initial URL
+            playAudio(`${url}?timestamp=${Date.now()}`); // Play the initial URL
         },
         ontimeout: function () {
-            console.error('SoundManager2 setup failed or timed out.');
+            console.error('SoundManager2 setup timed out.');
             alert('Error: Unable to initialize audio playback.');
         }
     });
 }
-
 
 
 
