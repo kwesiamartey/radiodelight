@@ -1226,6 +1226,8 @@ function displayStations(stations) {
 
             // Add click event with content type handling for playback logic
             stationItem.addEventListener('click', () => {
+                stopCurrentAudio()
+                
                 const uniqueUrl = station.url; // The station URL
                 const stationDetails = {
                     image: 'mast.jpg', // Fallback image
@@ -1452,101 +1454,87 @@ function playWithHTML5(url, image, stationName, bit, country) {
 
 // Function to handle SoundManager2 fallback
 function fallbackToSoundManager2(url, image, stationName, bit, country) {
-    const stationDetails = `${stationName} (${country}) (Web)`;
-
-    // Update station logo, breadcrumbs, and display elements
+    // DOM element references
     const stationLogo = document.getElementById('stationLogo');
     const breadcrumbs = document.getElementById('breadcrumbs');
     const playButton = document.querySelector('.play-button');
     const progress = document.getElementById('progress');
+    let currentAudio = null; // To track the currently playing audio instance
 
-    stationLogo.src = image;
-    stationLogo.style.display = 'block';
-    breadcrumbs.style.display = 'block';
-    document.querySelector('.countryTitle').style.display = 'none';
-    document.querySelector('.playing-station-wrap').style.display = 'block';
-    document.querySelector('.footer-div-wraaper').style.display = 'block';
-    breadcrumbs.textContent = `Radio station | ${country} | ${stationName}`;
+    // Helper to update the UI
+    function updateUI() {
+        stationLogo.src = image;
+        stationLogo.style.display = 'block';
+        breadcrumbs.textContent = `Radio station | ${country} | ${stationName}`;
+        breadcrumbs.style.display = 'block';
+        document.querySelector('.countryTitle').style.display = 'none';
+        document.querySelector('.playing-station-wrap').style.display = 'block';
+        document.querySelector('.footer-div-wraaper').style.display = 'block';
 
-    // Handle image load errors
-    stationLogo.onerror = () => handleImageError(stationLogo, stationName);
-
-    // SoundManager2 setup
-    soundManager.useHTML5Audio = true;
-    soundManager.preferFlash = false;
-
-    let sound = null; // Current sound instance
-
-    // Function to stop the current audio
-    function stopCurrentAudio() {
-        if (sound) {
-            sound.stop(); // Stop playback
-            sound.destruct(); // Fully clean up the old sound instance
-            sound = null; // Reset the sound reference
-        }
+        stationLogo.onerror = () => handleImageError(stationLogo, stationName);
     }
 
-    // Function to play the audio
-    function playAudio(currentUrl) {
+    // Helper to stop the current audio
+    function stopCurrentAudio() {
+        if (currentAudio?.stop) currentAudio.stop();
+        if (currentAudio?.destruct) currentAudio.destruct();
+        if (currentAudio?.pause) currentAudio.pause();
+        if (currentAudio?.destroy) currentAudio.destroy();
+
+        currentAudio = null; // Reset reference
+    }
+
+    // Play a new audio stream
+    function playAudio(streamUrl) {
         stopCurrentAudio(); // Stop any currently playing audio
 
-        sound = soundManager.createSound({
+        currentAudio = soundManager.createSound({
             id: 'stationSound',
-            url: currentUrl,
+            url: streamUrl,
             autoPlay: true,
-            onload: function (success) {
-                if (success) {
-                    console.log('Audio loaded and playing!');
-                    progress.style.display = 'none';
-                    playButton.textContent = '||'; // Show pause button
-                } else {
-                    console.error('Failed to load audio.');
-                    progress.style.display = 'none';
-                    alert('Error: Unable to load audio.');
-                }
+            onload(success) {
+                progress.style.display = success ? 'none' : 'block';
+                playButton.textContent = success ? '||' : '▶';
+                if (!success) alert('Error: Unable to load audio.');
             },
-            onfinish: function () {
-                playButton.textContent = '▶'; // Reset to play button when finished
+            onfinish() {
+                playButton.textContent = '▶';
             }
         });
     }
 
-    // Click event for play button
-    playButton.onclick = () => {
-        if (!sound || sound.playState === 0) {
+    // Toggle play/pause
+    function togglePlayPause() {
+        if (!currentAudio || currentAudio.playState === 0) {
             progress.style.display = 'block';
-            playAudio(`${url}?timestamp=${Date.now()}`); // Play the initial URL
-        } else if (sound.paused) {
-            sound.play();
+            playAudio(`${url}?timestamp=${Date.now()}`);
+        } else if (currentAudio.paused) {
+            currentAudio.play();
             playButton.textContent = '||';
         } else {
-            sound.pause();
+            currentAudio.pause();
             playButton.textContent = '▶';
         }
-    };
+    }
 
-    // Click event for station items to change station
-    const stationItems = document.querySelectorAll('.station-item');
-    stationItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const newUrl = `${url}?timestamp=${Date.now()}`;
-            console.log(`Switching to new URL: ${newUrl}`);
-            progress.style.display = 'block'; // Show loading progress
-            playAudio(newUrl); // Play the updated URL
-        });
-    });
+    // Attach event listeners
+    playButton.onclick = togglePlayPause;
+    document.querySelectorAll('.station-item').forEach(item =>
+        item.addEventListener('click', () =>
+            playAudio(`${url}?timestamp=${Date.now()}`)
+        )
+    );
 
     // Initialize SoundManager2
     soundManager.setup({
         url: 'https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/',
         flashVersion: 9,
         debugMode: false,
-        onready: function () {
-            console.log('SoundManager2 is ready!');
-            playAudio(`${url}?timestamp=${Date.now()}`); // Play the initial URL
+        onready() {
+            updateUI();
+            playAudio(`${url}?timestamp=${Date.now()}`);
         },
-        ontimeout: function () {
-            console.error('SoundManager2 setup timed out.');
+        ontimeout() {
             alert('Error: Unable to initialize audio playback.');
             stopCurrentAudio();
         }
