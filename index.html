@@ -1366,6 +1366,8 @@ function playStation(url, image, stationName, bit, country) {
                 });
                 hls.on(Hls.Events.ERROR, function (event, data) {
                     console.error("HLS.js error:", data);
+                     progress.style.display = 'none';
+                    audioElement.pause();
                     handlePlaybackError(uniqueUrl, stationDetails);
                 });
             } else {
@@ -1421,6 +1423,8 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                         playButton.textContent = '||';
                         sendEmailNotification(stationDetails, uniqueUrl, "success");
                     } else {
+                         progress.style.display = 'none';
+                        audioElement.pause();
                         handlePlaybackError(uniqueUrl, stationDetails);
                         console.error('SoundManager2 failed to load the audio.');
                     }
@@ -1433,6 +1437,8 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
         },
         ontimeout: function() {
             console.error('SoundManager2 could not be loaded.');
+            audioElement.pause();
+             progress.style.display = 'none';
             handlePlaybackError(uniqueUrl, stationDetails);
         }
     });
