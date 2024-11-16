@@ -1347,10 +1347,12 @@ function playStation(url, image, stationName, bit, country) {
             playWithHTML5(uniqueUrl, stationDetails);
             sendEmailNotification(stationDetails, url, "success");
             console.error('.aac not supported natively. Attempting SoundManager2 fallback.');
+            
         
         }  else if (uniqueUrl.includes('audio/mpeg') || uniqueUrl.endsWith('.mp3')) {
             console.log('Playing with HTML5 (MP3)');
             playWithHTML5(uniqueUrl, stationDetails);
+            
         } else {
             console.warn('Unknown content type, falling back to SoundManager2');
             fallbackToSoundManager2(uniqueUrl, stationDetails);
@@ -1375,7 +1377,7 @@ function playWithHLS(url, stationDetails) {
         });
     } else {
         console.error('HLS.js not supported in this browser. Falling back to default.');
-        fallbackToSoundManager2(url, stationDetails);
+    
     }
 }
 
@@ -1412,7 +1414,7 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
             debugMode: false, // Disable debug logs (set to true for debugging)
             onready: function () {
                 console.log('SoundManager2 is ready!');
-
+                console.log('url: $uniqueUrl');
                 // Attach event listener to the play button
                 const playButton = document.querySelector('.play-button');
                 const progress = document.getElementById('progress');
