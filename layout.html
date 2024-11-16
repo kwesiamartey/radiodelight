@@ -1303,7 +1303,10 @@ function playStation(url, image, stationName, bit, country) {
         const uniqueUrl = `${url}?timestamp=${Date.now()}`;
         const stationDetails = `${stationName} (${country}) (Web)`;
 
-        if (uniqueUrl.endsWith('.m3u8')) {
+        if (uniqueUrl.startsWith('http:')) {
+            console.log('Playing HTTP stream directly with SoundManager2');
+            fallbackToSoundManager2(uniqueUrl, stationDetails);
+        } else if (uniqueUrl.endsWith('.m3u8')) {
             // HLS Streaming logic with HLS.js
             if (Hls.isSupported()) {
                 hls = new Hls();
@@ -1339,8 +1342,6 @@ function playStation(url, image, stationName, bit, country) {
             });
 
             console.error('.aac not supported natively. Attempting SoundManager2 fallback.');
-            
-            // SoundManager2 fallback for .aac files
             fallbackToSoundManager2(uniqueUrl, stationDetails);
         } else {
             // Default playback for other formats
@@ -1354,6 +1355,7 @@ function playStation(url, image, stationName, bit, country) {
         }
     }
 }
+
 
 function fallbackToSoundManager2(uniqueUrl, stationDetails) {
     // SoundManager2 fallback logic
