@@ -1271,44 +1271,49 @@ function createPaginationControls(totalStations, totalPages) {
 
 
 
+// Function to get the content type of the stream URL
 async function getStreamContentType(url) {
     try {
+        console.log(`Fetching headers for URL: ${url}`);
         const response = await fetch(url, { method: 'HEAD' });
-        if (!response.ok) {
-            console.error(`Failed to fetch content type: ${response.statusText}`);
-            throw new Error(`Failed to fetch headers for URL: ${url}`);
-        }
-        const contentType = response.headers.get('Content-Type') || '';
-        console.log(`Fetched Content-Type: ${contentType}`);
-        return contentType.toLowerCase(); // Normalize case
+        console.log('Response Headers:', response.headers);
+        return response.headers.get('Content-Type') || '';
     } catch (error) {
         console.error('Error fetching content type:', error);
-        throw error;
+        throw error; // Rethrow the error to handle it in `playStation`
     }
 }
 
-// Revised Logic for Playback Assignment
-async function playStation(url, image, stationName, bit, country) {
-    resetPlayerState(); // Clear any previous state
-    updateStationUI(image, stationName, country);
-
+// Function to handle playback
+async function playStation(url, stationName, bit, country) {
     const uniqueUrl = `${url}?timestamp=${Date.now()}`;
     const stationDetails = `${stationName} (${country})`;
 
     try {
-        const contentType = await getStreamContentType(uniqueUrl);
+        console.log(`Attempting to play: ${stationDetails} | URL: ${uniqueUrl}`);
+        let contentType = '';
+        try {
+            contentType = await getStreamContentType(uniqueUrl);
+            console.log(`Detected Content-Type: ${contentType}`);
+        } catch (error) {
+            console.warn('Falling back to URL extension.');
+            if (uniqueUrl.endsWith('.m3u8')) contentType = 'application/vnd.apple.mpegurl';
+            else if (uniqueUrl.endsWith('.aac')) contentType = 'audio/aac';
+            else if (uniqueUrl.endsWith('.mp3')) contentType = 'audio/mpeg';
+        }
 
+        // Playback logic based on content type
         if (contentType.includes('application/vnd.apple.mpegurl') || uniqueUrl.endsWith('.m3u8')) {
-            console.log('Detected HLS Stream');
+            console.log('Playing with HLS.js');
             playWithHLS(uniqueUrl, stationDetails);
         } else if (contentType.includes('audio/aac') || uniqueUrl.endsWith('.aac')) {
-            console.log('Detected AAC Stream');
+            console.log('Playing with HTML5 (AAC)');
             playWithHTML5(uniqueUrl, stationDetails, 'audio/aac');
         } else if (contentType.includes('audio/mpeg') || uniqueUrl.endsWith('.mp3')) {
-            console.log('Detected MP3 Stream');
+            console.log('Playing with HTML5 (MP3)');
             playWithHTML5(uniqueUrl, stationDetails, 'audio/mpeg');
         } else {
-            console.warn('Unknown content type. Falling back to SoundManager2.');
+            console.warn('Unknown content type, falling back to SoundManager2');
             fallbackToSoundManager2(uniqueUrl, stationDetails);
         }
     } catch (error) {
@@ -1317,102 +1322,71 @@ async function playStation(url, image, stationName, bit, country) {
     }
 }
 
-// Example Fallback for Missing Headers
+// Function to play using HLS.js
+function playWithHLS(url, stationDetails) {
+    if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(url);
+        hls.attachMedia(audioElement);
+        hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+            audioElement.play();
+            console.log('HLS playback started');
+        });
+        hls.on(Hls.Events.ERROR, function (event, data) {
+            console.error('HLS.js error:', data);
+            handlePlaybackError(url, stationDetails);
+        });
+    } else {
+        console.error('HLS.js not supported in this browser. Falling back to default.');
+        fallbackToSoundManager2(url, stationDetails);
+    }
+}
+
+// Function to play with HTML5 audio element
+function playWithHTML5(url, stationDetails, mimeType) {
+    audioElement.src = url;
+    audioElement.type = mimeType;
+    audioElement.addEventListener('canplay', () => {
+        audioElement.play();
+        console.log(`${mimeType} playback started`);
+    });
+    audioElement.addEventListener('error', () => {
+        console.error(`Error playing ${mimeType}. Falling back to SoundManager2.`);
+        fallbackToSoundManager2(url, stationDetails);
+    });
+}
+
+// Function to handle SoundManager2 fallback
 function fallbackToSoundManager2(url, stationDetails) {
-    console.warn('Attempting SoundManager2 fallback...');
+    const soundManagerSwfUrl = `${window.location.protocol}//lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf`;
+
     soundManager.setup({
-        url: '/path/to/soundmanager2.swf',
+        url: soundManagerSwfUrl,
         onready: function () {
             const sound = soundManager.createSound({
-                id: 'fallbackSound',
+                id: 'stationSound',
                 url: url,
                 onload: function (success) {
                     if (success) {
-                        sound.play();
-                        progress.style.display = 'none';
-                        playButton.textContent = '||';
+                        this.play();
+                        console.log('SoundManager2 playback started');
                     } else {
-                        console.error('SoundManager2 failed to load.');
+                        console.error('SoundManager2 failed to load the audio.');
                         handlePlaybackError(url, stationDetails);
                     }
+                },
+                onfinish: function () {
+                    console.log('Playback finished');
                 },
             });
             sound.play();
         },
         ontimeout: function () {
-            console.error('SoundManager2 setup timed out.');
+            console.error('SoundManager2 could not be loaded.');
             handlePlaybackError(url, stationDetails);
         },
     });
 }
-
-
-
-
-
-
-// Helper: Reset Player State
-function resetPlayerState() {
-    if (typeof hls !== 'undefined' && hls !== null) {
-        hls.destroy();
-        hls = null;
-    }
-    audioElement.src = ''; // Clear existing audio source
-    progress.style.display = 'block';
-}
-
-// Helper: Update UI for station
-function updateStationUI(image, stationName, country) {
-    const stationLogo = document.getElementById('stationLogo');
-    document.getElementById('breadcrumbs').style.display = 'block';
-    document.querySelector('.countryTitle').style.display = 'none';
-    stationLogo.src = image;
-    stationLogo.style.display = 'block';
-    const breadcrumbs = document.getElementById('breadcrumbs');
-    breadcrumbs.textContent = `Radio station | ${country} | ${stationName}`;
-    stationLogo.onerror = () => handleImageError(stationLogo, stationName);
-}
-
-
-
-// Play with HLS.js
-function playWithHLS(url, stationDetails) {
-    if (Hls.isSupported()) {
-        hls = new Hls();
-        hls.loadSource(url);
-        hls.attachMedia(audioElement);
-        hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-            audioElement.play();
-            progress.style.display = 'none';
-            playButton.textContent = '||';
-            sendEmailNotification(stationDetails, url, 'success');
-        });
-        hls.on(Hls.Events.ERROR, () => handlePlaybackError(url, stationDetails));
-    } else {
-        console.error('HLS not supported. Falling back to native playback.');
-        fallbackToSoundManager2(url, stationDetails);
-    }
-}
-
-// Play with HTML5 Audio
-function playWithHTML5(url, stationDetails, type) {
-    audioElement.src = url;
-    audioElement.type = type;
-
-    audioElement.addEventListener('canplay', () => {
-        audioElement.play();
-        progress.style.display = 'none';
-        playButton.textContent = '||';
-        sendEmailNotification(stationDetails, url, 'success');
-    });
-
-    audioElement.onerror = () => {
-        console.error('HTML5 playback failed. Falling back to SoundManager2.');
-        fallbackToSoundManager2(url, stationDetails);
-    };
-}
-
-
 
 
     
