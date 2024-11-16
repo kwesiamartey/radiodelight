@@ -1381,29 +1381,34 @@ function playStation(url, image, stationName, bit, country) {
 
 // Function to play using HLS.js
 function playWithHLS(url, image, stationName, bit, country) {
-   const stationDetails = `${stationName} (${country}) (Web)`;
+   
+    const stationDetails = `${stationName} (${country}) (Web)`;
     
-    if (Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(url);
-        hls.attachMedia(audioElement);
-        hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-            audioElement.play();
-            console.log('HLS playback started');
-        });
-        hls.on(Hls.Events.ERROR, function (event, data) {
-            console.error('HLS.js error:', data);
-            progress.style.display = 'none';
-            playButton.textContent = '▶';
-            handlePlaybackError(url, stationDetails);
-        });
-    } else {
-        audioElement.stop();
-        progress.style.display = 'none';
-        playButton.textContent = '▶';
-        console.error('HLS.js not supported in this browser. Falling back to default.');
-    
-    }
+        if (Hls.isSupported()) {
+                hls = new Hls();
+                hls.loadSource(uniqueUrl);
+                hls.attachMedia(audioElement);
+                hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+                    audioElement.play();
+                    progress.style.display = 'none';
+                    playButton.textContent = '||';
+                    sendEmailNotification(stationDetails, url, "success");
+                });
+                hls.on(Hls.Events.ERROR, function (event, data) {
+                    console.error("HLS.js error:", data);
+                     progress.style.display = 'none';
+                    audioElement.pause();
+                    handlePlaybackError(uniqueUrl, stationDetails);
+                });
+            } else {
+                console.error("HLS is not supported in this browser. Falling back to default.");
+                audioElement.src = uniqueUrl;
+                audioElement.play();
+                progress.style.display = 'none';
+                playButton.textContent = '||';
+                sendEmailNotification(stationDetails, url, "success");
+            }
+
 }
 
 // Function to play with HTML5 audio element
@@ -1440,7 +1445,7 @@ function fallbackToSoundManager2(url, image, stationName, bit, country) {
         const breadcrumbs = document.getElementById('breadcrumbs');
         const breadcrumbText = `Radio station | ${country} | ${stationName}`;
         breadcrumbs.textContent = breadcrumbText;
-        progress.style.display = 'block';
+       
 
         // Handle image load errors
         stationLogo.onerror = () => handleImageError(stationLogo, stationName);
@@ -1502,8 +1507,9 @@ function fallbackToSoundManager2(url, image, stationName, bit, country) {
 
             // Attach click event listener to the play button
             playButton.addEventListener('click', function () {
+                 progress.style.display = 'block';
                 if (!sound || sound.playState === 0) {
-                    progress.style.display = 'block'; // Show loading progress
+                    progress.style.display = 'none'; // Show loading progress
                     playAudio(updatedUrl); // Play the updated URL
                 } else if (sound.paused) {
                     sound.play();
@@ -1520,9 +1526,6 @@ function fallbackToSoundManager2(url, image, stationName, bit, country) {
         }
     });
 }
-
-
-    
 
 
 
