@@ -1418,8 +1418,7 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                 const progress = document.getElementById('progress');
                 let sound;
 
-                playButton.addEventListener('click', function () {
-                    if (!sound) {
+                if (!sound) {
                         progress.style.display = 'block'; // Show loading progress
                         sound = soundManager.createSound({
                             id: 'stationSound',
@@ -1447,7 +1446,6 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                         sound.play();
                         playButton.textContent = '||';
                     }
-                });
             },
             ontimeout: function () {
                 console.error('SoundManager2 setup failed or timed out.');
