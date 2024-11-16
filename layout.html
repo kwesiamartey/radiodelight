@@ -1363,6 +1363,8 @@ function playWithHLS(url, stationDetails) {
         });
         hls.on(Hls.Events.ERROR, function (event, data) {
             console.error('HLS.js error:', data);
+            progress.style.display = 'none';
+            playButton.textContent = '||';
             handlePlaybackError(url, stationDetails);
         });
     } else {
