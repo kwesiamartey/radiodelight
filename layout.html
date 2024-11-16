@@ -1457,7 +1457,7 @@ function fallbackToSoundManager2(url, image, stationName, bit, country) {
     let sound; // Declare the sound variable outside the setup
 
     // Add timestamp to URL for cache-busting
-    const updatedUrl = `${uniqueUrl}?timestamp=${Date.now()}`;
+    const updatedUrl = `${url}?timestamp=${Date.now()}`;
 
     // Set up SoundManager2
     soundManager.setup({
@@ -1473,7 +1473,7 @@ function fallbackToSoundManager2(url, image, stationName, bit, country) {
 
             // Function to play audio with the updated URL
             function playAudio(url) {
-                console.log(`Playing URL: ${url}`);
+                console.log(`Playing URL: ${updatedUrl}`);
 
                 if (sound) {
                     sound.stop(); // Stop the existing sound instance
@@ -1483,7 +1483,7 @@ function fallbackToSoundManager2(url, image, stationName, bit, country) {
                 // Create a new sound instance with the updated URL
                 sound = soundManager.createSound({
                     id: 'stationSound',
-                    url: url, // Use the updated URL
+                    url: updatedUrl, // Use the updated URL
                     autoPlay: true,
                     onload: function (success) {
                         if (success) {
