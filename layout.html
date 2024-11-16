@@ -1398,36 +1398,44 @@ function playWithHTML5(url, stationDetails) {
 }
 
 // Function to handle SoundManager2 fallback
-function fallbackToSoundManager2(url, stationDetails) {
+function fallbackToSoundManager2(uniqueUrl, stationDetails) {
+    // SoundManager2 fallback logic
     const soundManagerSwfUrl = `${window.location.protocol}//lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf`;
-
+    
     soundManager.setup({
         url: soundManagerSwfUrl,
-        onready: function () {
+        onready: function() {
             const sound = soundManager.createSound({
                 id: 'stationSound',
-                url: url,
-                onload: function (success) {
+                url: uniqueUrl,
+                onload: function(success) {
                     if (success) {
                         this.play();
-                        console.log('SoundManager2 playback started');
+                        progress.style.display = 'none';
+                        playButton.textContent = '||';
+                        sendEmailNotification(stationDetails, uniqueUrl, "success");
                     } else {
+                         progress.style.display = 'none';
+                        audioElement.pause();
+                        handlePlaybackError(uniqueUrl, stationDetails);
                         console.error('SoundManager2 failed to load the audio.');
-                        handlePlaybackError(url, stationDetails);
                     }
                 },
-                onfinish: function () {
-                    console.log('Playback finished');
-                },
+                onfinish: function() {
+                    playButton.textContent = '▶'; // Reset play button when finished
+                }
             });
             sound.play();
         },
-        ontimeout: function () {
+        ontimeout: function() {
             console.error('SoundManager2 could not be loaded.');
-            handlePlaybackError(url, stationDetails);
-        },
+            audioElement.pause();
+             progress.style.display = 'none';
+            handlePlaybackError(uniqueUrl, stationDetails);
+        }
     });
 }
+
 
 
     
