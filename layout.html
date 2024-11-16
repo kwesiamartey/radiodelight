@@ -1206,26 +1206,49 @@ function displayStations(stations) {
                 };
 
                 if (uniqueUrl.includes('application/vnd.apple.mpegurl') || uniqueUrl.endsWith('.m3u8')) {
-                    playplayStation(uniqueUrl, imgElement.src, station.name, station.bit, station.location);
+                    playplayStation(station.url, imgElement.src, station.name, station.bit, station.location);
                 } else if (uniqueUrl.includes('audio/aac') || uniqueUrl.endsWith('.aac')) {
                     console.log('Playing with HTML5 (AAC)');
-                    playWithHTML5(uniqueUrl, stationDetails);
+                    playWithHTML5(station.url, station.name,imgElement.src );
                 } else if (uniqueUrl.includes('audio/mpeg') || uniqueUrl.endsWith('.mp3')) {
                     console.log('Playing with HTML5 (MP3)');
-                    playWithHTML5(uniqueUrl, stationDetails);
+                    playWithHTML5(station.url, station.name, imgElement.src);
                 } else {
                     console.warn('Unknown content type, falling back to SoundManager2');
-                    fallbackToSoundManager2(uniqueUrl, stationDetails);
+                    fallbackToSoundManager2(uniqueUrl, station.name, imgElement.src);
                 }
             });
         };
 
         // If loading fails, use `mast2.jpg` as fallback
-        imgElement.onerror = () => {
-            clearTimeout(loadTimeout);
-            imgElement.src = 'mast.jpg';
-            stationItem.addEventListener('click', () => playStation(station.url, 'mast.jpg', station.name, station.bit, station.location));
+ imgElement.onerror = () => {
+    clearTimeout(loadTimeout);
+    imgElement.src = 'mast.jpg';  // Default fallback image
+
+    // Add click event with content type handling for playback logic
+    stationItem.addEventListener('click', () => {
+        const uniqueUrl = station.url; // The station URL
+        const stationDetails = {
+            image: 'mast.jpg', // Fallback image
+            stationName: station.name,
+            bit: station.bit,
+            country: station.location,
         };
+
+        if (uniqueUrl.includes('application/vnd.apple.mpegurl') || uniqueUrl.endsWith('.m3u8')) {
+            playplayStation(uniqueUrl, 'mast.jpg', station.name, station.bit, station.location);
+        } else if (uniqueUrl.includes('audio/aac') || uniqueUrl.endsWith('.aac')) {
+            console.log('Playing with HTML5 (AAC)');
+            playWithHTML5(uniqueUrl, stationDetails,'mast.jpg' );
+        } else if (uniqueUrl.includes('audio/mpeg') || uniqueUrl.endsWith('.mp3')) {
+            console.log('Playing with HTML5 (MP3)');
+            playWithHTML5(uniqueUrl, stationDetails, 'mast.jpg');
+        } else {
+            console.warn('Unknown content type, falling back to SoundManager2');
+            fallbackToSoundManager2(uniqueUrl, stationDetails, 'mast.jpg');
+        }
+    });
+};
 
         stationList.appendChild(stationItem);
     });
@@ -1359,7 +1382,7 @@ function playStation(url, image, stationName, bit, country) {
 
 
 // Function to play using HLS.js
-function playWithHLS(url, stationDetails) {
+function playWithHLS(url, stationDetails, image) {
     if (Hls.isSupported()) {
         const hls = new Hls();
         hls.loadSource(url);
@@ -1384,7 +1407,7 @@ function playWithHLS(url, stationDetails) {
 }
 
 // Function to play with HTML5 audio element
-function playWithHTML5(url, stationDetails) {
+function playWithHTML5(url, stationDetails, image) {
     // Set audio type to 'audio/ogg; codecs=vorbis' for .aac files and fallback to SoundManager2
             audioElement.src = url;
             audioElement.setAttribute('type', 'audio/ogg; codecs=vorbis');
@@ -1402,7 +1425,26 @@ function playWithHTML5(url, stationDetails) {
 
 
 // Function to handle SoundManager2 fallback
-function fallbackToSoundManager2(uniqueUrl, stationDetails) {
+function fallbackToSoundManager2(uniqueUrl, stationDetails, image) {
+
+           // Update station logo, display player, and show progress bar
+        const stationLogo = document.getElementById('stationLogo');
+        document.getElementById('breadcrumbs').style.display = 'block';
+        document.querySelector('.countryTitle').style.display = 'none';
+        stationLogo.src = image;
+        stationLogo.style.display = 'block';
+        document.querySelector('.playing-station-wrap').style.display = 'block';
+        document.querySelector('.footer-div-wraaper').style.display = 'block';
+        const breadcrumbs = document.getElementById('breadcrumbs');
+        const breadcrumbText = `Radio station | ${country} | ${stationName}`;
+        breadcrumbs.textContent = breadcrumbText;
+        progress.style.display = 'block';
+
+        // Handle image load errors
+        stationLogo.onerror = () => handleImageError(stationLogo, stationName);
+
+
+    
     // Prefer HTML5 but use Flash as a fallback
     soundManager.useHTML5Audio = true; // Prefer HTML5 audio
     soundManager.useFlashBlock = false; // Avoid forcing Flash
