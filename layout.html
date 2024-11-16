@@ -1383,12 +1383,7 @@ function playStation(url, image, stationName, bit, country) {
 
 // Function to play using HLS.js
 function playWithHLS(url, image, stationName, bit, country) {
-   const stationDetails = {
-                    image: image
-                    stationName: name,
-                    bit: bit,
-                    country: country,
-                };
+   const stationDetails = `${stationName} (${country}) (Web)`;
     
     if (Hls.isSupported()) {
         const hls = new Hls();
@@ -1415,12 +1410,7 @@ function playWithHLS(url, image, stationName, bit, country) {
 
 // Function to play with HTML5 audio element
 function playWithHTML5(url, image, stationName, bit, country) {
-       const stationDetails = {
-                    image: image
-                    stationName: name,
-                    bit: bit,
-                    country: country,
-                };
+       const stationDetails = `${stationName} (${country}) (Web)`;
     // Set audio type to 'audio/ogg; codecs=vorbis' for .aac files and fallback to SoundManager2
             audioElement.src = url;
             audioElement.setAttribute('type', 'audio/ogg; codecs=vorbis');
@@ -1440,12 +1430,7 @@ function playWithHTML5(url, image, stationName, bit, country) {
 // Function to handle SoundManager2 fallback
 function fallbackToSoundManager2(url, image, stationName, bit, country) {
 
-           const stationDetails = {
-                    image: image
-                    stationName: name,
-                    bit: bit,
-                    country: country,
-                };
+        const stationDetails = `${stationName} (${country}) (Web)`;
            // Update station logo, display player, and show progress bar
         const stationLogo = document.getElementById('stationLogo');
         document.getElementById('breadcrumbs').style.display = 'block';
