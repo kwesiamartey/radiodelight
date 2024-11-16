@@ -1392,6 +1392,8 @@ function playWithHTML5(url, stationDetails) {
 
 }
 
+
+
 // Function to handle SoundManager2 fallback
 function fallbackToSoundManager2(uniqueUrl, stationDetails) {
     // Prefer HTML5 but use Flash as a fallback
@@ -1401,7 +1403,8 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
 
     let sound; // Declare the sound variable outside the setup
 
-     const urll = `${uniqueUrl}?timestamp=${Date.now()}`;
+    // Add timestamp to URL for cache-busting
+    const updatedUrl = `${uniqueUrl}?timestamp=${Date.now()}`;
 
     // Set up SoundManager2
     soundManager.setup({
@@ -1411,12 +1414,13 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
         onready: function () {
             console.log('SoundManager2 is ready!');
 
-            //const playButton = document.querySelector('.play-button');
-            // const progress = document.getElementById('progress');
+            // Select elements
+            const playButton = document.querySelector('.play-button');
+            const progress = document.getElementById('progress');
 
-            // Function to play audio with the current uniqueUrl
-            function playAudio(urll) {
-                console.log(`Playing URL: ${urll}`);
+            // Function to play audio with the updated URL
+            function playAudio(url) {
+                console.log(`Playing URL: ${url}`);
 
                 if (sound) {
                     sound.stop(); // Stop the existing sound instance
@@ -1426,7 +1430,7 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                 // Create a new sound instance with the updated URL
                 sound = soundManager.createSound({
                     id: 'stationSound',
-                    url: urll, // Use the updated uniqueUrl
+                    url: url, // Use the updated URL
                     autoPlay: true,
                     onload: function (success) {
                         if (success) {
@@ -1449,7 +1453,7 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
             playButton.addEventListener('click', function () {
                 if (!sound || sound.playState === 0) {
                     progress.style.display = 'block'; // Show loading progress
-                    playAudio(url); // Play the current uniqueUrl
+                    playAudio(updatedUrl); // Play the updated URL
                 } else if (sound.paused) {
                     sound.play();
                     playButton.textContent = '||';
@@ -1465,8 +1469,6 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
         }
     });
 }
-
-
 
 
     
