@@ -1270,104 +1270,95 @@ function createPaginationControls(totalStations, totalPages) {
 }
 
 
-function playStation(url, image, stationName, bit, country) {
-    if (bit === '00') {
-        openPopupWithData(stationName, image, url);
-    } else if (bit === '001') {
-        openPeacefmPopupWithData(stationName, image, url);
-    } else {
-        // Reset HLS and audio element for fresh playback
-        if (typeof hls !== 'undefined' && hls !== null) {
-            hls.destroy();
-            hls = null;
-        }
-        audioElement.src = ''; // Clear existing URL
 
-        // Update station logo, display player, and show progress bar
-        const stationLogo = document.getElementById('stationLogo');
-        document.getElementById('breadcrumbs').style.display = 'block';
-        document.querySelector('.countryTitle').style.display = 'none';
-        stationLogo.src = image;
-        stationLogo.style.display = 'block';
-        document.querySelector('.playing-station-wrap').style.display = 'block';
-        document.querySelector('.footer-div-wraaper').style.display = 'block';
-        const breadcrumbs = document.getElementById('breadcrumbs');
-        const breadcrumbText = `Radio station | ${country} | ${stationName}`;
-        breadcrumbs.textContent = breadcrumbText;
-        progress.style.display = 'block';
 
-        // Handle image load errors
-        stationLogo.onerror = () => handleImageError(stationLogo, stationName);
 
-        // Add a timestamp to the URL to ensure unique fetch each time
-        const uniqueUrl = `${url}?timestamp=${Date.now()}`;
-        const stationDetails = `${stationName} (${country}) (Web)`;
+    function playStation(url, image, stationName, bit, country) {
+    // Reset HLS and audio element
+    if (typeof hls !== 'undefined' && hls !== null) {
+        hls.destroy();
+        hls = null;
+    }
+    audioElement.src = ''; // Clear existing URL
 
-        if (uniqueUrl.startsWith('http:')) {
-            console.log('Playing HTTP stream directly with SoundManager2');
-            fallbackToSoundManager2(uniqueUrl, stationDetails);
-        } else if (uniqueUrl.endsWith('.m3u8')) {
-            // HLS Streaming logic with HLS.js
-            if (Hls.isSupported()) {
-                hls = new Hls();
-                hls.loadSource(uniqueUrl);
-                hls.attachMedia(audioElement);
-                hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-                    audioElement.play();
-                    progress.style.display = 'none';
-                    playButton.textContent = '||';
-                    sendEmailNotification(stationDetails, url, "success");
-                });
-                hls.on(Hls.Events.ERROR, function (event, data) {
-                    console.error("HLS.js error:", data);
-                    handlePlaybackError(uniqueUrl, stationDetails);
-                });
-            } else {
-                console.error("HLS is not supported in this browser. Falling back to default.");
-                audioElement.src = uniqueUrl;
-                audioElement.play();
-                progress.style.display = 'none';
-                playButton.textContent = '||';
-                sendEmailNotification(stationDetails, url, "success");
-            }
-        } else if (uniqueUrl.endsWith('.aac')) {
-            // Set audio type to 'audio/ogg; codecs=vorbis' for .aac files and fallback to SoundManager2
-            audioElement.src = uniqueUrl;
-            audioElement.setAttribute('type', 'audio/ogg; codecs=vorbis');
-            audioElement.addEventListener('canplay', () => {
+    // Update UI elements
+    const stationLogo = document.getElementById('stationLogo');
+    document.getElementById('breadcrumbs').style.display = 'block';
+    document.querySelector('.countryTitle').style.display = 'none';
+    stationLogo.src = image;
+    stationLogo.style.display = 'block';
+    document.querySelector('.playing-station-wrap').style.display = 'block';
+    document.querySelector('.footer-div-wraaper').style.display = 'block';
+    const breadcrumbs = document.getElementById('breadcrumbs');
+    const breadcrumbText = `Radio station | ${country} | ${stationName}`;
+    breadcrumbs.textContent = breadcrumbText;
+    progress.style.display = 'block';
+
+    // Handle image load errors
+    stationLogo.onerror = () => handleImageError(stationLogo, stationName);
+
+    // Ensure unique URL
+    const uniqueUrl = `${url}?timestamp=${Date.now()}`;
+    const stationDetails = `${stationName} (${country}) (Web)`;
+
+    if (uniqueUrl.endsWith('.m3u8')) {
+        // HLS Streaming logic
+        if (Hls.isSupported()) {
+            hls = new Hls();
+            hls.loadSource(uniqueUrl);
+            hls.attachMedia(audioElement);
+            hls.on(Hls.Events.MEDIA_ATTACHED, function () {
                 audioElement.play();
                 progress.style.display = 'none';
                 playButton.textContent = '||';
                 sendEmailNotification(stationDetails, url, "success");
             });
-
-            console.error('.aac not supported natively. Attempting SoundManager2 fallback.');
-            fallbackToSoundManager2(uniqueUrl, stationDetails);
+            hls.on(Hls.Events.ERROR, function () {
+                handlePlaybackError(uniqueUrl, stationDetails);
+            });
         } else {
-            // Default playback for other formats
+            console.error("HLS is not supported in this browser.");
             audioElement.src = uniqueUrl;
-            audioElement.addEventListener('canplay', () => {
-                audioElement.play();
-                progress.style.display = 'none';
-                playButton.textContent = '||';
-                sendEmailNotification(stationDetails, url, "success");
-            });
+            attemptHtml5Play(uniqueUrl, stationDetails);
         }
+    } else if (uniqueUrl.endsWith('.aac') || uniqueUrl.endsWith('.mp3') || uniqueUrl.includes('audio/mpeg')) {
+        // Attempt native playback for AAC or MP3
+        audioElement.src = uniqueUrl;
+        attemptHtml5Play(uniqueUrl, stationDetails, 'audio/mpeg');
+    } else {
+        // Default playback for other formats
+        audioElement.src = uniqueUrl;
+        attemptHtml5Play(uniqueUrl, stationDetails);
     }
 }
 
+function attemptHtml5Play(uniqueUrl, stationDetails, type = '') {
+    if (type) audioElement.setAttribute('type', type);
+
+    audioElement.addEventListener('canplay', () => {
+        audioElement.play();
+        progress.style.display = 'none';
+        playButton.textContent = '||';
+        sendEmailNotification(stationDetails, uniqueUrl, "success");
+    });
+
+    audioElement.onerror = () => {
+        console.error('HTML5 audio playback failed. Falling back to SoundManager2.');
+        fallbackToSoundManager2(uniqueUrl, stationDetails);
+    };
+}
 
 function fallbackToSoundManager2(uniqueUrl, stationDetails) {
-    // SoundManager2 fallback logic
     const soundManagerSwfUrl = `${window.location.protocol}//lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf`;
-    
+
     soundManager.setup({
         url: soundManagerSwfUrl,
-        onready: function() {
+        onready: function () {
             const sound = soundManager.createSound({
                 id: 'stationSound',
                 url: uniqueUrl,
-                onload: function(success) {
+                type: 'audio/mpeg',
+                onload: function (success) {
                     if (success) {
                         this.play();
                         progress.style.display = 'none';
@@ -1378,21 +1369,18 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                         console.error('SoundManager2 failed to load the audio.');
                     }
                 },
-                onfinish: function() {
+                onfinish: function () {
                     playButton.textContent = '▶'; // Reset play button when finished
                 }
             });
             sound.play();
         },
-        ontimeout: function() {
+        ontimeout: function () {
             console.error('SoundManager2 could not be loaded.');
             handlePlaybackError(uniqueUrl, stationDetails);
         }
     });
 }
-
-
-
 
 
 
