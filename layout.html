@@ -1380,15 +1380,26 @@ function playWithHLS(url, stationDetails) {
 
 // Function to play with HTML5 audio element
 function playWithHTML5(url, stationDetails, mimeType) {
+      if (!url || !stationDetails) {
+        console.error('Missing URL or station details');
+        return;
+    }
+
+    const audioElement = new Audio();  // Assuming you are using an HTML5 audio element
+    const progress = document.querySelector('#progress');  // Ensure this element exists
+    const playButton = document.querySelector('#playButton');  // Ensure this element exists
+
     audioElement.src = url;
-    audioElement.type = mimeType;
-    audioElement.setAttribute('type', 'audio/ogg; codecs=vorbis');
+    audioElement.type = mimeType || 'audio/mp3';
+    audioElement.setAttribute('type', mimeType || 'audio/mp3');  // Fallback to 'audio/mp3' if mimeType is not provided
+
     audioElement.addEventListener('canplay', () => {
         progress.style.display = 'none';
         playButton.textContent = '||';
         audioElement.play();
         console.log(`${mimeType} playback started`);
     });
+
     audioElement.addEventListener('error', () => {
         console.error(`Error playing ${mimeType}. Falling back to SoundManager2.`);
         fallbackToSoundManager2(url, stationDetails);
