@@ -1414,7 +1414,7 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
             debugMode: false, // Disable debug logs (set to true for debugging)
             onready: function () {
                 console.log('SoundManager2 is ready!');
-                console.log('url: $uniqueUrl');
+                console.log(`URL: ${uniqueUrl}`);
                 // Attach event listener to the play button
                 const playButton = document.querySelector('.play-button');
                 const progress = document.getElementById('progress');
