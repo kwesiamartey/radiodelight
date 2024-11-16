@@ -1432,93 +1432,98 @@ function playWithHTML5(url, image, stationName, bit, country) {
 
 // Function to handle SoundManager2 fallback
 function fallbackToSoundManager2(url, image, stationName, bit, country) {
+    const stationDetails = `${stationName} (${country}) (Web)`;
 
-        const stationDetails = `${stationName} (${country}) (Web)`;
-           // Update station logo, display player, and show progress bar
-        const stationLogo = document.getElementById('stationLogo');
-        document.getElementById('breadcrumbs').style.display = 'block';
-        document.querySelector('.countryTitle').style.display = 'none';
-        stationLogo.src = image;
-        stationLogo.style.display = 'block';
-        document.querySelector('.playing-station-wrap').style.display = 'block';
-        document.querySelector('.footer-div-wraaper').style.display = 'block';
-        const breadcrumbs = document.getElementById('breadcrumbs');
-        const breadcrumbText = `Radio station | ${country} | ${stationName}`;
-        breadcrumbs.textContent = breadcrumbText;
-       
+    // Update station logo, display player, and show progress bar
+    const stationLogo = document.getElementById('stationLogo');
+    const breadcrumbs = document.getElementById('breadcrumbs');
+    const playButton = document.querySelector('.play-button');
+    const progress = document.getElementById('progress');
 
-        // Handle image load errors
-        stationLogo.onerror = () => handleImageError(stationLogo, stationName);
+    stationLogo.src = image;
+    stationLogo.style.display = 'block';
+    document.getElementById('breadcrumbs').style.display = 'block';
+    document.querySelector('.countryTitle').style.display = 'none';
+    document.querySelector('.playing-station-wrap').style.display = 'block';
+    document.querySelector('.footer-div-wraaper').style.display = 'block';
+    breadcrumbs.textContent = `Radio station | ${country} | ${stationName}`;
 
+    // Handle image load errors
+    stationLogo.onerror = () => handleImageError(stationLogo, stationName);
 
-    
     // Prefer HTML5 but use Flash as a fallback
-    soundManager.useHTML5Audio = true; // Prefer HTML5 audio
-    soundManager.useFlashBlock = false; // Avoid forcing Flash
-    soundManager.preferFlash = false; // Default to HTML5
-
-    let sound; // Declare the sound variable outside the setup
+    soundManager.useHTML5Audio = true;
+    soundManager.useFlashBlock = false;
+    soundManager.preferFlash = false;
 
     // Add timestamp to URL for cache-busting
-    const updatedUrl = `${url}?timestamp=${Date.now()}`;
+    let updatedUrl = `${url}?timestamp=${Date.now()}`;
 
-    // Set up SoundManager2
+    let sound; // Declare the sound variable
+
+    // Function to play audio with the updated URL
+    function playAudio(currentUrl) {
+        console.log(`Playing URL: ${currentUrl}`);
+
+        if (sound) {
+            sound.stop(); // Stop the existing sound instance
+            sound.destruct(); // Destroy the existing sound instance
+        }
+
+        // Create a new sound instance with the current URL
+        sound = soundManager.createSound({
+            id: 'stationSound',
+            url: currentUrl,
+            autoPlay: true,
+            onload: function (success) {
+                if (success) {
+                    console.log('Audio loaded and playing!');
+                    progress.style.display = 'none';
+                    playButton.textContent = '||'; // Pause button
+                } else {
+                    console.error('Failed to load audio.');
+                    progress.style.display = 'none';
+                    alert('Error: Unable to load audio.');
+                }
+            },
+            onfinish: function () {
+                playButton.textContent = '▶'; // Reset to play button
+            }
+        });
+    }
+
+    // Attach click event listener to the play button
+    playButton.onclick = () => {
+        if (!sound || sound.playState === 0) {
+            progress.style.display = 'block'; // Show loading progress
+            playAudio(updatedUrl); // Play the updated URL
+        } else if (sound.paused) {
+            sound.play();
+            playButton.textContent = '||'; // Pause button
+        } else {
+            sound.pause();
+            playButton.textContent = '▶'; // Play button
+        }
+    };
+
+    // Update the URL dynamically whenever the station changes
+    const stationItem = document.querySelectorAll('.station-item');
+    stationItem.forEach(item => {
+        item.addEventListener('click', () => {
+            updatedUrl = `${url}?timestamp=${Date.now()}`; // Update the URL with a new timestamp
+            console.log(`Updated URL: ${updatedUrl}`);
+            playAudio(updatedUrl); // Play the updated URL
+        });
+    });
+
+    // Initialize SoundManager2
     soundManager.setup({
-        url: 'https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/', // Path to SWF folder
-        flashVersion: 9, // Minimum Flash version
-        debugMode: false, // Disable debug logs (set to true for debugging)
+        url: 'https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/',
+        flashVersion: 9,
+        debugMode: false,
         onready: function () {
             console.log('SoundManager2 is ready!');
-
-            // Select elements
-            const playButton = document.querySelector('.play-button');
-            const progress = document.getElementById('progress');
-
-            // Function to play audio with the updated URL
-            function playAudio(url) {
-                console.log(`Playing URL: ${updatedUrl}`);
-
-                if (sound) {
-                    sound.stop(); // Stop the existing sound instance
-                    sound.destruct(); // Destroy the existing sound instance
-                }
-
-                // Create a new sound instance with the updated URL
-                sound = soundManager.createSound({
-                    id: 'stationSound',
-                    url: updatedUrl, // Use the updated URL
-                    autoPlay: true,
-                    onload: function (success) {
-                        if (success) {
-                            console.log('Audio loaded and playing!');
-                            progress.style.display = 'none';
-                            playButton.textContent = '||'; // Pause button
-                        } else {
-                            console.error('Failed to load audio.');
-                            progress.style.display = 'none';
-                            alert('Error: Unable to load audio.');
-                        }
-                    },
-                    onfinish: function () {
-                        playButton.textContent = '▶'; // Reset to play button
-                    }
-                });
-            }
-
-            // Attach click event listener to the play button
-            playButton.addEventListener('click', function () {
-                 progress.style.display = 'block';
-                if (!sound || sound.playState === 0) {
-                    progress.style.display = 'none'; // Show loading progress
-                    playAudio(updatedUrl); // Play the updated URL
-                } else if (sound.paused) {
-                    sound.play();
-                    playButton.textContent = '||';
-                } else {
-                    sound.pause();
-                    playButton.textContent = '▶';
-                }
-            });
+            playAudio(updatedUrl); // Play the initial URL
         },
         ontimeout: function () {
             console.error('SoundManager2 setup failed or timed out.');
@@ -1526,6 +1531,7 @@ function fallbackToSoundManager2(url, image, stationName, bit, country) {
         }
     });
 }
+
 
 
 
