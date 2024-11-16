@@ -1343,13 +1343,13 @@ function playStation(url, image, stationName, bit, country) {
         } else if (uniqueUrl.includes('audio/aac') || uniqueUrl.endsWith('.aac')) {
             // Set audio type to 'audio/ogg; codecs=vorbis' for .aac files and fallback to SoundManager2
             console.log('Playing with HTML5 (AAC)');
-            playWithHTML5(uniqueUrl, stationDetails, 'audio/aac');
+            playWithHTML5(uniqueUrl, stationDetails);
             sendEmailNotification(stationDetails, url, "success");
             console.error('.aac not supported natively. Attempting SoundManager2 fallback.');
         
         }  else if (contentType.includes('audio/mpeg') || uniqueUrl.endsWith('.mp3')) {
             console.log('Playing with HTML5 (MP3)');
-            playWithHTML5(uniqueUrl, stationDetails, 'audio/mpeg');
+            playWithHTML5(uniqueUrl, stationDetails);
         } else {
             console.warn('Unknown content type, falling back to SoundManager2');
             fallbackToSoundManager2(uniqueUrl, stationDetails);
@@ -1379,7 +1379,7 @@ function playWithHLS(url, stationDetails) {
 }
 
 // Function to play with HTML5 audio element
-function playWithHTML5(url, stationDetails, mimeType) {
+function playWithHTML5(url, stationDetails) {
     // Set audio type to 'audio/ogg; codecs=vorbis' for .aac files and fallback to SoundManager2
             audioElement.src = url;
             audioElement.setAttribute('type', 'audio/ogg; codecs=vorbis');
