@@ -1521,6 +1521,7 @@ function togglePlay() {
 
 
     function handlePlaybackError(url, stationName) {
+                progress.style.display = 'none';
                 const modal = document.getElementById('errorModal');
                 const closeModal = document.getElementById('closeModal');
             
