@@ -1271,38 +1271,85 @@ function createPaginationControls(totalStations, totalPages) {
 
 
 
+async function getStreamContentType(url) {
+    try {
+        const response = await fetch(url, { method: 'HEAD' });
+        if (!response.ok) {
+            console.error(`Failed to fetch content type: ${response.statusText}`);
+            throw new Error(`Failed to fetch headers for URL: ${url}`);
+        }
+        const contentType = response.headers.get('Content-Type') || '';
+        console.log(`Fetched Content-Type: ${contentType}`);
+        return contentType.toLowerCase(); // Normalize case
+    } catch (error) {
+        console.error('Error fetching content type:', error);
+        throw error;
+    }
+}
 
-
-
+// Revised Logic for Playback Assignment
 async function playStation(url, image, stationName, bit, country) {
-    resetPlayerState(); // Clear any previous player state
-
-    // Update UI for the station
+    resetPlayerState(); // Clear any previous state
     updateStationUI(image, stationName, country);
 
-    // Add a timestamp to make the URL unique
     const uniqueUrl = `${url}?timestamp=${Date.now()}`;
-    const stationDetails = `${stationName} (${country}) (Web)`;
+    const stationDetails = `${stationName} (${country})`;
 
     try {
-        // Check the content type of the stream
         const contentType = await getStreamContentType(uniqueUrl);
 
         if (contentType.includes('application/vnd.apple.mpegurl') || uniqueUrl.endsWith('.m3u8')) {
+            console.log('Detected HLS Stream');
             playWithHLS(uniqueUrl, stationDetails);
         } else if (contentType.includes('audio/aac') || uniqueUrl.endsWith('.aac')) {
+            console.log('Detected AAC Stream');
             playWithHTML5(uniqueUrl, stationDetails, 'audio/aac');
         } else if (contentType.includes('audio/mpeg') || uniqueUrl.endsWith('.mp3')) {
+            console.log('Detected MP3 Stream');
             playWithHTML5(uniqueUrl, stationDetails, 'audio/mpeg');
         } else {
             console.warn('Unknown content type. Falling back to SoundManager2.');
             fallbackToSoundManager2(uniqueUrl, stationDetails);
         }
     } catch (error) {
-        console.error('Error detecting content type:', error);
+        console.error('Error handling playback:', error);
         handlePlaybackError(uniqueUrl, stationDetails);
     }
 }
+
+// Example Fallback for Missing Headers
+function fallbackToSoundManager2(url, stationDetails) {
+    console.warn('Attempting SoundManager2 fallback...');
+    soundManager.setup({
+        url: '/path/to/soundmanager2.swf',
+        onready: function () {
+            const sound = soundManager.createSound({
+                id: 'fallbackSound',
+                url: url,
+                onload: function (success) {
+                    if (success) {
+                        sound.play();
+                        progress.style.display = 'none';
+                        playButton.textContent = '||';
+                    } else {
+                        console.error('SoundManager2 failed to load.');
+                        handlePlaybackError(url, stationDetails);
+                    }
+                },
+            });
+            sound.play();
+        },
+        ontimeout: function () {
+            console.error('SoundManager2 setup timed out.');
+            handlePlaybackError(url, stationDetails);
+        },
+    });
+}
+
+
+
+
+
 
 // Helper: Reset Player State
 function resetPlayerState() {
@@ -1326,14 +1373,7 @@ function updateStationUI(image, stationName, country) {
     stationLogo.onerror = () => handleImageError(stationLogo, stationName);
 }
 
-// Helper: Get Content Type
-async function getStreamContentType(url) {
-    const response = await fetch(url, { method: 'HEAD' });
-    if (!response.ok) {
-        throw new Error(`Failed to fetch content type: ${response.status}`);
-    }
-    return response.headers.get('Content-Type') || '';
-}
+
 
 // Play with HLS.js
 function playWithHLS(url, stationDetails) {
@@ -1372,36 +1412,7 @@ function playWithHTML5(url, stationDetails, type) {
     };
 }
 
-// Fallback to SoundManager2
-function fallbackToSoundManager2(url, stationDetails) {
-    const soundManagerSwfUrl = `${window.location.protocol}//yourdomain/soundmanager2/swf/soundmanager2.swf`;
 
-    soundManager.setup({
-        url: soundManagerSwfUrl,
-        onready: () => {
-            const sound = soundManager.createSound({
-                id: 'stationSound',
-                url: url,
-                type: 'audio/mpeg',
-                onload: success => {
-                    if (success) {
-                        sound.play();
-                        progress.style.display = 'none';
-                        playButton.textContent = '||';
-                        sendEmailNotification(stationDetails, url, 'success');
-                    } else {
-                        handlePlaybackError(url, stationDetails);
-                    }
-                }
-            });
-            sound.play();
-        },
-        ontimeout: () => {
-            console.error('SoundManager2 setup failed.');
-            handlePlaybackError(url, stationDetails);
-        }
-    });
-}
 
 
     
