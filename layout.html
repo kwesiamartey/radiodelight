@@ -1402,58 +1402,75 @@ function playWithHTML5(url, stationDetails) {
 // Function to handle SoundManager2 fallback
 function fallbackToSoundManager2(uniqueUrl, stationDetails) {
     // Prefer HTML5 but use Flash as a fallback
-        soundManager.useHTML5Audio = true; // Prefer HTML5 audio
-        soundManager.useFlashBlock = false; // Avoid forcing Flash
-        soundManager.preferFlash = false; // Default to HTML5
+    soundManager.useHTML5Audio = true; // Prefer HTML5 audio
+    soundManager.useFlashBlock = false; // Avoid forcing Flash
+    soundManager.preferFlash = false; // Default to HTML5
 
-        // Set up SoundManager2
-        soundManager.setup({
-            url: 'https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/', // Path to SWF folder
-            flashVersion: 9, // Minimum Flash version
-            debugMode: false, // Disable debug logs (set to true for debugging)
-            onready: function () {
-                console.log('SoundManager2 is ready!');
-                console.log(`URL: ${uniqueUrl}`);
-                // Attach event listener to the play button
-                const playButton = document.querySelector('.play-button');
-                const progress = document.getElementById('progress');
-                let sound;
+    let sound; // Declare the sound variable outside the setup
 
-                if (!sound) {
-                        progress.style.display = 'block'; // Show loading progress
-                        sound = soundManager.createSound({
-                            id: 'stationSound',
-                            url: uniqueUrl, // Replace with your stream URL
-                            autoPlay: true,
-                            onload: function (success) {
-                                if (success) {
-                                    console.log('Audio loaded and playing!');
-                                    progress.style.display = 'none';
-                                    playButton.textContent = '||'; // Pause button
-                                } else {
-                                    console.error('Failed to load audio.');
-                                    progress.style.display = 'none';
-                                    alert('Error: Unable to load audio.');
-                                }
-                            },
-                            onfinish: function () {
-                                playButton.textContent = '▶'; // Reset to play button
-                            }
-                        });
-                    } else if (sound.playState === 1) {
-                        sound.pause();
-                        playButton.textContent = '▶';
-                    } else {
-                        sound.play();
-                        playButton.textContent = '||';
+    // Set up SoundManager2
+    soundManager.setup({
+        url: 'https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/', // Path to SWF folder
+        flashVersion: 9, // Minimum Flash version
+        debugMode: false, // Disable debug logs (set to true for debugging)
+        onready: function () {
+            console.log('SoundManager2 is ready!');
+
+            const playButton = document.querySelector('.play-button');
+            const progress = document.getElementById('progress');
+
+            // Function to play audio with the current uniqueUrl
+            function playAudio(url) {
+                console.log(`Playing URL: ${url}`);
+
+                if (sound) {
+                    sound.stop(); // Stop the existing sound instance
+                    sound.destruct(); // Destroy the existing sound instance
+                }
+
+                // Create a new sound instance with the updated URL
+                sound = soundManager.createSound({
+                    id: 'stationSound',
+                    url: url, // Use the updated uniqueUrl
+                    autoPlay: true,
+                    onload: function (success) {
+                        if (success) {
+                            console.log('Audio loaded and playing!');
+                            progress.style.display = 'none';
+                            playButton.textContent = '||'; // Pause button
+                        } else {
+                            console.error('Failed to load audio.');
+                            progress.style.display = 'none';
+                            alert('Error: Unable to load audio.');
+                        }
+                    },
+                    onfinish: function () {
+                        playButton.textContent = '▶'; // Reset to play button
                     }
-            },
-            ontimeout: function () {
-                console.error('SoundManager2 setup failed or timed out.');
-                alert('Error: Unable to initialize audio playback.');
+                });
             }
-        });
+
+            // Attach click event listener to the play button
+            playButton.addEventListener('click', function () {
+                if (!sound || sound.playState === 0) {
+                    progress.style.display = 'block'; // Show loading progress
+                    playAudio(uniqueUrl); // Play the current uniqueUrl
+                } else if (sound.paused) {
+                    sound.play();
+                    playButton.textContent = '||';
+                } else {
+                    sound.pause();
+                    playButton.textContent = '▶';
+                }
+            });
+        },
+        ontimeout: function () {
+            console.error('SoundManager2 setup failed or timed out.');
+            alert('Error: Unable to initialize audio playback.');
+        }
+    });
 }
+
 
 
 
