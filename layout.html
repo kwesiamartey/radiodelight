@@ -1414,8 +1414,8 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                 console.log('SoundManager2 is ready!');
 
                 // Attach event listener to the play button
-                //const playButton = document.getElementById('playButton');
-                //const progress = document.getElementById('progress');
+                const playButton = document.querySelector('.play-button');
+                const progress = document.getElementById('progress');
                 let sound;
 
                 playButton.addEventListener('click', function () {
