@@ -1209,13 +1209,13 @@ function displayStations(stations) {
                     playplayStation(station.url, imgElement.src, station.name, station.bit, station.location);
                 } else if (uniqueUrl.includes('audio/aac') || uniqueUrl.endsWith('.aac')) {
                     console.log('Playing with HTML5 (AAC)');
-                    playWithHTML5(station.url, station.name,imgElement.src );
+                    playWithHTML5(station.url, imgElement.src, station.name, station.bit, station.location);
                 } else if (uniqueUrl.includes('audio/mpeg') || uniqueUrl.endsWith('.mp3')) {
                     console.log('Playing with HTML5 (MP3)');
-                    playWithHTML5(station.url, station.name, imgElement.src);
+                    playWithHTML5(station.url, imgElement.src, station.name, station.bit, station.location);
                 } else {
                     console.warn('Unknown content type, falling back to SoundManager2');
-                    fallbackToSoundManager2(uniqueUrl, station.name, imgElement.src);
+                    fallbackToSoundManager2(station.url, imgElement.src, station.name, station.bit, station.location);
                 }
             });
         };
@@ -1239,13 +1239,13 @@ function displayStations(stations) {
             playplayStation(uniqueUrl, 'mast.jpg', station.name, station.bit, station.location);
         } else if (uniqueUrl.includes('audio/aac') || uniqueUrl.endsWith('.aac')) {
             console.log('Playing with HTML5 (AAC)');
-            playWithHTML5(uniqueUrl, stationDetails,'mast.jpg' );
+            playWithHTML5(uniqueUrl, 'mast.jpg', station.name, station.bit, station.location);
         } else if (uniqueUrl.includes('audio/mpeg') || uniqueUrl.endsWith('.mp3')) {
             console.log('Playing with HTML5 (MP3)');
-            playWithHTML5(uniqueUrl, stationDetails, 'mast.jpg');
+            playWithHTML5(uniqueUrl, 'mast.jpg', station.name, station.bit, station.location);
         } else {
             console.warn('Unknown content type, falling back to SoundManager2');
-            fallbackToSoundManager2(uniqueUrl, stationDetails, 'mast.jpg');
+            fallbackToSoundManager2(uniqueUrl, 'mast.jpg', station.name, station.bit, station.location);
         }
     });
 };
@@ -1382,7 +1382,14 @@ function playStation(url, image, stationName, bit, country) {
 
 
 // Function to play using HLS.js
-function playWithHLS(url, stationDetails, image) {
+function playWithHLS(url, image, stationName, bit, country) {
+   const stationDetails = {
+                    image: image
+                    stationName: name,
+                    bit: bit,
+                    country: country,
+                };
+    
     if (Hls.isSupported()) {
         const hls = new Hls();
         hls.loadSource(url);
@@ -1407,7 +1414,13 @@ function playWithHLS(url, stationDetails, image) {
 }
 
 // Function to play with HTML5 audio element
-function playWithHTML5(url, stationDetails, image) {
+function playWithHTML5(url, image, stationName, bit, country) {
+       const stationDetails = {
+                    image: image
+                    stationName: name,
+                    bit: bit,
+                    country: country,
+                };
     // Set audio type to 'audio/ogg; codecs=vorbis' for .aac files and fallback to SoundManager2
             audioElement.src = url;
             audioElement.setAttribute('type', 'audio/ogg; codecs=vorbis');
@@ -1425,8 +1438,14 @@ function playWithHTML5(url, stationDetails, image) {
 
 
 // Function to handle SoundManager2 fallback
-function fallbackToSoundManager2(uniqueUrl, stationDetails, image) {
+function fallbackToSoundManager2(url, image, stationName, bit, country) {
 
+           const stationDetails = {
+                    image: image
+                    stationName: name,
+                    bit: bit,
+                    country: country,
+                };
            // Update station logo, display player, and show progress bar
         const stationLogo = document.getElementById('stationLogo');
         document.getElementById('breadcrumbs').style.display = 'block';
