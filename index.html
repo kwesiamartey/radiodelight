@@ -78,6 +78,46 @@
             flex-direction: column;
         }
 
+    /* Modal Background */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1000; /* Ensure it's above other content */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5); /* Black with opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fff;
+  margin: 15% auto; /* 15% from top, centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Width of the modal */
+  border-radius: 5px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Close Button */
+.close-button {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+  color: black;
+  text-decoration: none;
+}
+
           .playing-station-wrap{
             width:400px;
             margin:auto;
@@ -789,7 +829,16 @@
 
     <div class="content">
 
-             
+    <!----modal----->         
+
+    <div id="errorModal" class="modal">
+  <div class="modal-content">
+    <span class="close-button" id="closeModal">&times;</span>
+    <p id="errorMessage">The station is currently unavailable. Please try using a different browser, such as Mozilla Firefox or Chrome, or check back in an hour as we work to resolve the issue.</p>
+  </div>
+</div>
+
+
         
     <div class="container" style="width:90v" >
     <div style="background-color:rgb(77, 100, 111); display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;margin-bottom: 21px;">
@@ -1459,7 +1508,7 @@ function togglePlay() {
     }
   }
 
-    function setVolume(value) {
+   /* function setVolume(value) {
         if (currentAudio) currentAudio.volume = value;
     }
 
@@ -1467,7 +1516,34 @@ function togglePlay() {
         progress.style.display = 'none';
         alert('The station is currently unavailable. Please try using a different browser, such as Mozilla Firefox or Chrome, or check back in an hour as we work to resolve the issue.');
         sendEmailNotification(stationName, url, 'error');
-    }
+    }*/
+
+
+
+    function handlePlaybackError(url, stationName) {
+                const modal = document.getElementById('errorModal');
+                const closeModal = document.getElementById('closeModal');
+            
+                // Display the modal
+                modal.style.display = 'block';
+            
+                // Close the modal when the close button is clicked
+                closeModal.onclick = function () {
+                    modal.style.display = 'none';
+                };
+            
+                // Close the modal when the user clicks outside of it
+                window.onclick = function (event) {
+                    if (event.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                };
+            
+                sendEmailNotification(stationName, url, 'error');
+}
+
+    
+    
 
     function sendEmailNotification(stationName, stationUrl, status) {
         const formData = new FormData();
