@@ -1202,6 +1202,8 @@ function displayStations(stations) {
                     country: station.location,
                 };
 
+                stopCurrentAudio()
+
                 if (uniqueUrl.includes('application/vnd.apple.mpegurl') || uniqueUrl.endsWith('.m3u8')) {
                     playplayStation(uniqueUrl, stationDetails.image, stationDetails.stationName, stationDetails.bit, stationDetails.country);
                 } else if (uniqueUrl.includes('audio/aac') || uniqueUrl.endsWith('.aac')) {
@@ -1336,7 +1338,25 @@ async function getStreamContentType(url) {
     }
 }
 
+// Function to stop any currently playing audio
+function stopCurrentAudio() {
+    if (currentAudio) {
+        if (currentAudio instanceof soundManager.soundClass) {
+            // If it's a SoundManager2 sound instance
+            currentAudio.stop();
+            currentAudio.destruct();
+        } else if (currentAudio instanceof HTMLAudioElement) {
+            // If it's an HTML5 Audio element
+            currentAudio.pause();
+            currentAudio.src = ''; // Clear the source
+        } else if (currentAudio.destroy) {
+            // If it's an HLS.js instance
+            currentAudio.destroy();
+        }
 
+        currentAudio = null; // Reset the reference
+    }
+}
 
 
 function playStation(url, image, stationName, bit, country) {
