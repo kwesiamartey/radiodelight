@@ -1335,9 +1335,9 @@ function playStation(url, image, stationName, bit, country) {
             } else {
                 console.error("HLS is not supported in this browser. Falling back to default.");
                 audioElement.src = uniqueUrl;
-                audioElement.play();
+                audioElement.stop();
                 progress.style.display = 'none';
-                playButton.textContent = '||';
+                playButton.textContent = '▶';
                 handlePlaybackError(url, stationDetails);
             }
         } else if (uniqueUrl.includes('audio/aac') || uniqueUrl.endsWith('.aac')) {
