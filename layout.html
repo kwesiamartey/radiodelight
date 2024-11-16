@@ -1273,115 +1273,138 @@ function createPaginationControls(totalStations, totalPages) {
 
 
 
-    function playStation(url, image, stationName, bit, country) {
-    // Reset HLS and audio element
+
+async function playStation(url, image, stationName, bit, country) {
+    resetPlayerState(); // Clear any previous player state
+
+    // Update UI for the station
+    updateStationUI(image, stationName, country);
+
+    // Add a timestamp to make the URL unique
+    const uniqueUrl = `${url}?timestamp=${Date.now()}`;
+    const stationDetails = `${stationName} (${country}) (Web)`;
+
+    try {
+        // Check the content type of the stream
+        const contentType = await getStreamContentType(uniqueUrl);
+
+        if (contentType.includes('application/vnd.apple.mpegurl') || uniqueUrl.endsWith('.m3u8')) {
+            playWithHLS(uniqueUrl, stationDetails);
+        } else if (contentType.includes('audio/aac') || uniqueUrl.endsWith('.aac')) {
+            playWithHTML5(uniqueUrl, stationDetails, 'audio/aac');
+        } else if (contentType.includes('audio/mpeg') || uniqueUrl.endsWith('.mp3')) {
+            playWithHTML5(uniqueUrl, stationDetails, 'audio/mpeg');
+        } else {
+            console.warn('Unknown content type. Falling back to SoundManager2.');
+            fallbackToSoundManager2(uniqueUrl, stationDetails);
+        }
+    } catch (error) {
+        console.error('Error detecting content type:', error);
+        handlePlaybackError(uniqueUrl, stationDetails);
+    }
+}
+
+// Helper: Reset Player State
+function resetPlayerState() {
     if (typeof hls !== 'undefined' && hls !== null) {
         hls.destroy();
         hls = null;
     }
-    audioElement.src = ''; // Clear existing URL
+    audioElement.src = ''; // Clear existing audio source
+    progress.style.display = 'block';
+}
 
-    // Update UI elements
+// Helper: Update UI for station
+function updateStationUI(image, stationName, country) {
     const stationLogo = document.getElementById('stationLogo');
     document.getElementById('breadcrumbs').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'none';
     stationLogo.src = image;
     stationLogo.style.display = 'block';
-    document.querySelector('.playing-station-wrap').style.display = 'block';
-    document.querySelector('.footer-div-wraaper').style.display = 'block';
     const breadcrumbs = document.getElementById('breadcrumbs');
-    const breadcrumbText = `Radio station | ${country} | ${stationName}`;
-    breadcrumbs.textContent = breadcrumbText;
-    progress.style.display = 'block';
-
-    // Handle image load errors
+    breadcrumbs.textContent = `Radio station | ${country} | ${stationName}`;
     stationLogo.onerror = () => handleImageError(stationLogo, stationName);
+}
 
-    // Ensure unique URL
-    const uniqueUrl = `${url}?timestamp=${Date.now()}`;
-    const stationDetails = `${stationName} (${country}) (Web)`;
+// Helper: Get Content Type
+async function getStreamContentType(url) {
+    const response = await fetch(url, { method: 'HEAD' });
+    if (!response.ok) {
+        throw new Error(`Failed to fetch content type: ${response.status}`);
+    }
+    return response.headers.get('Content-Type') || '';
+}
 
-    if (uniqueUrl.endsWith('.m3u8')) {
-        // HLS Streaming logic
-        if (Hls.isSupported()) {
-            hls = new Hls();
-            hls.loadSource(uniqueUrl);
-            hls.attachMedia(audioElement);
-            hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-                audioElement.play();
-                progress.style.display = 'none';
-                playButton.textContent = '||';
-                sendEmailNotification(stationDetails, url, "success");
-            });
-            hls.on(Hls.Events.ERROR, function () {
-                handlePlaybackError(uniqueUrl, stationDetails);
-            });
-        } else {
-            console.error("HLS is not supported in this browser.");
-            audioElement.src = uniqueUrl;
-            attemptHtml5Play(uniqueUrl, stationDetails);
-        }
-    } else if (uniqueUrl.endsWith('.aac') || uniqueUrl.endsWith('.mp3') || uniqueUrl.includes('audio/mpeg')) {
-        // Attempt native playback for AAC or MP3
-        audioElement.src = uniqueUrl;
-        attemptHtml5Play(uniqueUrl, stationDetails, 'audio/mpeg');
+// Play with HLS.js
+function playWithHLS(url, stationDetails) {
+    if (Hls.isSupported()) {
+        hls = new Hls();
+        hls.loadSource(url);
+        hls.attachMedia(audioElement);
+        hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+            audioElement.play();
+            progress.style.display = 'none';
+            playButton.textContent = '||';
+            sendEmailNotification(stationDetails, url, 'success');
+        });
+        hls.on(Hls.Events.ERROR, () => handlePlaybackError(url, stationDetails));
     } else {
-        // Default playback for other formats
-        audioElement.src = uniqueUrl;
-        attemptHtml5Play(uniqueUrl, stationDetails);
+        console.error('HLS not supported. Falling back to native playback.');
+        fallbackToSoundManager2(url, stationDetails);
     }
 }
 
-function attemptHtml5Play(uniqueUrl, stationDetails, type = '') {
-    if (type) audioElement.setAttribute('type', type);
+// Play with HTML5 Audio
+function playWithHTML5(url, stationDetails, type) {
+    audioElement.src = url;
+    audioElement.type = type;
 
     audioElement.addEventListener('canplay', () => {
         audioElement.play();
         progress.style.display = 'none';
         playButton.textContent = '||';
-        sendEmailNotification(stationDetails, uniqueUrl, "success");
+        sendEmailNotification(stationDetails, url, 'success');
     });
 
     audioElement.onerror = () => {
-        console.error('HTML5 audio playback failed. Falling back to SoundManager2.');
-        fallbackToSoundManager2(uniqueUrl, stationDetails);
+        console.error('HTML5 playback failed. Falling back to SoundManager2.');
+        fallbackToSoundManager2(url, stationDetails);
     };
 }
 
-function fallbackToSoundManager2(uniqueUrl, stationDetails) {
-    const soundManagerSwfUrl = `${window.location.protocol}//lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf`;
+// Fallback to SoundManager2
+function fallbackToSoundManager2(url, stationDetails) {
+    const soundManagerSwfUrl = `${window.location.protocol}//yourdomain/soundmanager2/swf/soundmanager2.swf`;
 
     soundManager.setup({
         url: soundManagerSwfUrl,
-        onready: function () {
+        onready: () => {
             const sound = soundManager.createSound({
                 id: 'stationSound',
-                url: uniqueUrl,
+                url: url,
                 type: 'audio/mpeg',
-                onload: function (success) {
+                onload: success => {
                     if (success) {
-                        this.play();
+                        sound.play();
                         progress.style.display = 'none';
                         playButton.textContent = '||';
-                        sendEmailNotification(stationDetails, uniqueUrl, "success");
+                        sendEmailNotification(stationDetails, url, 'success');
                     } else {
-                        handlePlaybackError(uniqueUrl, stationDetails);
-                        console.error('SoundManager2 failed to load the audio.');
+                        handlePlaybackError(url, stationDetails);
                     }
-                },
-                onfinish: function () {
-                    playButton.textContent = '▶'; // Reset play button when finished
                 }
             });
             sound.play();
         },
-        ontimeout: function () {
-            console.error('SoundManager2 could not be loaded.');
-            handlePlaybackError(uniqueUrl, stationDetails);
+        ontimeout: () => {
+            console.error('SoundManager2 setup failed.');
+            handlePlaybackError(url, stationDetails);
         }
     });
 }
 
+
+    
 
 
 
