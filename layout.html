@@ -1197,6 +1197,21 @@ function displayStations(stations) {
 
             // Add click listener with the playback logic
             stationItem.addEventListener('click', () => {
+
+                        // Update station logo, display player, and show progress bar
+                    const stationLogo = document.getElementById('stationLogo');
+                    document.getElementById('breadcrumbs').style.display = 'block';
+                    document.querySelector('.countryTitle').style.display = 'none';
+                    stationLogo.src = imgElement.src;
+                    stationLogo.style.display = 'block';
+                    document.querySelector('.playing-station-wrap').style.display = 'block';
+                    document.querySelector('.footer-div-wraaper').style.display = 'block';
+                    const breadcrumbs = document.getElementById('breadcrumbs');
+                    const breadcrumbText = `Radio station | ${station.location} | ${station.name}`;
+                    breadcrumbs.textContent = breadcrumbText;
+                    progress.style.display = 'block';
+
+                
                 const uniqueUrl = station.url; // The station URL
                 const stationDetails = {
                     image: imgElement.src,
@@ -1205,7 +1220,8 @@ function displayStations(stations) {
                     country: station.location,
                 };
                  initSoundManager(uniqueUrl);
-                 playStation(uniqueUrl, stationDetails.image, stationDetails.stationName, stationDetails.bit, stationDetails.country);
+                
+                // playStation(uniqueUrl, stationDetails.image, stationDetails.stationName, stationDetails.bit, stationDetails.country);
 
             });
         };
@@ -1363,18 +1379,7 @@ function playStation(url, image, stationName, bit, country) {
         }
         audioElement.src = ''; // Clear existing URL
 
-        // Update station logo, display player, and show progress bar
-        const stationLogo = document.getElementById('stationLogo');
-        document.getElementById('breadcrumbs').style.display = 'block';
-        document.querySelector('.countryTitle').style.display = 'none';
-        stationLogo.src = image;
-        stationLogo.style.display = 'block';
-        document.querySelector('.playing-station-wrap').style.display = 'block';
-        document.querySelector('.footer-div-wraaper').style.display = 'block';
-        const breadcrumbs = document.getElementById('breadcrumbs');
-        const breadcrumbText = `Radio station | ${country} | ${stationName}`;
-        breadcrumbs.textContent = breadcrumbText;
-        progress.style.display = 'block';
+
 
         // Handle image load errors
         stationLogo.onerror = () => handleImageError(stationLogo, stationName);
@@ -1390,7 +1395,6 @@ function playStation(url, image, stationName, bit, country) {
     } else {
         // If the activeStreamURL is still empty, it means that the connection was paused before finding a valid stream to be played
         if(url == "") {
-            index=0;
             playStream(url);
         } else {
             playHlsStream(url);
@@ -1533,6 +1537,9 @@ function initSoundManager(url) {
         return;
     }
 
+    
+
+    
     soundManager.setup({
         waitForWindowLoad: true,
         debugMode: false, // Optional: Disable debug logs for production
