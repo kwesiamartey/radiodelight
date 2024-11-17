@@ -1499,7 +1499,7 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                 if (audioElement.src && !audioElement.paused && !audioElement.ended) {
                     // HTML5 Audio is currently playing, so pause it
                     audioElement.pause();
-                    playButton.textContent = '▶';
+                    playButton.textContent = '||';
                 } else if (audioElement.src && (audioElement.paused || audioElement.ended)) {
                     // HTML5 Audio is paused or ended, so play it
                     audioElement.play().then(() => {
@@ -1509,7 +1509,7 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                         // If HTML5 fails, fallback to SoundManager2
                         if (sound && sound.playState === 0) {
                             sound.play();
-                            playButton.textContent = '||';
+                            playButton.textContent = '▶';
                         }
                     });
                 } else if (sound && sound.playState === 1 && !sound.paused) {
@@ -1519,7 +1519,7 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                 } else if (sound && sound.playState === 1 && sound.paused) {
                     // SoundManager2 is paused, so resume it
                     sound.resume();
-                    playButton.textContent = '||';
+                    playButton.textContent = '▶';
                 } else if (sound && sound.playState === 0) {
                     // SoundManager2 is not playing, so start it
                     sound.play();
