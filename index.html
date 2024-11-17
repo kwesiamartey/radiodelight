@@ -1364,49 +1364,9 @@ function playStation(url, image, stationName, bit, country) {
     
 
     // Check if the stream is an HLS stream (.m3u8)
-    if (uniqueUrl.endsWith('.m3u8')) {
+    if (Hls.isSupported()) {
         // HLS Streaming logic with HLS.js
-        if (Hls.isSupported()) {
-            progress.style.display = 'block';
-            hls = new Hls();
-            hls.loadSource(uniqueUrl);
-            hls.attachMedia(audioElement);
-            
-            // Event listener for HLS.js when media is attached
-            hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-                audioElement.play().then(() => {
-                    console.log("HLS stream is playing");
-                    progress.style.display = 'none';
-                    playButton.textContent = '||';
-                    sendEmailNotification(stationDetails, url, "success");
-                }).catch(error => {
-                    console.error("Audio play error:", error);
-                    progress.style.display = 'none';
-                    handlePlaybackError(uniqueUrl, stationDetails);
-                });
-            });
-
-            // Error handling for HLS.js
-            hls.on(Hls.Events.ERROR, function (event, data) {
-                console.error("HLS.js error:", data);
-                progress.style.display = 'none';
-                audioElement.pause();
-                hls.destroy();
-                handlePlaybackError(uniqueUrl, stationDetails);
-            });
-        } else {
-            console.warn("HLS is not supported in this browser. Attempting direct play.");
-            audioElement.src = uniqueUrl;
-            audioElement.play().then(() => {
-                progress.style.display = 'none';
-                playButton.textContent = '||';
-                sendEmailNotification(stationDetails, url, "success");
-            }).catch(error => {
-                console.error("Audio play error:", error);
-                progress.style.display = 'none';
-                handlePlaybackError(uniqueUrl, stationDetails);
-            });
-        }
+           playWithHLS(uniqueUrl)
     } else {
         // Handle fallback for non-HLS streams (.aac, .mp3)
         console.error('.aac or other formats not natively supported. Attempting SoundManager2 fallback.');
@@ -1417,6 +1377,38 @@ function playStation(url, image, stationName, bit, country) {
 
 
 
+function playWithHLS(url){
+
+     // Check if HLS is supported
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(url);
+            hls.attachMedia(audioElement);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                audioElement.play();
+                playButton.textContent = '||';
+            });
+        } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+            // For Safari (native HLS support)
+            audioElement.src = url;
+            audioElement.addEventListener('loadedmetadata', () => {
+                audioElement.play();
+                playButton.textContent = '||';
+            });
+        }
+
+        // Toggle play/pause
+       /* playButton.addEventListener('click', () => {
+            if (audioElement.paused) {
+                audioElement.play();
+                playButton.textContent = '||';
+            } else {
+                audioElement.pause();
+                playButton.textContent = 'Play';
+            }
+        });*/
+
+}
 
 
 
@@ -1495,7 +1487,7 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
             };
 
             // Play/Pause button functionality
-            playButton.addEventListener('click', function () {
+           /* playButton.addEventListener('click', function () {
                 if (audioElement.src && !audioElement.paused && !audioElement.ended) {
                     // HTML5 Audio is currently playing, so pause it
                     audioElement.pause();
@@ -1525,7 +1517,7 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                     sound.play();
                     playButton.textContent = '||';
                 }
-            });
+            });*/
         },
         ontimeout: function () {
             console.error('SoundManager2 setup failed or timed out.');
