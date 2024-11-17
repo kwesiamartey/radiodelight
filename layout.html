@@ -1421,7 +1421,7 @@ function playWithHLS(stream, image, stationName, bit, country) {
             activeStreamURL = stream;
             playWithPromise();
             addVolumeSlider();
-            sendEmailNotification(stationDetails, url, "success");
+            sendEmailNotification(stationDetails, stream, "success");
         });
         hls.on(Hls.Events.MANIFEST_LOADING, function () {
             if (playButton.innerHTML != "<i class=\"icon loading_icon bx bx-loader-alt\"></i>") {
@@ -1438,7 +1438,7 @@ function playWithHLS(stream, image, stationName, bit, country) {
             playWithPromise();
             addVolumeSlider();
             activeStreamURL = stream;
-            sendEmailNotification(stationDetails, url, "success");
+            sendEmailNotification(stationDetails, stream, "success");
         });
         hls.on(Hls.Events.MEDIA_DETACHING, function(){
             console.log("media detached");
@@ -1446,7 +1446,7 @@ function playWithHLS(stream, image, stationName, bit, country) {
         });
         hls.on(Hls.Events.ERROR,function(event, data){
             console.log("Type: " + data.type + ", Details: " + data.details);
-             handlePlaybackError(uniqueUrl, stationDetails);
+             handlePlaybackError(stream, stationDetails);
             //button.innerHTML = "<i class=\"icon stop_icon bx bx-pause\"></i>";
             //button.onclick = stopAudio;
         })
