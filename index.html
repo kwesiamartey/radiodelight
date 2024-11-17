@@ -1257,8 +1257,9 @@ function displayStations(stations) {
             imgElement.src = 'mast.jpg';
             stationItem.addEventListener('click', () => {
                 audioElement.stop();
-                playStation(station.url, 'mast.jpg', station.name, station.bit, station.location));
-        } };
+                playStation(station.url, 'mast.jpg', station.name, station.bit, station.location);
+            });
+        };
 
         stationList.appendChild(stationItem);
     });
