@@ -1481,9 +1481,6 @@ function playStream(url) {
 
         stationLogo.onerror = () => handleImageError(stationLogo, stationName);
     }
-
-
-
     
     //activeStreamURL = streams[index].url;
     audio = soundManager.createSound({
@@ -1493,7 +1490,7 @@ function playStream(url) {
             if((streams[index].url).includes(".m3u")){
                 soundManager.destroySound(this.id);
                 playHlsStream(this.url);
-                index++;
+            
             } else {
                 index++;
                 if(index != (streamsSize)) {
@@ -1529,20 +1526,39 @@ function playStream(url) {
 }
 
 
-function initSoundManager() {
+function initSoundManager(url) {
+    if (!window.bowser) {
+        console.error("Bowser library is not loaded.");
+        return;
+    }
+
     soundManager.setup({
         waitForWindowLoad: true,
-        onready: function() {
-        const browser = bowser.getParser(window.navigator.userAgent);
-        if (browser.getBrowserName() == "Safari" || browser.getBrowserName() == "Firefox") {
-            // Set play button to require the user gesture click
-            setButtonPlay();
-        } else {
-            playStream(url);
+        debugMode: false, // Optional: Disable debug logs for production
+        onready: function () {
+            try {
+                const browser = bowser.getParser(window.navigator.userAgent);
+                const browserName = browser.getBrowserName();
+
+                if (browserName === "Safari" || browserName === "Firefox") {
+                    // Set the play button to require a user gesture
+                    console.log(`Browser detected: ${browserName}. Waiting for user gesture to play.`);
+                    setButtonPlay();
+                } else {
+                    // Automatically play the stream for other browsers
+                    console.log(`Browser detected: ${browserName}. Attempting to auto-play.`);
+                    playStream(url);
+                }
+            } catch (error) {
+                console.error("An error occurred while detecting the browser or playing the stream:", error);
+            }
+        },
+        ontimeout: function () {
+            console.error("SoundManager setup timed out. Audio playback may not function correctly.");
         }
-    }
     });
 }
+
 
 
 
