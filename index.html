@@ -1332,11 +1332,7 @@ async function playStation(url, image, stationName, bit, country) {
         return;
     }
 
-    // Reset HLS and audio element for fresh playback
-    if (typeof hls !== 'undefined' && hls !== null) {
-        hls.destroy();
-        hls = null;
-    }
+ 
     audioElement.pause();
     audioElement.src = ''; // Clear existing URL
     audioElement.load(); // Reset the audio element to ensure fresh start
@@ -1361,8 +1357,36 @@ async function playStation(url, image, stationName, bit, country) {
 
     // Show progress indicator while loading
     const progress = document.getElementById('progress');
+
+
+    let contentType;
+    try {
+        // Fetch the headers to detect the content type
+        const response = await fetch(uniqueUrl, { method: 'HEAD' });
+        if (!response.ok) {
+            throw new Error(`Failed to fetch stream: ${response.statusText}`);
+        }
+        contentType = response.headers.get('content-type');
+    } catch (error) {
+        console.error('Error fetching stream:', error);
+        if (progress) progress.style.display = 'none';
+        fallbackToSoundManager2(uniqueUrl, stationDetails);
+        return;
+    }
+
+    // Check if the stream is an HLS (.m3u8) stream
+    if (contentType && contentType.includes('application/vnd.apple.mpegurl')) {
+        console.log('.m3u8 stream detected');
+        playWithHLS(uniqueUrl);
+    } else {
+        console.error('.aac or other formats not natively supported. Using SoundManager2 fallback.');
+        fallbackToSoundManager2(uniqueUrl, stationDetails);
+    }
+
+
     
-    const response = await fetch(uniqueUrl, { method: 'HEAD' });
+    
+   /* const response = await fetch(uniqueUrl, { method: 'HEAD' });
     const contentType = response.headers.get('content-type');
     // Check if the stream is an HLS stream (.m3u8)
     if (contentType && contentType.includes('application/vnd.apple.mpegurl')) {
@@ -1373,7 +1397,7 @@ async function playStation(url, image, stationName, bit, country) {
         // Handle fallback for non-HLS streams (.aac, .mp3)
         console.error('.aac or other formats not natively supported. Attempting SoundManager2 fallback.');
         fallbackToSoundManager2(uniqueUrl, stationDetails);
-    }
+    }*/
 }
 
 
@@ -1381,9 +1405,15 @@ async function playStation(url, image, stationName, bit, country) {
 
 function playWithHLS(url){
 
+          // Reset HLS and audio element for fresh playback
+    if (typeof hls !== 'undefined' && hls !== null) {
+        hls.destroy();
+        hls = null;
+    }
+    
      // Check if HLS is supported
         if (Hls.isSupported()) {
-            const hls = new Hls();
+            hls = new Hls();
             hls.loadSource(url);
             hls.attachMedia(audioElement);
             hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -1424,6 +1454,7 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
 
     // Set up SoundManager2
     soundManager.setup({
+        waitForWindowLoad: true,
         url: soundManagerSwfUrl,
         flashVersion: 9,
         debugMode: false,
