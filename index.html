@@ -884,13 +884,15 @@
 </div>
  <!----------the player ends here ------->
 
-                
+           
+             <div class="paginationControls"></div>
+             <br>        
          
         <div id="paginationControls"></div>
         <br> 
           <div id="stationListContent" class="station-grid"></div>
                 <br><br>
-                <div id="paginationControls"></div>
+                <div class="paginationControls"></div>
                  <br><br><br><br><br><br><br>
             </div>
             <div class="col-md-4">
@@ -1208,7 +1210,7 @@ function displayStations(stations) {
     document.getElementById('country_list_wrapper').style.display = 'block';
 
     const stationList = document.getElementById('stationListContent');
-    const paginationControls = document.getElementById('paginationControls');
+    const paginationControls = document.querySelector('.paginationControls');
     stationList.innerHTML = ''; // Clear current list
     paginationControls.innerHTML = ''; // Clear pagination
 
@@ -1289,7 +1291,7 @@ function displayStations(stations) {
 
 
 function createPaginationControls(totalStations, totalPages) {
-    const paginationControls = document.getElementById('paginationControls');
+    const paginationControls = document.querySelector('.paginationControls');
     paginationControls.innerHTML = ''; // Clear previous controls
 
     // Display page info (e.g., "Page 1 of 27")
