@@ -1365,9 +1365,10 @@ function playStation(url, image, stationName, bit, country) {
 
     // Check if the stream is an HLS stream (.m3u8)
  
-if (uniqueUrl.endsWith('.m3u8')) {
-    // HLS Streaming logic with HLS.js
-    if (Hls.isSupported()) {
+
+    if (uniqueUrl.endsWith('.m3u8')){
+        // HLS Streaming logic with HLS.js
+         if (Hls.isSupported()) {
         console.log('HLS is supported');
         progress.style.display = 'block';
         const hls = new Hls();
@@ -1402,21 +1403,8 @@ if (uniqueUrl.endsWith('.m3u8')) {
         console.warn('HLS not supported in this browser');
         handlePlaybackError(uniqueUrl, stationDetails);
     }
-}else {
-            progress.style.display = 'block';
-            console.warn("HLS is not supported in this browser. Attempting direct play.");
-            audioElement.src = uniqueUrl;
-            audioElement.play().then(() => {
-                progress.style.display = 'none';
-                playButton.textContent = '||';
-                sendEmailNotification(stationDetails, url, "success");
-            }).catch(error => {
-                console.error("Audio play error:", error);
-                progress.style.display = 'none';
-                handlePlaybackError(uniqueUrl, stationDetails);
-            });
-        }
-    } else {
+    } 
+    else {
         // Handle fallback for non-HLS streams (.aac, .mp3)
         console.error('.aac or other formats not natively supported. Attempting SoundManager2 fallback.');
         fallbackToSoundManager2(uniqueUrl, stationDetails);
