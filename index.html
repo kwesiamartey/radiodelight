@@ -1365,36 +1365,44 @@ function playStation(url, image, stationName, bit, country) {
 
     // Check if the stream is an HLS stream (.m3u8)
     if (uniqueUrl.endsWith('.m3u8')) {
-        // HLS Streaming logic with HLS.js
-        if (Hls.isSupported()) {
-            progress.style.display = 'block';
-            hls = new Hls();
-            hls.loadSource(uniqueUrl);
-            hls.attachMedia(audioElement);
-            
-            // Event listener for HLS.js when media is attached
-            hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-                audioElement.play().then(() => {
-                    console.log("HLS stream is playing");
-                    progress.style.display = 'none';
-                    playButton.textContent = '||';
-                    sendEmailNotification(stationDetails, url, "success");
-                }).catch(error => {
-                    console.error("Audio play error:", error);
-                    progress.style.display = 'none';
-                    handlePlaybackError(uniqueUrl, stationDetails);
-                });
-            });
+    // HLS Streaming logic with HLS.js
+    if (Hls.isSupported()) {
+        console.log('HLS is supported');
+        progress.style.display = 'block';
+        const hls = new Hls();
+        hls.loadSource(uniqueUrl);
+        hls.attachMedia(audioElement);
 
-            // Error handling for HLS.js
-            hls.on(Hls.Events.ERROR, function (event, data) {
-                console.error("HLS.js error:", data);
+        // Event listener for HLS.js when media is attached
+        hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+            console.log('HLS media attached');
+            audioElement.play().then(() => {
+                console.log("HLS stream is playing");
                 progress.style.display = 'none';
-                audioElement.pause();
-                hls.destroy();
+                playButton.textContent = '||';
+                sendEmailNotification(stationDetails, uniqueUrl, "success");
+            }).catch(error => {
+                console.error("Audio play error:", error);
+                progress.style.display = 'none';
                 handlePlaybackError(uniqueUrl, stationDetails);
             });
-        } else {
+        });
+
+        // Error handling for HLS.js
+        hls.on(Hls.Events.ERROR, function (event, data) {
+            console.error("HLS.js error:", data);
+            progress.style.display = 'none';
+            audioElement.pause();
+            if (hls) hls.destroy();
+            handlePlaybackError(uniqueUrl, stationDetails);
+        });
+
+    } else {
+        console.warn('HLS not supported in this browser');
+        handlePlaybackError(uniqueUrl, stationDetails);
+    }
+}
+else {
             progress.style.display = 'block';
             console.warn("HLS is not supported in this browser. Attempting direct play.");
             audioElement.src = uniqueUrl;
