@@ -83,6 +83,7 @@
                 } else if (sound.playState === 1 && !sound.paused) {
                     // If playing, pause the sound
                     sound.pause();
+                    soundManager.destroySound()
                     playButton.textContent = '▶'; // Change to play button
                 } else {
                     // If paused, resume playing
