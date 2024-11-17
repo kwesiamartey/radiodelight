@@ -827,7 +827,7 @@
                 <!-- Centered Volume Control -->
                 <div class="col" style=" display: flex; align-items: center; justify-content: center;">
                     <input style="width: 50%; margin: 14px 12px; display: flex; align-items: center; justify-content: center;" 
-                           type="range" id="volumeControl" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
+                           type="range" id="volumeControl" aria-label="volume"  max="100" min="0" step="10" value="100" >
                 </div>
             </div>
         </div>
@@ -1602,8 +1602,8 @@ function playWithPromise() {
 
 
  function setButtonPlay() {
-    button.innerHTML = "<i class=\"icon play_icon bx bx-play\"></i>";
-    button.onclick = playAudio;
+    playButton.innerHTML = "<i class=\"icon play_icon bx bx-play\"></i>";
+    playButton.onclick = playAudio;
 }
 
 
