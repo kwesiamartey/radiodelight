@@ -847,7 +847,7 @@
     <div style="background-color:rgb(77, 100, 111); display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;margin-bottom: 21px;">
       <span id="breadcrumbs" style="width:100%;padding:4px;margin:0px;font-size:13px;color:#fff;display:none;">Radio Station |  </span>
     </div> 
-         <h1 class="countryTitle" style="display: none;">Live Italy Radio Station Online</h1>
+         <h1 class="countryTitle" style="display: none;">Live Germany Radio Station Online</h1>
         <div class="row">
             <div class="col-md-8">
 
@@ -1395,6 +1395,7 @@ function playStation(url, image, stationName, bit, country) {
                 handlePlaybackError(uniqueUrl, stationDetails);
             });
         } else {
+            progress.style.display = 'block';
             console.warn("HLS is not supported in this browser. Attempting direct play.");
             audioElement.src = uniqueUrl;
             audioElement.play().then(() => {
