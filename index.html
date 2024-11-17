@@ -1397,7 +1397,7 @@ function playStation(url, image, stationName, bit, country) {
             handlePlaybackError(uniqueUrl, stationDetails);
         });
 
-    } else {
+    } } else {
         console.warn('HLS not supported in this browser');
         handlePlaybackError(uniqueUrl, stationDetails);
     }
