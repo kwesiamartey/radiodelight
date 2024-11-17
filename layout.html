@@ -1386,34 +1386,6 @@ function playAudio(url) {
     }
 }
 
-// Function to play a specific station
-function playStation(url, image, stationName, bit, country) {
-    stopAudio(); // Ensure any currently playing audio is stopped
-
-    if (!url) {
-        console.error("Invalid URL for the station.");
-        return;
-    }
-
-    const uniqueUrl = `${url}?timestamp=${Date.now()}`;
-    const stationDetails = `${stationName} (${country})`;
-
-    // Update UI elements
-    stationLogo.src = image || "default-image.png"; // Fallback image
-    breadcrumbs.textContent = `Radio Station | ${stationDetails}`;
-    stationLogo.onerror = () => handleImageError(stationLogo, stationName);
-
-    if (bit === "00") {
-        openPopupWithData(stationName, image, url);
-    } else if (bit === "001") {
-        openPeacefmPopupWithData(stationName, image, url);
-    } else if (isHLS) {
-        playHlsStream(uniqueUrl, stationName, bit, country);
-    } else {
-        playStream(uniqueUrl);
-    }
-}
-
 // Function to play using HLS.js
 function playHlsStream(stream) {
     if (!Hls.isSupported()) {
@@ -1475,7 +1447,10 @@ function playStream(url) {
 function setButtonPlay(url = null) {
     playButton.innerHTML = "<i class='icon play_icon bx bx-play'></i>";
     playButton.onclick = () => {
-        if (url) playAudio(url);
+        if (url) {
+            stopAudio(); // Ensure previous audio is stopped first
+            playAudio(url); // Start new audio playback
+        }
     };
 }
 
