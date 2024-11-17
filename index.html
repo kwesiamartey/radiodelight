@@ -1244,22 +1244,32 @@ function displayStations(stations) {
 
         // Clear timeout if image loads successfully
         imgElement.onload = () => {
-                clearTimeout(loadTimeout);
-                stationItem.addEventListener('click', () => {
-                    audioElement.stop(); // Ensure audioElement.stop() is a valid method
-                    playStation(station.url, imgElement.src, station.name, station.bit, station.location);
-                });
-            };
+            clearTimeout(loadTimeout);
+        
+            stationItem.addEventListener('click', () => {
+                if (audioElement) {
+                    audioElement.pause(); // Correctly stop the audio
+                    audioElement.currentTime = 0; // Reset playback position
+                }
+                playStation(station.url, imgElement.src, station.name, station.bit, station.location);
+            });
+        };
 
         // If loading fails, use `mast2.jpg` as fallback
+
         imgElement.onerror = () => {
             clearTimeout(loadTimeout);
-            imgElement.src = 'mast.jpg';
+        
             stationItem.addEventListener('click', () => {
-                audioElement.stop();
+                if (audioElement) {
+                    audioElement.pause(); // Correctly stop the audio
+                    audioElement.currentTime = 0; // Reset playback position
+                }
                 playStation(station.url, 'mast.jpg', station.name, station.bit, station.location);
             });
         };
+
+        
 
         stationList.appendChild(stationItem);
     });
