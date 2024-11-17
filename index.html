@@ -1322,73 +1322,103 @@ function createPaginationControls(totalStations, totalPages) {
 }
 
 
-function playStation(url, image, stationName, bit, country) {
+
+
+
+    function playStation(url, image, stationName, bit, country) {
+    // Handle specific bit conditions for popups
     if (bit === '00') {
         openPopupWithData(stationName, image, url);
+        return;
     } else if (bit === '001') {
         openPeacefmPopupWithData(stationName, image, url);
-    } else {
-        // Reset HLS and audio element for fresh playback
-        if (typeof hls !== 'undefined' && hls !== null) {
-            hls.destroy();
-            hls = null;
-        }
-        audioElement.src = ''; // Clear existing URL
+        return;
+    }
 
-        // Update station logo, display player, and show progress bar
-        const stationLogo = document.getElementById('stationLogo');
-        document.getElementById('breadcrumbs').style.display = 'block';
-        document.querySelector('.countryTitle').style.display = 'none';
-        stationLogo.src = image;
-        stationLogo.style.display = 'block';
-        document.querySelector('.playing-station-wrap').style.display = 'block';
-        document.querySelector('.footer-div-wraaper').style.display = 'block';
-        const breadcrumbs = document.getElementById('breadcrumbs');
-        const breadcrumbText = `Radio station | ${country} | ${stationName}`;
-        breadcrumbs.textContent = breadcrumbText;
-       
+    // Reset HLS and audio element for fresh playback
+    if (typeof hls !== 'undefined' && hls !== null) {
+        hls.destroy();
+        hls = null;
+    }
+    audioElement.pause();
+    audioElement.src = ''; // Clear existing URL
+    audioElement.load(); // Reset the audio element to ensure fresh start
 
-        // Handle image load errors
-        stationLogo.onerror = () => handleImageError(stationLogo, stationName);
+    // Update UI with station information
+    const stationLogo = document.getElementById('stationLogo');
+    const breadcrumbs = document.getElementById('breadcrumbs');
+    document.getElementById('breadcrumbs').style.display = 'block';
+    document.querySelector('.countryTitle').style.display = 'none';
+    stationLogo.src = image;
+    stationLogo.style.display = 'block';
+    document.querySelector('.playing-station-wrap').style.display = 'block';
+    document.querySelector('.footer-div-wraaper').style.display = 'block';
+    breadcrumbs.textContent = `Radio station | ${country} | ${stationName}`;
 
-        // Add a timestamp to the URL to ensure unique fetch each time
-        const uniqueUrl = `${url}?timestamp=${Date.now()}`;
-        const stationDetails = `${stationName} (${country}) (Web)`;
+    // Handle image load errors
+    stationLogo.onerror = () => handleImageError(stationLogo, stationName);
 
-        if (uniqueUrl.endsWith('.m3u8')) {
-            // HLS Streaming logic with HLS.js
-            if (Hls.isSupported()) {
-                 progress.style.display = 'block';
-                hls = new Hls();
-                hls.loadSource(uniqueUrl);
-                hls.attachMedia(audioElement);
-                hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-                    audioElement.play();
+    // Add a timestamp to the URL to ensure unique fetch each time
+    const uniqueUrl = `${url}?timestamp=${Date.now()}`;
+    const stationDetails = `${stationName} (${country}) (Web)`;
+
+    // Show progress indicator while loading
+    const progress = document.getElementById('progress');
+    progress.style.display = 'block';
+
+    // Check if the stream is an HLS stream (.m3u8)
+    if (uniqueUrl.endsWith('.m3u8')) {
+        // HLS Streaming logic with HLS.js
+        if (Hls.isSupported()) {
+            hls = new Hls();
+            hls.loadSource(uniqueUrl);
+            hls.attachMedia(audioElement);
+            
+            // Event listener for HLS.js when media is attached
+            hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+                audioElement.play().then(() => {
+                    console.log("HLS stream is playing");
                     progress.style.display = 'none';
                     playButton.textContent = '||';
                     sendEmailNotification(stationDetails, url, "success");
-                });
-                hls.on(Hls.Events.ERROR, function (event, data) {
-                    console.error("HLS.js error:", data);
-                     progress.style.display = 'none';
-                    audioElement.pause();
+                }).catch(error => {
+                    console.error("Audio play error:", error);
+                    progress.style.display = 'none';
                     handlePlaybackError(uniqueUrl, stationDetails);
                 });
-            } else {
-                console.error("HLS is not supported in this browser. Falling back to default.");
-                audioElement.src = uniqueUrl;
-                audioElement.play();
+            });
+
+            // Error handling for HLS.js
+            hls.on(Hls.Events.ERROR, function (event, data) {
+                console.error("HLS.js error:", data);
+                progress.style.display = 'none';
+                audioElement.pause();
+                hls.destroy();
+                handlePlaybackError(uniqueUrl, stationDetails);
+            });
+        } else {
+            console.warn("HLS is not supported in this browser. Attempting direct play.");
+            audioElement.src = uniqueUrl;
+            audioElement.play().then(() => {
                 progress.style.display = 'none';
                 playButton.textContent = '||';
                 sendEmailNotification(stationDetails, url, "success");
-            }
-        } else{
-            console.error('.aac not supported natively. Attempting SoundManager2 fallback.');
-            // SoundManager2 fallback for .aac files
-            fallbackToSoundManager2(uniqueUrl, stationDetails);
-        } 
+            }).catch(error => {
+                console.error("Audio play error:", error);
+                progress.style.display = 'none';
+                handlePlaybackError(uniqueUrl, stationDetails);
+            });
+        }
+    } else {
+        // Handle fallback for non-HLS streams (.aac, .mp3)
+        console.error('.aac or other formats not natively supported. Attempting SoundManager2 fallback.');
+        fallbackToSoundManager2(uniqueUrl, stationDetails);
     }
 }
+
+
+
+    
 
 function fallbackToSoundManager2(uniqueUrl, stationDetails) {
     // SoundManager2 fallback logic
@@ -1407,15 +1437,21 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
         onready: function () {
             console.log('SoundManager2 is ready!');
 
-    
             let sound;
 
-            // Function to create and play the sound
+            // Function to reset and create a new sound
             function createAndPlaySound() {
-                progress.style.display = 'block'; // Show loading progress
+                if (sound) {
+                    sound.destruct(); // Ensure old sound is cleaned up
+                }
+                
+                // Show loading progress
+                progress.style.display = 'block';
+
+                // Create and play the new sound
                 sound = soundManager.createSound({
                     id: 'stationSound',
-                    url:`${uniqueUrl}`,
+                    url: uniqueUrl,
                     autoPlay: true,
                     onload: function (success) {
                         progress.style.display = 'none';
@@ -1426,39 +1462,54 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                             console.error('Failed to load audio.');
                             alert('Error: Unable to load audio.');
                             playButton.textContent = '▶'; // Reset to play button
+                            if (sound) sound.destruct();
                             sound = null;
                         }
                     },
                     onfinish: function () {
                         console.log('Audio finished playing');
                         playButton.textContent = '▶'; // Reset to play button
-                        sound.destruct(); // Clean up the sound object
+                        if (sound) sound.destruct();
                         sound = null;
                     },
                     onerror: function () {
                         console.error('Error during playback.');
                         alert('Error: Playback failed.');
+                        progress.style.display = 'none';
                         playButton.textContent = '▶';
+                        if (sound) sound.destruct();
                         sound = null;
                     }
                 });
             }
 
-            // Handle play/pause button clicks
-            playButton.addEventListener('click', function () {
+            // Function to handle play/pause button
+            function handlePlayPause() {
                 if (!sound) {
                     // Create and play sound if not already created
                     createAndPlaySound();
                 } else if (sound.playState === 1 && !sound.paused) {
                     // If playing, pause the sound
-                    sound.pause();
-                    playButton.textContent = '▶'; // Change to play button
+                    sound.pause().then(() => {
+                        playButton.textContent = '▶';
+                    }).catch((error) => {
+                        console.error('Error pausing sound:', error);
+                    });
                 } else {
                     // If paused, resume playing
-                    sound.play();
-                    playButton.textContent = '||'; // Change to pause button
+                    sound.play().then(() => {
+                        playButton.textContent = '||';
+                    }).catch((error) => {
+                        console.error('Error resuming sound:', error);
+                    });
                 }
-            });
+            }
+
+            // Clean up old event listeners to prevent duplicates
+            playButton.removeEventListener('click', handlePlayPause);
+
+            // Attach event listener to the play button
+            playButton.addEventListener('click', handlePlayPause);
         },
         ontimeout: function () {
             console.error('SoundManager2 setup failed or timed out.');
@@ -1466,6 +1517,7 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
         }
     });
 }
+
 
 
 
