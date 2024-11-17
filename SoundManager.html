@@ -23,61 +23,66 @@
         <param name="wmode" value="transparent">
     </object>
 
-    <script>
-        // Prefer HTML5 but use Flash as a fallback
-        soundManager.useHTML5Audio = true; // Prefer HTML5 audio
-        soundManager.useFlashBlock = false; // Avoid forcing Flash
-        soundManager.preferFlash = false; // Default to HTML5
+<script>
+    // Prefer HTML5 but use Flash as a fallback
+    soundManager.useHTML5Audio = true; // Prefer HTML5 audio
+    soundManager.useFlashBlock = false; // Avoid forcing Flash
+    soundManager.preferFlash = false; // Default to HTML5
 
-        // Set up SoundManager2
-        soundManager.setup({
-            url: 'https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/', // Path to SWF folder
-            flashVersion: 9, // Minimum Flash version
-            debugMode: false, // Disable debug logs (set to true for debugging)
-            onready: function () {
-                console.log('SoundManager2 is ready!');
+    // Set up SoundManager2
+    soundManager.setup({
+        url: 'https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/', // Path to SWF folder
+        flashVersion: 9, // Minimum Flash version
+        debugMode: false, // Disable debug logs (set to true for debugging)
+        onready: function () {
+            console.log('SoundManager2 is ready!');
 
-                // Attach event listener to the play button
-                const playButton = document.getElementById('playButton');
-                const progress = document.getElementById('progress');
-                let sound;
+            // Attach event listener to the play button
+            const playButton = document.getElementById('playButton');
+            const progress = document.getElementById('progress');
+            let sound;
 
-                playButton.addEventListener('click', function () {
-                    if (!sound) {
-                        progress.style.display = 'block'; // Show loading progress
-                        sound = soundManager.createSound({
-                            id: 'stationSound',
-                            url: 'http://s4-webradio.rockantenne.de/rockantenne?timestamp=1731814569432', // Replace with your stream URL
-                            autoPlay: true,
-                            onload: function (success) {
-                                if (success) {
-                                    console.log('Audio loaded and playing!');
-                                    progress.style.display = 'none';
-                                    playButton.textContent = '||'; // Pause button
-                                } else {
-                                    console.error('Failed to load audio.');
-                                    progress.style.display = 'none';
-                                    alert('Error: Unable to load audio.');
-                                }
-                            },
-                            onfinish: function () {
-                                playButton.textContent = '▶'; // Reset to play button
+            playButton.addEventListener('click', function () {
+                if (!sound) {
+                    // If no sound is loaded, create and play the new sound
+                    progress.style.display = 'block'; // Show loading progress
+                    sound = soundManager.createSound({
+                        id: 'stationSound',
+                        url: 'http://s4-webradio.rockantenne.de/rockantenne?timestamp=' + Date.now(), // Replace with your stream URL
+                        autoPlay: true,
+                        onload: function (success) {
+                            if (success) {
+                                console.log('Audio loaded and playing!');
+                                progress.style.display = 'none';
+                                playButton.textContent = '||'; // Change to pause button
+                            } else {
+                                console.error('Failed to load audio.');
+                                progress.style.display = 'none';
+                                alert('Error: Unable to load audio.');
                             }
-                        });
-                    } else if (sound.playState === 1) {
-                        sound.pause();
-                        playButton.textContent = '▶';
-                    } else {
-                        sound.play();
-                        playButton.textContent = '||';
-                    }
-                });
-            },
-            ontimeout: function () {
-                console.error('SoundManager2 setup failed or timed out.');
-                alert('Error: Unable to initialize audio playback.');
-            }
-        });
-    </script>
+                        },
+                        onfinish: function () {
+                            playButton.textContent = '▶'; // Reset to play button when finished
+                            sound = null; // Clear sound object after finishing
+                        }
+                    });
+                } else if (sound.playState === 1) {
+                    // If the sound is currently playing, pause it
+                    sound.pause();
+                    playButton.textContent = '▶'; // Change to play button
+                } else if (sound.playState === 2 || sound.playState === 0) {
+                    // If the sound is paused or stopped, play it
+                    sound.play();
+                    playButton.textContent = '||'; // Change to pause button
+                }
+            });
+        },
+        ontimeout: function () {
+            console.error('SoundManager2 setup failed or timed out.');
+            alert('Error: Unable to initialize audio playback.');
+        }
+    });
+</script>
+
 </body>
 </html>
