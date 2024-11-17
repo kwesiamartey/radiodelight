@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
-    <script src="https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/script/soundmanager2.js"></script>
+     <script src="https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/script/soundmanager2.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bowser@2.11.0/es5.min.js"></script>
     <link href="https://unpkg.com/boxicons/css/boxicons.min.css" rel="stylesheet">
    
@@ -80,6 +80,46 @@
             padding-top: 50px;       /* Adjust according to the height of the header */
             flex-direction: column;
         }
+
+    /* Modal Background */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1000; /* Ensure it's above other content */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5); /* Black with opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fff;
+  margin: 15% auto; /* 15% from top, centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Width of the modal */
+  border-radius: 5px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Close Button */
+.close-button {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+  color: black;
+  text-decoration: none;
+}
 
           .playing-station-wrap{
             width:400px;
@@ -792,7 +832,16 @@
 
     <div class="content">
 
-             
+    <!----modal----->         
+
+    <div id="errorModal" class="modal">
+  <div class="modal-content">
+    <span class="close-button" id="closeModal">&times;</span>
+    <p id="errorMessage">The station is currently unavailable. Please try using a different browser, such as Mozilla Firefox or Chrome, or check back in an hour as we work to resolve the issue.</p>
+  </div>
+</div>
+
+
         
     <div class="container" style="width:90v" >
     <div style="background-color:rgb(77, 100, 111); display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;margin-bottom: 21px;">
@@ -819,7 +868,7 @@
                 <div class="col" style="display: flex; align-items: center; justify-content: center;">
                     <div class="play-control" style="display: flex; align-items: center; justify-content: center;">
                         <div class="progress-ring" id="progress"></div>
-                        <button class="play-button" >▶</button>
+                        <button class="play-button" onclick="togglePlay()">▶</button>
                         <audio id="audio" preload="metadata" style="display: none;"></audio>
                     </div>
                 </div>
@@ -827,7 +876,7 @@
                 <!-- Centered Volume Control -->
                 <div class="col" style=" display: flex; align-items: center; justify-content: center;">
                     <input style="width: 50%; margin: 14px 12px; display: flex; align-items: center; justify-content: center;" 
-                           type="range" id="volumeControl" aria-label="volume"  max="100" min="0" step="10" value="100" >
+                           type="range" id="volumeControl" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
                 </div>
             </div>
         </div>
@@ -854,7 +903,7 @@
                      <img src="get_playstore.jpeg" style="width:100%;"/>
                  </a>
              </div>
-             
+          
                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966"
                          crossorigin="anonymous"></script>
                     <ins class="adsbygoogle"
@@ -920,14 +969,13 @@
     let currentAudio = null; // Added this declaration
     
     let hls;
-    let isHLS = false;
     let currentPage = 1;
     const itemsPerPage = 48;
     let currentPage1 = 1;
     const itemsPerPage1 = 40; // Number of countries per page
     const progress = document.getElementById('progress');
     const playButton = document.querySelector('.play-button');
-    const player = document.getElementById('audio');
+    const audioElement = document.getElementById('audio');
     let currentHowl = null; // Store the current Howl instance globally
     let isPlaying = false; // Track the play/pause state
 
@@ -1098,6 +1146,8 @@ async function fetchStations(
 
 
 
+    
+
 // Function to fetch data with retries
 async function fetchWithRetry(url, retries, delay) {
     for (let attempt = 0; attempt < retries; attempt++) {
@@ -1152,7 +1202,7 @@ function displayStations(stations) {
     document.getElementById('footerr').style.display = 'block';
     document.getElementById('countryTitle').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'block';
-    document.getElementById('downloadTitle').style.display = 'block';
+     document.getElementById('downloadTitle').style.display = 'block';
     document.getElementById('country_list_wrapper').style.display = 'block';
 
     const stationList = document.getElementById('stationListContent');
@@ -1174,78 +1224,35 @@ function displayStations(stations) {
         stationItem.className = 'station-item';
 
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-        const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name);
+        const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo :  createStationLogoCanvas(station.name); // Default to mast.jpg if logo is empty
 
         stationItem.innerHTML = `
-            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: white; justify-content: center; align-content: center;">
+            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: white;justify-content:center;align-content: center;">
                 <img style="width: 100%; height: 140px; object-fit: fill;"  
                      src="${logoUrl}" 
                      alt="${truncatedName}">
             </div>
             <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
 
+        // Reference the image element to handle loading and errors
         const imgElement = stationItem.querySelector('img');
 
         // Set a timeout to quickly switch to fallback if image loading is slow
         const loadTimeout = setTimeout(() => {
-            imgElement.src = 'mast2.jpg'; // Switch to fallback after 30.5 seconds
+            imgElement.src = 'mast2.jpg'; // Switch to fallback after 3 seconds
         }, 30500);
 
         // Clear timeout if image loads successfully
         imgElement.onload = () => {
             clearTimeout(loadTimeout);
-
-            // Add click listener with the playback logic
-            stationItem.addEventListener('click', () => {
-
-                        // Update station logo, display player, and show progress bar
-                    const stationLogo = document.getElementById('stationLogo');
-                    document.getElementById('breadcrumbs').style.display = 'block';
-                    document.querySelector('.countryTitle').style.display = 'none';
-                    stationLogo.src = imgElement.src;
-                    stationLogo.style.display = 'block';
-                    document.querySelector('.playing-station-wrap').style.display = 'block';
-                    document.querySelector('.footer-div-wraaper').style.display = 'block';
-                    const breadcrumbs = document.getElementById('breadcrumbs');
-                    const breadcrumbText = `Radio station | ${station.location} | ${station.name}`;
-                    breadcrumbs.textContent = breadcrumbText;
-                    progress.style.display = 'block';
-
-                
-                const uniqueUrl = station.url; // The station URL
-                const stationDetails = {
-                    image: imgElement.src,
-                    stationName: station.name,
-                    bit: station.bit,
-                    country: station.location,
-                };
-                 initSoundManager(uniqueUrl);
-                
-                // playStation(uniqueUrl, stationDetails.image, stationDetails.stationName, stationDetails.bit, stationDetails.country);
-
-            });
+            stationItem.addEventListener('click', () => playStation(station.url, imgElement.src, station.name, station.bit, station.location));
         };
 
         // If loading fails, use `mast2.jpg` as fallback
         imgElement.onerror = () => {
             clearTimeout(loadTimeout);
-            imgElement.src = 'mast.jpg'; // Default fallback image
-
-            // Add click event with content type handling for playback logic
-            stationItem.addEventListener('click', () => {
-        
-                
-                const uniqueUrl = station.url; // The station URL
-                const stationDetails = {
-                    image: 'mast.jpg', // Fallback image
-                    stationName: station.name,
-                    bit: station.bit,
-                    country: station.location,
-                };
-
-                 initSoundManager(uniqueUrl);
-                 //playStation(uniqueUrl, 'mast.jpg', station.name, station.bit, station.location);
-            });
+            imgElement.src = 'mast.jpg';
+            stationItem.addEventListener('click', () => playStation(station.url, 'mast.jpg', station.name, station.bit, station.location));
         };
 
         stationList.appendChild(stationItem);
@@ -1253,8 +1260,6 @@ function displayStations(stations) {
 
     createPaginationControls(stations.length, totalPages);
 }
-
-
 
 
 function createPaginationControls(totalStations, totalPages) {
@@ -1317,257 +1322,222 @@ function createPaginationControls(totalStations, totalPages) {
 }
 
 
-
-// Function to get the content type of the stream URL
-async function getStreamContentType(url) {
-    try {
-        const response = await fetch(url, { method: 'HEAD' });
-        if (!response.ok) throw new Error('Failed to fetch headers');
-        return response.headers.get('Content-Type') || '';
-    } catch (error) {
-        console.error('Error fetching content type:', error);
-        // Attempt GET request as fallback
-        try {
-            const response = await fetch(url);
-            return response.headers.get('Content-Type') || '';
-        } catch (error) {
-            console.error('Error fetching content type with GET:', error);
-            throw error; // Rethrow to handle further down the call stack
-        }
-    }
-}
-
-
-
-
-
-
-
-
-
-// Function to stop any currently playing audio
-function stopAudio() {
-    try {
-        if (isHLS && hls) {
-            hls.destroy(); // Clean up HLS.js
-            hls = null;
-        }
-        if (player) {
-            player.pause();
-            player.src = ""; // Clear the audio element source
-        }
-        // Stop and destroy SoundManager2 sounds
-        if (soundManager) {
-            soundManager.stopAll();
-            Object.values(soundManager.sounds).forEach((sound) => {
-                if (sound) sound.destruct();
-            });
-        }
-        isHLS = false; // Reset state
-        activeStreamURL = null; // Reset active stream
-    } catch (error) {
-        console.error("An error occurred while stopping audio:", error);
-    } finally {
-        setButtonPlay(); // Reset play button
-    }
-}
-
-// Function to play audio (HLS or SoundManager2)
-function playAudio(url) {
-    if (!url) {
-        console.error("No URL provided for playback.");
+function playStation(url, image, stationName, bit, country) {
+    // Handle specific bit conditions for popups
+    if (bit === '00') {
+        openPopupWithData(stationName, image, url);
+        return;
+    } else if (bit === '001') {
+        openPeacefmPopupWithData(stationName, image, url);
         return;
     }
 
-    if (isHLS) {
-        playHlsStream(url);
-    } else {
-        playStream(url);
+    // Reset HLS and audio element for fresh playback
+    if (typeof hls !== 'undefined' && hls !== null) {
+        hls.destroy();
+        hls = null;
     }
-}
+    audioElement.pause();
+    audioElement.src = ''; // Clear existing URL
+    audioElement.load(); // Reset the audio element to ensure fresh start
 
-// Function to play using HLS.js
-function playHlsStream(stream) {
-    if (!Hls.isSupported()) {
-        console.error("HLS.js is not supported on this browser.");
-        return;
-    }
+    // Update UI with station information
+    const stationLogo = document.getElementById('stationLogo');
+    const breadcrumbs = document.getElementById('breadcrumbs');
+    document.getElementById('breadcrumbs').style.display = 'block';
+    document.querySelector('.countryTitle').style.display = 'none';
+    stationLogo.src = image;
+    stationLogo.style.display = 'block';
+    document.querySelector('.playing-station-wrap').style.display = 'block';
+    document.querySelector('.footer-div-wraaper').style.display = 'block';
+    breadcrumbs.textContent = `Radio station | ${country} | ${stationName}`;
 
-    hls = new Hls();
-    hls.loadSource(stream);
-    hls.attachMedia(player);
+    // Handle image load errors
+    stationLogo.onerror = () => handleImageError(stationLogo, stationName);
 
-    hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-        console.log("HLS.js media attached!");
-        isHLS = true;
-        activeStreamURL = stream;
-        playWithPromise(stream);
-        addVolumeSlider();
-    });
+    // Add a timestamp to the URL to ensure unique fetch each time
+    const uniqueUrl = `${url}?timestamp=${Date.now()}`;
+    const stationDetails = `${stationName} (${country}) (Web)`;
 
-    hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
-        console.log(`Manifest loaded, found ${data.levels.length} quality levels.`);
-        playWithPromise(stream);
-    });
+    // Show progress indicator while loading
+    const progress = document.getElementById('progress');
+    
 
-    hls.on(Hls.Events.ERROR, (event, data) => {
-        console.error(`HLS.js error: ${data.type}, Details: ${data.details}`);
-        handlePlaybackError(stream, `${stream} HLS Playback Error`);
-    });
-}
-
-// Function to play using SoundManager2
-function playStream(url) {
-    audio = soundManager.createSound({
-        id: url,
-        url: url,
-        onerror: (code, description) => {
-            console.error(`SoundManager2 error: ${code}, ${description}`);
-        },
-        onplay: () => {
-            addVolumeSlider();
-        },
-        whileplaying: function () {
-            if (this.bytesLoaded !== null && !isPlaying) {
-                activeStreamURL = this.url;
-                playButton.innerHTML = "<i class='icon stop_icon bx bx-pause'></i>";
-                playButton.onclick = stopAudio;
-                isPlaying = true;
-            }
-        },
-        onstop: () => {
-            setButtonPlay();
-        }
-    });
-
-    audio.play();
-}
-
-// Function to handle play button UI and functionality
-function setButtonPlay(url = null) {
-    playButton.innerHTML = "<i class='icon play_icon bx bx-play'></i>";
-    playButton.onclick = () => {
-        if (url) {
-            stopAudio(); // Ensure previous audio is stopped first
-            playAudio(url); // Start new audio playback
-        }
-    };
-}
-
-// Play audio with promise (for HTML5 player)
-function playWithPromise(url) {
-    const promise = player.play();
-    if (promise !== undefined) {
-        promise
-            .then(() => {
-                playButton.innerHTML = "<i class='icon stop_icon bx bx-pause'></i>";
-                playButton.onclick = stopAudio;
-            })
-            .catch(error => {
-                console.error("Auto-play error:", error);
-                setButtonPlay(url);
+    // Check if the stream is an HLS stream (.m3u8)
+    if (uniqueUrl.endsWith('.m3u8')) {
+        // HLS Streaming logic with HLS.js
+        if (Hls.isSupported()) {
+            progress.style.display = 'block';
+            hls = new Hls();
+            hls.loadSource(uniqueUrl);
+            hls.attachMedia(audioElement);
+            
+            // Event listener for HLS.js when media is attached
+            hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+                audioElement.play().then(() => {
+                    console.log("HLS stream is playing");
+                    progress.style.display = 'none';
+                    playButton.textContent = '||';
+                    sendEmailNotification(stationDetails, url, "success");
+                }).catch(error => {
+                    console.error("Audio play error:", error);
+                    progress.style.display = 'none';
+                    handlePlaybackError(uniqueUrl, stationDetails);
+                });
             });
+
+            // Error handling for HLS.js
+            hls.on(Hls.Events.ERROR, function (event, data) {
+                console.error("HLS.js error:", data);
+                progress.style.display = 'none';
+                audioElement.pause();
+                hls.destroy();
+                handlePlaybackError(uniqueUrl, stationDetails);
+            });
+        } else {
+            console.warn("HLS is not supported in this browser. Attempting direct play.");
+            audioElement.src = uniqueUrl;
+            audioElement.play().then(() => {
+                progress.style.display = 'none';
+                playButton.textContent = '||';
+                sendEmailNotification(stationDetails, url, "success");
+            }).catch(error => {
+                console.error("Audio play error:", error);
+                progress.style.display = 'none';
+                handlePlaybackError(uniqueUrl, stationDetails);
+            });
+        }
     } else {
-        player.setAttribute("autoplay", true);
+        // Handle fallback for non-HLS streams (.aac, .mp3)
+        console.error('.aac or other formats not natively supported. Attempting SoundManager2 fallback.');
+        fallbackToSoundManager2(uniqueUrl, stationDetails);
     }
 }
 
-// Initialize SoundManager2
-function initSoundManager(url) {
+
+
+
+
+
+
+function fallbackToSoundManager2(uniqueUrl, stationDetails) {
+    const soundManagerSwfUrl = `https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf`;
+
+    // Prefer HTML5 but use Flash as a fallback
+    soundManager.useHTML5Audio = true;
+    soundManager.useFlashBlock = false;
+    soundManager.preferFlash = false;
+
+    // Set up SoundManager2
     soundManager.setup({
-        waitForWindowLoad: true,
+        url: soundManagerSwfUrl,
+        flashVersion: 9,
         debugMode: false,
-        onready: () => {
-            playStream(url);
+        onready: function () {
+            console.log('SoundManager2 is ready!');
+            let sound = null;
+
+            // Function to create and play sound using SoundManager2
+            function createAndPlaySoundWithSM2() {
+                progress.style.display = 'block'; // Show loading progress
+                sound = soundManager.createSound({
+                    id: 'stationSound',
+                    url: uniqueUrl,
+                    autoPlay: true,
+                    onload: function (success) {
+                        progress.style.display = 'none';
+                        if (success) {
+                            console.log('SM2: Audio loaded and playing!');
+                            playButton.textContent = '||';
+                        } else {
+                            console.error('SM2: Failed to load audio.');
+                            alert('Error: Unable to load audio.');
+                            playButton.textContent = '▶';
+                            if (sound) sound.destruct();
+                            sound = null;
+                        }
+                    },
+                    onfinish: function () {
+                        playButton.textContent = '▶';
+                        if (sound) sound.destruct();
+                        sound = null;
+                    },
+                    onerror: function () {
+                        console.error('SM2: Playback failed.');
+                        alert('Error: Playback failed.');
+                        playButton.textContent = '▶';
+                        if (sound) sound.destruct();
+                        sound = null;
+                    }
+                });
+            }
+
+            // Check if the audio element can play the URL natively
+            audioElement.src = uniqueUrl;
+            audioElement.load();
+
+            audioElement.oncanplay = function () {
+                progress.style.display = 'none';
+                audioElement.play().then(() => {
+                    console.log('HTML5 Audio: Playing successfully');
+                    playButton.textContent = '||';
+                }).catch(err => {
+                    console.error('HTML5 Audio error:', err);
+                    console.log('Falling back to SoundManager2');
+                    createAndPlaySoundWithSM2(); // Fallback to SoundManager2
+                });
+            };
+
+            // Handle errors with native audio playback
+            audioElement.onerror = function () {
+                console.error('HTML5 Audio: Failed to load.');
+                createAndPlaySoundWithSM2(); // Fallback to SoundManager2
+            };
+
+            // Play/Pause button functionality
+            playButton.addEventListener('click', function () {
+                if (audioElement.src && !audioElement.paused && !audioElement.ended) {
+                    // HTML5 Audio is currently playing, so pause it
+                    audioElement.pause();
+                    playButton.textContent = '▶';
+                } else if (audioElement.src && (audioElement.paused || audioElement.ended)) {
+                    // HTML5 Audio is paused or ended, so play it
+                    audioElement.play().then(() => {
+                        playButton.textContent = '||';
+                    }).catch(err => {
+                        console.error('HTML5 Audio play error:', err);
+                        // If HTML5 fails, fallback to SoundManager2
+                        if (sound && sound.playState === 0) {
+                            sound.play();
+                            playButton.textContent = '||';
+                        }
+                    });
+                } else if (sound && sound.playState === 1 && !sound.paused) {
+                    // SoundManager2 is playing, so pause it
+                    sound.pause();
+                    playButton.textContent = '▶';
+                } else if (sound && sound.playState === 1 && sound.paused) {
+                    // SoundManager2 is paused, so resume it
+                    sound.resume();
+                    playButton.textContent = '||';
+                } else if (sound && sound.playState === 0) {
+                    // SoundManager2 is not playing, so start it
+                    sound.play();
+                    playButton.textContent = '||';
+                }
+            });
         },
-        ontimeout: () => {
-            console.error("SoundManager setup timed out.");
+        ontimeout: function () {
+            console.error('SoundManager2 setup failed or timed out.');
+            alert('Error: Unable to initialize audio playback.');
         }
     });
 }
 
-
-
-
-
-
-
-
-
-
-
-    
-/**
- * Add volume slider
- */
-function addVolumeSlider() {
-    const slider = document.getElementById("volumeControl");
-    changeVolume(localStorage.getItem("volume"));
-    slider.addEventListener("input", (e) => {
-        changeVolume(e.target.value, true);
-    });
-}
-
-/**
- * Change volume
- */
-function changeVolume(vol, isUserInteraction) {
-    const volume = isNumeric(parseInt(vol)) ? parseInt(vol) : 100;
-    const slider = document.getElementById("volumeControl");
-    const browser = bowser.getParser(window.navigator.userAgent);
-    // Apply to slider
-    slider.value = volume;
-    // Mute
-    if (volume === 0) {
-        // Get last volume
-        let volumeUnMute = getVolume("volume", false);
-        // Prevent 0 as last volume
-        volumeUnMute = volumeUnMute > 0 ? volumeUnMute : browser.getOSName(true) == "ios" ? 100 : 50;
-        // Save last volume as unmute volume
-        localStorage.setItem("volume_unmute", volumeUnMute);
-        // Set speaker icon off and mute
-        if (!player.muted) {
-            //setButtonMute();
-            // Use mute on iOS because the volume property is not settable in JavaScript
-            //bowser.ios && bowser.osversion.split(".")[0] < 10 ? player.pause(): player.muted = true;
-        }
-    }
-
-    // Save new volume value
-    localStorage.setItem("volume", volume);
-    // Apply new volume if HLS
-    player.volume = volume / 100;
-    //Apply new volume if SoundManager
-    if(audio != null) {
-        audio.setVolume(volume);
-    }
-
-    return volume;
-}
-
-/**
- * Get volume
- */
-function getVolume(key, normalized) {
-    let volume = 100;
-    // Get volume value
-    volume = localStorage.getItem(key);
-    // Volume value must be an integer
-    volume = parseInt(volume);
-    // Validate volume value
-    volume = isNumeric(volume) && volume >= 0 && volume <= 100 ? volume : 100;
-    return normalized ? volume / 100 : volume;
-}
-
-/**
- * Check if number is numeric
- */
-function isNumeric(n) {
-    return !isNaN(parseFloat(n)) && isFinite(n);
-}
     
 
-    
+
+
 
 function createStationLogoCanvas(stationName) {
     const canvas = document.createElement('canvas');
@@ -1610,15 +1580,65 @@ function createStationLogoCanvas(stationName) {
 
 
 
- function setVolume(value) {
+function togglePlay() {
+    progress.style.display = 'block'; // Show progress initially
+
+    if (audioElement) {
+        if (audioElement.paused) {
+            audioElement.play().then(() => {
+                playButton.textContent = '||'; // Change button to pause icon
+                progress.style.display = 'none'; // Hide progress once audio starts playing
+            }).catch(error => {
+                console.error("Audio play error:", error);
+                progress.style.display = 'none'; // Hide progress if there's an error
+                
+            });
+        } else {
+            audioElement.pause();
+            playButton.textContent = '▶'; // Change button back to play icon
+            progress.style.display = 'none'; // Hide progress when paused
+       
+        }
+    }
+  }
+
+   /* function setVolume(value) {
         if (currentAudio) currentAudio.volume = value;
- }
+    }
 
     function handlePlaybackError(url, stationName) {
         progress.style.display = 'none';
         alert('The station is currently unavailable. Please try using a different browser, such as Mozilla Firefox or Chrome, or check back in an hour as we work to resolve the issue.');
         sendEmailNotification(stationName, url, 'error');
-    }
+    }*/
+
+
+
+    function handlePlaybackError(url, stationName) {
+                progress.style.display = 'none';
+                const modal = document.getElementById('errorModal');
+                const closeModal = document.getElementById('closeModal');
+            
+                // Display the modal
+                modal.style.display = 'block';
+            
+                // Close the modal when the close button is clicked
+                closeModal.onclick = function () {
+                    modal.style.display = 'none';
+                };
+            
+                // Close the modal when the user clicks outside of it
+                window.onclick = function (event) {
+                    if (event.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                };
+            
+                sendEmailNotification(stationName, url, 'error');
+}
+
+    
+    
 
     function sendEmailNotification(stationName, stationUrl, status) {
         const formData = new FormData();
