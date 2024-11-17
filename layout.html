@@ -1201,21 +1201,9 @@ function displayStations(stations) {
                     bit: station.bit,
                     country: station.location,
                 };
+                 initSoundManager(uniqueUrl);
+                 playplayStation(uniqueUrl, stationDetails.image, stationDetails.stationName, stationDetails.bit, stationDetails.country);
 
-                stopCurrentAudio()
-
-                if (uniqueUrl.includes('application/vnd.apple.mpegurl') || uniqueUrl.endsWith('.m3u8')) {
-                    playplayStation(uniqueUrl, stationDetails.image, stationDetails.stationName, stationDetails.bit, stationDetails.country);
-                } else if (uniqueUrl.includes('audio/aac') || uniqueUrl.endsWith('.aac')) {
-                    console.log('Playing with HTML5 (AAC)');
-                    playWithHTML5(uniqueUrl, stationDetails.image, stationDetails.stationName, stationDetails.bit, stationDetails.country);
-                } else if (uniqueUrl.includes('audio/mpeg') || uniqueUrl.endsWith('.mp3')) {
-                    console.log('Playing with HTML5 (MP3)');
-                    playWithHTML5(uniqueUrl, stationDetails.image, stationDetails.stationName, stationDetails.bit, stationDetails.country);
-                } else {
-                    console.warn('Unknown content type, falling back to SoundManager2');
-                    fallbackToSoundManager2(uniqueUrl, stationDetails.image, stationDetails.stationName, stationDetails.bit, stationDetails.country);
-                }
             });
         };
 
@@ -1396,66 +1384,86 @@ function playStation(url, image, stationName, bit, country) {
 
         // HLS Streaming logic with HLS.js
         console.log('Playing with HLS.js');
-        playWithHLS(uniqueUrl, stationDetails);
+    if(!isHLS) {
+        playStream();
+    } else {
+        // If the activeStreamURL is still empty, it means that the connection was paused before finding a valid stream to be played
+        if(url == "") {
+            index=0;
+            playStream(url);
+        } else {
+            playHlsStream(url);
+        }
+    }
+    return false;
     }
 }
 
 
 // Function to play using HLS.js
-function playWithHLS(url, image, stationName, bit, country) {
+function playWithHLS(stream, image, stationName, bit, country) {
    
     const stationDetails = `${stationName} (${country}) (Web)`;
-    
-        if (Hls.isSupported()) {
-                hls = new Hls();
-                hls.loadSource(uniqueUrl);
-                hls.attachMedia(audioElement);
-                hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-                    audioElement.play();
-                    progress.style.display = 'none';
-                    playButton.textContent = '||';
-                    sendEmailNotification(stationDetails, url, "success");
-                });
-                hls.on(Hls.Events.ERROR, function (event, data) {
-                    console.error("HLS.js error:", data);
-                     progress.style.display = 'none';
-                    audioElement.pause();
-                    handlePlaybackError(uniqueUrl, stationDetails);
-                });
-            } else {
-                console.error("HLS is not supported in this browser. Falling back to default.");
-                audioElement.src = uniqueUrl;
-                audioElement.play();
-                progress.style.display = 'none';
-                playButton.textContent = '||';
-                sendEmailNotification(stationDetails, url, "success");
+
+    if (playButton.innerHTML != "<i class=\"icon loading_icon bx bx-loader-alt\"></i>") {
+        playButton.innerHTML = "<i class=\"icon loading_icon bx bx-loader-alt\"></i>";
+    }
+    playButton.onclick = stopAudio;
+    if(Hls.isSupported()) {
+        hls = new Hls();
+        hls.loadSource(stream);
+        hls.attachMedia(player);
+        hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+            console.log("video and hls.js are now bound together!");
+            isHLS = true;
+            //button.innerHTML = "<i class=\"icon stop_icon bx bx-pause\"></i>";
+            //button.onclick = stopAudio;
+            activeStreamURL = stream;
+            playWithPromise();
+            addVolumeSlider();
+            sendEmailNotification(stationDetails, url, "success");
+        });
+        hls.on(Hls.Events.MANIFEST_LOADING, function () {
+            if (playButton.innerHTML != "<i class=\"icon loading_icon bx bx-loader-alt\"></i>") {
+                playButton.innerHTML = "<i class=\"icon loading_icon bx bx-loader-alt\"></i>";
             }
+            button.onclick = stopAudio;
+        });
+        hls.on(Hls.Events.MANIFEST_PARSED,function() {
+            console.log("Manifest loaded, found " + data.levels.length + " quality level");
+            isHLS = true;
+            //button.innerHTML = "<i class=\"icon stop_icon bx bx-pause\"></i>";
+            //button.onclick = stopAudio;
+            activeStreamURL = stream;
+            playWithPromise();
+            addVolumeSlider();
+            activeStreamURL = stream;
+            sendEmailNotification(stationDetails, url, "success");
+        });
+        hls.on(Hls.Events.MEDIA_DETACHING, function(){
+            console.log("media detached");
+            setButtonPlay();
+        });
+        hls.on(Hls.Events.ERROR,function(event, data){
+            console.log("Type: " + data.type + ", Details: " + data.details);
+             handlePlaybackError(uniqueUrl, stationDetails);
+            //button.innerHTML = "<i class=\"icon stop_icon bx bx-pause\"></i>";
+            //button.onclick = stopAudio;
+        })
+    } else {
+        // Not supported handling
+        if (playButton.innerHTML != "<i class=\"icon loading_icon bx bx-loader-alt\"></i>") {
+            playButton.innerHTML = "<i class=\"icon loading_icon bx bx-loader-alt\"></i>";
+        }
+        playButton.onclick = stopAudio;
+    }
 
 }
 
-// Function to play with HTML5 audio element
-function playWithHTML5(url, image, stationName, bit, country) {
-       const stationDetails = `${stationName} (${country}) (Web)`;
-    // Set audio type to 'audio/ogg; codecs=vorbis' for .aac files and fallback to SoundManager2
-            audioElement.src = url;
-            audioElement.setAttribute('type', 'audio/ogg; codecs=vorbis');
-            audioElement.addEventListener('canplay', () => {
-                audioElement.play();
-                progress.style.display = 'none';
-                playButton.textContent = '||';
-                sendEmailNotification(stationDetails, url, "success");
-            });
 
-            console.error('.aac not supported natively. Attempting SoundManager2 fallback.');
+function playStream(url) {
 
-}
-
-
-
-// Function to handle SoundManager2 fallback
-function fallbackToSoundManager2(url, image, stationName, bit, country) {
-    // DOM element references
-    const stationLogo = document.getElementById('stationLogo');
+     const stationLogo = document.getElementById('stationLogo');
     const breadcrumbs = document.getElementById('breadcrumbs');
     const playButton = document.querySelector('.play-button');
     const progress = document.getElementById('progress');
@@ -1474,73 +1482,175 @@ function fallbackToSoundManager2(url, image, stationName, bit, country) {
         stationLogo.onerror = () => handleImageError(stationLogo, stationName);
     }
 
-    // Helper to stop the current audio
-    function stopCurrentAudio() {
-        if (currentAudio?.stop) currentAudio.stop();
-        if (currentAudio?.destruct) currentAudio.destruct();
-        if (currentAudio?.pause) currentAudio.pause();
-        if (currentAudio?.destroy) currentAudio.destroy();
 
-        currentAudio = null; // Reset reference
-    }
 
-    // Play a new audio stream
-    function playAudio(streamUrl) {
-        stopCurrentAudio(); // Stop any currently playing audio
-
-        currentAudio = soundManager.createSound({
-            id: 'stationSound',
-            url: streamUrl,
-            autoPlay: true,
-            onload(success) {
-                progress.style.display = success ? 'none' : 'block';
-                playButton.textContent = success ? '||' : '▶';
-                if (!success) alert('Error: Unable to load audio.');
-            },
-            onfinish() {
-                playButton.textContent = '▶';
+    
+    //activeStreamURL = streams[index].url;
+    audio = soundManager.createSound({
+        id: url,
+        url: url,
+        onerror: function(code, description) {
+            if((streams[index].url).includes(".m3u")){
+                soundManager.destroySound(this.id);
+                playHlsStream(this.url);
+                index++;
+            } else {
+                index++;
+                if(index != (streamsSize)) {
+                    soundManager.destroySound(this.id);
+                    playStream(url);
+                }
             }
-        });
-    }
-
-    // Toggle play/pause
-    function togglePlayPause() {
-        if (!currentAudio || currentAudio.playState === 0) {
-            progress.style.display = 'block';
-            playAudio(`${url}?timestamp=${Date.now()}`);
-        } else if (currentAudio.paused) {
-            currentAudio.play();
-            playButton.textContent = '||';
-        } else {
-            currentAudio.pause();
-            playButton.textContent = '▶';
-        }
-    }
-
-    // Attach event listeners
-    playButton.onclick = togglePlayPause;
-    document.querySelectorAll('.station-item').forEach(item =>
-        item.addEventListener('click', () =>
-            playAudio(`${url}?timestamp=${Date.now()}`)
-        )
-    );
-
-    // Initialize SoundManager2
-    soundManager.setup({
-        url: 'https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/',
-        flashVersion: 9,
-        debugMode: false,
-        onready() {
-            updateUI();
-            playAudio(`${url}?timestamp=${Date.now()}`);
         },
-        ontimeout() {
-            alert('Error: Unable to initialize audio playback.');
-            stopCurrentAudio();
+        onbufferchange: function() {
+            if (playButton.innerHTML != "<i class=\"icon loading_icon bx bx-loader-alt\"></i>") {
+                playButton.innerHTML = "<i class=\"icon loading_icon bx bx-loader-alt\"></i>";
+            }
+            playButton.onclick = stopAudio;
+            isPlaying = false;
+        },
+        onplay: function() {
+            addVolumeSlider();
+        },
+        whileplaying: function() {
+            if (this.bytesLoaded !== null && !isPlaying) {
+                activeStreamID =  this.id;
+                playButton.innerHTML = "<i class=\"icon stop_icon bx bx-pause\"></i>";
+                playButton.onclick = stopAudio;
+                isPlaying = true;
+                activeStreamURL = url;
+            }
+        },
+        onstop: function() {
+            setButtonPlay();
         }
+    });
+    audio.play();
+}
+
+
+function initSoundManager() {
+    soundManager.setup({
+        waitForWindowLoad: true,
+        onready: function() {
+        const browser = bowser.getParser(window.navigator.userAgent);
+        if (browser.getBrowserName() == "Safari" || browser.getBrowserName() == "Firefox") {
+            // Set play button to require the user gesture click
+            setButtonPlay();
+        } else {
+            playStream(url);
+        }
+    }
     });
 }
 
+
+
+// Play audio with promise
+function playWithPromise() {
+    // Get promise for play event on the HTMLAudioElement
+    const promise = player.play();
+    // Use promise to track autoplay policy if supported
+    if (promise !== undefined) {
+        promise.then(function() {
+            playButton.innerHTML = "<i class=\"icon stop_icon bx bx-pause\"></i>";
+            playButton.onclick = stopAudio;
+        }).catch(error => {
+            // Auto-play was prevented
+            // Show paused UI.
+            player.pause();
+            hls.detachMedia(player);
+            setButtonPlay();
+        });
+    // Check if auto-play is set on the HTMLAudioElement
+    } else if (player.getAttribute("autoplay") !== "true") {
+        // Setting auto-play on the HTMLAudioElement is required for the Android Samsung and stock browser
+        player.setAttribute("autoplay", true);
+        const browser = bowser.getParser(window.navigator.userAgent);
+        // Catch iOS never supports autoplay, catch if promises are not supported
+        if (browser.getBrowserName() == "Safari") {
+            // Set play button to require the user gesture click
+            setButtonPlay();
+        }
+    }
+}   
+
+
+ function setButtonPlay() {
+    button.innerHTML = "<i class=\"icon play_icon bx bx-play\"></i>";
+    button.onclick = playAudio;
+}
+
+
+/**
+ * Add volume slider
+ */
+function addVolumeSlider() {
+    const slider = document.getElementById("volumeControl");
+    changeVolume(localStorage.getItem("volume"));
+    slider.addEventListener("input", (e) => {
+        changeVolume(e.target.value, true);
+    });
+}
+
+/**
+ * Change volume
+ */
+function changeVolume(vol, isUserInteraction) {
+    const volume = isNumeric(parseInt(vol)) ? parseInt(vol) : 100;
+    const slider = document.getElementById("volumeControl");
+    const browser = bowser.getParser(window.navigator.userAgent);
+    // Apply to slider
+    slider.value = volume;
+    // Mute
+    if (volume === 0) {
+        // Get last volume
+        let volumeUnMute = getVolume("volume", false);
+        // Prevent 0 as last volume
+        volumeUnMute = volumeUnMute > 0 ? volumeUnMute : browser.getOSName(true) == "ios" ? 100 : 50;
+        // Save last volume as unmute volume
+        localStorage.setItem("volume_unmute", volumeUnMute);
+        // Set speaker icon off and mute
+        if (!player.muted) {
+            //setButtonMute();
+            // Use mute on iOS because the volume property is not settable in JavaScript
+            //bowser.ios && bowser.osversion.split(".")[0] < 10 ? player.pause(): player.muted = true;
+        }
+    }
+
+    // Save new volume value
+    localStorage.setItem("volume", volume);
+    // Apply new volume if HLS
+    player.volume = volume / 100;
+    //Apply new volume if SoundManager
+    if(audio != null) {
+        audio.setVolume(volume);
+    }
+
+    return volume;
+}
+
+/**
+ * Get volume
+ */
+function getVolume(key, normalized) {
+    let volume = 100;
+    // Get volume value
+    volume = localStorage.getItem(key);
+    // Volume value must be an integer
+    volume = parseInt(volume);
+    // Validate volume value
+    volume = isNumeric(volume) && volume >= 0 && volume <= 100 ? volume : 100;
+    return normalized ? volume / 100 : volume;
+}
+
+/**
+ * Check if number is numeric
+ */
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+    
 
     
 
