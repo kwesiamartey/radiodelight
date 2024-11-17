@@ -847,7 +847,7 @@
     <div style="background-color:rgb(77, 100, 111); display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;margin-bottom: 21px;">
       <span id="breadcrumbs" style="width:100%;padding:4px;margin:0px;font-size:13px;color:#fff;display:none;">Radio Station |  </span>
     </div> 
-         <h1 class="countryTitle" style="display: none;">Live Italy Radio Station Online</h1>
+         <h1 class="countryTitle" style="display: none;">Live Germany Radio Station Online</h1>
         <div class="row">
             <div class="col-md-8">
 
@@ -1364,50 +1364,47 @@ function playStation(url, image, stationName, bit, country) {
     
 
     // Check if the stream is an HLS stream (.m3u8)
-    if (uniqueUrl.endsWith('.m3u8')) {
-        // HLS Streaming logic with HLS.js
-        if (Hls.isSupported()) {
-            progress.style.display = 'block';
-            hls = new Hls();
-            hls.loadSource(uniqueUrl);
-            hls.attachMedia(audioElement);
-            
-            // Event listener for HLS.js when media is attached
-            hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-                audioElement.play().then(() => {
-                    console.log("HLS stream is playing");
-                    progress.style.display = 'none';
-                    playButton.textContent = '||';
-                    sendEmailNotification(stationDetails, url, "success");
-                }).catch(error => {
-                    console.error("Audio play error:", error);
-                    progress.style.display = 'none';
-                    handlePlaybackError(uniqueUrl, stationDetails);
-                });
-            });
+ 
 
-            // Error handling for HLS.js
-            hls.on(Hls.Events.ERROR, function (event, data) {
-                console.error("HLS.js error:", data);
-                progress.style.display = 'none';
-                audioElement.pause();
-                hls.destroy();
-                handlePlaybackError(uniqueUrl, stationDetails);
-            });
-        } else {
-            console.warn("HLS is not supported in this browser. Attempting direct play.");
-            audioElement.src = uniqueUrl;
+    if (uniqueUrl.endsWith('.m3u8')){
+        // HLS Streaming logic with HLS.js
+         if (Hls.isSupported()) {
+        console.log('HLS is supported');
+        progress.style.display = 'block';
+        const hls = new Hls();
+        hls.loadSource(uniqueUrl);
+        hls.attachMedia(audioElement);
+
+        // Event listener for HLS.js when media is attached
+        hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+            console.log('HLS media attached');
             audioElement.play().then(() => {
+                console.log("HLS stream is playing");
                 progress.style.display = 'none';
                 playButton.textContent = '||';
-                sendEmailNotification(stationDetails, url, "success");
+                sendEmailNotification(stationDetails, uniqueUrl, "success");
             }).catch(error => {
                 console.error("Audio play error:", error);
                 progress.style.display = 'none';
                 handlePlaybackError(uniqueUrl, stationDetails);
             });
-        }
+        });
+
+        // Error handling for HLS.js
+        hls.on(Hls.Events.ERROR, function (event, data) {
+            console.error("HLS.js error:", data);
+            progress.style.display = 'none';
+            audioElement.pause();
+            if (hls) hls.destroy();
+            handlePlaybackError(uniqueUrl, stationDetails);
+        });
+
     } else {
+        console.warn('HLS not supported in this browser');
+        handlePlaybackError(uniqueUrl, stationDetails);
+    }
+    } 
+    else {
         // Handle fallback for non-HLS streams (.aac, .mp3)
         console.error('.aac or other formats not natively supported. Attempting SoundManager2 fallback.');
         fallbackToSoundManager2(uniqueUrl, stationDetails);
@@ -1495,11 +1492,11 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
             };
 
             // Play/Pause button functionality
-            playButton.addEventListener('click', function () {
+           /* playButton.addEventListener('click', function () {
                 if (audioElement.src && !audioElement.paused && !audioElement.ended) {
                     // HTML5 Audio is currently playing, so pause it
                     audioElement.pause();
-                    playButton.textContent = '▶';
+                    playButton.textContent = '||';
                 } else if (audioElement.src && (audioElement.paused || audioElement.ended)) {
                     // HTML5 Audio is paused or ended, so play it
                     audioElement.play().then(() => {
@@ -1509,7 +1506,7 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                         // If HTML5 fails, fallback to SoundManager2
                         if (sound && sound.playState === 0) {
                             sound.play();
-                            playButton.textContent = '||';
+                            playButton.textContent = '▶';
                         }
                     });
                 } else if (sound && sound.playState === 1 && !sound.paused) {
@@ -1519,13 +1516,13 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                 } else if (sound && sound.playState === 1 && sound.paused) {
                     // SoundManager2 is paused, so resume it
                     sound.resume();
-                    playButton.textContent = '||';
+                    playButton.textContent = '▶';
                 } else if (sound && sound.playState === 0) {
                     // SoundManager2 is not playing, so start it
                     sound.play();
                     playButton.textContent = '||';
                 }
-            });
+            }); */
         },
         ontimeout: function () {
             console.error('SoundManager2 setup failed or timed out.');
@@ -1754,7 +1751,71 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
 }
 
 
-    
+  function addVolumeSlider() {
+    const slider = document.getElementById("volumeControl");
+    changeVolume(localStorage.getItem("volume"));
+    slider.addEventListener("input", (e) => {
+        changeVolume(e.target.value, true);
+    });
+}
+
+/**
+ * Change volume
+ */
+function changeVolume(vol, isUserInteraction) {
+    const volume = isNumeric(parseInt(vol)) ? parseInt(vol) : 100;
+    const slider = document.getElementById("volumeControl");
+    const browser = bowser.getParser(window.navigator.userAgent);
+    // Apply to slider
+    slider.value = volume;
+    // Mute
+    if (volume === 0) {
+        // Get last volume
+        let volumeUnMute = getVolume("volume", false);
+        // Prevent 0 as last volume
+        volumeUnMute = volumeUnMute > 0 ? volumeUnMute : browser.getOSName(true) == "ios" ? 100 : 50;
+        // Save last volume as unmute volume
+        localStorage.setItem("volume_unmute", volumeUnMute);
+        // Set speaker icon off and mute
+        if (!player.muted) {
+            //setButtonMute();
+            // Use mute on iOS because the volume property is not settable in JavaScript
+            //bowser.ios && bowser.osversion.split(".")[0] < 10 ? player.pause(): player.muted = true;
+        }
+    }
+
+    // Save new volume value
+    localStorage.setItem("volume", volume);
+    // Apply new volume if HLS
+    player.volume = volume / 100;
+    //Apply new volume if SoundManager
+    if(audio != null) {
+        audio.setVolume(volume);
+    }
+
+    return volume;
+}
+
+/**
+ * Get volume
+ */
+function getVolume(key, normalized) {
+    let volume = 100;
+    // Get volume value
+    volume = localStorage.getItem(key);
+    // Volume value must be an integer
+    volume = parseInt(volume);
+    // Validate volume value
+    volume = isNumeric(volume) && volume >= 0 && volume <= 100 ? volume : 100;
+    return normalized ? volume / 100 : volume;
+}
+
+/**
+ * Check if number is numeric
+ */
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}  
 
 
 
