@@ -1393,42 +1393,61 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
     // SoundManager2 fallback logic
     const soundManagerSwfUrl = `https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf`;
     
-    soundManager.setup({
-        url: soundManagerSwfUrl,
-        onready: function() {
-            const sound = soundManager.createSound({
-                id: 'stationSound',
-                url: uniqueUrl,
-                onload: function(success) {
-                    if (success) {
-                        this.play();
-                        progress.style.display = 'none';
-                        playButton.textContent = '||';
-                        sendEmailNotification(stationDetails, uniqueUrl, "success");
+    // Prefer HTML5 but use Flash as a fallback
+        soundManager.useHTML5Audio = true; // Prefer HTML5 audio
+        soundManager.useFlashBlock = false; // Avoid forcing Flash
+        soundManager.preferFlash = false; // Default to HTML5
+
+        // Set up SoundManager2
+        soundManager.setup({
+            url: soundManagerSwfUrl, // Path to SWF folder
+            flashVersion: 9, // Minimum Flash version
+            debugMode: false, // Disable debug logs (set to true for debugging)
+            onready: function () {
+                console.log('SoundManager2 is ready!');
+
+                // Attach event listener to the play button
+               // const playButton = document.getElementById('playButton');
+               // const progress = document.getElementById('progress');
+                let sound;
+
+                playButton.addEventListener('click', function () {
+                    if (!sound) {
+                        progress.style.display = 'block'; // Show loading progress
+                        sound = soundManager.createSound({
+                            id: 'stationSound',
+                            url: uniqueUrl, // Replace with your stream URL
+                            autoPlay: true,
+                            onload: function (success) {
+                                if (success) {
+                                    console.log('Audio loaded and playing!');
+                                    progress.style.display = 'none';
+                                    playButton.textContent = '||'; // Pause button
+                                } else {
+                                    console.error('Failed to load audio.');
+                                    progress.style.display = 'none';
+                                    alert('Error: Unable to load audio.');
+                                }
+                            },
+                            onfinish: function () {
+                                playButton.textContent = '▶'; // Reset to play button
+                            }
+                        });
+                    } else if (sound.playState === 1) {
+                        sound.pause();
+                        playButton.textContent = '▶';
                     } else {
-                         progress.style.display = 'none';
-                        audioElement.pause();
-                        handlePlaybackError(uniqueUrl, stationDetails);
-                        console.error('SoundManager2 failed to load the audio.');
+                        sound.play();
+                        playButton.textContent = '||';
                     }
-                },
-                onfinish: function() {
-                    playButton.textContent = '▶'; // Reset play button when finished
-                }
-            });
-            sound.play();
-        },
-        ontimeout: function() {
-            console.error('SoundManager2 could not be loaded.');
-            audioElement.pause();
-             progress.style.display = 'none';
-            handlePlaybackError(uniqueUrl, stationDetails);
-        }
-    });
+                });
+            },
+            ontimeout: function () {
+                console.error('SoundManager2 setup failed or timed out.');
+                alert('Error: Unable to initialize audio playback.');
+            }
+        });
 }
-
-
-
 
 
 
