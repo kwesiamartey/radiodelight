@@ -1420,9 +1420,8 @@ function playStation(url, image, stationName, bit, country) {
 
 
 
- function fallbackToSoundManager2(uniqueUrl, stationDetails) {
- 
-    const soundManagerSwfUrl = https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf;
+function fallbackToSoundManager2(uniqueUrl, stationDetails) {
+    const soundManagerSwfUrl = `https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf`;
 
     // Prefer HTML5 but use Flash as a fallback
     soundManager.useHTML5Audio = true;
@@ -1436,7 +1435,7 @@ function playStation(url, image, stationName, bit, country) {
         debugMode: false,
         onready: function () {
             console.log('SoundManager2 is ready!');
-            let sound;
+            let sound = null;
 
             // Function to create and play sound using SoundManager2
             function createAndPlaySoundWithSM2() {
@@ -1476,7 +1475,7 @@ function playStation(url, image, stationName, bit, country) {
             // Check if the audio element can play the URL natively
             audioElement.src = uniqueUrl;
             audioElement.load();
-            
+
             audioElement.oncanplay = function () {
                 progress.style.display = 'none';
                 audioElement.play().then(() => {
@@ -1497,21 +1496,36 @@ function playStation(url, image, stationName, bit, country) {
 
             // Play/Pause button functionality
             playButton.addEventListener('click', function () {
-                if (audioElement.src && !audioElement.paused) {
+                if (audioElement.src && !audioElement.paused && !audioElement.ended) {
+                    // HTML5 Audio is currently playing, so pause it
                     audioElement.pause();
                     playButton.textContent = '▶';
-                } else if (audioElement.src) {
-                    audioElement.play();
-                    playButton.textContent = '||';
+                } else if (audioElement.src && (audioElement.paused || audioElement.ended)) {
+                    // HTML5 Audio is paused or ended, so play it
+                    audioElement.play().then(() => {
+                        playButton.textContent = '||';
+                    }).catch(err => {
+                        console.error('HTML5 Audio play error:', err);
+                        // If HTML5 fails, fallback to SoundManager2
+                        if (sound && sound.playState === 0) {
+                            sound.play();
+                            playButton.textContent = '||';
+                        }
+                    });
                 } else if (sound && sound.playState === 1 && !sound.paused) {
+                    // SoundManager2 is playing, so pause it
                     sound.pause();
                     playButton.textContent = '▶';
-                } else if (sound) {
+                } else if (sound && sound.playState === 1 && sound.paused) {
+                    // SoundManager2 is paused, so resume it
+                    sound.resume();
+                    playButton.textContent = '||';
+                } else if (sound && sound.playState === 0) {
+                    // SoundManager2 is not playing, so start it
                     sound.play();
                     playButton.textContent = '||';
                 }
             });
-            
         },
         ontimeout: function () {
             console.error('SoundManager2 setup failed or timed out.');
@@ -1519,7 +1533,6 @@ function playStation(url, image, stationName, bit, country) {
         }
     });
 }
-
 
     
 
