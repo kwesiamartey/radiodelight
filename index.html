@@ -1244,16 +1244,21 @@ function displayStations(stations) {
 
         // Clear timeout if image loads successfully
         imgElement.onload = () => {
-            clearTimeout(loadTimeout);
-            stationItem.addEventListener('click', () => playStation(station.url, imgElement.src, station.name, station.bit, station.location));
-        };
+                clearTimeout(loadTimeout);
+                stationItem.addEventListener('click', () => {
+                    audioElement.stop(); // Ensure audioElement.stop() is a valid method
+                    playStation(station.url, imgElement.src, station.name, station.bit, station.location);
+                });
+            };
 
         // If loading fails, use `mast2.jpg` as fallback
         imgElement.onerror = () => {
             clearTimeout(loadTimeout);
             imgElement.src = 'mast.jpg';
-            stationItem.addEventListener('click', () => playStation(station.url, 'mast.jpg', station.name, station.bit, station.location));
-        };
+            stationItem.addEventListener('click', () => {
+                audioElement.stop();
+                playStation(station.url, 'mast.jpg', station.name, station.bit, station.location));
+        } };
 
         stationList.appendChild(stationItem);
     });
@@ -1429,7 +1434,7 @@ function playWithHLS(url){
             });
         }
 
-        // Toggle play/pause
+     // Toggle play/pause
        /* playButton.addEventListener('click', () => {
             if (audioElement.paused) {
                 audioElement.play();
