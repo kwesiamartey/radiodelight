@@ -1250,6 +1250,10 @@ function displayStations(stations) {
                 if (audioElement) {
                     audioElement.pause(); // Correctly stop the audio
                     audioElement.currentTime = 0; // Reset playback position
+
+                       // Clear the audio source URL
+                    audioElement.src = '';
+                    audioElement.load(); // Ensure the audio element is fully reset
                 }
                 playStation(station.url, imgElement.src, station.name, station.bit, station.location);
             });
@@ -1264,6 +1268,10 @@ function displayStations(stations) {
                 if (audioElement) {
                     audioElement.pause(); // Correctly stop the audio
                     audioElement.currentTime = 0; // Reset playback position
+
+                       // Clear the audio source URL
+                    audioElement.src = '';
+                    audioElement.load(); // Ensure the audio element is fully reset
                 }
                 playStation(station.url, 'mast.jpg', station.name, station.bit, station.location);
             });
@@ -1426,6 +1434,10 @@ function playWithHLS(url){
         hls.destroy();
         hls = null;
     }
+
+       // Clear the audio source URL
+        audioElement.src = '';
+        audioElement.load(); // Ensure the audio element is fully reset
     
      // Check if HLS is supported
         if (Hls.isSupported()) {
@@ -1462,6 +1474,10 @@ function playWithHLS(url){
 
 function fallbackToSoundManager2(uniqueUrl, stationDetails) {
     const soundManagerSwfUrl = `https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/`;
+
+       // Clear the audio source URL
+        audioElement.src = '';
+        audioElement.load(); // Ensure the audio element is fully reset
 
     // Prefer HTML5 but use Flash as a fallback
     soundManager.setup({
