@@ -16,6 +16,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+     <script src="https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/script/soundmanager2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bowser@2.11.0/es5.min.js"></script>
+    <link href="https://unpkg.com/boxicons/css/boxicons.min.css" rel="stylesheet">
    
     <!-- Favicons -->
         <link rel="icon" href="logo.png" sizes="any">
@@ -1378,37 +1381,17 @@ function playStation(url, image, stationName, bit, country) {
                 playButton.textContent = '||';
                 sendEmailNotification(stationDetails, url, "success");
             }
-        } else if (uniqueUrl.endsWith('.aac')) {
-            // Set audio type to 'audio/ogg; codecs=vorbis' for .aac files and fallback to SoundManager2
-            audioElement.src = uniqueUrl;
-            audioElement.setAttribute('type', 'audio/ogg; codecs=vorbis');
-            audioElement.addEventListener('canplay', () => {
-                audioElement.play();
-                progress.style.display = 'none';
-                playButton.textContent = '||';
-                sendEmailNotification(stationDetails, url, "success");
-            });
-
+        } else{
             console.error('.aac not supported natively. Attempting SoundManager2 fallback.');
-            
             // SoundManager2 fallback for .aac files
             fallbackToSoundManager2(uniqueUrl, stationDetails);
-        } else {
-            // Default playback for other formats
-            audioElement.src = uniqueUrl;
-            audioElement.addEventListener('canplay', () => {
-                audioElement.play();
-                progress.style.display = 'none';
-                playButton.textContent = '||';
-                sendEmailNotification(stationDetails, url, "success");
-            });
-        }
+        } 
     }
 }
 
 function fallbackToSoundManager2(uniqueUrl, stationDetails) {
     // SoundManager2 fallback logic
-    const soundManagerSwfUrl = `${window.location.protocol}//lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf`;
+    const soundManagerSwfUrl = `https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf`;
     
     soundManager.setup({
         url: soundManagerSwfUrl,
