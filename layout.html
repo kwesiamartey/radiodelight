@@ -1215,7 +1215,7 @@ function displayStations(stations) {
 
             // Add click event with content type handling for playback logic
             stationItem.addEventListener('click', () => {
-                stopCurrentAudio()
+        
                 
                 const uniqueUrl = station.url; // The station URL
                 const stationDetails = {
@@ -1225,18 +1225,8 @@ function displayStations(stations) {
                     country: station.location,
                 };
 
-                if (uniqueUrl.includes('application/vnd.apple.mpegurl') || uniqueUrl.endsWith('.m3u8')) {
-                    playplayStation(uniqueUrl, 'mast.jpg', station.name, station.bit, station.location);
-                } else if (uniqueUrl.includes('audio/aac') || uniqueUrl.endsWith('.aac')) {
-                    console.log('Playing with HTML5 (AAC)');
-                    playWithHTML5(uniqueUrl, 'mast.jpg', station.name, station.bit, station.location);
-                } else if (uniqueUrl.includes('audio/mpeg') || uniqueUrl.endsWith('.mp3')) {
-                    console.log('Playing with HTML5 (MP3)');
-                    playWithHTML5(uniqueUrl, 'mast.jpg', station.name, station.bit, station.location);
-                } else {
-                    console.warn('Unknown content type, falling back to SoundManager2');
-                    fallbackToSoundManager2(uniqueUrl, 'mast.jpg', station.name, station.bit, station.location);
-                }
+                 initSoundManager(uniqueUrl);
+                 playplayStation(uniqueUrl, 'mast.jpg', station.name, station.bit, station.location);
             });
         };
 
@@ -1330,25 +1320,33 @@ async function getStreamContentType(url) {
 }
 
 // Function to stop any currently playing audio
-function stopCurrentAudio() {
-    if (currentAudio) {
-        if (currentAudio instanceof soundManager.soundClass) {
-            // If it's a SoundManager2 sound instance
-            currentAudio.stop();
-            currentAudio.destruct();
-        } else if (currentAudio instanceof HTMLAudioElement) {
-            // If it's an HTML5 Audio element
-            currentAudio.pause();
-            currentAudio.src = ''; // Clear the source
-        } else if (currentAudio.destroy) {
-            // If it's an HLS.js instance
-            currentAudio.destroy();
+function stopAudio() {
+    try {
+        if (!isHLS) {
+            // Stop all SoundManager2 sounds
+            soundManager.stopAll();
+
+            // Destruct all active sounds to release memory
+            soundManager.sounds.forEach((sound) => {
+                if (sound) {
+                    sound.destruct();
+                }
+            });
+        } else {
+            // Stop HLS.js playback
+            if (player) {
+                player.pause();
+            }
+            if (hls) {
+                hls.detachMedia();
+                hls.destroy(); // Properly clean up the HLS.js instance
+            }
         }
-
-        currentAudio = null; // Reset the reference
+    } catch (error) {
+        console.error("An error occurred while stopping audio:", error);
     }
+    return false;
 }
-
 
 function playStation(url, image, stationName, bit, country) {
     if (bit === '00') {
@@ -1712,31 +1710,9 @@ function createStationLogoCanvas(stationName) {
 
 
 
-function togglePlay() {
-    progress.style.display = 'block'; // Show progress initially
-
-    if (audioElement) {
-        if (audioElement.paused) {
-            audioElement.play().then(() => {
-                playButton.textContent = '||'; // Change button to pause icon
-                progress.style.display = 'none'; // Hide progress once audio starts playing
-            }).catch(error => {
-                console.error("Audio play error:", error);
-                progress.style.display = 'none'; // Hide progress if there's an error
-                
-            });
-        } else {
-            audioElement.pause();
-            playButton.textContent = '▶'; // Change button back to play icon
-            progress.style.display = 'none'; // Hide progress when paused
-       
-        }
-    }
-  }
-
-    function setVolume(value) {
+ function setVolume(value) {
         if (currentAudio) currentAudio.volume = value;
-    }
+ }
 
     function handlePlaybackError(url, stationName) {
         progress.style.display = 'none';
