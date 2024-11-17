@@ -1356,9 +1356,9 @@ async function playStation(url, image, stationName, bit, country) {
     stationLogo.onerror = () => handleImageError(stationLogo, stationName);
 
     // Add a timestamp to the URL to ensure unique fetch each time
-    const uniqueUrl = `${url}?timestamp=${Date.now()}`;
+    const uniqueUrl = `${url}`;
     const stationDetails = `${stationName} (${country}) (Web)`;
-    const progress = document.getElementById('progress');
+  
     
     // Check if the stream is an HLS stream (.m3u8)
     try {
@@ -1406,14 +1406,20 @@ async function playStation(url, image, stationName, bit, country) {
             }
         } else {
             console.warn('Not an HLS (.m3u8) stream, attempting fallback');
+             // Fallback to SoundManager2 for non-HLS streams (.aac, .mp3)
+            console.error('.aac or other formats not natively supported. Attempting SoundManager2 fallback.');
+            fallbackToSoundManager2(uniqueUrl, stationDetails);
         }
+
+
+
+
+        
     } catch (error) {
         console.error('Error fetching stream details:', error);
     }
 
-    // Fallback to SoundManager2 for non-HLS streams (.aac, .mp3)
-    console.error('.aac or other formats not natively supported. Attempting SoundManager2 fallback.');
-    fallbackToSoundManager2(uniqueUrl, stationDetails);
+   
 }
 
 
