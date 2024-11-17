@@ -1343,9 +1343,9 @@ function stopAudio() {
         if (!isHLS) {
             // Stop all SoundManager2 sounds
             soundManager.stopAll();
-
-            // Destruct all active sounds to release memory
-            soundManager.sounds.forEach((sound) => {
+            
+            // Iterate through soundManager.sounds and destruct each sound
+            Object.values(soundManager.sounds).forEach((sound) => {
                 if (sound) {
                     sound.destruct();
                 }
@@ -1365,6 +1365,7 @@ function stopAudio() {
     }
     return false;
 }
+
 
 function playStation(url, image, stationName, bit, country) {
     if (bit === '00') {
