@@ -1508,6 +1508,10 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                             console.error('SM2: Failed to load audio.');
                             alert('Error: Unable to load audio.');
                             playButton.textContent = '▶';
+                             // Clear the audio source URL
+                            audioElement.src = '';
+                            audioElement.load(); // Ensure the audio element is fully reset
+                            audioElement.stop
                             if (sound) sound.destruct();
                             sound = null;
                         }
@@ -1516,13 +1520,21 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                         playButton.textContent = '▶';
                         if (sound) sound.destruct();
                         sound = null;
-                    },
+                         // Clear the audio source URL
+                            audioElement.src = '';
+                            audioElement.load(); // Ensure the audio element is fully reset
+                            audioElement.stop
+                     },
                     onerror: function () {
                         console.error('SM2: Playback failed.');
                         alert('Error: Playback failed.');
                         playButton.textContent = '▶';
                         if (sound) sound.destruct();
                         sound = null;
+                         // Clear the audio source URL
+                            audioElement.src = '';
+                            audioElement.load(); // Ensure the audio element is fully reset
+                            audioElement.stop
                     }
                 });
             }
@@ -1546,6 +1558,9 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                 }).catch(err => {
                     console.error('HTML5 Audio error:', err);
                     createAndPlaySoundWithSM2();
+                     audioElement.src = '';
+                            audioElement.load(); // Ensure the audio element is fully reset
+                            audioElement.stop
                 });
             };
 
@@ -1553,11 +1568,17 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                 clearTimeout(html5Timeout);
                 console.error('HTML5 Audio: Failed to load.');
                 createAndPlaySoundWithSM2();
+                 audioElement.src = '';
+                            audioElement.load(); // Ensure the audio element is fully reset
+                            audioElement.stop
             };
         },
         ontimeout: function () {
             console.error('SoundManager2 setup failed or timed out.');
             alert('Error: Unable to initialize audio playback.');
+             audioElement.src = '';
+                            audioElement.load(); // Ensure the audio element is fully reset
+                            audioElement.stop
         }
     });
 }
