@@ -1415,7 +1415,7 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                 progress.style.display = 'block'; // Show loading progress
                 sound = soundManager.createSound({
                     id: 'stationSound',
-                    url:`${uniqueUrl}?timestamp=${Date.now()}`,
+                    url:`${uniqueUrl}`,
                     autoPlay: true,
                     onload: function (success) {
                         progress.style.display = 'none';
