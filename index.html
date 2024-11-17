@@ -1474,14 +1474,17 @@ function playWithHLS(url){
     
 // Function to play audio using HTML5 audio element
 function playWithHTML5Audio(url) {
-    const audioElement = document.createElement('audio');
+// Clear the audio source URL
+    audioElement.src = '';
+     audioElement.load(); // Ensure the audio element is fully reset
+    
     audioElement.src = url;
     audioElement.controls = true;
     audioElement.autoplay = true;
     audioElement.crossOrigin = 'anonymous'; // Set if needed for CORS
 
     // Append the audio player to the DOM (e.g., a div with ID 'audioPlayerContainer')
-    document.getElementById('audioPlayerContainer').appendChild(audioElement);
+    audioElement.appendChild(audioElement);
 
     // Error handling for HTML5 audio
     audioElement.onerror = function () {
