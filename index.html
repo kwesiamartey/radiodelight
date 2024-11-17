@@ -1496,33 +1496,44 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
             };
 
             // Play/Pause button functionality
-           playButton.addEventListener('click', function () {
-    // Check if HTML5 audio is playing or paused
-    if (!audioElement.paused && !audioElement.ended && audioElement.currentTime > 0) {
-        // Pause HTML5 audio
-        audioElement.pause();
-        playButton.textContent = '▶';
-    } else if (audioElement.src && (audioElement.paused || audioElement.ended)) {
-        // Play HTML5 audio
-        audioElement.play().then(() => {
-            playButton.textContent = '||';
-        }).catch(err => {
-            console.error('HTML5 Audio play error:', err);
-        });
-    } else if (sound && sound.playState === 1 && !sound.paused) {
-        // Pause SoundManager2 audio
-        sound.pause();
-        playButton.textContent = '▶';
-    } else if (sound && sound.playState === 1) {
-        // Resume SoundManager2 audio
-        sound.resume();
-        playButton.textContent = '||';
-    } else if (sound && sound.playState === 0) {
-        // Play SoundManager2 audio (if it was stopped)
-        sound.play();
-        playButton.textContent = '||';
-    }
-});
+               // Play/Pause button functionality
+            playButton.addEventListener('click', function () {
+                if (audioElement.src && !audioElement.paused && !audioElement.ended) {
+                    // HTML5 Audio is currently playing, so pause it
+                    audioElement.pause();
+                    playButton.textContent = '▶';
+                } else if (audioElement.src && (audioElement.paused || audioElement.ended)) {
+                    // HTML5 Audio is paused or ended, so play it
+                    audioElement.play().then(() => {
+                        playButton.textContent = '||';
+                    }).catch(err => {
+                        console.error('HTML5 Audio play error:', err);
+                        // If HTML5 fails, fallback to SoundManager2
+                        if (sound && sound.playState === 0) {
+                            sound.play();
+                            playButton.textContent = '||';
+                        }
+                    });
+                } else if (sound && sound.playState === 1 && !sound.paused) {
+                    // SoundManager2 is playing, so pause it
+                    sound.pause();
+                    playButton.textContent = '▶';
+                } else if (sound && sound.playState === 1 && sound.paused) {
+                    // SoundManager2 is paused, so resume it
+                    sound.resume();
+                    playButton.textContent = '||';
+                } else if (sound && sound.playState === 0) {
+                    // SoundManager2 is not playing, so start it
+                    sound.play();
+                    playButton.textContent = '||';
+                }
+            });
+        },
+        ontimeout: function () {
+            console.error('SoundManager2 setup failed or timed out.');
+            alert('Error: Unable to initialize audio playback.');
+        }
+    });
         },
         ontimeout: function () {
             console.error('SoundManager2 setup failed or timed out.');
