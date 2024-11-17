@@ -1362,9 +1362,11 @@ function playStation(url, image, stationName, bit, country) {
     // Show progress indicator while loading
     const progress = document.getElementById('progress');
     
-
+    const response = await fetch(uniqueUrl, { method: 'HEAD' });
+    const contentType = response.headers.get('content-type');
     // Check if the stream is an HLS stream (.m3u8)
-    if (uniqueUrl.endsWith('.m3u8') && Hls.isSupported()) {
+    if (contentType && contentType.includes('application/vnd.apple.mpegurl')) {
+        console.log('.m3u8 stream detected');
         // HLS Streaming logic with HLS.js
            playWithHLS(uniqueUrl)
     } else {
