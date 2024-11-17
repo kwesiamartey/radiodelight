@@ -1322,7 +1322,7 @@ function createPaginationControls(totalStations, totalPages) {
 }
 
 
-function playStation(url, image, stationName, bit, country) {
+async function playStation(url, image, stationName, bit, country) {
     // Handle specific bit conditions for popups
     if (bit === '00') {
         openPopupWithData(stationName, image, url);
