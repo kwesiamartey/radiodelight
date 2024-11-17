@@ -1380,7 +1380,7 @@ function playStation(url, image, stationName, bit, country) {
 function playWithHLS(url){
 
      // Check if HLS is supported
-        if (Hls.isSupported()) {
+        if (uniqueUrl.endsWith('.m3u8') && Hls.isSupported()) {
             const hls = new Hls();
             hls.loadSource(url);
             hls.attachMedia(audioElement);
