@@ -1343,7 +1343,6 @@ function stopAudio() {
         if (!isHLS) {
             // Stop all SoundManager2 sounds
             soundManager.stopAll();
-            
             // Iterate through soundManager.sounds and destruct each sound
             Object.values(soundManager.sounds).forEach((sound) => {
                 if (sound) {
@@ -1368,7 +1367,7 @@ function stopAudio() {
 
  function playAudio(url) {
     if(!isHLS) {
-        playStream();
+        playStream(url);
     } else {
         // If the activeStreamURL is still empty, it means that the connection was paused before finding a valid stream to be played
         if(url == "") {
