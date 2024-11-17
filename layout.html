@@ -1244,7 +1244,7 @@ function displayStations(stations) {
                 };
 
                  initSoundManager(uniqueUrl);
-                 playStation(uniqueUrl, 'mast.jpg', station.name, station.bit, station.location);
+                 //playStation(uniqueUrl, 'mast.jpg', station.name, station.bit, station.location);
             });
         };
 
@@ -1366,6 +1366,21 @@ function stopAudio() {
     return false;
 }
 
+ function playAudio(url) {
+    if(!isHLS) {
+        playStream();
+    } else {
+        // If the activeStreamURL is still empty, it means that the connection was paused before finding a valid stream to be played
+        if(url == "") {
+    
+            playStream(url);
+        } else {
+            playHlsStream(url);
+        }
+    }
+    return false;
+}   
+
 
 function playStation(url, image, stationName, bit, country) {
     if (bit === '00') {
@@ -1392,7 +1407,7 @@ function playStation(url, image, stationName, bit, country) {
         // HLS Streaming logic with HLS.js
         console.log('Playing with HLS.js');
     if(!isHLS) {
-        playStream();
+        playStream(url);
     } else {
         // If the activeStreamURL is still empty, it means that the connection was paused before finding a valid stream to be played
         if(url == "") {
@@ -1425,7 +1440,7 @@ function playHlsStream(stream, image, stationName, bit, country) {
             //button.innerHTML = "<i class=\"icon stop_icon bx bx-pause\"></i>";
             //button.onclick = stopAudio;
             activeStreamURL = stream;
-            playWithPromise();
+            playWithPromise(stream);
             addVolumeSlider();
             sendEmailNotification(stationDetails, stream, "success");
         });
@@ -1441,7 +1456,7 @@ function playHlsStream(stream, image, stationName, bit, country) {
             //button.innerHTML = "<i class=\"icon stop_icon bx bx-pause\"></i>";
             //button.onclick = stopAudio;
             activeStreamURL = stream;
-            playWithPromise();
+            playWithPromise(stream);
             addVolumeSlider();
             activeStreamURL = stream;
             sendEmailNotification(stationDetails, stream, "success");
@@ -1552,7 +1567,7 @@ function initSoundManager(url) {
                 if (browserName === "Safari" || browserName === "Firefox") {
                     // Set the play button to require a user gesture
                     console.log(`Browser detected: ${browserName}. Waiting for user gesture to play.`);
-                    setButtonPlay();
+                    setButtonPlay(url);
                 } else {
                     // Automatically play the stream for other browsers
                     console.log(`Browser detected: ${browserName}. Attempting to auto-play.`);
@@ -1572,7 +1587,7 @@ function initSoundManager(url) {
 
 
 // Play audio with promise
-function playWithPromise() {
+function playWithPromise(url) {
     // Get promise for play event on the HTMLAudioElement
     const promise = player.play();
     // Use promise to track autoplay policy if supported
@@ -1585,7 +1600,7 @@ function playWithPromise() {
             // Show paused UI.
             player.pause();
             hls.detachMedia(player);
-            setButtonPlay();
+            setButtonPlay(url);
         });
     // Check if auto-play is set on the HTMLAudioElement
     } else if (player.getAttribute("autoplay") !== "true") {
@@ -1595,15 +1610,15 @@ function playWithPromise() {
         // Catch iOS never supports autoplay, catch if promises are not supported
         if (browser.getBrowserName() == "Safari") {
             // Set play button to require the user gesture click
-            setButtonPlay();
+            setButtonPlay(url);
         }
     }
 }   
 
 
- function setButtonPlay() {
+ function setButtonPlay(url) {
     playButton.innerHTML = "<i class=\"icon play_icon bx bx-play\"></i>";
-    playButton.onclick = playAudio;
+    playButton.onclick = playAudio(url);
 }
 
 
