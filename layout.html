@@ -1017,6 +1017,7 @@ function renderCountryList(data, page, totalPages) {
         const listItem = document.createElement('li');
         listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag">`;
         listItem.addEventListener('click', () => {
+            this.title = '${country.name}'
              audio.pause();
              playButton.innerHTML = '▶';  // Play icon
              isPlaying = false; // Play icon
