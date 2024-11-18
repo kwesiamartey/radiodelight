@@ -81,6 +81,22 @@
             flex-direction: column;
         }
 
+  /* Tooltip styling */
+  .tooltip {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    font-size: 14px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 1000;
+  }
+
+    
     /* Modal Background */
 .modal {
   display: none; /* Hidden by default */
@@ -875,7 +891,7 @@
                 <!-- Centered Volume Control -->
                 <div class="col" style=" display: flex; align-items: center; justify-content: center;">
                     <input style="width: 50%; margin: 14px 12px; display: flex; align-items: center; justify-content: center;" 
-                           type="range" id="volumeControl" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
+                           type="range" id="volumeControl" min="0" max="1" step="0.01" value="1" >
                 </div>
             </div>
         </div>
@@ -973,8 +989,55 @@
     const itemsPerPage1 = 40; // Number of countries per page
     const progress = document.getElementById('progress');
     const playButton = document.querySelector('.play-button');
+    const volumeControl = document.getElementById('volumeControl');
     let isPlaying = false; // Track the play/pause state
 
+    // Set initial volume (based on the slider's default value)
+    audio.volume = volumeControl.value;
+
+    // Update audio volume when the slider is adjusted
+    volumeControl.addEventListener('input', function () {
+        audio.volume = this.value;
+        console.log(`Volume set to: ${Math.round(this.value * 100)}%`);
+    });
+
+    // Optional: Display the volume level as a percentage
+    volumeControl.addEventListener('input', function () {
+        this.title = `Volume: ${Math.round(this.value * 100)}%`;
+    });
+
+
+ // Function to show tooltip
+  function showTooltip(event, text) {
+    let tooltip = document.createElement('div');
+    tooltip.className = 'tooltip';
+    tooltip.textContent = text;
+    document.body.appendChild(tooltip);
+
+    // Position the tooltip near the mouse cursor
+    const tooltipOffset = 10;
+    tooltip.style.left = `${event.pageX + tooltipOffset}px`;
+    tooltip.style.top = `${event.pageY + tooltipOffset}px`;
+
+    // Make the tooltip visible
+    requestAnimationFrame(() => {
+      tooltip.style.opacity = '1';
+    });
+
+    // Store the tooltip element for removal later
+    event.target._tooltip = tooltip;
+  }
+
+  // Function to hide tooltip
+  function hideTooltip(event) {
+    const tooltip = event.target._tooltip;
+    if (tooltip) {
+      tooltip.remove();
+      event.target._tooltip = null;
+    }
+  }
+
+    
 
 function loadCountries() {
     fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
@@ -1000,6 +1063,8 @@ function renderCountryList(data, page, totalPages) {
         const country = data[i];
         const listItem = document.createElement('li');
         listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag">`;
+        listItem.addEventListener('mouseenter', (event) => showTooltip(event, country.name));
+        listItem.addEventListener('mouseleave', hideTooltip);
         listItem.addEventListener('click', () => {
              audio.pause();
              playButton.innerHTML = '▶';  // Play icon
@@ -1443,88 +1508,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
 
 
 
-function fallbackToSoundManager2(uniqueUrl, stationDetails) {
-    const soundManagerSwfUrl = `https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf`;
 
-    // Prefer HTML5 but use Flash as a fallback
-    soundManager.useHTML5Audio = true;
-    soundManager.useFlashBlock = false;
-    soundManager.preferFlash = false;
-
-    // Set up SoundManager2
-    soundManager.setup({
-        url: soundManagerSwfUrl,
-        flashVersion: 9,
-        debugMode: false,
-        onready: function () {
-            console.log('SoundManager2 is ready!');
-            let sound = null;
-
-            // Function to create and play sound using SoundManager2
-            function createAndPlaySoundWithSM2() {
-                progress.style.display = 'block'; // Show loading progress
-                sound = soundManager.createSound({
-                    id: 'stationSound',
-                    url: uniqueUrl,
-                    autoPlay: true,
-                    onload: function (success) {
-                        progress.style.display = 'none';
-                        if (success) {
-                            console.log('SM2: Audio loaded and playing!');
-                            playButton.textContent = '||';
-                        } else {
-                            console.error('SM2: Failed to load audio.');
-                            alert('Error: Unable to load audio.');
-                            playButton.textContent = '▶';
-                            if (sound) sound.destruct();
-                            sound = null;
-                        }
-                    },
-                    onfinish: function () {
-                        playButton.textContent = '▶';
-                        if (sound) sound.destruct();
-                        sound = null;
-                    },
-                    onerror: function () {
-                        console.error('SM2: Playback failed.');
-                        alert('Error: Playback failed.');
-                        playButton.textContent = '▶';
-                        if (sound) sound.destruct();
-                        sound = null;
-                    }
-                });
-            }
-
-            // Check if the audio element can play the URL natively
-            audioElement.src = uniqueUrl;
-            audioElement.load();
-
-            audioElement.oncanplay = function () {
-                progress.style.display = 'none';
-                audioElement.play().then(() => {
-                    console.log('HTML5 Audio: Playing successfully');
-                    playButton.textContent = '||';
-                }).catch(err => {
-                    console.error('HTML5 Audio error:', err);
-                    console.log('Falling back to SoundManager2');
-                    createAndPlaySoundWithSM2(); // Fallback to SoundManager2
-                });
-            };
-
-            // Handle errors with native audio playback
-            audioElement.onerror = function () {
-                console.error('HTML5 Audio: Failed to load.');
-                createAndPlaySoundWithSM2(); // Fallback to SoundManager2
-            };
-
-        },
-        ontimeout: function () {
-            console.error('SoundManager2 setup failed or timed out.');
-            alert('Error: Unable to initialize audio playback.');
-        }
-    });
-}
-   
 
 function createStationLogoCanvas(stationName) {
     const canvas = document.createElement('canvas');
@@ -1704,73 +1688,6 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
     // Optional: Focus on the popup window
     popupWindow.focus();
 }
-
-
-  function addVolumeSlider() {
-    const slider = document.getElementById("volumeControl");
-    changeVolume(localStorage.getItem("volume"));
-    slider.addEventListener("input", (e) => {
-        changeVolume(e.target.value, true);
-    });
-}
-
-/**
- * Change volume
- */
-function changeVolume(vol, isUserInteraction) {
-    const volume = isNumeric(parseInt(vol)) ? parseInt(vol) : 100;
-    const slider = document.getElementById("volumeControl");
-    const browser = bowser.getParser(window.navigator.userAgent);
-    // Apply to slider
-    slider.value = volume;
-    // Mute
-    if (volume === 0) {
-        // Get last volume
-        let volumeUnMute = getVolume("volume", false);
-        // Prevent 0 as last volume
-        volumeUnMute = volumeUnMute > 0 ? volumeUnMute : browser.getOSName(true) == "ios" ? 100 : 50;
-        // Save last volume as unmute volume
-        localStorage.setItem("volume_unmute", volumeUnMute);
-        // Set speaker icon off and mute
-        if (!player.muted) {
-            //setButtonMute();
-            // Use mute on iOS because the volume property is not settable in JavaScript
-            //bowser.ios && bowser.osversion.split(".")[0] < 10 ? player.pause(): player.muted = true;
-        }
-    }
-
-    // Save new volume value
-    localStorage.setItem("volume", volume);
-    // Apply new volume if HLS
-    player.volume = volume / 100;
-    //Apply new volume if SoundManager
-    if(audio != null) {
-        audio.setVolume(volume);
-    }
-
-    return volume;
-}
-
-/**
- * Get volume
- */
-function getVolume(key, normalized) {
-    let volume = 100;
-    // Get volume value
-    volume = localStorage.getItem(key);
-    // Volume value must be an integer
-    volume = parseInt(volume);
-    // Validate volume value
-    volume = isNumeric(volume) && volume >= 0 && volume <= 100 ? volume : 100;
-    return normalized ? volume / 100 : volume;
-}
-
-/**
- * Check if number is numeric
- */
-function isNumeric(n) {
-    return !isNaN(parseFloat(n)) && isFinite(n);
-}  
 
 
 
