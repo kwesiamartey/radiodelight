@@ -1043,7 +1043,9 @@
     
 
 function loadCountries() {
-    fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
+    const sanitizedCountryPath = encodeURIComponent(query_countries.php);
+    const baseUrl = `${document.querySelector('meta[name="api-base-url"]').content}/${sanitizedCountryPath}`;
+    fetch(baseUrl)
         .then(response => response.ok ? response.json() : Promise.reject())
         .then(data => {
             const totalPages = Math.ceil(data.length / itemsPerPage1);
