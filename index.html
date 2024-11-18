@@ -878,7 +878,7 @@
             
             <!-- First column: Station Image -->
             <div class="col-2 " style="width:180px;">
-                <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: block;">
+                <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: block; object-fit: fill;">
             </div>
 
             <!-- Second column: Play button and progress ring -->
@@ -1664,6 +1664,12 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
     // Optional: Focus on the popup window
     popupWindow.focus();
 }
+
+
+
+
+
+    
 
 
     window.onload = () => {
