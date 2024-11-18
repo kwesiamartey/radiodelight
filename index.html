@@ -1481,28 +1481,114 @@ function playWithHTML5Audio(url) {
      audioElement.load(); // Ensure the audio element is fully reset
     
     audioElement.src = url;
-    audioElement.controls = true;
-    audioElement.autoplay = true;
-    audioElement.crossOrigin = 'anonymous'; // Set if needed for CORS
-
-    // Append the audio player to the DOM (e.g., a div with ID 'audioPlayerContainer')
-    audioElement.appendChild(audioElement);
-
-    // Error handling for HTML5 audio
-    audioElement.onerror = function () {
-        console.error('HTML5 Audio: Failed to load audio.');
+    audioElement.load();
+    audioElement.play().then(() => {
+        console.log('HTML5 Audio: Playing successfully');
+    }).catch((err) => {
+        console.error('HTML5 Audio: Failed to play', err);
         alert('Error: Unable to play the audio stream.');
-    };
-
-    audioElement.onplay = function () {
-        console.log('HTML5 Audio: Playing successfully.');
-    };
+    });
 }
 
 
 
 
 function fallbackToSoundManager2(uniqueUrl, stationDetails) {
+    const soundManagerSwfUrl = `https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/`;
+
+    // Clear and reset the HTML5 audio element
+    audioElement.pause();
+    audioElement.src = '';
+    audioElement.load();
+
+    // Prefer HTML5 but use Flash as a fallback
+    soundManager.setup({
+        url: soundManagerSwfUrl,
+        preferFlash: false,
+        useHTML5Audio: true,
+        flashVersion: 9,
+        debugMode: false,
+        waitForWindowLoad: true,
+        onready: function () {
+            console.log('SoundManager2 is ready!');
+            let sound = null;
+
+            // Function to create and play sound using SoundManager2
+            function createAndPlaySoundWithSM2() {
+                console.log('Falling back to SoundManager2');
+                progress.style.display = 'block'; // Show loading progress
+                sound = soundManager.createSound({
+                    id: 'stationSound',
+                    url: uniqueUrl,
+                    autoPlay: true,
+                    onload: function (success) {
+                        progress.style.display = 'none';
+                        if (success) {
+                            console.log('SM2: Audio loaded and playing!');
+                            playButton.textContent = '||';
+                        } else {
+                            console.error('SM2: Failed to load audio.');
+                            playWithHTML5Audio(uniqueUrl);
+                        }
+                    },
+                    onfinish: function () {
+                        playButton.textContent = '▶';
+                        if (sound) sound.destruct();
+                        sound = null;
+                        
+                        // Reset HTML5 audio element
+                        audioElement.pause();
+                        audioElement.src = '';
+                        audioElement.load();
+                    },
+                    onerror: function () {
+                        console.error('SM2: Playback error. Falling back to HTML5.');
+                        if (sound) sound.destruct();
+                        playWithHTML5Audio(uniqueUrl);
+                    }
+                });
+            }
+
+            // Attempt HTML5 audio playback first
+            audioElement.src = uniqueUrl;
+            audioElement.load();
+
+            // Timeout fallback in case `oncanplay` takes too long
+            const html5Timeout = setTimeout(() => {
+                console.warn('HTML5 Audio: Timed out, switching to SoundManager2');
+                createAndPlaySoundWithSM2();
+            }, 5000); // 5-second timeout
+
+            audioElement.oncanplay = function () {
+                clearTimeout(html5Timeout);
+                console.log('HTML5 Audio: Playing successfully');
+                audioElement.play().catch(() => {
+                    console.warn('HTML5 Audio: Playback error. Falling back to SoundManager2');
+                    createAndPlaySoundWithSM2();
+                });
+            };
+
+            audioElement.onerror = function () {
+                console.error('HTML5 Audio: Failed to load. Falling back to SoundManager2.');
+                clearTimeout(html5Timeout);
+                audioElement.pause();
+                audioElement.src = '';
+                audioElement.load();
+                createAndPlaySoundWithSM2();
+            };
+        },
+        ontimeout: function () {
+            console.error('SoundManager2 setup timed out. Falling back to HTML5 audio.');
+            playWithHTML5Audio(uniqueUrl);
+        }
+    });
+}
+    
+
+
+
+
+/*function fallbackToSoundManager2(uniqueUrl, stationDetails) {
     const soundManagerSwfUrl = `https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/`;
 
        // Clear the audio source URL
@@ -1566,26 +1652,15 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
 
             audioElement.oncanplay = function () {
                 clearTimeout(html5Timeout);
-                progress.style.display = 'none';
-                audioElement.play().then(() => {
-                    console.log('HTML5 Audio: Playing successfully');
-                    playButton.textContent = '||';
-                }).catch(err => {
-                    console.error('HTML5 Audio error:', err);
-                    createAndPlaySoundWithSM2();
-                     audioElement.src = '';
-                            audioElement.load(); // Ensure the audio element is fully reset
-                            audioElement.stop
-                });
+                playWithHTML5Audio(uniqueUrl)
             };
 
             audioElement.onerror = function () {
                 clearTimeout(html5Timeout);
-                console.error('HTML5 Audio: Failed to load.');
-                createAndPlaySoundWithSM2();
+            
                  audioElement.src = '';
-                            audioElement.load(); // Ensure the audio element is fully reset
-                            audioElement.stop
+                 audioElement.load(); // Ensure the audio element is fully reset
+                 audioElement.stop
             };
         },
         ontimeout: function () {
@@ -1593,130 +1668,8 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
         }
     });
 }
+*/
 
-
-
-
-
-    
-
-
-/*function fallbackToSoundManager2(uniqueUrl, stationDetails) {
-    const soundManagerSwfUrl = `https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf`;
-
-    // Prefer HTML5 but use Flash as a fallback
-    soundManager.useHTML5Audio = true;
-    soundManager.useFlashBlock = false;
-    soundManager.preferFlash = false;
-
-    // Set up SoundManager2
-    soundManager.setup({
-        waitForWindowLoad: true,
-        url: soundManagerSwfUrl,
-        flashVersion: 9,
-        debugMode: false,
-        onready: function () {
-            console.log('SoundManager2 is ready!');
-            let sound = null;
-
-            // Function to create and play sound using SoundManager2
-            function createAndPlaySoundWithSM2() {
-                progress.style.display = 'block'; // Show loading progress
-                sound = soundManager.createSound({
-                    id: 'stationSound',
-                    url: uniqueUrl,
-                    autoPlay: true,
-                    onload: function (success) {
-                        progress.style.display = 'none';
-                        if (success) {
-                            console.log('SM2: Audio loaded and playing!');
-                            playButton.textContent = '||';
-                        } else {
-                            console.error('SM2: Failed to load audio.');
-                            alert('Error: Unable to load audio.');
-                            playButton.textContent = '▶';
-                            if (sound) sound.destruct();
-                            sound = null;
-                        }
-                    },
-                    onfinish: function () {
-                        playButton.textContent = '▶';
-                        if (sound) sound.destruct();
-                        sound = null;
-                    },
-                    onerror: function () {
-                        console.error('SM2: Playback failed.');
-                        alert('Error: Playback failed.');
-                        playButton.textContent = '▶';
-                        if (sound) sound.destruct();
-                        sound = null;
-                    }
-                });
-            }
-
-            // Check if the audio element can play the URL natively
-            audioElement.src = uniqueUrl;
-            audioElement.load();
-
-            audioElement.oncanplay = function () {
-                progress.style.display = 'none';
-                audioElement.play().then(() => {
-                    console.log('HTML5 Audio: Playing successfully');
-                    playButton.textContent = '||';
-                }).catch(err => {
-                    console.error('HTML5 Audio error:', err);
-                    console.log('Falling back to SoundManager2');
-                    createAndPlaySoundWithSM2(); // Fallback to SoundManager2
-                });
-            };
-
-            // Handle errors with native audio playback
-            audioElement.onerror = function () {
-                console.error('HTML5 Audio: Failed to load.');
-                createAndPlaySoundWithSM2(); // Fallback to SoundManager2
-            };
-
-            // Play/Pause button functionality
-           playButton.addEventListener('click', function () {
-                if (audioElement.src && !audioElement.paused && !audioElement.ended) {
-                    // HTML5 Audio is currently playing, so pause it
-                    audioElement.pause();
-                    playButton.textContent = '▶';
-                } else if (audioElement.src && (audioElement.paused || audioElement.ended)) {
-                    // HTML5 Audio is paused or ended, so play it
-                    audioElement.play().then(() => {
-                        playButton.textContent = '||';
-                    }).catch(err => {
-                        console.error('HTML5 Audio play error:', err);
-                        // If HTML5 fails, fallback to SoundManager2
-                        if (sound && sound.playState === 0) {
-                            sound.play();
-                            playButton.textContent = '||';
-                        }
-                    });
-                } else if (sound && sound.playState === 1 && !sound.paused) {
-                    // SoundManager2 is playing, so pause it
-                    sound.pause();
-                    playButton.textContent = '▶';
-                } else if (sound && sound.playState === 1 && sound.paused) {
-                    // SoundManager2 is paused, so resume it
-                    sound.resume();
-                    playButton.textContent = '||';
-                } else if (sound && sound.playState === 0) {
-                    // SoundManager2 is not playing, so start it
-                    sound.play();
-                    playButton.textContent = '||';
-                }
-            });
-        },
-        ontimeout: function () {
-            console.error('SoundManager2 setup failed or timed out.');
-            alert('Error: Unable to initialize audio playback.');
-        }
-    });
-}*/
-
-    
 
 
 
