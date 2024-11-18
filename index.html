@@ -286,7 +286,7 @@
          }
 
              /* Center the pagination controls */
-    .paginationControls {
+    #paginationControls {
         display: flex;
         color:white;
         justify-content: center; /* Centers the controls horizontally */
@@ -294,7 +294,7 @@
         margin-top: 10px; /* Optional, to add some spacing */
     }
 
-    .paginationControls span {
+    #paginationControls span {
         margin: 0 5px;
         cursor: pointer;
     }
@@ -847,9 +847,10 @@
     <div style="background-color:rgb(77, 100, 111); display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;margin-bottom: 21px;">
       <span id="breadcrumbs" style="width:100%;padding:4px;margin:0px;font-size:13px;color:#fff;display:none;">Radio Station |  </span>
     </div> 
-         <h1 class="countryTitle" style="display: none;">Live Italy Radio Station Online</h1>
+         <h1 class="countryTitle" style="display: none;">Live Germany Radio Station Online</h1>
         <div class="row">
-     <div class="col-md-8">
+            <div class="col-md-8">
+
 
  <!------- the player start here ---->
 <div class="footer-div-wraaper" style="display:none;">
@@ -867,36 +868,28 @@
                 <div class="col" style="display: flex; align-items: center; justify-content: center;">
                     <div class="play-control" style="display: flex; align-items: center; justify-content: center;">
                         <div class="progress-ring" id="progress"></div>
-                        <button class="play-button" onclick="togglePlay()">▶</button>
-                        <audio id="audio" preload="metadata" style="display: none;"></audio>
+                        <button class="play-button" >▶</button>
                     </div>
                 </div>
 
                 <!-- Centered Volume Control -->
                 <div class="col" style=" display: flex; align-items: center; justify-content: center;">
                     <input style="width: 50%; margin: 14px 12px; display: flex; align-items: center; justify-content: center;" 
-                           type="range" id="volumeControl" min="0" max="1" step="0.01" value="1" >
+                           type="range" id="volumeControl" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
                 </div>
             </div>
         </div>
     </div>
-    <br>
 </div>
  <!----------the player ends here ------->
 
-           
-               
-        
-               <div id="stationListContent" class="station-grid"></div>
-
-
+                
+                
+    <div id="stationListContent" class="station-grid"></div>
                 <br><br>
-                <div class="paginationControls"></div>
+                <div id="paginationControls"></div>
                  <br><br><br><br><br><br><br>
             </div>
-
-
-            
             <div class="col-md-4">
                 <div id="country_list_wrapper" style="background-color:rgb(77, 100, 111);padding:12px;display:none;">
                 <p id="countryTitle" style="display: none;background-color:#1c313a;padding:6px 12px;border-radius:4px;">Discover by Countries</p>
@@ -972,16 +965,14 @@
     let stationData = []; // Store stations here to avoid multiple fetches
     let selectedCountryPath = localStorage.getItem('selectedCountryPath') || "germanyRadioList.json";
     //let selectedCountryPath = '';
-    let currentAudio = null; // Added this declaration
-    
+   const audio = new Audio();
     let hls;
     let currentPage = 1;
     const itemsPerPage = 48;
     let currentPage1 = 1;
     const itemsPerPage1 = 40; // Number of countries per page
- 
-    const audioElement = document.getElementById('audio');
-    let currentHowl = null; // Store the current Howl instance globally
+    const progress = document.getElementById('progress');
+    const playButton = document.querySelector('.play-button');
     let isPlaying = false; // Track the play/pause state
 
 
@@ -1209,10 +1200,9 @@ function displayStations(stations) {
     document.querySelector('.countryTitle').style.display = 'block';
      document.getElementById('downloadTitle').style.display = 'block';
     document.getElementById('country_list_wrapper').style.display = 'block';
-    
 
     const stationList = document.getElementById('stationListContent');
-    const paginationControls = document.querySelector('.paginationControls');
+    const paginationControls = document.getElementById('paginationControls');
     stationList.innerHTML = ''; // Clear current list
     paginationControls.innerHTML = ''; // Clear pagination
 
@@ -1251,39 +1241,21 @@ function displayStations(stations) {
         // Clear timeout if image loads successfully
         imgElement.onload = () => {
             clearTimeout(loadTimeout);
-        
+            
             stationItem.addEventListener('click', () => {
-                if (audioElement) {
-                    audioElement.pause(); // Correctly stop the audio
-                    audioElement.currentTime = 0; // Reset playback position
-
-                       // Clear the audio source URL
-                    audioElement.src = '';
-                    audioElement.load(); // Ensure the audio element is fully reset
-                }
-                playStation(station.url, imgElement.src, station.name, station.bit, station.location);
-            });
+                playButton.innerHTML = '▶';  // Play icon
+                initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location)});
         };
 
         // If loading fails, use `mast2.jpg` as fallback
-
         imgElement.onerror = () => {
             clearTimeout(loadTimeout);
-        
-            stationItem.addEventListener('click', () => {
-                if (audioElement) {
-                    audioElement.pause(); // Correctly stop the audio
-                    audioElement.currentTime = 0; // Reset playback position
-
-                       // Clear the audio source URL
-                    audioElement.src = '';
-                    audioElement.load(); // Ensure the audio element is fully reset
-                }
-                playStation(station.url, 'mast.jpg', station.name, station.bit, station.location);
-            });
+            imgElement.src = 'mast.jpg';
+            playButton.innerHTML = '▶';  // Play icon
+            stationItem.addEventListener('click', () =>{
+                playButton.innerHTML = '▶';  // Play icon
+                initAudioPlayer(station.url, 'mast.jpg', station.name, station.bit, station.location)});
         };
-
-        
 
         stationList.appendChild(stationItem);
     });
@@ -1292,8 +1264,10 @@ function displayStations(stations) {
 }
 
 
+
+
 function createPaginationControls(totalStations, totalPages) {
-    const paginationControls = document.querySelector('.paginationControls');
+    const paginationControls = document.getElementById('paginationControls');
     paginationControls.innerHTML = ''; // Clear previous controls
 
     // Display page info (e.g., "Page 1 of 27")
@@ -1352,24 +1326,9 @@ function createPaginationControls(totalStations, totalPages) {
 }
 
 
-async function playStation(url, image, stationName, bit, country) {
-    const progress = document.getElementById('progress');
-    const playButton = document.querySelector('.play-button');
-    // Handle specific bit conditions for popups
-    if (bit === '00') {
-        openPopupWithData(stationName, image, url);
-        return;
-    } else if (bit === '001') {
-        openPeacefmPopupWithData(stationName, image, url);
-        return;
-    }
+function initAudioPlayer(url, image, stationName, bit, country) {
 
- 
-    audioElement.pause();
-    audioElement.src = ''; // Clear existing URL
-    audioElement.load(); // Reset the audio element to ensure fresh start
-
-    // Update UI with station information
+     // Update UI with station information
     const stationLogo = document.getElementById('stationLogo');
     const breadcrumbs = document.getElementById('breadcrumbs');
     document.getElementById('breadcrumbs').style.display = 'block';
@@ -1382,297 +1341,121 @@ async function playStation(url, image, stationName, bit, country) {
 
     // Handle image load errors
     stationLogo.onerror = () => handleImageError(stationLogo, stationName);
-
-    // Add a timestamp to the URL to ensure unique fetch each time
-    const uniqueUrl = `${url}?timestamp=${Date.now()}`;
-    const stationDetails = `${stationName} (${country}) (Web)`;
-
-
-    let contentType;
-    try {
-        // Fetch the headers to detect the content type
-        const response = await fetch(uniqueUrl, { method: 'HEAD' });
-        if (!response.ok) {
-            throw new Error(`Failed to fetch stream: ${response.statusText}`);
-        }
-        contentType = response.headers.get('content-type');
-    } catch (error) {
-        console.error('Error fetching stream:', error);
-        if (progress) progress.style.display = 'none';
-        fallbackToSoundManager2(uniqueUrl, stationDetails);
+    // Handle specific bit conditions for popups
+    if (bit === '00') {
+        openPopupWithData(stationName, image, url);
+        return;
+    } else if (bit === '001') {
+        openPeacefmPopupWithData(stationName, image, url);
         return;
     }
 
-    // Check if the stream is an HLS (.m3u8) stream
-    if (contentType && contentType.includes('application/vnd.apple.mpegurl')) {
-        console.log('.m3u8 stream detected');
-        playWithHLS(uniqueUrl);
-    } else {
-        console.error('.aac or other formats not natively supported. Using SoundManager2 fallback.');
-        fallbackToSoundManager2(uniqueUrl, stationDetails);
-    }
-
-
-    
-    
-   /* const response = await fetch(uniqueUrl, { method: 'HEAD' });
-    const contentType = response.headers.get('content-type');
-    // Check if the stream is an HLS stream (.m3u8)
-    if (contentType && contentType.includes('application/vnd.apple.mpegurl')) {
-        console.log('.m3u8 stream detected');
-        // HLS Streaming logic with HLS.js
-           playWithHLS(uniqueUrl)
-    } else {
-        // Handle fallback for non-HLS streams (.aac, .mp3)
-        console.error('.aac or other formats not natively supported. Attempting SoundManager2 fallback.');
-        fallbackToSoundManager2(uniqueUrl, stationDetails);
-    }*/
-}
-
-
-
-
-function playWithHLS(url){
-   const progress = document.getElementById('progress');
-    const playButton = document.querySelector('.play-button');
-          // Reset HLS and audio element for fresh playback
+    // Reset HLS and audio element for fresh playback
     if (typeof hls !== 'undefined' && hls !== null) {
         hls.destroy();
         hls = null;
     }
 
-       // Clear the audio source URL
-        audioElement.src = '';
-        audioElement.load(); // Ensure the audio element is fully reset
-    
-     // Check if HLS is supported
-        if (Hls.isSupported()) {
-            hls = new Hls();
-            hls.loadSource(url);
-            hls.attachMedia(audioElement);
-            hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                audioElement.play();
-                playButton.textContent = '||';
-            });
-        } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
-            // For Safari (native HLS support)
-            audioElement.src = url;
-            audioElement.addEventListener('loadedmetadata', () => {
-                audioElement.play();
-                playButton.textContent = '||';
-            });
-        }
+            audio.src = url;
+            const audioExtension = url.split('.').pop().toLowerCase();
 
-     // Toggle play/pause
-       /* playButton.addEventListener('click', () => {
-            if (audioElement.paused) {
-                audioElement.play();
-                playButton.textContent = '||';
+            // Show the spinner when loading starts
+            showSpinner(true);
+
+            // If it's an HLS (m3u8) stream, use HLS.js
+            if (audioExtension === 'm3u8') {
+                if (Hls.isSupported()) {
+                    if (hls) {
+                        hls.destroy(); // Destroy the previous instance if any
+                    }
+                    hls = new Hls();
+                    hls.loadSource(url);
+                    hls.attachMedia(audio);
+                    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                        showSpinner(false); // Hide the spinner once the audio is ready
+                    });
+                    hls.on(Hls.Events.ERROR, (event, data) => {
+                        showSpinner(false); // Hide the spinner on error
+                        showCustomError('Error, Try again later.');
+                        const stationDetails = `${stationName} (${country}) (web)`;
+                        sendEmailNotification(stationDetails, url, 'error')
+                    });
+                } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+                    // For Safari or native HLS support
+                    audio.src = url;
+                    audio.addEventListener('canplay', () => {
+                        showSpinner(false); // Hide the spinner when audio is ready
+                    });
+                     const stationDetails = `${stationName} (${country}) (web)`;
+                     sendEmailNotification(stationDetails, url, 'success')
+                } else {
+                    showCustomError('Error, Try again later.');
+                    const stationDetails = `${stationName} (${country}) (web)`;
+                    sendEmailNotification(stationDetails, url, 'error')
+                    return;
+                }
             } else {
-                audioElement.pause();
-                playButton.textContent = 'Play';
+                // Use native HTML5 audio for other formats
+                audio.addEventListener('canplay', () => {
+                    showSpinner(false); // Hide the spinner when audio is ready
+                });
+                const stationDetails = `${stationName} (${country}) (web)`;
+                sendEmailNotification(stationDetails, url, 'success')
             }
-        });*/
 
-}
-
+            // Handle error events for unsupported formats
+            audio.addEventListener('error', function() {
+                showSpinner(false); // Hide the spinner on error
+                showCustomError('Error, Try again later.');
+                const stationDetails = `${stationName} (${country}) (web)`;
+                sendEmailNotification(stationDetails, url, 'error')
+            });
 
     
-// Function to play audio using HTML5 audio element
-function playWithHTML5Audio(url) {
-       const progress = document.getElementById('progress');
-    const playButton = document.querySelector('.play-button');
-// Clear the audio source URL
-    playButton.textContent = '▶';
-    progress.style.display = 'block';
-    audioElement.src = '';
-     audioElement.load(); // Ensure the audio element is fully reset
-    
-    audioElement.src = url;
-    audioElement.load();
-    audioElement.play().then(() => {
-         playButton.textContent = '||';
-        progress.style.display = 'none';
-        console.log('HTML5 Audio: Playing successfully');
-    }).catch((err) => {
-         alert('Error: Unable to play the audio stream.');
-         audioElement.src = '';
-         audioElement.load(); // Ensure the audio element is fully reset
-         playButton.textContent = '▶';
-        console.error('HTML5 Audio: Failed to play', err);
-        progress.style.display = 'none';
-    });
+   
 }
 
+   // Show or hide the spinner
+    function showSpinner(show) {
+            progress.style.display = show ? 'block' : 'none';
+    }
+
+            // Play/pause functionality with icons
+     playButton.addEventListener('click', () => {
+            if (!isPlaying) {
+                audio.play();
+                playButton.innerHTML = '||';  // Pause icon
+                showSpinner(false); // Hide the spinner when playing starts
+                isPlaying = true;
+              
+            } else {
+                audio.pause();
+                playButton.innerHTML = '▶';  // Play icon
+                isPlaying = false;
+            }
+        });
 
 
 
 function fallbackToSoundManager2(uniqueUrl, stationDetails) {
-    const soundManagerSwfUrl = `https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/`;
-   const progress = document.getElementById('progress');
-    const playButton = document.querySelector('.play-button');
-    // Clear and reset the HTML5 audio element
-    audioElement.pause();
-    audioElement.src = '';
-    audioElement.load();
-
-    // Flags to determine which player is active
-    let isHTML5Playing = false;
-    let isSM2Playing = false;
-    let sound = null;
+    const soundManagerSwfUrl = `https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf`;
 
     // Prefer HTML5 but use Flash as a fallback
+    soundManager.useHTML5Audio = true;
+    soundManager.useFlashBlock = false;
+    soundManager.preferFlash = false;
+
+    // Set up SoundManager2
     soundManager.setup({
         url: soundManagerSwfUrl,
-        preferFlash: false,
-        useHTML5Audio: true,
         flashVersion: 9,
         debugMode: false,
-        waitForWindowLoad: true,
-        onready: function () {
-            console.log('SoundManager2 is ready!');
-
-            // Function to create and play sound using SoundManager2
-            function createAndPlaySoundWithSM2() {
-                if (isHTML5Playing) {
-                    audioElement.pause();
-                    audioElement.src = '';
-                    isHTML5Playing = false;
-                }
-
-                console.log('Falling back to SoundManager2');
-                progress.style.display = 'block'; // Show loading progress
-
-                sound = soundManager.createSound({
-                    id: 'stationSound',
-                    url: uniqueUrl,
-                    autoPlay: true,
-                    onload: function (success) {
-                        progress.style.display = 'none';
-                        if (success) {
-                            console.log('SM2: Audio loaded and playing!');
-                            playButton.textContent = '||';
-                            isSM2Playing = true;
-                        } else {
-                             progress.style.display = 'none';
-                            console.error('SM2: Failed to load audio.');
-                            playWithHTML5Audio(uniqueUrl);
-                        }
-                    },
-                    onfinish: function () {
-                        playButton.textContent = '▶';
-                         progress.style.display = 'none';
-                        if (sound) sound.destruct();
-                        sound = null;
-                        isSM2Playing = false;
-                    },
-                    onerror: function () {
-                         playButton.textContent = '▶';
-                         progress.style.display = 'none';
-                        console.error('SM2: Playback error. Falling back to HTML5.');
-                        if (sound) sound.destruct();
-                        sound = null;
-                        isSM2Playing = false;
-                        playWithHTML5Audio(uniqueUrl);
-                    }
-                });
-            }
-
-            // Function to play audio with HTML5 player
-            function playWithHTML5Audio(url) {
-                if (isSM2Playing && sound) {
-                    sound.stop();
-                    sound.destruct();
-                    isSM2Playing = false;
-                     playButton.textContent = '▶';
-                    progress.style.display = 'none';
-                }
-
-                audioElement.src = url;
-                audioElement.load();
-                audioElement.play().then(() => {
-                 
-                    progress.style.display = 'none';
-                    console.log('HTML5 Audio: Playing successfully');
-                    playButton.textContent = '||';
-                    isHTML5Playing = true;
-                }).catch((err) => {
-                    console.error('HTML5 Audio: Failed to play', err);
-                     playButton.textContent = '▶';
-                     progress.style.display = 'none';
-                    isHTML5Playing = false;
-                    createAndPlaySoundWithSM2();
-                });
-            }
-
-            // Attempt HTML5 audio playback first
-            playWithHTML5Audio(uniqueUrl);
-
-            // Timeout fallback in case `oncanplay` takes too long
-            const html5Timeout = setTimeout(() => {
-                if (!isHTML5Playing) {
-                     playButton.textContent = '▶';
-                     progress.style.display = 'none';
-                    console.warn('HTML5 Audio: Timed out, switching to SoundManager2');
-                    createAndPlaySoundWithSM2();
-                }
-            }, 5000); // 5-second timeout
-
-            audioElement.oncanplay = function () {
-                clearTimeout(html5Timeout);
-                if (!isHTML5Playing) {
-                    playWithHTML5Audio(uniqueUrl);
-                }
-            };
-
-            audioElement.onerror = function () {
-                console.error('HTML5 Audio: Failed to load. Falling back to SoundManager2.');
-                 playButton.textContent = '▶';
-                 progress.style.display = 'none';
-                clearTimeout(html5Timeout);
-                audioElement.pause();
-                audioElement.src = '';
-                audioElement.load();
-                isHTML5Playing = false;
-                createAndPlaySoundWithSM2();
-            };
-        },
-        ontimeout: function () {
-            console.error('SoundManager2 setup timed out. Falling back to HTML5 audio.');
-             playButton.textContent = '▶';
-             progress.style.display = 'none';
-            playWithHTML5Audio(uniqueUrl);
-        }
-    });
-}
-
-    
-
-
-
-
-/*function fallbackToSoundManager2(uniqueUrl, stationDetails) {
-    const soundManagerSwfUrl = `https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/`;
-
-       // Clear the audio source URL
-        audioElement.src = '';
-        audioElement.load(); // Ensure the audio element is fully reset
-
-    // Prefer HTML5 but use Flash as a fallback
-    soundManager.setup({
-        url: soundManagerSwfUrl,
-        preferFlash: false,
-        useHTML5Audio: true,
-        flashVersion: 9,
-        debugMode: false,
-        waitForWindowLoad: true,
         onready: function () {
             console.log('SoundManager2 is ready!');
             let sound = null;
 
             // Function to create and play sound using SoundManager2
             function createAndPlaySoundWithSM2() {
-                console.log('Falling back to SoundManager2');
                 progress.style.display = 'block'; // Show loading progress
                 sound = soundManager.createSound({
                     id: 'stationSound',
@@ -1685,57 +1468,57 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                             playButton.textContent = '||';
                         } else {
                             console.error('SM2: Failed to load audio.');
-                            playWithHTML5Audio(uniqueUrl)
+                            alert('Error: Unable to load audio.');
+                            playButton.textContent = '▶';
+                            if (sound) sound.destruct();
+                            sound = null;
                         }
                     },
                     onfinish: function () {
                         playButton.textContent = '▶';
                         if (sound) sound.destruct();
                         sound = null;
-                         // Clear the audio source URL
-                            audioElement.src = '';
-                            audioElement.load(); // Ensure the audio element is fully reset
-                            audioElement.stop
-                     },
+                    },
                     onerror: function () {
-                        playWithHTML5Audio(uniqueUrl)
+                        console.error('SM2: Playback failed.');
+                        alert('Error: Playback failed.');
+                        playButton.textContent = '▶';
+                        if (sound) sound.destruct();
+                        sound = null;
                     }
                 });
             }
 
-            // Attempt HTML5 audio playback first
+            // Check if the audio element can play the URL natively
             audioElement.src = uniqueUrl;
             audioElement.load();
 
-            // Timeout fallback in case `oncanplay` takes too long
-            const html5Timeout = setTimeout(() => {
-                console.warn('HTML5 Audio: Timed out, switching to SoundManager2');
-                createAndPlaySoundWithSM2();
-            }, 5000); // 5-second timeout
-
             audioElement.oncanplay = function () {
-                clearTimeout(html5Timeout);
-                playWithHTML5Audio(uniqueUrl)
+                progress.style.display = 'none';
+                audioElement.play().then(() => {
+                    console.log('HTML5 Audio: Playing successfully');
+                    playButton.textContent = '||';
+                }).catch(err => {
+                    console.error('HTML5 Audio error:', err);
+                    console.log('Falling back to SoundManager2');
+                    createAndPlaySoundWithSM2(); // Fallback to SoundManager2
+                });
             };
 
+            // Handle errors with native audio playback
             audioElement.onerror = function () {
-                clearTimeout(html5Timeout);
-            
-                 audioElement.src = '';
-                 audioElement.load(); // Ensure the audio element is fully reset
-                 audioElement.stop
+                console.error('HTML5 Audio: Failed to load.');
+                createAndPlaySoundWithSM2(); // Fallback to SoundManager2
             };
+
         },
         ontimeout: function () {
-           playWithHTML5Audio(uniqueUrl)
+            console.error('SoundManager2 setup failed or timed out.');
+            alert('Error: Unable to initialize audio playback.');
         }
     });
 }
-*/
-
-
-
-
+   
 
 function createStationLogoCanvas(stationName) {
     const canvas = document.createElement('canvas');
@@ -1777,46 +1560,7 @@ function createStationLogoCanvas(stationName) {
 }
 
 
-
-function togglePlay() {
-     const progress = document.getElementById('progress');
-    const playButton = document.querySelector('.play-button');
-    progress.style.display = 'block'; // Show progress initially
-
-    if (audioElement) {
-        if (audioElement.paused) {
-            audioElement.play().then(() => {
-                playButton.textContent = '||'; // Change button to pause icon
-                progress.style.display = 'none'; // Hide progress once audio starts playing
-            }).catch(error => {
-                console.error("Audio play error:", error);
-                progress.style.display = 'none'; // Hide progress if there's an error
-                
-            });
-        } else {
-            audioElement.pause();
-            playButton.textContent = '▶'; // Change button back to play icon
-            progress.style.display = 'none'; // Hide progress when paused
-       
-        }
-    }
-  }
-
-   /* function setVolume(value) {
-        if (currentAudio) currentAudio.volume = value;
-    }
-
     function handlePlaybackError(url, stationName) {
-        progress.style.display = 'none';
-        alert('The station is currently unavailable. Please try using a different browser, such as Mozilla Firefox or Chrome, or check back in an hour as we work to resolve the issue.');
-        sendEmailNotification(stationName, url, 'error');
-    }*/
-
-
-
-    function handlePlaybackError(url, stationName) {
-           const progress = document.getElementById('progress');
-    const playButton = document.querySelector('.play-button');
                 progress.style.display = 'none';
                 const modal = document.getElementById('errorModal');
                 const closeModal = document.getElementById('closeModal');
@@ -1956,11 +1700,7 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
 }
 
 
-    
-/**
- * Add volume slider
- */
-function addVolumeSlider() {
+  function addVolumeSlider() {
     const slider = document.getElementById("volumeControl");
     changeVolume(localStorage.getItem("volume"));
     slider.addEventListener("input", (e) => {
@@ -2024,7 +1764,8 @@ function getVolume(key, normalized) {
  */
 function isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
-}
+}  
+
 
 
 
