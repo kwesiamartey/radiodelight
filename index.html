@@ -1209,6 +1209,7 @@ function displayStations(stations) {
     document.querySelector('.countryTitle').style.display = 'block';
      document.getElementById('downloadTitle').style.display = 'block';
     document.getElementById('country_list_wrapper').style.display = 'block';
+    
 
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.querySelector('.paginationControls');
@@ -1385,9 +1386,6 @@ async function playStation(url, image, stationName, bit, country) {
     // Add a timestamp to the URL to ensure unique fetch each time
     const uniqueUrl = `${url}?timestamp=${Date.now()}`;
     const stationDetails = `${stationName} (${country}) (Web)`;
-
-    // Show progress indicator while loading
-    const progress = document.getElementById('progress');
 
 
     let contentType;
