@@ -19,6 +19,9 @@
      <script src="https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/script/soundmanager2.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bowser@2.11.0/es5.min.js"></script>
     <link href="https://unpkg.com/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <meta name="api-base-url" content="https://lornamobileappsdev.uk/mobileAppsWebsite">
+
+
    
     <!-- Favicons -->
         <link rel="icon" href="logo.png" sizes="any">
@@ -1186,7 +1189,8 @@ async function fetchStations(
     delay = 3000,
     chunkSize = 1000
 ) {
-    const baseUrl2 = `https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`;
+    const sanitizedCountryPath = encodeURIComponent(countryPath);
+    const baseUrl2 = `${document.querySelector('meta[name="api-base-url"]').content}/query_stations.php?path=${sanitizedCountryPath}`;
 
     try {
         // Attempt to fetch the entire dataset at once
