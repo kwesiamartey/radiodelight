@@ -875,7 +875,7 @@
                 <!-- Centered Volume Control -->
                 <div class="col" style=" display: flex; align-items: center; justify-content: center;">
                     <input style="width: 50%; margin: 14px 12px; display: flex; align-items: center; justify-content: center;" 
-                           type="range" id="volumeControl" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
+                           type="range" id="volumeControl" min="0" max="1" step="0.01" value="1" >
                 </div>
             </div>
         </div>
@@ -1781,6 +1781,8 @@ function createStationLogoCanvas(stationName) {
 
 
 function togglePlay() {
+     const progress = document.getElementById('progress');
+    const playButton = document.querySelector('.play-button');
     progress.style.display = 'block'; // Show progress initially
 
     if (audioElement) {
@@ -1815,6 +1817,8 @@ function togglePlay() {
 
 
     function handlePlaybackError(url, stationName) {
+           const progress = document.getElementById('progress');
+    const playButton = document.querySelector('.play-button');
                 progress.style.display = 'none';
                 const modal = document.getElementById('errorModal');
                 const closeModal = document.getElementById('closeModal');
