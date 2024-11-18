@@ -875,7 +875,7 @@
                 <!-- Centered Volume Control -->
                 <div class="col" style=" display: flex; align-items: center; justify-content: center;">
                     <input style="width: 50%; margin: 14px 12px; display: flex; align-items: center; justify-content: center;" 
-                           type="range" id="volumeControl" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
+                           type="range" id="volumeControl" min="0" max="1" step="0.01" value="1" >
                 </div>
             </div>
         </div>
@@ -1443,88 +1443,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
 
 
 
-function fallbackToSoundManager2(uniqueUrl, stationDetails) {
-    const soundManagerSwfUrl = `https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/soundmanager2.swf`;
 
-    // Prefer HTML5 but use Flash as a fallback
-    soundManager.useHTML5Audio = true;
-    soundManager.useFlashBlock = false;
-    soundManager.preferFlash = false;
-
-    // Set up SoundManager2
-    soundManager.setup({
-        url: soundManagerSwfUrl,
-        flashVersion: 9,
-        debugMode: false,
-        onready: function () {
-            console.log('SoundManager2 is ready!');
-            let sound = null;
-
-            // Function to create and play sound using SoundManager2
-            function createAndPlaySoundWithSM2() {
-                progress.style.display = 'block'; // Show loading progress
-                sound = soundManager.createSound({
-                    id: 'stationSound',
-                    url: uniqueUrl,
-                    autoPlay: true,
-                    onload: function (success) {
-                        progress.style.display = 'none';
-                        if (success) {
-                            console.log('SM2: Audio loaded and playing!');
-                            playButton.textContent = '||';
-                        } else {
-                            console.error('SM2: Failed to load audio.');
-                            alert('Error: Unable to load audio.');
-                            playButton.textContent = '▶';
-                            if (sound) sound.destruct();
-                            sound = null;
-                        }
-                    },
-                    onfinish: function () {
-                        playButton.textContent = '▶';
-                        if (sound) sound.destruct();
-                        sound = null;
-                    },
-                    onerror: function () {
-                        console.error('SM2: Playback failed.');
-                        alert('Error: Playback failed.');
-                        playButton.textContent = '▶';
-                        if (sound) sound.destruct();
-                        sound = null;
-                    }
-                });
-            }
-
-            // Check if the audio element can play the URL natively
-            audioElement.src = uniqueUrl;
-            audioElement.load();
-
-            audioElement.oncanplay = function () {
-                progress.style.display = 'none';
-                audioElement.play().then(() => {
-                    console.log('HTML5 Audio: Playing successfully');
-                    playButton.textContent = '||';
-                }).catch(err => {
-                    console.error('HTML5 Audio error:', err);
-                    console.log('Falling back to SoundManager2');
-                    createAndPlaySoundWithSM2(); // Fallback to SoundManager2
-                });
-            };
-
-            // Handle errors with native audio playback
-            audioElement.onerror = function () {
-                console.error('HTML5 Audio: Failed to load.');
-                createAndPlaySoundWithSM2(); // Fallback to SoundManager2
-            };
-
-        },
-        ontimeout: function () {
-            console.error('SoundManager2 setup failed or timed out.');
-            alert('Error: Unable to initialize audio playback.');
-        }
-    });
-}
-   
 
 function createStationLogoCanvas(stationName) {
     const canvas = document.createElement('canvas');
