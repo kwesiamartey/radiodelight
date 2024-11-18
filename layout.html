@@ -1243,14 +1243,14 @@ function displayStations(stations) {
         // Clear timeout if image loads successfully
         imgElement.onload = () => {
             clearTimeout(loadTimeout);
-            stationItem.addEventListener('click', () => playStation(station.url, imgElement.src, station.name, station.bit, station.location));
+            stationItem.addEventListener('click', () => initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location));
         };
 
         // If loading fails, use `mast2.jpg` as fallback
         imgElement.onerror = () => {
             clearTimeout(loadTimeout);
             imgElement.src = 'mast.jpg';
-            stationItem.addEventListener('click', () => playStation(station.url, 'mast.jpg', station.name, station.bit, station.location));
+            stationItem.addEventListener('click', () => initAudioPlayer(station.url, 'mast.jpg', station.name, station.bit, station.location));
         };
 
         stationList.appendChild(stationItem);
@@ -1258,6 +1258,8 @@ function displayStations(stations) {
 
     createPaginationControls(stations.length, totalPages);
 }
+
+initAudioPlayer()     
 
 
 function createPaginationControls(totalStations, totalPages) {
@@ -1320,7 +1322,7 @@ function createPaginationControls(totalStations, totalPages) {
 }
 
 
-function playStation(url, image, stationName, bit, country) {
+function initAudioPlayer(url, image, stationName, bit, country) {
 
      // Update UI with station information
     const stationLogo = document.getElementById('stationLogo');
@@ -1363,7 +1365,7 @@ function playStation(url, image, stationName, bit, country) {
                         hls.destroy(); // Destroy the previous instance if any
                     }
                     hls = new Hls();
-                    hls.loadSource(audioUrl);
+                    hls.loadSource(url);
                     hls.attachMedia(audio);
                     hls.on(Hls.Events.MANIFEST_PARSED, () => {
                         showSpinner(false); // Hide the spinner once the audio is ready
@@ -1372,20 +1374,20 @@ function playStation(url, image, stationName, bit, country) {
                         showSpinner(false); // Hide the spinner on error
                         showCustomError('Error, Try again later.');
                         const stationDetails = `${stationName} (${country}) (web)`;
-                        sendEmailNotification(stationDetails, audioUrl, 'error')
+                        sendEmailNotification(stationDetails, url, 'error')
                     });
                 } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
                     // For Safari or native HLS support
-                    audio.src = audioUrl;
+                    audio.src = url;
                     audio.addEventListener('canplay', () => {
                         showSpinner(false); // Hide the spinner when audio is ready
                     });
                      const stationDetails = `${stationName} (${country}) (web)`;
-                     sendEmailNotification(stationDetails, audioUrl, 'success')
+                     sendEmailNotification(stationDetails, url, 'success')
                 } else {
                     showCustomError('Error, Try again later.');
                     const stationDetails = `${stationName} (${country}) (web)`;
-                    sendEmailNotification(stationDetails, audioUrl, 'error')
+                    sendEmailNotification(stationDetails, url, 'error')
                     return;
                 }
             } else {
@@ -1394,7 +1396,7 @@ function playStation(url, image, stationName, bit, country) {
                     showSpinner(false); // Hide the spinner when audio is ready
                 });
                 const stationDetails = `${stationName} (${country}) (web)`;
-                sendEmailNotification(stationDetails, audioUrl, 'success')
+                sendEmailNotification(stationDetails, url, 'success')
             }
 
             // Handle error events for unsupported formats
@@ -1402,7 +1404,7 @@ function playStation(url, image, stationName, bit, country) {
                 showSpinner(false); // Hide the spinner on error
                 showCustomError('Error, Try again later.');
                 const stationDetails = `${stationName} (${country}) (web)`;
-                sendEmailNotification(stationDetails, audioUrl, 'error')
+                sendEmailNotification(stationDetails, url, 'error')
             });
 
     
