@@ -1001,8 +1001,11 @@ function renderCountryList(data, page, totalPages) {
         const listItem = document.createElement('li');
         listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag">`;
         listItem.addEventListener('click', () => {
-              document.getElementById('breadcrumbs').style.display = 'none';
-              document.querySelector('.playing-station-wrap').style.display = 'none';
+             audio.pause();
+             playButton.innerHTML = '▶';  // Play icon
+             isPlaying = false; // Play icon
+            document.getElementById('breadcrumbs').style.display = 'none';
+            document.querySelector('.playing-station-wrap').style.display = 'none';
             document.querySelector('.footer-div-wraaper').style.display = 'none';
             selectedCountryPath = country.url;
             fetchStations(selectedCountryPath);
