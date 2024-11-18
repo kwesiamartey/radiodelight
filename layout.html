@@ -868,8 +868,7 @@
                 <div class="col" style="display: flex; align-items: center; justify-content: center;">
                     <div class="play-control" style="display: flex; align-items: center; justify-content: center;">
                         <div class="progress-ring" id="progress"></div>
-                        <button class="play-button" onclick="togglePlay()">▶</button>
-                        <audio id="audio" preload="metadata" style="display: none;"></audio>
+                        <button class="play-button" >▶</button>
                     </div>
                 </div>
 
@@ -974,7 +973,6 @@
     const itemsPerPage1 = 40; // Number of countries per page
     const progress = document.getElementById('progress');
     const playButton = document.querySelector('.play-button');
-    const audioElement = document.getElementById('audio');
     let isPlaying = false; // Track the play/pause state
 
 
@@ -1353,7 +1351,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
     }
 
             audio.src = url;
-            const audioExtension = audioUrl.split('.').pop().toLowerCase();
+            const audioExtension = url.split('.').pop().toLowerCase();
 
             // Show the spinner when loading starts
             showSpinner(true);
