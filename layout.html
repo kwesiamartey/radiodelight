@@ -966,8 +966,7 @@
     let stationData = []; // Store stations here to avoid multiple fetches
     let selectedCountryPath = localStorage.getItem('selectedCountryPath') || "germanyRadioList.json";
     //let selectedCountryPath = '';
-    let currentAudio = null; // Added this declaration
-    
+   const audio = new Audio();
     let hls;
     let currentPage = 1;
     const itemsPerPage = 48;
@@ -976,7 +975,6 @@
     const progress = document.getElementById('progress');
     const playButton = document.querySelector('.play-button');
     const audioElement = document.getElementById('audio');
-    let currentHowl = null; // Store the current Howl instance globally
     let isPlaying = false; // Track the play/pause state
 
 
@@ -1323,6 +1321,20 @@ function createPaginationControls(totalStations, totalPages) {
 
 
 function playStation(url, image, stationName, bit, country) {
+
+     // Update UI with station information
+    const stationLogo = document.getElementById('stationLogo');
+    const breadcrumbs = document.getElementById('breadcrumbs');
+    document.getElementById('breadcrumbs').style.display = 'block';
+    document.querySelector('.countryTitle').style.display = 'none';
+    stationLogo.src = image;
+    stationLogo.style.display = 'block';
+    document.querySelector('.playing-station-wrap').style.display = 'block';
+    document.querySelector('.footer-div-wraaper').style.display = 'block';
+    breadcrumbs.textContent = `Radio station | ${country} | ${stationName}`;
+
+    // Handle image load errors
+    stationLogo.onerror = () => handleImageError(stationLogo, stationName);
     // Handle specific bit conditions for popups
     if (bit === '00') {
         openPopupWithData(stationName, image, url);
@@ -1337,83 +1349,85 @@ function playStation(url, image, stationName, bit, country) {
         hls.destroy();
         hls = null;
     }
-    audioElement.pause();
-    audioElement.src = ''; // Clear existing URL
-    audioElement.load(); // Reset the audio element to ensure fresh start
 
-    // Update UI with station information
-    const stationLogo = document.getElementById('stationLogo');
-    const breadcrumbs = document.getElementById('breadcrumbs');
-    document.getElementById('breadcrumbs').style.display = 'block';
-    document.querySelector('.countryTitle').style.display = 'none';
-    stationLogo.src = image;
-    stationLogo.style.display = 'block';
-    document.querySelector('.playing-station-wrap').style.display = 'block';
-    document.querySelector('.footer-div-wraaper').style.display = 'block';
-    breadcrumbs.textContent = `Radio station | ${country} | ${stationName}`;
+            audio.src = url;
+            const audioExtension = audioUrl.split('.').pop().toLowerCase();
 
-    // Handle image load errors
-    stationLogo.onerror = () => handleImageError(stationLogo, stationName);
+            // Show the spinner when loading starts
+            showSpinner(true);
 
-    // Add a timestamp to the URL to ensure unique fetch each time
-    const uniqueUrl = `${url}?timestamp=${Date.now()}`;
-    const stationDetails = `${stationName} (${country}) (Web)`;
+            // If it's an HLS (m3u8) stream, use HLS.js
+            if (audioExtension === 'm3u8') {
+                if (Hls.isSupported()) {
+                    if (hls) {
+                        hls.destroy(); // Destroy the previous instance if any
+                    }
+                    hls = new Hls();
+                    hls.loadSource(audioUrl);
+                    hls.attachMedia(audio);
+                    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                        showSpinner(false); // Hide the spinner once the audio is ready
+                    });
+                    hls.on(Hls.Events.ERROR, (event, data) => {
+                        showSpinner(false); // Hide the spinner on error
+                        showCustomError('Error, Try again later.');
+                        const stationDetails = `${stationName} (${country}) (web)`;
+                        sendEmailNotification(stationDetails, audioUrl, 'error')
+                    });
+                } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+                    // For Safari or native HLS support
+                    audio.src = audioUrl;
+                    audio.addEventListener('canplay', () => {
+                        showSpinner(false); // Hide the spinner when audio is ready
+                    });
+                     const stationDetails = `${stationName} (${country}) (web)`;
+                     sendEmailNotification(stationDetails, audioUrl, 'success')
+                } else {
+                    showCustomError('Error, Try again later.');
+                    const stationDetails = `${stationName} (${country}) (web)`;
+                    sendEmailNotification(stationDetails, audioUrl, 'error')
+                    return;
+                }
+            } else {
+                // Use native HTML5 audio for other formats
+                audio.addEventListener('canplay', () => {
+                    showSpinner(false); // Hide the spinner when audio is ready
+                });
+                const stationDetails = `${stationName} (${country}) (web)`;
+                sendEmailNotification(stationDetails, audioUrl, 'success')
+            }
 
-    // Show progress indicator while loading
-    const progress = document.getElementById('progress');
-    
-
-    // Check if the stream is an HLS stream (.m3u8)
- 
-
-    if (uniqueUrl.endsWith('.m3u8')){
-        // HLS Streaming logic with HLS.js
-         if (Hls.isSupported()) {
-        console.log('HLS is supported');
-        progress.style.display = 'block';
-        const hls = new Hls();
-        hls.loadSource(uniqueUrl);
-        hls.attachMedia(audioElement);
-
-        // Event listener for HLS.js when media is attached
-        hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-            console.log('HLS media attached');
-            audioElement.play().then(() => {
-                console.log("HLS stream is playing");
-                progress.style.display = 'none';
-                playButton.textContent = '||';
-                sendEmailNotification(stationDetails, uniqueUrl, "success");
-            }).catch(error => {
-                console.error("Audio play error:", error);
-                progress.style.display = 'none';
-                handlePlaybackError(uniqueUrl, stationDetails);
+            // Handle error events for unsupported formats
+            audio.addEventListener('error', function() {
+                showSpinner(false); // Hide the spinner on error
+                showCustomError('Error, Try again later.');
+                const stationDetails = `${stationName} (${country}) (web)`;
+                sendEmailNotification(stationDetails, audioUrl, 'error')
             });
-        });
 
-        // Error handling for HLS.js
-        hls.on(Hls.Events.ERROR, function (event, data) {
-            console.error("HLS.js error:", data);
-            progress.style.display = 'none';
-            audioElement.pause();
-            if (hls) hls.destroy();
-            handlePlaybackError(uniqueUrl, stationDetails);
-        });
-
-    } else {
-        console.warn('HLS not supported in this browser');
-        handlePlaybackError(uniqueUrl, stationDetails);
-    }
-    } 
-    else {
-        // Handle fallback for non-HLS streams (.aac, .mp3)
-        console.error('.aac or other formats not natively supported. Attempting SoundManager2 fallback.');
-        fallbackToSoundManager2(uniqueUrl, stationDetails);
-    }
+    
+   
 }
 
+   // Show or hide the spinner
+    function showSpinner(show) {
+            progress.style.display = show ? 'block' : 'none';
+    }
 
-
-
+            // Play/pause functionality with icons
+     playButton.addEventListener('click', () => {
+            if (!isPlaying) {
+                audio.play();
+                playButton.innerHTML = '||';  // Pause icon
+                showSpinner(false); // Hide the spinner when playing starts
+                isPlaying = true;
+              
+            } else {
+                audio.pause();
+                playButton.innerHTML = '▶';  // Play icon
+                isPlaying = false;
+            }
+        });
 
 
 
