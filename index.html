@@ -1506,6 +1506,11 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
     audioElement.src = '';
     audioElement.load();
 
+    // Flags to determine which player is active
+    let isHTML5Playing = false;
+    let isSM2Playing = false;
+    let sound = null;
+
     // Prefer HTML5 but use Flash as a fallback
     soundManager.setup({
         url: soundManagerSwfUrl,
@@ -1516,12 +1521,18 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
         waitForWindowLoad: true,
         onready: function () {
             console.log('SoundManager2 is ready!');
-            let sound = null;
 
             // Function to create and play sound using SoundManager2
             function createAndPlaySoundWithSM2() {
+                if (isHTML5Playing) {
+                    audioElement.pause();
+                    audioElement.src = '';
+                    isHTML5Playing = false;
+                }
+
                 console.log('Falling back to SoundManager2');
                 progress.style.display = 'block'; // Show loading progress
+
                 sound = soundManager.createSound({
                     id: 'stationSound',
                     url: uniqueUrl,
@@ -1531,6 +1542,7 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                         if (success) {
                             console.log('SM2: Audio loaded and playing!');
                             playButton.textContent = '||';
+                            isSM2Playing = true;
                         } else {
                             console.error('SM2: Failed to load audio.');
                             playWithHTML5Audio(uniqueUrl);
@@ -1540,37 +1552,55 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                         playButton.textContent = '▶';
                         if (sound) sound.destruct();
                         sound = null;
-                        
-                        // Reset HTML5 audio element
-                        audioElement.pause();
-                        audioElement.src = '';
-                        audioElement.load();
+                        isSM2Playing = false;
                     },
                     onerror: function () {
                         console.error('SM2: Playback error. Falling back to HTML5.');
                         if (sound) sound.destruct();
+                        sound = null;
+                        isSM2Playing = false;
                         playWithHTML5Audio(uniqueUrl);
                     }
                 });
             }
 
+            // Function to play audio with HTML5 player
+            function playWithHTML5Audio(url) {
+                if (isSM2Playing && sound) {
+                    sound.stop();
+                    sound.destruct();
+                    isSM2Playing = false;
+                }
+
+                audioElement.src = url;
+                audioElement.load();
+                audioElement.play().then(() => {
+                    console.log('HTML5 Audio: Playing successfully');
+                    playButton.textContent = '||';
+                    isHTML5Playing = true;
+                }).catch((err) => {
+                    console.error('HTML5 Audio: Failed to play', err);
+                    isHTML5Playing = false;
+                    createAndPlaySoundWithSM2();
+                });
+            }
+
             // Attempt HTML5 audio playback first
-            audioElement.src = uniqueUrl;
-            audioElement.load();
+            playWithHTML5Audio(uniqueUrl);
 
             // Timeout fallback in case `oncanplay` takes too long
             const html5Timeout = setTimeout(() => {
-                console.warn('HTML5 Audio: Timed out, switching to SoundManager2');
-                createAndPlaySoundWithSM2();
+                if (!isHTML5Playing) {
+                    console.warn('HTML5 Audio: Timed out, switching to SoundManager2');
+                    createAndPlaySoundWithSM2();
+                }
             }, 5000); // 5-second timeout
 
             audioElement.oncanplay = function () {
                 clearTimeout(html5Timeout);
-                console.log('HTML5 Audio: Playing successfully');
-                audioElement.play().catch(() => {
-                    console.warn('HTML5 Audio: Playback error. Falling back to SoundManager2');
-                    createAndPlaySoundWithSM2();
-                });
+                if (!isHTML5Playing) {
+                    playWithHTML5Audio(uniqueUrl);
+                }
             };
 
             audioElement.onerror = function () {
@@ -1579,6 +1609,7 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                 audioElement.pause();
                 audioElement.src = '';
                 audioElement.load();
+                isHTML5Playing = false;
                 createAndPlaySoundWithSM2();
             };
         },
@@ -1588,6 +1619,7 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
         }
     });
 }
+
     
 
 
