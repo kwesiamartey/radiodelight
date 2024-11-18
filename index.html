@@ -979,8 +979,7 @@
     const itemsPerPage = 48;
     let currentPage1 = 1;
     const itemsPerPage1 = 40; // Number of countries per page
-    const progress = document.getElementById('progress');
-    const playButton = document.querySelector('.play-button');
+ 
     const audioElement = document.getElementById('audio');
     let currentHowl = null; // Store the current Howl instance globally
     let isPlaying = false; // Track the play/pause state
@@ -1353,6 +1352,8 @@ function createPaginationControls(totalStations, totalPages) {
 
 
 async function playStation(url, image, stationName, bit, country) {
+    const progress = document.getElementById('progress');
+    const playButton = document.querySelector('.play-button');
     // Handle specific bit conditions for popups
     if (bit === '00') {
         openPopupWithData(stationName, image, url);
@@ -1434,7 +1435,8 @@ async function playStation(url, image, stationName, bit, country) {
 
 
 function playWithHLS(url){
-
+   const progress = document.getElementById('progress');
+    const playButton = document.querySelector('.play-button');
           // Reset HLS and audio element for fresh playback
     if (typeof hls !== 'undefined' && hls !== null) {
         hls.destroy();
@@ -1480,6 +1482,8 @@ function playWithHLS(url){
     
 // Function to play audio using HTML5 audio element
 function playWithHTML5Audio(url) {
+       const progress = document.getElementById('progress');
+    const playButton = document.querySelector('.play-button');
 // Clear the audio source URL
     playButton.textContent = '▶';
     progress.style.display = 'block';
@@ -1493,12 +1497,12 @@ function playWithHTML5Audio(url) {
         progress.style.display = 'none';
         console.log('HTML5 Audio: Playing successfully');
     }).catch((err) => {
+         alert('Error: Unable to play the audio stream.');
          audioElement.src = '';
          audioElement.load(); // Ensure the audio element is fully reset
          playButton.textContent = '▶';
-        progress.style.display = 'none';
         console.error('HTML5 Audio: Failed to play', err);
-        alert('Error: Unable to play the audio stream.');
+        progress.style.display = 'none';
     });
 }
 
@@ -1507,7 +1511,8 @@ function playWithHTML5Audio(url) {
 
 function fallbackToSoundManager2(uniqueUrl, stationDetails) {
     const soundManagerSwfUrl = `https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/swf/`;
-
+   const progress = document.getElementById('progress');
+    const playButton = document.querySelector('.play-button');
     // Clear and reset the HTML5 audio element
     audioElement.pause();
     audioElement.src = '';
