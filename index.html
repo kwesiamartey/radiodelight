@@ -1481,14 +1481,22 @@ function playWithHLS(url){
 // Function to play audio using HTML5 audio element
 function playWithHTML5Audio(url) {
 // Clear the audio source URL
+    playButton.textContent = '▶';
+    progress.style.display = 'block';
     audioElement.src = '';
      audioElement.load(); // Ensure the audio element is fully reset
     
     audioElement.src = url;
     audioElement.load();
     audioElement.play().then(() => {
+         playButton.textContent = '||';
+        progress.style.display = 'none';
         console.log('HTML5 Audio: Playing successfully');
     }).catch((err) => {
+         audioElement.src = '';
+         audioElement.load(); // Ensure the audio element is fully reset
+         playButton.textContent = '▶';
+        progress.style.display = 'none';
         console.error('HTML5 Audio: Failed to play', err);
         alert('Error: Unable to play the audio stream.');
     });
@@ -1543,17 +1551,21 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                             playButton.textContent = '||';
                             isSM2Playing = true;
                         } else {
+                             progress.style.display = 'none';
                             console.error('SM2: Failed to load audio.');
                             playWithHTML5Audio(uniqueUrl);
                         }
                     },
                     onfinish: function () {
                         playButton.textContent = '▶';
+                         progress.style.display = 'none';
                         if (sound) sound.destruct();
                         sound = null;
                         isSM2Playing = false;
                     },
                     onerror: function () {
+                         playButton.textContent = '▶';
+                         progress.style.display = 'none';
                         console.error('SM2: Playback error. Falling back to HTML5.');
                         if (sound) sound.destruct();
                         sound = null;
@@ -1569,16 +1581,22 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
                     sound.stop();
                     sound.destruct();
                     isSM2Playing = false;
+                     playButton.textContent = '▶';
+                    progress.style.display = 'none';
                 }
 
                 audioElement.src = url;
                 audioElement.load();
                 audioElement.play().then(() => {
+                 
+                    progress.style.display = 'none';
                     console.log('HTML5 Audio: Playing successfully');
                     playButton.textContent = '||';
                     isHTML5Playing = true;
                 }).catch((err) => {
                     console.error('HTML5 Audio: Failed to play', err);
+                     playButton.textContent = '▶';
+                     progress.style.display = 'none';
                     isHTML5Playing = false;
                     createAndPlaySoundWithSM2();
                 });
@@ -1590,6 +1608,8 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
             // Timeout fallback in case `oncanplay` takes too long
             const html5Timeout = setTimeout(() => {
                 if (!isHTML5Playing) {
+                     playButton.textContent = '▶';
+                     progress.style.display = 'none';
                     console.warn('HTML5 Audio: Timed out, switching to SoundManager2');
                     createAndPlaySoundWithSM2();
                 }
@@ -1604,6 +1624,8 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
 
             audioElement.onerror = function () {
                 console.error('HTML5 Audio: Failed to load. Falling back to SoundManager2.');
+                 playButton.textContent = '▶';
+                 progress.style.display = 'none';
                 clearTimeout(html5Timeout);
                 audioElement.pause();
                 audioElement.src = '';
@@ -1614,6 +1636,8 @@ function fallbackToSoundManager2(uniqueUrl, stationDetails) {
         },
         ontimeout: function () {
             console.error('SoundManager2 setup timed out. Falling back to HTML5 audio.');
+             playButton.textContent = '▶';
+             progress.style.display = 'none';
             playWithHTML5Audio(uniqueUrl);
         }
     });
