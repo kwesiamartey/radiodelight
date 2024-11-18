@@ -973,7 +973,23 @@
     const itemsPerPage1 = 40; // Number of countries per page
     const progress = document.getElementById('progress');
     const playButton = document.querySelector('.play-button');
+    const volumeControl = document.getElementById('volumeControl');
     let isPlaying = false; // Track the play/pause state
+
+
+       // Set initial volume (based on the slider's default value)
+    audio.volume = volumeControl.value;
+
+    // Update audio volume when the slider is adjusted
+    volumeControl.addEventListener('input', function () {
+        audioElement.volume = this.value;
+        console.log(`Volume set to: ${Math.round(this.value * 100)}%`);
+    });
+
+    // Optional: Display the volume level as a percentage
+    volumeControl.addEventListener('input', function () {
+        this.title = `Volume: ${Math.round(this.value * 100)}%`;
+    });
 
 
 function loadCountries() {
