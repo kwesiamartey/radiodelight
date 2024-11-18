@@ -81,6 +81,22 @@
             flex-direction: column;
         }
 
+  /* Tooltip styling */
+  .tooltip {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    font-size: 14px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 1000;
+  }
+
+    
     /* Modal Background */
 .modal {
   display: none; /* Hidden by default */
@@ -976,8 +992,7 @@
     const volumeControl = document.getElementById('volumeControl');
     let isPlaying = false; // Track the play/pause state
 
-
-       // Set initial volume (based on the slider's default value)
+    // Set initial volume (based on the slider's default value)
     audio.volume = volumeControl.value;
 
     // Update audio volume when the slider is adjusted
@@ -991,6 +1006,38 @@
         this.title = `Volume: ${Math.round(this.value * 100)}%`;
     });
 
+
+ // Function to show tooltip
+  function showTooltip(event, text) {
+    let tooltip = document.createElement('div');
+    tooltip.className = 'tooltip';
+    tooltip.textContent = text;
+    document.body.appendChild(tooltip);
+
+    // Position the tooltip near the mouse cursor
+    const tooltipOffset = 10;
+    tooltip.style.left = `${event.pageX + tooltipOffset}px`;
+    tooltip.style.top = `${event.pageY + tooltipOffset}px`;
+
+    // Make the tooltip visible
+    requestAnimationFrame(() => {
+      tooltip.style.opacity = '1';
+    });
+
+    // Store the tooltip element for removal later
+    event.target._tooltip = tooltip;
+  }
+
+  // Function to hide tooltip
+  function hideTooltip(event) {
+    const tooltip = event.target._tooltip;
+    if (tooltip) {
+      tooltip.remove();
+      event.target._tooltip = null;
+    }
+  }
+
+    
 
 function loadCountries() {
     fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
@@ -1016,8 +1063,9 @@ function renderCountryList(data, page, totalPages) {
         const country = data[i];
         const listItem = document.createElement('li');
         listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag">`;
+        listItem.addEventListener('mouseenter', (event) => showTooltip(event, country.name));
+        listItem.addEventListener('mouseleave', hideTooltip);
         listItem.addEventListener('click', () => {
-            this.title = '${country.name}'
              audio.pause();
              playButton.innerHTML = '▶';  // Play icon
              isPlaying = false; // Play icon
