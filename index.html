@@ -19,6 +19,9 @@
      <script src="https://lornamobileappsdev.uk/mobileAppsWebsite/soundmanager2/script/soundmanager2.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bowser@2.11.0/es5.min.js"></script>
     <link href="https://unpkg.com/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <meta name="api-base-url" content="https://lornamobileappsdev.uk/mobileAppsWebsite">
+
+
    
     <!-- Favicons -->
         <link rel="icon" href="logo.png" sizes="any">
@@ -1040,7 +1043,10 @@
     
 
 function loadCountries() {
-    fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/query_countries.php')
+const sanitizedCountryPath = encodeURIComponent('query_countries.php');
+const baseUrl = `${document.querySelector('meta[name="api-base-url"]').content}/${sanitizedCountryPath}`;
+
+    fetch(baseUrl)
         .then(response => response.ok ? response.json() : Promise.reject())
         .then(data => {
             const totalPages = Math.ceil(data.length / itemsPerPage1);
@@ -1179,39 +1185,25 @@ function setupPaginationButtons(data, totalPages) {
 }
 
 
-// Function to fetch stations with retry logic
-async function fetchStations(
-    countryPath = selectedCountryPath,
-    retries = 3,
-    delay = 3000,
-    chunkSize = 1000
-) {
-    const baseUrl2 = `https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`;
+
+async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 3000, chunkSize = 1000) {
+    const sanitizedCountryPath = encodeURIComponent(countryPath);
+    const baseUrl2 = `${document.querySelector('meta[name="api-base-url"]').content}/query_stations.php?path=${sanitizedCountryPath}`;
 
     try {
         // Attempt to fetch the entire dataset at once
         stationData = await fetchWithRetry(baseUrl2, retries, delay);
 
-        // Sort data in descending order based on the desired property (e.g., `name` or `added`)
-        stationData.sort((a, b) => (a.name < b.name ? 1 : -1));
-
-        // Display the sorted stations
+        // If data is successfully fetched, display it
         displayStations(stationData);
     } catch (error) {
         console.warn('Failed to fetch entire dataset, switching to chunked loading...');
-
+        
         // If fetching the entire dataset fails, use chunked loading
         stationData = await fetchStationsInChunks(baseUrl2, chunkSize);
-
-        // Sort data in descending order based on the desired property
-        stationData.sort((a, b) => (a.name < b.name ? 1 : -1));
-
-        // Display the sorted stations
         displayStations(stationData);
     }
 }
-
-
 
     
 
@@ -1234,23 +1226,7 @@ async function fetchWithRetry(url, retries, delay) {
 }
 
 // Function for chunk loading
-async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 3000, chunkSize = 1000) {
-    const baseUrl2 = `https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${countryPath}`;
 
-    try {
-        // Attempt to fetch the entire dataset at once
-        stationData = await fetchWithRetry(baseUrl2, retries, delay);
-
-        // If data is successfully fetched, display it
-        displayStations(stationData);
-    } catch (error) {
-        console.warn('Failed to fetch entire dataset, switching to chunked loading...');
-        
-        // If fetching the entire dataset fails, use chunked loading
-        stationData = await fetchStationsInChunks(baseUrl2, chunkSize);
-        displayStations(stationData);
-    }
-}
 
     
 
@@ -1688,12 +1664,6 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
     // Optional: Focus on the popup window
     popupWindow.focus();
 }
-
-
-
-
-
-    
 
 
     window.onload = () => {
