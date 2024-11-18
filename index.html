@@ -1926,7 +1926,74 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
 
 
     
+/**
+ * Add volume slider
+ */
+function addVolumeSlider() {
+    const slider = document.getElementById("volumeControl");
+    changeVolume(localStorage.getItem("volume"));
+    slider.addEventListener("input", (e) => {
+        changeVolume(e.target.value, true);
+    });
+}
 
+/**
+ * Change volume
+ */
+function changeVolume(vol, isUserInteraction) {
+    const volume = isNumeric(parseInt(vol)) ? parseInt(vol) : 100;
+    const slider = document.getElementById("volumeControl");
+    const browser = bowser.getParser(window.navigator.userAgent);
+    // Apply to slider
+    slider.value = volume;
+    // Mute
+    if (volume === 0) {
+        // Get last volume
+        let volumeUnMute = getVolume("volume", false);
+        // Prevent 0 as last volume
+        volumeUnMute = volumeUnMute > 0 ? volumeUnMute : browser.getOSName(true) == "ios" ? 100 : 50;
+        // Save last volume as unmute volume
+        localStorage.setItem("volume_unmute", volumeUnMute);
+        // Set speaker icon off and mute
+        if (!player.muted) {
+            //setButtonMute();
+            // Use mute on iOS because the volume property is not settable in JavaScript
+            //bowser.ios && bowser.osversion.split(".")[0] < 10 ? player.pause(): player.muted = true;
+        }
+    }
+
+    // Save new volume value
+    localStorage.setItem("volume", volume);
+    // Apply new volume if HLS
+    player.volume = volume / 100;
+    //Apply new volume if SoundManager
+    if(audio != null) {
+        audio.setVolume(volume);
+    }
+
+    return volume;
+}
+
+/**
+ * Get volume
+ */
+function getVolume(key, normalized) {
+    let volume = 100;
+    // Get volume value
+    volume = localStorage.getItem(key);
+    // Volume value must be an integer
+    volume = parseInt(volume);
+    // Validate volume value
+    volume = isNumeric(volume) && volume >= 0 && volume <= 100 ? volume : 100;
+    return normalized ? volume / 100 : volume;
+}
+
+/**
+ * Check if number is numeric
+ */
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
 
 
 
