@@ -1001,6 +1001,12 @@ function renderCountryList(data, page, totalPages) {
         const listItem = document.createElement('li');
         listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag">`;
         listItem.addEventListener('click', () => {
+             audio.pause();
+             playButton.innerHTML = '▶';  // Play icon
+             isPlaying = false; // Play icon
+            document.getElementById('breadcrumbs').style.display = 'none';
+            document.querySelector('.playing-station-wrap').style.display = 'none';
+            document.querySelector('.footer-div-wraaper').style.display = 'none';
             selectedCountryPath = country.url;
             fetchStations(selectedCountryPath);
             document.querySelector('.countryTitle').textContent = `Live ${country.name} Radio Station Online`;
@@ -1333,10 +1339,10 @@ function initAudioPlayer(url, image, stationName, bit, country) {
     const breadcrumbs = document.getElementById('breadcrumbs');
     document.getElementById('breadcrumbs').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'none';
+     document.querySelector('.playing-station-wrap').style.display = 'block';
+    document.querySelector('.footer-div-wraaper').style.display = 'block';
     stationLogo.src = image;
     stationLogo.style.display = 'block';
-    document.querySelector('.playing-station-wrap').style.display = 'block';
-    document.querySelector('.footer-div-wraaper').style.display = 'block';
     breadcrumbs.textContent = `Radio station | ${country} | ${stationName}`;
 
     // Handle image load errors
