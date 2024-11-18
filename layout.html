@@ -1241,8 +1241,10 @@ function displayStations(stations) {
         // Clear timeout if image loads successfully
         imgElement.onload = () => {
             clearTimeout(loadTimeout);
-            playButton.innerHTML = '▶';  // Play icon
-            stationItem.addEventListener('click', () => initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location));
+            
+            stationItem.addEventListener('click', () => {
+                playButton.innerHTML = '▶';  // Play icon
+                initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location)});
         };
 
         // If loading fails, use `mast2.jpg` as fallback
@@ -1250,7 +1252,9 @@ function displayStations(stations) {
             clearTimeout(loadTimeout);
             imgElement.src = 'mast.jpg';
             playButton.innerHTML = '▶';  // Play icon
-            stationItem.addEventListener('click', () => initAudioPlayer(station.url, 'mast.jpg', station.name, station.bit, station.location));
+            stationItem.addEventListener('click', () =>{
+                playButton.innerHTML = '▶';  // Play icon
+                initAudioPlayer(station.url, 'mast.jpg', station.name, station.bit, station.location)});
         };
 
         stationList.appendChild(stationItem);
