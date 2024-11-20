@@ -839,9 +839,9 @@
   </div>
   
   <!-- Additional info section under player-header -->
-  <!--<div id="foo" style="background-color:#0b57d0; display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;">
-      <span style="padding:0px;margin:0px;font-size:13px;">This website functions best on Chrome / Firefox / Opera.</span>
-  </div>  -->
+  <div id="foo" style=" display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;">
+
+  </div> 
        <!-- Centered "mmi" Element -->
 </div>
 
@@ -994,6 +994,7 @@
     const playButton = document.querySelector('.play-button');
     const volumeControl = document.getElementById('volumeControl');
     let isPlaying = false; // Track the play/pause state
+    let stationDetailsGlobal ="";
 
     // Set initial volume (based on the slider's default value)
     audio.volume = volumeControl.value;
@@ -1385,6 +1386,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
     stationLogo.src = image;
     stationLogo.style.display = 'block';
     breadcrumbs.textContent = `Radio station | ${country} | ${stationName}`;
+    stationDetailsGlobal = `${stationName} (${country}) (web)`;
 
     // Handle image load errors
     stationLogo.onerror = () => handleImageError(stationLogo, stationName);
@@ -1425,7 +1427,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                         showSpinner(false); // Hide the spinner on error
                         showCustomError('Error, Try again later.');
                         const stationDetails = `${stationName} (${country}) (web)`;
-                        sendEmailNotification(stationDetails, url, 'error')
+                        handlePlaybackError(stationDetails, url, 'error')
                     });
                 } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
                     // For Safari or native HLS support
@@ -1438,7 +1440,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                 } else {
                     showCustomError('Error, Try again later.');
                     const stationDetails = `${stationName} (${country}) (web)`;
-                    sendEmailNotification(stationDetails, url, 'error')
+                    handlePlaybackError(stationDetails, url, 'error')
                     return;
                 }
             } else {
@@ -1447,7 +1449,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                     showSpinner(false); // Hide the spinner when audio is ready
                 });
                 const stationDetails = `${stationName} (${country}) (web)`;
-                sendEmailNotification(stationDetails, url, 'success')
+                
             }
 
             // Handle error events for unsupported formats
@@ -1455,7 +1457,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                 showSpinner(false); // Hide the spinner on error
                 showCustomError('Error, Try again later.');
                 const stationDetails = `${stationName} (${country}) (web)`;
-                sendEmailNotification(stationDetails, url, 'error')
+                handlePlaybackError(stationDetails, url, 'error')
             });
 
     
@@ -1474,6 +1476,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                 playButton.innerHTML = '||';  // Pause icon
                 showSpinner(false); // Hide the spinner when playing starts
                 isPlaying = true;
+                sendEmailNotification(stationDetailsGlobal, audio.src, 'success')
               
             } else {
                 audio.pause();
