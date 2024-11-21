@@ -1,16 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   <!-- Home Page -->
    <url>
       <loc>https://www.radiosdelight.com/</loc>
-      <lastmod>2023-11-11</lastmod>
+      <lastmod>2024-11-21</lastmod>
       <changefreq>daily</changefreq>
       <priority>1.0</priority>
    </url>
+   
+   <!-- About Page -->
    <url>
-      <loc>https://www.radiosdelight.com/index.html</loc>
-      <lastmod>2024-11-11</lastmod>
-      <changefreq>weekly</changefreq>
-      <priority>0.8</priority>
+      <loc>https://www.radiosdelight.com/about-us.html</loc>
+      <lastmod>2024-11-01</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.6</priority>
    </url>
-   <!-- Add more URLs as needed -->
+   
+   <!-- Contact Page -->
+   <url>
+      <loc>https://www.radiosdelight.com/contact-us.html</loc>
+      <lastmod>2024-11-15</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.7</priority>
+   </url>
+   
+   <!-- Privacy Policy Page -->
+   <url>
+      <loc>https://www.radiosdelight.com/privacy.html</loc>
+      <lastmod>2024-10-30</lastmod>
+      <changefreq>yearly</changefreq>
+      <priority>0.5</priority>
+   </url>
+   
 </urlset>
+
