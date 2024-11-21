@@ -31,6 +31,15 @@
       <changefreq>yearly</changefreq>
       <priority>0.5</priority>
    </url>
+
+   
+   <!-- Custom 404 Page -->
+   <url>
+      <loc>https://www.radiosdelight.com/404.html</loc>
+      <lastmod>2024-11-20</lastmod>
+      <changefreq>never</changefreq>
+      <priority>0.1</priority>
+   </url>
    
 </urlset>
 
