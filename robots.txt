@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-
-Sitemap: https://www.radiosdelight.com/sitemap.xml
+Sitemap: https://radiosdelight.com/sitemap.xml
