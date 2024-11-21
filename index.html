@@ -911,40 +911,160 @@
 </head>
 <body>
 
-    <!-- Header -->
-    <header id="top-header" style="display: flex; flex-direction: column; align-items: center;">
-        <div class="player-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 10px;">
-            <a href="https://radiosdelight.com/">
-                <img id="Logo" src="https://radiosdelight.com/logo.png" alt="Radios Delight Logo" width="150">
-            </a>
-            <h1 id="web_title" style="font-size: 1.5em;">Radios Delight</h1>
-            <input type="text" id="searchInput" placeholder="Search stations" oninput="filterStations()" style="padding: 5px; width: 200px; border-radius: 5px; border: 1px solid #ccc;">
+<div id="top-header" style="display: flex; flex-direction: column;">
+  <div class="player-header">
+      <!-- Menu icon (if needed) -->
+      <!-- <span class="menu-icon" onclick="toggleMenu()">☰</span> -->
+      
+      <!-- Logo and Title -->
+      <a href="index.html">
+        <img id="Logo" src="logo.png" alt="Station Logo">
+      </a>
+      <h3 id="web_title">Radio Delight</h3>
+
+      <!-- Search bar -->
+      <input type="text" id="searchInput" placeholder="Search stations" oninput="filterStations()">
+  </div>
+  
+  <!-- Additional info section under player-header -->
+  <div id="foo" style=" display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;">
+
+  </div> 
+       <!-- Centered "mmi" Element -->
+</div>
+
+
+    <!--wrapper-->
+    <div class="wrapper">
+
+    <div class="content">
+
+    <!----modal----->         
+
+    <div id="errorModal" class="modal">
+  <div class="modal-content">
+    <span class="close-button" id="closeModal">&times;</span>
+    <p id="errorMessage">The station is currently unavailable. Please try using a different browser, such as Mozilla Firefox or Chrome, or check back in an hour as we work to resolve the issue.</p>
+  </div>
+</div>
+
+
+        
+    <div class="container" style="width:90v" >
+    <div style="background-color:rgb(77, 100, 111); display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;margin-bottom: 21px;">
+      <span id="breadcrumbs" style="width:100%;padding:4px;margin:0px;font-size:13px;color:#fff;display:none;">Radio Station |  </span>
+    </div> 
+         <h1 class="countryTitle" style="display: none;">Live Germany Radio Station Online</h1>
+        <div class="row">
+            <div class="col-md-8">
+
+
+ <!------- the player start here ---->
+<div class="footer-div-wraaper" style="display:none;">
+    <div class="col playing-station-wrap" style="background-color: #142229; display: none; align-items: center; justify-content: center;margin:auto;">
+        <div class="row" style="display: flex; align-items: center; height: auto; width: 100%;">
+            
+            <!-- First column: Station Image -->
+            <div class="col-2 " style="width:180px;">
+                <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: block; object-fit: fill;">
+            </div>
+
+            <!-- Second column: Play button and progress ring -->
+            <div class="col-10 p-m-player-v" style="padding-top:10px;">
+                <!-- Centered Play Control -->
+                <div class="col" style="display: flex; align-items: center; justify-content: center;">
+                    <div class="play-control" style="display: flex; align-items: center; justify-content: center;">
+                        <div class="progress-ring" id="progress"></div>
+                        <button class="play-button" >▶</button>
+                    </div>
+                </div>
+
+                <!-- Centered Volume Control -->
+                <div class="col" style=" display: flex; align-items: center; justify-content: center;">
+                    <input style="width: 50%; margin: 14px 12px; display: flex; align-items: center; justify-content: center;" type="range" id="volumeControl" min="0" max="1" step="0.01" value="1" >
+                </div>
+            </div>
         </div>
-    </header>
+    </div>
+</div>
+ <!----------the player ends here ------->
 
-    <!-- Main Content -->
-    <main>
-        <section class="station-list">
-            <h2 style="text-align: center; font-size: 1.8em; margin-top: 20px;">Listen to Top Radio Stations Worldwide</h2>
-            <p style="text-align: center; margin: 10px auto; width: 90%;">Explore thousands of free online radio stations by genre or country. Discover your favorite shows with just a click.</p>
-            <div id="stationListContent" class="station-grid"></div>
-        </section>
+                
+                
+    <div id="stationListContent" class="station-grid"></div>
+                <br><br>
+                <div id="paginationControls"></div>
+                 <br><br><br><br><br><br><br>
+            </div>
+            <div class="col-md-4">
+                <div id="country_list_wrapper" style="background-color:rgb(77, 100, 111);padding:12px;display:none;">
+                <p id="countryTitle" style="display: none;background-color:#1c313a;padding:6px 12px;border-radius:4px;">Discover by Countries</p>
+                <ul id="countryList" class="country-grid"></ul>
+                <br>
+                <div id="paginationControls1"></div>
+                <br>
+                <p id="downloadTitle" style="display: none;background-color:#1c313a;padding:6px 12px;border-radius:4px;">Download mobile app</p>
+                 <a href="https://play.google.com/store/apps/details?id=com.lornamobileappsdev.moldova">
+                     <img src="get_playstore.jpeg" style="width:100%; height:auto"/>
+                 </a>
+             </div>
+          
+               <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966"
+                         crossorigin="anonymous"></script>
+                    <ins class="adsbygoogle"
+                         style="display:block; text-align:center;"
+                         data-ad-layout="in-article"
+                         data-ad-format="fluid"
+                         data-ad-client="ca-pub-3366131354604966"
+                         data-ad-slot="7400832150"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                 </br></br></br></br><br><br>
+            </div>
+        </div>
+    </div>
 
-        <section id="country-list" style="margin: 20px auto; width: 90%;">
-            <h2 style="text-align: center; font-size: 1.8em;">Browse Stations by Country</h2>
-            <ul id="countryList" class="country-grid" style="display: flex; flex-wrap: wrap; justify-content: center;"></ul>
-        </section>
-    </main>
 
-    <!-- Footer -->
-    <footer style="background-color: #34444c; color: #ccc; padding: 20px; text-align: center;">
-        <p>&copy; 2024 Radios Delight. All rights reserved.</p>
-        <nav>
-            <a href="privacy.html" style="color: #ccc; margin: 0 10px;">Privacy Policy</a>
-            <a href="terms.html" style="color: #ccc; margin: 0 10px;">Terms of Service</a>
-            <a href="contact.html" style="color: #ccc; margin: 0 10px;">Contact Us</a>
-        </nav>
-    </footer>  
+    <!--footer-->
+<div class="row" id="footerr" style="padding:30px; background-color:#34444c; display: none;">
+ <div class="container">
+    <div class="row">
+        <!-- Left Section: Radio FM USA Description -->
+        <div class="col-md-6" style="color: #ccc;">
+            <h5>Radio Delight</h5>
+            <h2 span style="font-size:13px;">Explore the finest global radio experience with our free online app, offering seamless access to over 22000 FM/AM stations featuring live broadcasts of news, sports, and music. Stay informed on the latest events in the US and enjoy a wide variety of music genres. Whether you're into pop, rock, or classical, we've got something for every taste.</h2>
+            <p></p>
+        </div>
+
+        <!-- Right Section: Top Radio Stations -->
+        <div class="col-md-6" style="color: #ccc;">
+            <h5>Top Radio Countries</h5>
+            <ul class="list-unstyled">
+                <li>1. USA</li>
+                <li>2. Canada</li>
+                <li>3. Finland</li>
+                <li>4. Albania</li>
+                <li>5. UK</li>
+            </ul>
+        </div>
+            <div class="row mt-5" style="color: #ccc;">
+        <div class="col text-center footer-links">
+             <a href="privacy.html" style="color: #ccc;font-size:14px;">Privacy Policy</a> · 
+            <a href="privacy.html" style="color: #ccc;font-size:14px;">Terms of Service</a> · 
+            <a href="about-us.html" style="color: #ccc;font-size:14px;">About Us</a> · 
+            <a href="contact-us.html" style="color: #ccc;font-size:14px;">Contact Us</a>
+        </div>
+    </div>
+    </div>
+    <!-- Footer Section -->
+    <div class="row mt-5" style="color: #ccc;"> </div>
+</div>   
+</div>
+
+</div><!--content ends-->
+
+</div><!--wrapper ends here-->       
     
 
 <script>
