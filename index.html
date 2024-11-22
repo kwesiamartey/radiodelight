@@ -1381,8 +1381,6 @@ function displayStations(stations) {
     document.querySelector('.countryTitle').style.display = 'block';
     document.getElementById('downloadTitle').style.display = 'block';
     document.getElementById('country_list_wrapper').style.display = 'block';
-    document.getElementById('progress-loading').style.display = 'none';
-    
 
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.getElementById('paginationControls');
@@ -1400,7 +1398,7 @@ function displayStations(stations) {
 
     stationsToDisplay.forEach(station => {
         const stationItem = document.createElement('div');
-        stationItem.className = 'station-item col';
+        stationItem.className = 'station-item';
 
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
         const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name); 
@@ -1409,7 +1407,6 @@ function displayStations(stations) {
             <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: white;justify-content:center;align-content: center;">
                 <img style="width: 100%; height: 140px; object-fit: fill;"  
                      src="${logoUrl}" 
-                     class="img-fluid"
                      loading="lazy"
                      alt="${truncatedName}">
             </div>
@@ -1443,7 +1440,6 @@ function displayStations(stations) {
 
     createPaginationControls(stations.length, totalPages);
 }
-
 
 
 
