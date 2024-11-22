@@ -1044,7 +1044,7 @@
  <!----------the player ends here ------->
 
                 
- <div id="stationListContent" class="station-grid"></div>
+           <div id="stationListContent" class="station-grid"></div>
              <br><br>
             <div id="paginationControls"></div>
                  <br><br><br><br><br><br><br>
@@ -1400,7 +1400,7 @@ function displayStations(stations) {
 
     stationsToDisplay.forEach(station => {
         const stationItem = document.createElement('div');
-        stationItem.className = 'station-item';
+        stationItem.className = 'station-item col';
 
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
         const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name); 
