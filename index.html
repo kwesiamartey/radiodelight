@@ -168,6 +168,15 @@
             margin-top: 50px; /* Match the height of #top-header */
         }
 
+
+.progress-ring2 {
+                width: 93px;
+                height: 93px;
+                color:#ff0000;
+                margin-left: 20px;
+                margin-right: 20px;
+            }
+    
   /* Tooltip styling */
   .tooltip {
     position: absolute;
@@ -954,6 +963,7 @@
   </div>
 </div>
 
+        <div class="progress-ring2" id="progress-loding"></div>
 
         
     <div class="container" style="width:90v" >
@@ -1341,6 +1351,8 @@ function displayStations(stations) {
     document.querySelector('.countryTitle').style.display = 'block';
     document.getElementById('downloadTitle').style.display = 'block';
     document.getElementById('country_list_wrapper').style.display = 'block';
+    document.querySelector('.progress-loding').style.display = 'block';
+    
 
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.getElementById('paginationControls');
