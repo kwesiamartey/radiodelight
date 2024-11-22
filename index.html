@@ -179,7 +179,9 @@
             display: none; /* Hidden by default */
             margin-left: auto;
             margin-right: auto;
-            }
+            margin-top:20px;
+            margin-bottom:20px;
+    }
     
   /* Tooltip styling */
   .tooltip {
@@ -237,17 +239,17 @@
   text-decoration: none;
 }
 
-          .playing-station-wrap{
+ .playing-station-wrap{
             width:400px;
             margin:auto;
-        }
+ }
 
-        .p-m-player-v{
+.p-m-player-v{
             width:200px;
             margin:auto;
-        }
+ }
 
-        .footer-div-wraaper {
+.footer-div-wraaper {
             width: 100%;
             margin-bottom: 18px;
             z-index: 1000;
@@ -255,9 +257,9 @@
             margin-left:auto;
             justify-content: center;
             align-items: center;
-        }
+}
 
-        .player-container {
+.player-container {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
@@ -266,26 +268,26 @@
             padding: 10px;
             background-color: #142229;
             color: white;
-        }
+}
 
     
       
-      #countryList li ul{
+#countryList li ul{
           background-color:#142229;
           padding:10px;
-            border-radius: 5px;
-            display: flex; /* Use flexbox to align items */
-            align-items: center; /* Center items vertically */
-            justify-content: center; /* Center items horizontally */
+          border-radius: 5px;
+          display: flex; /* Use flexbox to align items */
+          align-items: center; /* Center items vertically */
+          justify-content: center; /* Center items horizontally */
           list-style-type: none;
-            padding: 0;
-            display: grid; /* Use grid layout */
-            grid-template-columns: repeat(100px, minmax(100px, 1fr)); /* Responsive columns */
-            gap: 10px; /* Space between items */
+          padding: 0;
+          display: grid; /* Use grid layout */
+          grid-template-columns: repeat(100px, minmax(100px, 1fr)); /* Responsive columns */
+          gap: 10px; /* Space between items */
            
       }
         /* First column: Station Image */
-        .station-image {
+    .station-image {
             width: 140px;
             height: 140px;
             background-color:#fff;
@@ -1101,7 +1103,7 @@
     const playButton = document.querySelector('.play-button');
     const volumeControl = document.getElementById('volumeControl');
     let isPlaying = false; // Track the play/pause state
-    let stationDetailsGlobal ="";
+    let stationDetailsGlobal = "";
 
     // Set initial volume (based on the slider's default value)
     audio.volume = volumeControl.value;
@@ -1149,7 +1151,6 @@
   }
 
     
-
 function loadCountries() {
 const sanitizedCountryPath = encodeURIComponent('query_countries.php');
 const baseUrl = `${document.querySelector('meta[name="api-base-url"]').content}/${sanitizedCountryPath}`;
@@ -1334,10 +1335,6 @@ async function fetchWithRetry(url, retries, delay) {
 }
 
 // Function for chunk loading
-
-
-    
-
 function filterStations() {
     const query = document.getElementById('searchInput').value.toLowerCase();
     const filteredStations = stationData.filter(station => 
@@ -1348,14 +1345,13 @@ function filterStations() {
 }
 
 
-
 function displayStations(stations) {
     document.getElementById('footerr').style.display = 'block';
     document.getElementById('countryTitle').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'block';
     document.getElementById('downloadTitle').style.display = 'block';
     document.getElementById('country_list_wrapper').style.display = 'block';
-    document.getElementById('progress-loading').style.display = 'block';
+    document.getElementById('progress-loading').style.display = 'none';
     
 
     const stationList = document.getElementById('stationListContent');
