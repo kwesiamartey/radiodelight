@@ -1533,16 +1533,16 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                     });
                 } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
                     // For Safari or native HLS support
-                    audio.src = url;
+                    audio.src = audioUrl;
                     audio.addEventListener('canplay', () => {
                         showSpinner(false); // Hide the spinner when audio is ready
                     });
-                     const stationDetails = `${stationName} (${country}) (web)`;
-                     sendEmailNotification(stationDetails, url, 'success')
+                     const stationDetails = `${stationName} (${country}) (Mobile)`;
+                     sendEmailNotification(stationDetails, audioUrl, 'success')
                 } else {
                     showCustomError('Error, Try again later.');
-                    const stationDetails = `${stationName} (${country}) (web)`;
-                    handlePlaybackError(stationDetails, url, 'error')
+                    const stationDetails = `${stationName} (${country}) (Mobile)`;
+                    handlePlaybackError(stationDetails, audioUrl, 'error')
                     return;
                 }
             } else {
@@ -1550,8 +1550,8 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                 audio.addEventListener('canplay', () => {
                     showSpinner(false); // Hide the spinner when audio is ready
                 });
-                const stationDetails = `${stationName} (${country}) (web)`;
-                
+                const stationDetails = `${stationName} (${country}) (Mobile)`;
+                     sendEmailNotification(stationDetails, audioUrl, 'success')
             }
 
             // Handle error events for unsupported formats
