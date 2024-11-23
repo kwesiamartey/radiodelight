@@ -1126,7 +1126,7 @@
    const audio = new Audio();
     let hls;
     let currentPage = 1;
-    const itemsPerPage = 28;
+    const itemsPerPage = 18;
     let currentPage1 = 1;
     const itemsPerPage1 = 40; // Number of countries per page
     const progress = document.getElementById('progress');
@@ -1134,6 +1134,11 @@
     const volumeControl = document.getElementById('volumeControl');
     let isPlaying = false; // Track the play/pause state
     let stationDetailsGlobal = "";
+    document.getElementById('footerr').style.display = 'block';
+    document.getElementById('countryTitle').style.display = 'block';
+    document.querySelector('.countryTitle').style.display = 'block';
+    document.getElementById('downloadTitle').style.display = 'block';
+    document.getElementById('country_list_wrapper').style.display = 'block';
 
     // Set initial volume (based on the slider's default value)
     audio.volume = volumeControl.value;
@@ -1376,11 +1381,7 @@ function filterStations() {
 
 
 function displayStations(stations) {
-    document.getElementById('footerr').style.display = 'block';
-    document.getElementById('countryTitle').style.display = 'block';
-    document.querySelector('.countryTitle').style.display = 'block';
-    document.getElementById('downloadTitle').style.display = 'block';
-    document.getElementById('country_list_wrapper').style.display = 'block';
+
 
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.getElementById('paginationControls');
