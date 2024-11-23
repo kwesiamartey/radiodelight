@@ -1045,7 +1045,7 @@
     <div id="stationListContent" class="station-grid"></div>
                 <br><br>
                 <div id="paginationControls" style="display:none;"></div>
-                 <br><br><br><br><br><br><br>
+                 <br>
             </div>
             <div class="col-md-3">
                 <div id="country_list_wrapper" style="background-color:rgb(77, 100, 111);padding:12px;display:none;">
@@ -1236,7 +1236,11 @@ function renderCountryList(data, page, totalPages) {
             document.querySelector('.playing-station-wrap').style.display = 'none';
             document.querySelector('.footer-div-wraaper').style.display = 'none';
             selectedCountryPath = country.url;
-            fetchStations(selectedCountryPath);
+            //fetchStations(selectedCountryPath);
+            localStorage.setItem('selectedCountryPath', selectedCountryPath)
+
+            // Correct usage of string interpolation with backticks
+             window.location.href = `index.html?name=${country.name}`;
             document.querySelector('.countryTitle').textContent = `Live ${country.name} Radio Station Online`;
         });
         countryList.appendChild(listItem);
