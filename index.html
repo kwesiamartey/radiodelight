@@ -1371,7 +1371,7 @@ async function fetchStationsInChunks(baseUrl, chunkSize) {
             const response = await fetch(url);
             if (!response.ok) throw new Error('Network response was not ok');
             const chunk = await response.json();
-            console.log('Fetched chunk:', chunk);  // Log the fetched chunk
+
 
             if (chunk.length === 0) break;
 
@@ -1404,7 +1404,7 @@ async function fetchWithRetry(url, retries = 3, delay = 3000) {
             }
 
             const data = await response.json();
-            console.log('Fetched Data:', data);
+
             return data.filter(station => station.name !== 'Local Fm');
         } catch (error) {
             console.warn(`Attempt ${attempt + 1} failed:`, error.message);

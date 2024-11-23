@@ -1053,7 +1053,7 @@
                 <ul id="countryList" class="country-grid"></ul>
                 <br>
                 <div id="paginationControls1"></div>
-                <br>
+                <br><br>
                 <p id="downloadTitle" style="display: none;background-color:#1c313a;padding:6px 12px;border-radius:4px;">Download mobile app</p>
                  <a href="https://play.google.com/store/apps/details?id=com.lornamobileappsdev.moldova">
                      <img src="get_playstore.jpeg" style="width:100%; height:auto"/>
@@ -1426,8 +1426,6 @@ function filterStations() {
 
 
 function displayStations(stations) {
-
-
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.getElementById('paginationControls');
     stationList.innerHTML = ''; // Clear current list
@@ -1438,21 +1436,26 @@ function displayStations(stations) {
         return;
     }
 
+    // Sort stations in descending order by name
+    stations.sort((a, b) => b.name.localeCompare(a.name)); // Reverse alphabetical order
+
+    // Calculate pagination details
     const totalPages = Math.ceil(stations.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
 
+    // Render stations
     stationsToDisplay.forEach(station => {
         const stationItem = document.createElement('div');
         stationItem.className = 'station-item';
 
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-        const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name); 
+        const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name);
 
         stationItem.innerHTML = `
             <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: white;justify-content:center;align-content: center;">
-                <img style="width: 100%; height: 140px; object-fit: fill;"  
-                     src="${logoUrl}" 
+                <img style="width: 100%; height: 140px; object-fit: fill;"
+                     src="${logoUrl}"
                      loading="lazy"
                      alt="${truncatedName}">
             </div>
@@ -1467,8 +1470,9 @@ function displayStations(stations) {
         imgElement.onload = () => {
             clearTimeout(loadTimeout);
             stationItem.addEventListener('click', () => {
-            playButton.innerHTML = '▶';  // Play icon
-            initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);            });
+                playButton.innerHTML = '▶';  // Play icon
+                initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
+            });
         };
 
         imgElement.onerror = () => {
