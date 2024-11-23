@@ -1232,12 +1232,12 @@ function renderCountryList(data, page, totalPages) {
              audio.pause();
              playButton.innerHTML = '▶';  // Play icon
              isPlaying = false; // Play icon
-            document.getElementById('breadcrumbs').style.display = 'none';
-            document.querySelector('.playing-station-wrap').style.display = 'none';
-            document.querySelector('.footer-div-wraaper').style.display = 'none';
-            selectedCountryPath = country.url;
+            //document.getElementById('breadcrumbs').style.display = 'none';
+            //document.querySelector('.playing-station-wrap').style.display = 'none';
+            //document.querySelector('.footer-div-wraaper').style.display = 'none';
+            //selectedCountryPath = country.url;
             //fetchStations(selectedCountryPath);
-            localStorage.setItem('selectedCountryPath', selectedCountryPath)
+            localStorage.setItem('selectedCountryPath', country.url)
 
             // Correct usage of string interpolation with backticks
              window.location.href = `index.html?name=${country.name}`;
