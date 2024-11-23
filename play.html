@@ -1237,6 +1237,7 @@ function renderCountryList(data, page, totalPages) {
             //document.querySelector('.footer-div-wraaper').style.display = 'none';
             //selectedCountryPath = country.url;
             //fetchStations(selectedCountryPath);
+            localStorage.setItem('selectedCountryPathName', country.name)
             localStorage.setItem('selectedCountryPath', country.url)
 
             // Correct usage of string interpolation with backticks

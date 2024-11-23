@@ -1122,6 +1122,7 @@
 <script>
     let stationData = []; // Store stations here to avoid multiple fetches
     let selectedCountryPath = localStorage.getItem('selectedCountryPath') || "germanyRadioList.json";
+
     //let selectedCountryPath = '';
    const audio = new Audio();
     let hls;
@@ -1219,7 +1220,8 @@ function renderCountryList(data, page, totalPages) {
             document.querySelector('.footer-div-wraaper').style.display = 'none';
             selectedCountryPath = country.url;
             fetchStations(selectedCountryPath);
-            document.querySelector('.countryTitle').textContent = `Live ${country.name} Radio Station Online`;
+            let selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || ${country.name};
+            document.querySelector('.countryTitle').textContent = `Live ${selectedCountryPathName} Radio Station Online`;
         });
         countryList.appendChild(listItem);
     }
