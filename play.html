@@ -1153,7 +1153,7 @@
     document.querySelector('.countryTitle').style.display = 'none';
      document.querySelector('.playing-station-wrap').style.display = 'block';
     document.querySelector('.footer-div-wraaper').style.display = 'block';
-
+    console.log({ name, url, bit, location, img }); // remove on production
     // Set initial volume (based on the slider's default value)
     audio.volume = volumeControl.value;
 
