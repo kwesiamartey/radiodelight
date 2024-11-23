@@ -1118,9 +1118,8 @@
 
 </div><!--wrapper ends here-->       
       
+
 <script>
-
-
     let stationData = []; // Store stations here to avoid multiple fetches
     let selectedCountryPath = localStorage.getItem('selectedCountryPath') || "germanyRadioList.json";
     //let selectedCountryPath = '';
@@ -1325,33 +1324,26 @@ function setupPaginationButtons(data, totalPages) {
 }
 
 
-async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 3000, chunkSize = 1000) {
+
+async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 5000, chunkSize = 1000) {
     const sanitizedCountryPath = encodeURIComponent(countryPath);
-    const baseUrl2 = `${document.querySelector('meta[name="api-base-url"]').content}/query_stations.php?path=${sanitizedCountryPath}`;
+    const baseUrl2 = `https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${sanitizedCountryPath}`;
 
     try {
         // Attempt to fetch the entire dataset at once
         stationData = await fetchWithRetry(baseUrl2, retries, delay);
 
         // If data is successfully fetched, display it
-        if (stationData.length > 0) {
-            displayStations(stationData);
-        } else {
-            console.warn('No stations found in the dataset.');
-        }
+        displayStations(stationData);
     } catch (error) {
         console.warn('Failed to fetch entire dataset, switching to chunked loading...');
         
         // If fetching the entire dataset fails, use chunked loading
         stationData = await fetchStationsInChunks(baseUrl2, chunkSize);
-        if (stationData.length > 0) {
-            displayStations(stationData);
-        } else {
-            console.warn('No stations found in chunked data.');
-        }
+        displayStations(stationData);
     }
 }
-    
+
 
 async function fetchStationsInChunks(baseUrl, chunkSize) {
     let allStations = [];
@@ -1379,24 +1371,33 @@ async function fetchStationsInChunks(baseUrl, chunkSize) {
     return filteredStations;
 }
 
+    
 
-
-async function fetchWithRetry(url, retries, delay) {
+// Function to fetch data with retries
+async function fetchWithRetry(url, retries = 3, delay = 3000) {
     for (let attempt = 0; attempt < retries; attempt++) {
         try {
+            console.log(`Fetching attempt ${attempt + 1} for URL: ${url}`);
             const response = await fetch(url);
-            if (!response.ok) throw new Error('Network response was not ok');
+            console.log('Response status:', response.status);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('API Error Response:', errorText);
+                throw new Error(`Fetch failed with status ${response.status}: ${errorText}`);
+            }
+
             const data = await response.json();
+            console.log('Fetched Data:', data);
             return data.filter(station => station.name !== 'Local Fm');
         } catch (error) {
-            console.warn(`Attempt ${attempt + 1} failed:`, error);
+            console.warn(`Attempt ${attempt + 1} failed:`, error.message);
             if (attempt < retries - 1) await new Promise(res => setTimeout(res, delay));
-            else throw error; // Throw error if all retries fail
+            else throw error; // Rethrow after last attempt
         }
     }
 }
 
-    
 
 // Function for chunk loading
 function filterStations() {
@@ -1408,12 +1409,8 @@ function filterStations() {
     displayStations(filteredStations);
 }
 
-function displayStations(stations) {
-    if (!stations || stations.length === 0) {
-        console.warn('No stations available to display.');
-        return; // Exit if no stations
-    }
 
+function displayStations(stations) {
     document.getElementById('footerr').style.display = 'block';
     document.getElementById('countryTitle').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'block';
@@ -1435,16 +1432,11 @@ function displayStations(stations) {
     const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
 
     stationsToDisplay.forEach(station => {
-        if (!station.name) {
-            console.warn('Station without name:', station);
-            return; // Skip invalid stations
-        }
-
-        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-        const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name);
-
         const stationItem = document.createElement('div');
         stationItem.className = 'station-item';
+
+        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
+        const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name); 
 
         stationItem.innerHTML = `
             <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: white;justify-content:center;align-content: center;">
@@ -1483,6 +1475,8 @@ function displayStations(stations) {
 
     createPaginationControls(stations.length, totalPages);
 }
+
+
 
 function createPaginationControls(totalStations, totalPages) {
     const paginationControls = document.getElementById('paginationControls');
@@ -1849,9 +1843,6 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
         loadCountries();
         fetchStations();
     };
-
-
-    
 </script>
 <!-- Include HLS.js for .m3u8 support -->
 <script src="https://cdn.jsdelivr.net/npm/howler"></script>
