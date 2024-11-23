@@ -1126,7 +1126,7 @@
     const bit = localStorage.getItem('bit');
     const location1 = localStorage.getItem('location');
     const img = localStorage.getItem('img');
-    const selectedCountryPath1 = localStorage.getItem('selectedCountryPath');
+    const selectedCountryPath1 = localStorage.getItem('selectedCountryPaths');
     let stationData = []; // Store stations here to avoid multiple fetches
     const selectedCountryPath = selectedCountryPath1 || "germanyRadioList.json";
     //let selectedCountryPath = '';
@@ -1153,7 +1153,7 @@
     document.querySelector('.countryTitle').style.display = 'none';
      document.querySelector('.playing-station-wrap').style.display = 'block';
     document.querySelector('.footer-div-wraaper').style.display = 'block';
-    console.log({ name, url, bit, location1, img }); // remove on production
+    console.log({ name, url, bit, location1, img, selectedCountryPath }); // remove on production
     // Set initial volume (based on the slider's default value)
     audio.volume = volumeControl.value;
 
@@ -1571,11 +1571,11 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                         showSpinner(false); // Hide the spinner when audio is ready
                     });
                      const stationDetails = `${stationName} (${country}) (Mobile)`;
-                     sendEmailNotification(stationDetails, audioUrl, 'success')
+                     sendEmailNotification(stationDetails, url, 'success')
                 } else {
                     showCustomError('Error, Try again later.');
                     const stationDetails = `${stationName} (${country}) (Mobile)`;
-                    handlePlaybackError(stationDetails, audioUrl, 'error')
+                    handlePlaybackError(stationDetails, url, 'error')
                     return;
                 }
             } else {
@@ -1584,7 +1584,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                     showSpinner(false); // Hide the spinner when audio is ready
                 });
                 const stationDetails = `${stationName} (${country}) (Mobile)`;
-                     sendEmailNotification(stationDetails, audioUrl, 'success')
+                     sendEmailNotification(stationDetails, url, 'success')
             }
 
             // Handle error events for unsupported formats
