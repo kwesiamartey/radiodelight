@@ -1139,6 +1139,13 @@
     document.querySelector('.countryTitle').style.display = 'block';
     document.getElementById('downloadTitle').style.display = 'block';
     document.getElementById('country_list_wrapper').style.display = 'block';
+         // Update UI with station information playing
+    const stationLogo = document.getElementById('stationLogo');
+    const breadcrumbs = document.getElementById('breadcrumbs');
+    document.getElementById('breadcrumbs').style.display = 'block';
+    document.querySelector('.countryTitle').style.display = 'none';
+     document.querySelector('.playing-station-wrap').style.display = 'block';
+    document.querySelector('.footer-div-wraaper').style.display = 'block';
 
     // Set initial volume (based on the slider's default value)
     audio.volume = volumeControl.value;
@@ -1505,14 +1512,6 @@ function createPaginationControls(totalStations, totalPages) {
 
 
 function initAudioPlayer(url, image, stationName, bit, country) {
-
-     // Update UI with station information
-    const stationLogo = document.getElementById('stationLogo');
-    const breadcrumbs = document.getElementById('breadcrumbs');
-    document.getElementById('breadcrumbs').style.display = 'block';
-    document.querySelector('.countryTitle').style.display = 'none';
-     document.querySelector('.playing-station-wrap').style.display = 'block';
-    document.querySelector('.footer-div-wraaper').style.display = 'block';
     stationLogo.src = image;
     stationLogo.style.display = 'block';
     breadcrumbs.textContent = `Radio station | ${country} | ${stationName}`;
