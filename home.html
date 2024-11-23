@@ -1118,8 +1118,9 @@
 
 </div><!--wrapper ends here-->       
       
-
 <script>
+
+
     let stationData = []; // Store stations here to avoid multiple fetches
     let selectedCountryPath = localStorage.getItem('selectedCountryPath') || "germanyRadioList.json";
     //let selectedCountryPath = '';
@@ -1325,58 +1326,24 @@ function setupPaginationButtons(data, totalPages) {
 
 
 
-// Function: Fetch all stations in chunks if full dataset fails
-async function fetchStationsInChunks(baseUrl, chunkSize = 1000, retries = 3, delay = 3000) {
-    let allStations = [];
-    let offset = 0;
-
-    while (true) {
-        const url = `${baseUrl}&offset=${offset}&limit=${chunkSize}`;
-        try {
-            console.log(`Fetching chunk: Offset = ${offset}, Limit = ${chunkSize}`);
-            const chunk = await fetchWithRetry(url, retries, delay);
-            if (chunk.length === 0) {
-                console.log('No more data to fetch.');
-                break;
-            }
-            allStations = allStations.concat(chunk);
-            offset += chunkSize;
-        } catch (error) {
-            console.error(`Failed to fetch chunk at offset ${offset}:`, error);
-            break; // Exit the loop on error
-        }
-    }
-
-    return allStations;
-}
-
-// Main function: Fetch radio stations
 async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 3000, chunkSize = 1000) {
     const sanitizedCountryPath = encodeURIComponent(countryPath);
     const baseUrl2 = `${document.querySelector('meta[name="api-base-url"]').content}/query_stations.php?path=${sanitizedCountryPath}`;
 
     try {
-        console.log(`Fetching full dataset for country path: ${countryPath}`);
-        // Attempt to fetch the entire dataset
-        const stationData = await fetchWithRetry(baseUrl2, retries, delay);
-        
-        console.log('Full dataset fetched successfully.');
+        // Attempt to fetch the entire dataset at once
+        stationData = await fetchWithRetry(baseUrl2, retries, delay);
+
+        // If data is successfully fetched, display it
         displayStations(stationData);
     } catch (error) {
-        console.warn('Failed to fetch entire dataset, switching to chunked loading...', error);
+        console.warn('Failed to fetch entire dataset, switching to chunked loading...');
         
-        // If fetching full dataset fails, fallback to chunked loading
-        const stationData = await fetchStationsInChunks(baseUrl2, chunkSize, retries, delay);
-        
-        if (stationData && stationData.length > 0) {
-            console.log('Chunked loading completed successfully.');
-            displayStations(stationData);
-        } else {
-            console.error('Failed to fetch station data using chunked loading.');
-        }
+        // If fetching the entire dataset fails, use chunked loading
+        stationData = await fetchStationsInChunks(baseUrl2, chunkSize);
+        displayStations(stationData);
     }
 }
-
 
     
 
@@ -1455,15 +1422,8 @@ function displayStations(stations) {
         imgElement.onload = () => {
             clearTimeout(loadTimeout);
             stationItem.addEventListener('click', () => {
-               // playButton.innerHTML = '▶';  // Play icon
-                //initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
-                 localStorage.setItem('name', '${station.name}');
-                 localStorage.setItem('img', '${imgElement.src}');
-                 localStorage.setItem('location', '${station.location}');
-                 localStorage.setItem('url', '${station.url}');
-                 localStorage.setItem('bit', '${station.bit}');
-                 localStorage.setItem('selectedCountryPath', '${selectedCountryPath}');
-                 window.location.href = 'play.html/${station.name}';
+                playButton.innerHTML = '▶';  // Play icon
+                initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
             });
         };
 
@@ -1471,15 +1431,8 @@ function displayStations(stations) {
             clearTimeout(loadTimeout);
             imgElement.src = 'mast.jpg';
             stationItem.addEventListener('click', () => {
-                //playButton.innerHTML = '▶';  // Play icon
-                //initAudioPlayer(station.url, 'mast.jpg', station.name, station.bit, station.location);
-                 localStorage.setItem('name', '${station.name}');
-                 localStorage.setItem('img', '${imgElement.src}');
-                 localStorage.setItem('location', '${station.location}');
-                 localStorage.setItem('url', '${station.url}');
-                 localStorage.setItem('bit', '${station.bit}');
-                 localStorage.setItem('selectedCountryPath', '${selectedCountryPath}');
-                 window.location.href = 'play.html/${station.name}';
+                playButton.innerHTML = '▶';  // Play icon
+                initAudioPlayer(station.url, 'mast.jpg', station.name, station.bit, station.location);
             });
         };
 
@@ -1856,6 +1809,9 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
         loadCountries();
         fetchStations();
     };
+
+
+    
 </script>
 <!-- Include HLS.js for .m3u8 support -->
 <script src="https://cdn.jsdelivr.net/npm/howler"></script>
