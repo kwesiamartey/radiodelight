@@ -1006,7 +1006,7 @@ text-decoration: none;
             <div style="background-color:rgb(77, 100, 111); display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;margin-bottom: 21px;">
                 <span id="breadcrumbs" style="width:100%;padding:4px;margin:0px;font-size:13px;color:#fff;display:none;">Radio Station |  </span>
             </div>
-            <h1 class="countryTitle" style="display: none;">Live Germany Radio Station Online</h1>
+            <h1 class="countryTitle" style="display: none;">Live Austria Radio Station Online</h1>
             <div class="row">
                 <div class="col-md-9">
 
@@ -1121,7 +1121,7 @@ text-decoration: none;
 
 <script>
     let stationData = []; // Store stations here to avoid multiple fetches
-    let selectedCountryPath = localStorage.getItem('selectedCountryPath') || "germanyRadioList.json";
+    let selectedCountryPath = localStorage.getItem('selectedCountryPath') || "AustriaRadioList.json";
 
     //let selectedCountryPath = '';
    const audio = new Audio();
@@ -1136,7 +1136,7 @@ text-decoration: none;
     let isPlaying = false; // Track the play/pause state
     let stationDetailsGlobal = "";
 
-    const selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || (country && country.name) || "Germany";
+    const selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || (country && country.name) || "Austria";
 
 // Update the .countryTitle element if it exists
     const countryTitleElement = document.querySelector('.countryTitle');
