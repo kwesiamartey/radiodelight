@@ -1325,7 +1325,7 @@ function setupPaginationButtons(data, totalPages) {
 
 
 
-async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 3000, chunkSize = 1000) {
+async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 5000, chunkSize = 1000) {
     const sanitizedCountryPath = encodeURIComponent(countryPath);
     const baseUrl2 = `https://lornamobileappsdev.uk/mobileAppsWebsite/query_stations.php?path=${sanitizedCountryPath}`;
 
@@ -1374,22 +1374,30 @@ async function fetchStationsInChunks(baseUrl, chunkSize) {
     
 
 // Function to fetch data with retries
-async function fetchWithRetry(url, retries, delay) {
+async function fetchWithRetry(url, retries = 3, delay = 3000) {
     for (let attempt = 0; attempt < retries; attempt++) {
         try {
+            console.log(`Fetching attempt ${attempt + 1} for URL: ${url}`);
             const response = await fetch(url);
-            if (!response.ok) throw new Error('Network response was not ok');
+            console.log('Response status:', response.status);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('API Error Response:', errorText);
+                throw new Error(`Fetch failed with status ${response.status}: ${errorText}`);
+            }
+
             const data = await response.json();
-            
-            // Filter out stations with the name "Local Fm"
+            console.log('Fetched Data:', data);
             return data.filter(station => station.name !== 'Local Fm');
         } catch (error) {
-            console.warn(`Attempt ${attempt + 1} failed. Retrying...`);
+            console.warn(`Attempt ${attempt + 1} failed:`, error.message);
             if (attempt < retries - 1) await new Promise(res => setTimeout(res, delay));
-            else throw error; // Throw error if all retries fail
+            else throw error; // Rethrow after last attempt
         }
     }
 }
+
 
 // Function for chunk loading
 function filterStations() {
