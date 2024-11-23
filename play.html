@@ -359,10 +359,6 @@
     console.log({ name, url, bit, location1, img, selectedCountryPath }); // remove on production
     // Set initial volume (based on the slider's default value)
     audio.volume = volumeControl.value;
-      stationLogo.src = image;
-    stationLogo.style.display = 'block';
-    breadcrumbs.textContent = `Radio station | ${country} | ${stationName}`;
-    stationDetailsGlobal = `${stationName} (${country}) (web)`;
 
     // Update audio volume when the slider is adjusted
     volumeControl.addEventListener('input', function () {
@@ -758,10 +754,13 @@ function createPaginationControls(totalStations, totalPages) {
         });
     }
 }
-//initAudioPlayer(url, img, name, bit, location1)
+initAudioPlayer(url, img, name, bit, location1)
 
 function initAudioPlayer(url, image, stationName, bit, country) {
-
+    stationLogo.src = image;
+    stationLogo.style.display = 'block';
+    breadcrumbs.textContent = `Radio station | ${country} | ${stationName}`;
+    stationDetailsGlobal = `${stationName} (${country}) (web)`;
 
     // Handle image load errors
     stationLogo.onerror = () => handleImageError(stationLogo, stationName);
