@@ -1421,8 +1421,14 @@ function displayStations(stations) {
         imgElement.onload = () => {
             clearTimeout(loadTimeout);
             stationItem.addEventListener('click', () => {
-                playButton.innerHTML = '▶';  // Play icon
-                initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
+               // playButton.innerHTML = '▶';  // Play icon
+                //initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
+                 localStorage.setItem('name', '${station.name}');
+                 localStorage.setItem('img', '${imgElement.src}');
+                 localStorage.setItem('location', '${station.location}');
+                 localStorage.setItem('url', '${station.url}');
+                 localStorage.setItem('bit', '${station.bit}');
+                 window.location.href = 'play.html/${station.name}';
             });
         };
 
@@ -1430,8 +1436,14 @@ function displayStations(stations) {
             clearTimeout(loadTimeout);
             imgElement.src = 'mast.jpg';
             stationItem.addEventListener('click', () => {
-                playButton.innerHTML = '▶';  // Play icon
-                initAudioPlayer(station.url, 'mast.jpg', station.name, station.bit, station.location);
+                //playButton.innerHTML = '▶';  // Play icon
+                //initAudioPlayer(station.url, 'mast.jpg', station.name, station.bit, station.location);
+                 localStorage.setItem('name', '${station.name}');
+                 localStorage.setItem('img', '${imgElement.src}');
+                 localStorage.setItem('location', '${station.location}');
+                 localStorage.setItem('url', '${station.url}');
+                 localStorage.setItem('bit', '${station.bit}');
+                 window.location.href = 'play.html/${station.name}';
             });
         };
 
