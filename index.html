@@ -1231,15 +1231,11 @@ function renderCountryList(data, page, totalPages) {
             selectedCountryPath = country.url;
             fetchStations(selectedCountryPath);
            // Retrieve the selected country name from localStorage or use a fallback
-            const selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || (country && country.name) || "Unknown";
+
 
             // Update the .countryTitle element if it exists
             const countryTitleElement = document.querySelector('.countryTitle');
-            if (countryTitleElement) {
-                countryTitleElement.textContent = `Live ${selectedCountryPathName} Radio Station Online`;
-            } else {
-                console.warn('.countryTitle element not found in the DOM.');
-            }
+            countryTitleElement.textContent = `Live ${country.name} Radio Station Online`;
         });
         countryList.appendChild(listItem);
     }
