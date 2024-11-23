@@ -1325,22 +1325,6 @@ function setupPaginationButtons(data, totalPages) {
 }
 
 
-
-let stationData = []; // Store stations here to avoid multiple fetches
-let selectedCountryPath = localStorage.getItem('selectedCountryPath') || "germanyRadioList.json";
-// let selectedCountryPath = '';  // Optionally use an empty string for testing
-const audio = new Audio();
-let hls;
-let currentPage = 1;
-const itemsPerPage = 48;
-let currentPage1 = 1;
-const itemsPerPage1 = 40; // Number of countries per page
-const progress = document.getElementById('progress');
-const playButton = document.querySelector('.play-button');
-const volumeControl = document.getElementById('volumeControl');
-let isPlaying = false; // Track the play/pause state
-let stationDetailsGlobal = "";
-
 async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 3000, chunkSize = 1000) {
     const sanitizedCountryPath = encodeURIComponent(countryPath);
     const baseUrl2 = `${document.querySelector('meta[name="api-base-url"]').content}/query_stations.php?path=${sanitizedCountryPath}`;
