@@ -129,7 +129,7 @@
 
     <!-- Favicons -->
         <link rel="icon" href="https://radiosdelight.com/icon.webp" sizes="any">
-        <link rel="icon" type="https://radiosdelight.com/icon.webp" href="/assets/images/favicon-32" sizes="32x32">
+        <link rel="icon" type="https://radiosdelight.com/icon.webp" href="https://radiosdelight.com/icon.webp" sizes="32x32">
         <link rel="apple-touch-icon" sizes="180x180" href="https://radiosdelight.com/icon.webp">
         <link rel="mask-icon" href="https://radiosdelight.com/icon.webp" >
         <link rel="manifest" href="manifest.json">
@@ -754,7 +754,7 @@ function createPaginationControls(totalStations, totalPages) {
         });
     }
 }
-initAudioPlayer(url, img, name, bit, location1)
+//initAudioPlayer(url, img, name, bit, location1)
 
 function initAudioPlayer(url, image, stationName, bit, country) {
     stationLogo.src = image;
@@ -812,6 +812,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                      const stationDetails = `${stationName} (${country}) (Mobile)`;
                      sendEmailNotification(stationDetails, url, 'success')
                 } else {
+                    showSpinner(false); // Hide the spinner on error
                     showCustomError('Error, Try again later.');
                     const stationDetails = `${stationName} (${country}) (Mobile)`;
                     handlePlaybackError(stationDetails, url, 'error')
@@ -834,8 +835,6 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                 handlePlaybackError(stationDetails, url, 'error')
             });
 
-    
-   
 }
 
    // Show or hide the spinner
