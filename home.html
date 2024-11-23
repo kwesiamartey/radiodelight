@@ -1220,8 +1220,16 @@ function renderCountryList(data, page, totalPages) {
             document.querySelector('.footer-div-wraaper').style.display = 'none';
             selectedCountryPath = country.url;
             fetchStations(selectedCountryPath);
-            let selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || country.name;
-            document.querySelector('.countryTitle').textContent = `Live ${selectedCountryPathName} Radio Station Online`;
+           // Retrieve the selected country name from localStorage or use a fallback
+            const selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || (country && country.name) || "Unknown";
+
+            // Update the .countryTitle element if it exists
+            const countryTitleElement = document.querySelector('.countryTitle');
+            if (countryTitleElement) {
+                countryTitleElement.textContent = `Live ${selectedCountryPathName} Radio Station Online`;
+            } else {
+                console.warn('.countryTitle element not found in the DOM.');
+            }
         });
         countryList.appendChild(listItem);
     }
