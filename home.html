@@ -1326,6 +1326,21 @@ function setupPaginationButtons(data, totalPages) {
 
 
 
+let stationData = []; // Store stations here to avoid multiple fetches
+let selectedCountryPath = localStorage.getItem('selectedCountryPath') || "germanyRadioList.json";
+// let selectedCountryPath = '';  // Optionally use an empty string for testing
+const audio = new Audio();
+let hls;
+let currentPage = 1;
+const itemsPerPage = 48;
+let currentPage1 = 1;
+const itemsPerPage1 = 40; // Number of countries per page
+const progress = document.getElementById('progress');
+const playButton = document.querySelector('.play-button');
+const volumeControl = document.getElementById('volumeControl');
+let isPlaying = false; // Track the play/pause state
+let stationDetailsGlobal = "";
+
 async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 3000, chunkSize = 1000) {
     const sanitizedCountryPath = encodeURIComponent(countryPath);
     const baseUrl2 = `${document.querySelector('meta[name="api-base-url"]').content}/query_stations.php?path=${sanitizedCountryPath}`;
@@ -1335,17 +1350,51 @@ async function fetchStations(countryPath = selectedCountryPath, retries = 3, del
         stationData = await fetchWithRetry(baseUrl2, retries, delay);
 
         // If data is successfully fetched, display it
-        displayStations(stationData);
+        if (stationData.length > 0) {
+            displayStations(stationData);
+        } else {
+            console.warn('No stations found in the dataset.');
+        }
     } catch (error) {
         console.warn('Failed to fetch entire dataset, switching to chunked loading...');
         
         // If fetching the entire dataset fails, use chunked loading
         stationData = await fetchStationsInChunks(baseUrl2, chunkSize);
-        displayStations(stationData);
+        if (stationData.length > 0) {
+            displayStations(stationData);
+        } else {
+            console.warn('No stations found in chunked data.');
+        }
     }
 }
 
-    
+async function fetchStationsInChunks(baseUrl, chunkSize) {
+    let allStations = [];
+    let offset = 0;
+
+    while (true) {
+        const url = `${baseUrl}&offset=${offset}&limit=${chunkSize}`;
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Network response was not ok');
+
+            const chunk = await response.json();
+            
+            // Break the loop if no more data
+            if (chunk.length === 0) break;
+
+            allStations = allStations.concat(chunk);
+            offset += chunkSize;
+        } catch (error) {
+            console.error(`Error fetching chunk at offset ${offset}:`, error);
+            break; // Stop loading chunks on error
+        }
+    }
+
+    // Update stationData after chunked fetch
+    const filteredStations = allStations.filter(station => station.name !== 'Local Fm');
+    return filteredStations;
+}
 
 // Function to fetch data with retries
 async function fetchWithRetry(url, retries, delay) {
@@ -1375,8 +1424,12 @@ function filterStations() {
     displayStations(filteredStations);
 }
 
-
 function displayStations(stations) {
+    if (!stations || stations.length === 0) {
+        console.warn('No stations available to display.');
+        return; // Exit if no stations
+    }
+
     document.getElementById('footerr').style.display = 'block';
     document.getElementById('countryTitle').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'block';
@@ -1398,11 +1451,16 @@ function displayStations(stations) {
     const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
 
     stationsToDisplay.forEach(station => {
-        const stationItem = document.createElement('div');
-        stationItem.className = 'station-item';
+        if (!station.name) {
+            console.warn('Station without name:', station);
+            return; // Skip invalid stations
+        }
 
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-        const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name); 
+        const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name);
+
+        const stationItem = document.createElement('div');
+        stationItem.className = 'station-item';
 
         stationItem.innerHTML = `
             <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: white;justify-content:center;align-content: center;">
@@ -1441,8 +1499,6 @@ function displayStations(stations) {
 
     createPaginationControls(stations.length, totalPages);
 }
-
-
 
 function createPaginationControls(totalStations, totalPages) {
     const paginationControls = document.getElementById('paginationControls');
