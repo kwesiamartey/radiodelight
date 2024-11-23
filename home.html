@@ -1345,27 +1345,32 @@ async function fetchStations(countryPath = selectedCountryPath, retries = 3, del
 }
 
 
-    async function fetchStationsInChunks(url, chunkSize) {
+async function fetchStationsInChunks(url, chunkSize) {
     let offset = 0;
     let hasMoreData = true;
     let allStations = [];
 
     try {
         while (hasMoreData) {
-            const response = await fetch(`${url}&offset=${offset}&limit=${chunkSize}`);
-            if (!response.ok) throw new Error('Network response was not ok');
+            try {
+                const response = await fetch(`${url}&offset=${offset}&limit=${chunkSize}`);
+                if (!response.ok) throw new Error('Network response was not ok');
 
-            const data = await response.json();
+                const data = await response.json();
 
-            // Filter stations based on both conditions
-            const filteredData = data.filter(station => station.name !== 'Local Fm' && station.added !== 1);
-            allStations = allStations.concat(filteredData);
+                // Filter stations based on conditions
+                const filteredData = data.filter(station => station.name !== 'Local Fm' && station.added !== 1);
+                allStations = allStations.concat(filteredData);
 
-            // Check if there is more data to load
-            if (data.length < chunkSize) {
-                hasMoreData = false;
-            } else {
-                offset += chunkSize;
+                // Determine if more data is available
+                if (data.length < chunkSize) {
+                    hasMoreData = false;
+                } else {
+                    offset += chunkSize;
+                }
+            } catch (chunkError) {
+                console.warn(`Chunk at offset ${offset} failed, skipping...`, chunkError);
+                offset += chunkSize; // Skip to the next chunk
             }
         }
 
@@ -1375,7 +1380,6 @@ async function fetchStations(countryPath = selectedCountryPath, retries = 3, del
         throw error;
     }
 }
-
 
     
 
