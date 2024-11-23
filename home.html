@@ -1220,7 +1220,7 @@ function renderCountryList(data, page, totalPages) {
             document.querySelector('.footer-div-wraaper').style.display = 'none';
             selectedCountryPath = country.url;
             fetchStations(selectedCountryPath);
-            let selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || ${country.name};
+            let selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || country.name;
             document.querySelector('.countryTitle').textContent = `Live ${selectedCountryPathName} Radio Station Online`;
         });
         countryList.appendChild(listItem);
