@@ -1120,6 +1120,13 @@
       
 
 <script>
+    // Retrieve data from localStorage
+    const name = localStorage.getItem('name');
+    const url = localStorage.getItem('url');
+    const bit = localStorage.getItem('bit');
+    const location = localStorage.getItem('location');
+    const img = localStorage.getItem('img');
+    const selectedCountryPath = localStorage.getItem('selectedCountryPath');
     let stationData = []; // Store stations here to avoid multiple fetches
     let selectedCountryPath = localStorage.getItem('selectedCountryPath') || "germanyRadioList.json";
     //let selectedCountryPath = '';
@@ -1429,9 +1436,8 @@ function displayStations(stations) {
         imgElement.onload = () => {
             clearTimeout(loadTimeout);
             stationItem.addEventListener('click', () => {
-                playButton.innerHTML = '▶';  // Play icon
-                initAudioPlayer(localStorage.getItem('url'), localStorage.getItem('img'), localStorage.getItem('name'), localStorage.getItem('bit'), localStorage.getItem('location'));
-            });
+            playButton.innerHTML = '▶';  // Play icon
+            initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);            });
         };
 
         imgElement.onerror = () => {
@@ -1439,7 +1445,7 @@ function displayStations(stations) {
             imgElement.src = 'mast.jpg';
             stationItem.addEventListener('click', () => {
                 playButton.innerHTML = '▶';  // Play icon
-                initAudioPlayer(localStorage.getItem('url'), localStorage.getItem('img'), localStorage.getItem('name'), localStorage.getItem('bit'), localStorage.getItem('location'));
+                initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
             });
         };
 
@@ -1509,7 +1515,7 @@ function createPaginationControls(totalStations, totalPages) {
         });
     }
 }
-
+initAudioPlayer(url, img, name, bit, location)
 
 function initAudioPlayer(url, image, stationName, bit, country) {
     stationLogo.src = image;
