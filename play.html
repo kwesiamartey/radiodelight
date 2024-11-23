@@ -1422,7 +1422,7 @@ function displayStations(stations) {
             clearTimeout(loadTimeout);
             stationItem.addEventListener('click', () => {
                 playButton.innerHTML = '▶';  // Play icon
-                initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
+                initAudioPlayer(localStorage.getItem('url'), localStorage.getItem('img'), localStorage.getItem('name'), localStorage.getItem('bit'), localStorage.getItem('location'));
             });
         };
 
@@ -1431,7 +1431,7 @@ function displayStations(stations) {
             imgElement.src = 'mast.jpg';
             stationItem.addEventListener('click', () => {
                 playButton.innerHTML = '▶';  // Play icon
-                initAudioPlayer(station.url, 'mast.jpg', station.name, station.bit, station.location);
+                initAudioPlayer(localStorage.getItem('url'), localStorage.getItem('img'), localStorage.getItem('name'), localStorage.getItem('bit'), localStorage.getItem('location'));
             });
         };
 
