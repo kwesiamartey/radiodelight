@@ -1126,9 +1126,9 @@
     const bit = localStorage.getItem('bit');
     const location = localStorage.getItem('location');
     const img = localStorage.getItem('img');
-    const selectedCountryPath = localStorage.getItem('selectedCountryPath');
+    const selectedCountryPath1 = localStorage.getItem('selectedCountryPath');
     let stationData = []; // Store stations here to avoid multiple fetches
-    let selectedCountryPath = localStorage.getItem('selectedCountryPath') || "germanyRadioList.json";
+    const selectedCountryPath = selectedCountryPath1 || "germanyRadioList.json";
     //let selectedCountryPath = '';
    const audio = new Audio();
     let hls;
