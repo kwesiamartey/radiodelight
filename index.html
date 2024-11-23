@@ -1136,6 +1136,16 @@ text-decoration: none;
     let isPlaying = false; // Track the play/pause state
     let stationDetailsGlobal = "";
 
+    const selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || (country && country.name) || "Germany";
+
+// Update the .countryTitle element if it exists
+    const countryTitleElement = document.querySelector('.countryTitle');
+    if (countryTitleElement) {
+        countryTitleElement.textContent = `Live ${selectedCountryPathName} Radio Station Online`;
+    } else {
+        console.warn('.countryTitle element not found in the DOM.');
+    }
+
     // Set initial volume (based on the slider's default value)
     audio.volume = volumeControl.value;
 
