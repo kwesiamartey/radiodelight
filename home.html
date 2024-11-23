@@ -980,7 +980,7 @@
   
   <!-- Additional info section under player-header -->
   <div id="foo" style=" display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;">
-
+                 <div class="progress-ring2" id="progress-loading"></div>
   </div> 
        <!-- Centered "mmi" Element -->
 </div>
@@ -1416,6 +1416,7 @@ function displayStations(stations) {
     document.querySelector('.countryTitle').style.display = 'block';
     document.getElementById('downloadTitle').style.display = 'block';
     document.getElementById('country_list_wrapper').style.display = 'block';
+    
 
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.getElementById('paginationControls');
@@ -1472,6 +1473,8 @@ function displayStations(stations) {
 
         stationList.appendChild(stationItem);
     });
+
+    document.getElementById('progress-loading').style.display = 'none';
 
     createPaginationControls(stations.length, totalPages);
 }
