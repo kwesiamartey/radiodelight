@@ -425,7 +425,7 @@ function renderCountryList(data, page, totalPages) {
     for (let i = startIndex; i < endIndex; i++) {
         const country = data[i];
         const listItem = document.createElement('li');
-        listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag" style="width:50px;height:45px;padding:2px 4px;">`;
+        listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag" style="width:50px;height:45px;">`;
         listItem.addEventListener('mouseenter', (event) => showTooltip(event, country.name));
         listItem.addEventListener('mouseleave', hideTooltip);
         listItem.addEventListener('click', () => {
