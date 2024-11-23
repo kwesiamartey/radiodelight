@@ -1478,12 +1478,12 @@ function displayStations(stations) {
         stationList.appendChild(stationItem);
     });
 
-    createPaginationControls(stations.length, totalPages);
+   // createPaginationControls(stations.length, totalPages);
 }
 
 
 
-function createPaginationControls(totalStations, totalPages) {
+/*function createPaginationControls(totalStations, totalPages) {
     const paginationControls = document.getElementById('paginationControls');
     paginationControls.innerHTML = ''; // Clear previous controls
 
@@ -1540,7 +1540,7 @@ function createPaginationControls(totalStations, totalPages) {
             displayStations(stationData);
         });
     }
-}
+}*/
 initAudioPlayer(url, img, name, bit, location1)
 
 function initAudioPlayer(url, image, stationName, bit, country) {
