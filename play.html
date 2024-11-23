@@ -1124,7 +1124,7 @@
     const name = localStorage.getItem('name');
     const url = localStorage.getItem('url');
     const bit = localStorage.getItem('bit');
-    const location = localStorage.getItem('location');
+    const location1 = localStorage.getItem('location');
     const img = localStorage.getItem('img');
     const selectedCountryPath1 = localStorage.getItem('selectedCountryPath');
     let stationData = []; // Store stations here to avoid multiple fetches
@@ -1153,7 +1153,7 @@
     document.querySelector('.countryTitle').style.display = 'none';
      document.querySelector('.playing-station-wrap').style.display = 'block';
     document.querySelector('.footer-div-wraaper').style.display = 'block';
-    console.log({ name, url, bit, location, img }); // remove on production
+    console.log({ name, url, bit, location1, img }); // remove on production
     // Set initial volume (based on the slider's default value)
     audio.volume = volumeControl.value;
 
@@ -1515,7 +1515,7 @@ function createPaginationControls(totalStations, totalPages) {
         });
     }
 }
-initAudioPlayer(url, img, name, bit, location)
+initAudioPlayer(url, img, name, bit, location1)
 
 function initAudioPlayer(url, image, stationName, bit, country) {
     stationLogo.src = image;
