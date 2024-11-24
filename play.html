@@ -1036,14 +1036,14 @@ function createStationLogoCanvas(stationName) {
             const stationName = sanitizeInput(document.getElementById('stationName').value.trim());
             const title = sanitizeInput(document.getElementById('title').value.trim());
             const message = sanitizeInput(document.getElementById('message').value.trim());
-
+            const commentDetails = `${title}<br>${message}`;
             if (!stationName || !title || !message) {
                 alert("All fields are required!");
                 return false;
             }
 
             // Call email notification function with sanitized inputs
-            sendEmailNotification(stationName, title, message);
+            sendEmailNotification(name, title, "success");
              showToast("Message sent successfully!");
             // Clear the form after submission
             document.getElementById('emailForm').reset();
