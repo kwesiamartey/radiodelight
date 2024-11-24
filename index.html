@@ -165,6 +165,204 @@
          flex-direction: column;
          margin-top: 50px; /* Match the height of #top-header */
      }
+    /* Layout */
+.container {
+    width: 75%;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content {
+    flex: 1; /* Allow content to fill remaining space */
+}
+
+/* Header Styles */
+#top-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+#web_title h4 {
+    margin: 8px 20px 0 0;
+    width: 90px;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+}
+
+/* Tooltip */
+.tooltip {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    font-size: 14px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 1000;
+}
+
+/* Progress Ring */
+.progress-ring2 {
+    width: 43px;
+    height: 43px;
+    border: 6px solid #ddd;
+    border-radius: 50%;
+    border-top-color: #007bff;
+    animation: spin 1s linear infinite;
+    display: none;
+    margin: 20px auto;
+}
+
+/* Keyframes */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Player Styles */
+.player-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+    background-color: #142229;
+    color: white;
+}
+
+.volume-slider {
+    margin: 10px 0;
+    width: 30%;
+}
+
+.play-control {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.play-button {
+    width: 70px;
+    height: 70px;
+    border: none;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.progress-ring {
+    position: absolute;
+    width: 73px;
+    height: 73px;
+    border: 6px solid #ddd;
+    border-radius: 50%;
+    border-top-color: #007bff;
+    animation: spin 1s linear infinite;
+    display: none;
+}
+
+/* Footer */
+.footer-div-wrapper {
+    width: 100%;
+    margin: 18px auto 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+    .container {
+        width: 100%;
+    }
+
+    .countryTitle {
+        font-size: 1.3rem;
+    }
+
+    .station-list {
+        padding: 30px;
+        height: calc(100vh - 160px);
+        overflow-y: auto;
+    }
+
+    .play-button {
+        width: 60px;
+        height: 60px;
+        font-size: 18px;
+    }
+}
+
+@media only screen and (min-width: 435px) and (max-width: 600px) {
+    .container {
+        width: 100%;
+    }
+
+    .station-list {
+        padding: 30px;
+        height: calc(100vh - 160px);
+        overflow-y: auto;
+    }
+}
 </style>
 
 </head>
