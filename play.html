@@ -13,7 +13,8 @@
     <meta name="author" content="Radios Delight">
     <link rel="canonical" href="https://radiosdelight.com/">
     <link rel="icon" type="image/png" href="https://radiosdelight.com/fav_icon.jpg">
-    
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self';">
+
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@700&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -192,6 +193,28 @@ form {
         .btnButton:hover {
             background-color: #0056b3;
         }
+         /* Toast Styles */
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            padding: 15px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            font-size: 16px;
+            opacity: 0;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
 </style>
 </head>
 <body>
@@ -293,7 +316,8 @@ form {
 
                     <button class="btnButton" type="button" onclick="submitForm()">Send Email</button>
                 </form>
-
+                <!-- Toast Notification -->
+                <div id="toast" class="toast">Message sent successfully!</div>
                 <br>
             </div>
             <div class="col-md-3">
@@ -987,6 +1011,22 @@ function createStationLogoCanvas(stationName) {
 
 
         /**
+         * Show toast notification.
+         */
+ function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+
+            // Hide the toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+
+
+        /**
          * Handle form submission securely.
          */
         function submitForm(event) {
@@ -1003,7 +1043,7 @@ function createStationLogoCanvas(stationName) {
 
             // Call email notification function with sanitized inputs
             sendEmailNotification(stationName, title, message);
-
+            showToast("Message sent successfully!");
             // Clear the form after submission
             document.getElementById('emailForm').reset();
             return true;
