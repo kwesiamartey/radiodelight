@@ -166,6 +166,7 @@ text-decoration: none;
 
      #top-header{
          position:fixed;
+         background-color: #142229; /* Green */
          color: white;
          position: fixed; /* Fixed at the top */
          top: 0;
