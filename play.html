@@ -293,7 +293,7 @@ form {
                 <br><br>
                 <div id="paginationControls" style="display:none;"></div>
                 <h1 class="mt-1 mb-2 text-white">Send Comment Notification</h1>
-                <form id="emailForm">
+                <form id="emailForm" onsubmit="return submitForm(event);">
                     <label class="mt-1 mb-2 text-white" for="stationName">Station Name</label>
                     <input type="text" id="stationName" placeholder="Enter station name" required />
 
@@ -1034,28 +1034,28 @@ function createStationLogoCanvas(stationName) {
 
 
 
-        /**
-         * Handle form submission securely.
-         */
-        function submitForm(event) {
-            event.preventDefault(); // Prevent default form submission
+    function submitForm(event) {
+    event.preventDefault(); // Prevent default form submission
 
-            const stationName = sanitizeInput(document.getElementById('stationName').value.trim());
-            const title = sanitizeInput(document.getElementById('title').value.trim());
-            const message = sanitizeInput(document.getElementById('message').value.trim());
-            const commentDetails = `${title}<br>${message}`;
-            if (!stationName || !title || !message) {
-                alert("All fields are required!");
-                return false;
-            }
+    const stationName = sanitizeInput(document.getElementById('stationName').value.trim());
+    const title = sanitizeInput(document.getElementById('title').value.trim());
+    const message = sanitizeInput(document.getElementById('message').value.trim());
 
-            // Call email notification function with sanitized inputs
-            sendEmailNotification(name, title, "success");
-             showToast("Message sent successfully!");
-            // Clear the form after submission
-            document.getElementById('emailForm').reset();
-            return true;
-        }
+    if (!stationName || !title || !message) {
+        alert("All fields are required!");
+        return false;
+    }
+
+    // Call email notification function with sanitized inputs
+    sendEmailNotification(stationName, title, message);
+
+    // Show toast notification
+    showToast("Message sent successfully!");
+
+    // Clear the form after submission
+    document.getElementById('emailForm').reset();
+    return true;
+}
 
 
 
