@@ -163,6 +163,34 @@
          flex-direction: column;
          margin-top: 50px; /* Match the height of #top-header */
      }
+
+            form {
+            max-width: 400px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
 </style>
 </head>
 <body>
@@ -957,21 +985,27 @@ function createStationLogoCanvas(stationName) {
 
 
 
-     function submitForm() {
-            const stationName = document.getElementById('stationName').value.trim();
-            const title = document.getElementById('title').value.trim();
-            const message = document.getElementById('message').value.trim();
+        /**
+         * Handle form submission securely.
+         */
+        function submitForm(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const stationName = sanitizeInput(document.getElementById('stationName').value.trim());
+            const title = sanitizeInput(document.getElementById('title').value.trim());
+            const message = sanitizeInput(document.getElementById('message').value.trim());
 
             if (!stationName || !title || !message) {
                 alert("All fields are required!");
-                return;
+                return false;
             }
 
-            // Call the function with input values
+            // Call email notification function with sanitized inputs
             sendEmailNotification(stationName, title, message);
 
-            // Clear form after submission
+            // Clear the form after submission
             document.getElementById('emailForm').reset();
+            return true;
         }
 
 
