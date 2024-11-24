@@ -130,8 +130,8 @@
 
     <!-- Favicons -->
     <link rel="icon" href="https://radiosdelight.com/fav_icon.jpg" sizes="any">
-    <link rel="icon" type="https://radiosdelight.com/fav_icon.jpg" href="https://radiosdelight.com/fav_icon.jpg" sizes="32x32">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://radiosdelight.com/fav_icon.jpg">
+    <link rel="icon" type="https://radiosdelight.com/fav_icon.jpg" href="https://radiosdelight.com/" sizes="32x32">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://radiosdelight.com/">
     <link rel="mask-icon" href="https://radiosdelight.com/fav_icon.jpg" >
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/style.css">
@@ -151,38 +151,25 @@
         }
     </script>
 
-    <style>
-
-        html, body {
-             margin: 0;
-             padding: 0;
-             font-family: "Open Sans", sans-serif;
-             background-color: #1c313a;
-             overflow-x: hidden; /* Prevent horizontal scrolling */
-             display: flex;
-             justify-content: center; /* Center horizontally */
-             align-items: center;     /* Center vertically if needed */
-             flex-direction: column;
-             margin-top: 50px; /* Match the height of #top-header */
-         }
-    </style>
 
 </head>
 <body>
 
 <div id="top-header" style="display: flex; flex-direction: column;">
-    <div class="player-header">
-        <!-- Menu icon (if needed) -->
-        <!-- <span class="menu-icon" onclick="toggleMenu()">☰</span> -->
+    <div class="container">
+        <div class="player-header">
+            <!-- Menu icon (if needed) -->
+            <!-- <span class="menu-icon" onclick="toggleMenu()">☰</span> -->
 
-        <!-- Logo and Title -->
-        <a href="index.html">
-            <img id="Logo" src="https://radiosdelight.com/fav_icon.jpg" alt="Station Logo">
-        </a>
-        <h3 id="web_title">Radios</h3>
+            <!-- Logo and Title -->
+            <a href="index.html">
+                <img id="Logo" src="https://radiosdelight.com/fav_icon.jpg" alt="Station Logo">
+            </a>
+            <h3 id="web_title">Radios</h3>
 
-        <!-- Search bar -->
-        <input type="text" id="searchInput" placeholder="Search stations" oninput="filterStations()">
+            <!-- Search bar -->
+            <input type="text" id="searchInput" placeholder="Search stations" oninput="filterStations()">
+        </div>
     </div>
 
     <!-- Additional info section under player-header -->
@@ -343,7 +330,7 @@
     let isPlaying = false; // Track the play/pause state
     let stationDetailsGlobal = "";
 
-    const selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || (country && country.name) || "Austria";
+    const selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || "Austria";
 
 // Update the .countryTitle element if it exists
     const countryTitleElement = document.querySelector('.countryTitle');
