@@ -1011,6 +1011,24 @@ function createStationLogoCanvas(stationName) {
 
 
 
+     /**
+         * Sanitize user input by escaping special characters.
+         */
+        function sanitizeInput(input) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#x27;',
+                "/": '&#x2F;',
+            };
+            return input.replace(/[&<>"'/]/g, (char) => map[char]);
+        }
+
+
+
+
           /**
          * Show toast notification.
          */
