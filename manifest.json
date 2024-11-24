@@ -3,12 +3,12 @@
   "name": "World-wide Radio Stations Online",
  "icons": [
     {
-      "src": "https://radiosdelight.com/favIcon.jpg",
+      "src": "https://radiosdelight.com/fav_icon.jpg",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://radiosdelight.com/favIcon.jpg",
+      "src": "https://radiosdelight.com/fav_icon.jpg",
       "sizes": "512x512",
       "type": "image/png"
     }
