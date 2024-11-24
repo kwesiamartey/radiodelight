@@ -1011,22 +1011,6 @@ function createStationLogoCanvas(stationName) {
 
 
         /**
-         * Show toast notification.
-         */
- function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('show');
-
-            // Hide the toast after 3 seconds
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
-
-
-        /**
          * Handle form submission securely.
          */
         function submitForm(event) {
@@ -1043,7 +1027,7 @@ function createStationLogoCanvas(stationName) {
 
             // Call email notification function with sanitized inputs
             sendEmailNotification(stationName, title, message);
-            showToast("Message sent successfully!");
+
             // Clear the form after submission
             document.getElementById('emailForm').reset();
             return true;
