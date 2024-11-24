@@ -858,7 +858,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                     });
                     hls.on(Hls.Events.ERROR, (event, data) => {
                         showSpinner(false); // Hide the spinner on error
-                        showCustomError('Error, Try again later.');
+                        //showCustomError('Error, Try again later.');
                         const stationDetails = `${stationName} (${country}) (web)`;
                         handlePlaybackError(stationDetails, url, 'error')
                     });
@@ -872,7 +872,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                      sendEmailNotification(stationDetails, url, 'success')
                 } else {
                     showSpinner(false); // Hide the spinner on error
-                    showCustomError('Error, Try again later.');
+                    //showCustomError('Error, Try again later.');
                     const stationDetails = `${stationName} (${country}) (Mobile)`;
                     handlePlaybackError(stationDetails, url, 'error')
                     return;
@@ -889,7 +889,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
             // Handle error events for unsupported formats
             audio.addEventListener('error', function() {
                 showSpinner(false); // Hide the spinner on error
-                showCustomError('Error, Try again later.');
+                //showCustomError('Error, Try again later.');
                 const stationDetails = `${stationName} (${country}) (web)`;
                 handlePlaybackError(stationDetails, url, 'error')
             });
