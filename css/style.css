@@ -15,6 +15,38 @@
  }
 
 
+
+         form {
+             max-width: 400px;
+             padding: 20px;
+             border: 1px solid #ccc;
+             border-radius: 5px;
+             background-color: #f9f9f9;
+         }
+         label {
+             display: block;
+             margin: 10px 0 5px;
+         }
+         input, textarea, button {
+             width: 100%;
+             padding: 10px;
+             margin-bottom: 15px;
+             border: 1px solid #ccc;
+             border-radius: 4px;
+         }
+         button {
+             background-color: #007BFF;
+             color: white;
+             border: none;
+             cursor: pointer;
+         }
+         button:hover {
+             background-color: #0056b3;
+         }
+
+
+
+
 .progress-ring2 {
          width: 43px;
          height: 43px;

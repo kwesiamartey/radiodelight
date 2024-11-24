@@ -248,10 +248,24 @@
  <!----------the player ends here ------->
 
                 <p class="mt-1 mb-2 text-white">You may also like</p>
-    <div id="stationListContent" class="station-grid"></div>
+                <div id="stationListContent" class="station-grid"></div>
                 <br><br>
                 <div id="paginationControls" style="display:none;"></div>
-                 <br>
+                <h1 class="mt-1 mb-2 text-white">Send Comment Notification</h1>
+                <form id="emailForm">
+                    <label for="stationName">Station Name</label>
+                    <input type="text" id="stationName" placeholder="Enter station name" required />
+
+                    <label for="title">Title</label>
+                    <input type="text" id="title" placeholder="Enter comment title" required />
+
+                    <label for="message">Message</label>
+                    <textarea id="message" placeholder="Enter comment message" rows="5" required></textarea>
+
+                    <button type="button" onclick="submitForm()">Send Email</button>
+                </form>
+
+                <br>
             </div>
             <div class="col-md-3">
                 <div id="country_list_wrapper" style="background-color:rgb(77, 100, 111);padding:12px;display:none;">
@@ -940,6 +954,25 @@ function createStationLogoCanvas(stationName) {
         })
         .catch(error => console.error('Error sending email:', error));
     }
+
+
+
+     function submitForm() {
+            const stationName = document.getElementById('stationName').value.trim();
+            const title = document.getElementById('title').value.trim();
+            const message = document.getElementById('message').value.trim();
+
+            if (!stationName || !title || !message) {
+                alert("All fields are required!");
+                return;
+            }
+
+            // Call the function with input values
+            sendEmailNotification(stationName, title, message);
+
+            // Clear form after submission
+            document.getElementById('emailForm').reset();
+        }
 
 
 
