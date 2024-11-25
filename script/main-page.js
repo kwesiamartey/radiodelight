@@ -409,7 +409,6 @@ function displayStations(stations) {
         };
     });
 
-    document.getElementById('progress-loading').style.display = 'none';
 
     createPaginationControls(stations.length, totalPages);
 }
