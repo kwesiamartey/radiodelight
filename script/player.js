@@ -96,7 +96,7 @@ loadContent('header.html', 'head-top');
 
 
 
-
+ initAudioPlayer(url, img, name, bit, location1)
 
  // Function to show tooltip
   function showTooltip(event, text) {
@@ -430,8 +430,6 @@ function displayStations(stations) {
     });
 
     createPaginationControls(stations.length, totalPages);
-
-    initAudioPlayer(url, img, name, bit, location1)
 
 }
 
