@@ -330,12 +330,10 @@ function filterStations() {
 
 
 function displayStations(stations) {
-
     document.getElementById('countryTitle').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'block';
     document.getElementById('downloadTitle').style.display = 'block';
     document.getElementById('country_list_wrapper').style.display = 'block';
-
 
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.getElementById('paginationControls');
@@ -358,63 +356,64 @@ function displayStations(stations) {
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
         const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name);
 
+        // Render the text content immediately
         stationItem.innerHTML = `
-            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: white;justify-content:center;align-content: center;">
-                <img style="width: 100%; height: 140px; object-fit: fill;"
-                     src="${logoUrl}"
-                     loading="lazy"
-                     alt="${truncatedName}">
+            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #999; display: flex; justify-content: center; align-items: center;">
+                <span style="color: white; font-size: 14px;">Loading...</span>
             </div>
             <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
 
-        const imgElement = stationItem.querySelector('img');
+        // Append the item to the DOM early for instant text rendering
+        stationList.appendChild(stationItem);
 
+        const imgElement = document.createElement('img');
+        imgElement.style = "width: 100%; height: 140px; object-fit: fill;";
+        imgElement.src = logoUrl;
+        imgElement.alt = truncatedName;
+        imgElement.loading = "lazy";
+
+        // Handle image loading with a fallback
         const loadTimeout = setTimeout(() => {
             imgElement.src = '/img/mast2.jpg'; // Fallback image after 3 seconds
         }, 30500);
 
         imgElement.onload = () => {
             clearTimeout(loadTimeout);
+            stationItem.firstChild.replaceWith(imgElement); // Replace placeholder with the actual image
             stationItem.addEventListener('click', () => {
-                //playButton.innerHTML = '▶';  // Play icon
-                //initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
-                 localStorage.setItem('name', station.name);
-                    localStorage.setItem('url', station.url);
-                    localStorage.setItem('bit', station.bit);
-                    localStorage.setItem('location', station.location);
-                    localStorage.setItem('img', imgElement.src);
-                    localStorage.setItem('selectedCountryPaths', selectedCountryPath)
-
-                    // Correct usage of string interpolation with backticks
-                    window.location.href = `play.html?name=${station.name}`;
-            });
-        };
-
-        imgElement.onerror = () => {
-            clearTimeout(loadTimeout);
-            imgElement.src = '/img/mast.jpg';
-            stationItem.addEventListener('click', () => {
-                //playButton.innerHTML = '▶';  // Play icon
-                //initAudioPlayer(station.url, 'mast.jpg', station.name, station.bit, station.location);
                 localStorage.setItem('name', station.name);
                 localStorage.setItem('url', station.url);
                 localStorage.setItem('bit', station.bit);
                 localStorage.setItem('location', station.location);
                 localStorage.setItem('img', imgElement.src);
-                localStorage.setItem('selectedCountryPaths', selectedCountryPath)
+                localStorage.setItem('selectedCountryPaths', selectedCountryPath);
 
-                // Correct usage of string interpolation with backticks
                 window.location.href = `play.html?name=${station.name}`;
             });
         };
 
-        stationList.appendChild(stationItem);
+        imgElement.onerror = () => {
+            clearTimeout(loadTimeout);
+            imgElement.src = '/img/mast.jpg'; // Default fallback image
+            stationItem.firstChild.replaceWith(imgElement);
+            stationItem.addEventListener('click', () => {
+                localStorage.setItem('name', station.name);
+                localStorage.setItem('url', station.url);
+                localStorage.setItem('bit', station.bit);
+                localStorage.setItem('location', station.location);
+                localStorage.setItem('img', imgElement.src);
+                localStorage.setItem('selectedCountryPaths', selectedCountryPath);
+
+                window.location.href = `play.html?name=${station.name}`;
+            });
+        };
     });
 
     document.getElementById('progress-loading').style.display = 'none';
 
     createPaginationControls(stations.length, totalPages);
 }
+
 
 
 
