@@ -415,6 +415,84 @@ function displayStations(stations) {
 }
 
 
+function displayStations(stations) {
+    document.getElementById('countryTitle').style.display = 'block';
+    document.querySelector('.countryTitle').style.display = 'block';
+    document.getElementById('downloadTitle').style.display = 'block';
+    document.getElementById('country_list_wrapper').style.display = 'block';
+
+    const stationList = document.getElementById('stationListContent');
+    const paginationControls = document.getElementById('paginationControls');
+    stationList.innerHTML = ''; // Clear current list
+    paginationControls.innerHTML = ''; // Clear pagination
+
+    if (stations.length === 0) {
+        stationList.innerHTML = `<p>No results found.</p>`;
+        return;
+    }
+
+    const totalPages = Math.ceil(stations.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const stationsToDisplay = stations.slice(startIndex, startIndex + 48); // Display 48 stations
+
+    // Loop through each station
+    stationsToDisplay.forEach(station => {
+        const stationItem = document.createElement('div');
+        stationItem.className = 'station-item';
+
+        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
+
+        // Show name immediately with a placeholder for the image
+        stationItem.innerHTML = `
+            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #ddd; display: flex; justify-content: center; align-items: center;">
+                <span style="color: gray; font-size: 14px;">${truncatedName}</span>
+            </div>
+            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
+
+        stationList.appendChild(stationItem);
+
+        // Dynamically load the image
+        const imgElement = new Image();
+        const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : '/img/default-logo.png';
+
+        imgElement.src = logoUrl;
+        imgElement.alt = truncatedName;
+        imgElement.style = "width: 100%; height: 138px; object-fit: cover;";
+        imgElement.loading = "lazy";
+
+        // Handle successful image loading
+        imgElement.onload = () => {
+            stationItem.firstChild.replaceWith(imgElement); // Replace placeholder with the image
+            stationItem.addEventListener('click', () => {
+                handleStationClick(station, imgElement.src);
+            });
+        };
+
+        // Handle errors or fallback to default image
+        imgElement.onerror = () => {
+            imgElement.src = '/img/mast.jpg'; // Default fallback image
+            stationItem.firstChild.replaceWith(imgElement);
+            stationItem.addEventListener('click', () => {
+                handleStationClick(station, imgElement.src);
+            });
+        };
+    });
+
+    document.getElementById('progress-loading').style.display = 'none';
+
+    createPaginationControls(stations.length, totalPages);
+}
+
+// Function to handle station clicks
+function handleStationClick(station, imageUrl) {
+    localStorage.setItem('name', station.name);
+    localStorage.setItem('url', station.url);
+    localStorage.setItem('bit', station.bit);
+    localStorage.setItem('location', station.location);
+    localStorage.setItem('img', imageUrl);
+    localStorage.setItem('selectedCountryPaths', selectedCountryPath);
+    window.location.href = `play.html?name=${station.name}`;
+}
 
 
 function createPaginationControls(totalStations, totalPages) {
