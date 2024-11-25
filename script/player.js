@@ -400,6 +400,12 @@ function displayStations(stations) {
         imgElement.onload = () => {
             clearTimeout(loadTimeout);
             stationItem.addEventListener('click', () => {
+                   localStorage.setItem('name', station.name);
+                                    localStorage.setItem('url', station.url);
+                                    localStorage.setItem('bit', station.bit);
+                                    localStorage.setItem('location', station.location);
+                                    localStorage.setItem('img', imgElement.src);
+                                    localStorage.setItem('selectedCountryPaths', selectedCountryPath)
                 playButton.innerHTML = '▶';  // Play icon
                 initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
             });
@@ -409,6 +415,12 @@ function displayStations(stations) {
             clearTimeout(loadTimeout);
             imgElement.src = '/img/mast.jpg';
             stationItem.addEventListener('click', () => {
+               localStorage.setItem('name', station.name);
+                                localStorage.setItem('url', station.url);
+                                localStorage.setItem('bit', station.bit);
+                                localStorage.setItem('location', station.location);
+                                localStorage.setItem('img', imgElement.src);
+                                localStorage.setItem('selectedCountryPaths', selectedCountryPath)
                 playButton.innerHTML = '▶';  // Play icon
                 initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
             });
