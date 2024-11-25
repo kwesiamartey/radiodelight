@@ -571,34 +571,33 @@ function initAudioPlayer(url, image, stationName, bit, country) {
 }
 
    // Show or hide the spinner
-    function showSpinner(show) {
+function showSpinner(show) {
             progress.style.display = show ? 'block' : 'none';
-    }
+}
 
             // Play/pause functionality with icons
-     playButton.addEventListener('click', () => {
+playButton.addEventListener('click', () => {
 
               if (bit === '00') {
                     openPopupWithData(stationName, image, url);
                     return;
               }
-              if (bit === '001') {
+              else if (bit === '001') {
                     openPeacefmPopupWithData(stationName, image, url);
                     return;
               }
-
-                if (!isPlaying) {
+              else if (!isPlaying) {
                     audio.play();
                     playButton.innerHTML = '||';  // Pause icon
                     showSpinner(false); // Hide the spinner when playing starts
                     isPlaying = true;
                     sendEmailNotification(stationDetailsGlobal, audio.src, 'success')
 
-                } else {
+              } else {
                     audio.pause();
                     playButton.innerHTML = '▶';  // Play icon
                     isPlaying = false;
-                }
+              }
         });
 
 
