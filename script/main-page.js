@@ -330,10 +330,12 @@ function filterStations() {
 
 
 function displayStations(stations) {
+
     document.getElementById('countryTitle').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'block';
     document.getElementById('downloadTitle').style.display = 'block';
     document.getElementById('country_list_wrapper').style.display = 'block';
+
 
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.getElementById('paginationControls');
@@ -356,126 +358,57 @@ function displayStations(stations) {
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
         const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name);
 
-        // Render the text content immediately
         stationItem.innerHTML = `
-            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #999; display: flex; justify-content: center; align-items: center;">
-                <span style="color: white; font-size: 14px;">Loading...</span>
+            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #999;justify-content:center;align-content: center;">
+                <img style="width: 100%; height: 140px; object-fit: fill;"
+                     src="${logoUrl}"
+                     loading="lazy"
+                     alt="${truncatedName}">
             </div>
             <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
 
-        // Append the item to the DOM early for instant text rendering
-        stationList.appendChild(stationItem);
+        const imgElement = stationItem.querySelector('img');
 
-        const imgElement = document.createElement('img');
-        imgElement.style = "width: 100%; height: 140px; object-fit: fill;";
-        imgElement.src = logoUrl;
-        imgElement.alt = truncatedName;
-        imgElement.loading = "lazy";
-
-        // Handle image loading with a fallback
         const loadTimeout = setTimeout(() => {
             imgElement.src = '/img/mast2.jpg'; // Fallback image after 3 seconds
         }, 30500);
 
         imgElement.onload = () => {
             clearTimeout(loadTimeout);
-            stationItem.firstChild.replaceWith(imgElement); // Replace placeholder with the actual image
             stationItem.addEventListener('click', () => {
-                localStorage.setItem('name', station.name);
-                localStorage.setItem('url', station.url);
-                localStorage.setItem('bit', station.bit);
-                localStorage.setItem('location', station.location);
-                localStorage.setItem('img', imgElement.src);
-                localStorage.setItem('selectedCountryPaths', selectedCountryPath);
+                //playButton.innerHTML = '▶';  // Play icon
+                //initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
+                 localStorage.setItem('name', station.name);
+                    localStorage.setItem('url', station.url);
+                    localStorage.setItem('bit', station.bit);
+                    localStorage.setItem('location', station.location);
+                    localStorage.setItem('img', imgElement.src);
+                    localStorage.setItem('selectedCountryPaths', selectedCountryPath)
 
-                window.location.href = `play.html?name=${station.name}`;
+                    // Correct usage of string interpolation with backticks
+                    window.location.href = `play.html?name=${station.name}`;
             });
         };
 
         imgElement.onerror = () => {
             clearTimeout(loadTimeout);
-            imgElement.src = '/img/mast.jpg'; // Default fallback image
-            stationItem.firstChild.replaceWith(imgElement);
+            imgElement.src = '/img/mast.jpg';
             stationItem.addEventListener('click', () => {
+                //playButton.innerHTML = '▶';  // Play icon
+                //initAudioPlayer(station.url, 'mast.jpg', station.name, station.bit, station.location);
                 localStorage.setItem('name', station.name);
                 localStorage.setItem('url', station.url);
                 localStorage.setItem('bit', station.bit);
                 localStorage.setItem('location', station.location);
                 localStorage.setItem('img', imgElement.src);
-                localStorage.setItem('selectedCountryPaths', selectedCountryPath);
+                localStorage.setItem('selectedCountryPaths', selectedCountryPath)
 
+                // Correct usage of string interpolation with backticks
                 window.location.href = `play.html?name=${station.name}`;
             });
         };
-    });
-
-
-
-    createPaginationControls(stations.length, totalPages);
-}
-
-
-function displayStations(stations) {
-    document.getElementById('countryTitle').style.display = 'block';
-    document.querySelector('.countryTitle').style.display = 'block';
-    document.getElementById('downloadTitle').style.display = 'block';
-    document.getElementById('country_list_wrapper').style.display = 'block';
-
-    const stationList = document.getElementById('stationListContent');
-    const paginationControls = document.getElementById('paginationControls');
-    stationList.innerHTML = ''; // Clear current list
-    paginationControls.innerHTML = ''; // Clear pagination
-
-    if (stations.length === 0) {
-        stationList.innerHTML = `<p>No results found.</p>`;
-        return;
-    }
-
-    const totalPages = Math.ceil(stations.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const stationsToDisplay = stations.slice(startIndex, startIndex + 48); // Display 48 stations
-
-    // Loop through each station
-    stationsToDisplay.forEach(station => {
-        const stationItem = document.createElement('div');
-        stationItem.className = 'station-item';
-
-        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-
-        // Show name immediately with a placeholder for the image
-        stationItem.innerHTML = `
-            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #ddd; display: flex; justify-content: center; align-items: center;">
-                <span style="color: gray; font-size: 14px;">${truncatedName}</span>
-            </div>
-            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
 
         stationList.appendChild(stationItem);
-
-        // Dynamically load the image
-        const imgElement = new Image();
-        const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : '/img/default-logo.png';
-
-        imgElement.src = logoUrl;
-        imgElement.alt = truncatedName;
-        imgElement.style = "width: 100%; height: 138px; object-fit: cover;";
-        imgElement.loading = "lazy";
-
-        // Handle successful image loading
-        imgElement.onload = () => {
-            stationItem.firstChild.replaceWith(imgElement); // Replace placeholder with the image
-            stationItem.addEventListener('click', () => {
-                handleStationClick(station, imgElement.src);
-            });
-        };
-
-        // Handle errors or fallback to default image
-        imgElement.onerror = () => {
-            imgElement.src = '/img/mast.jpg'; // Default fallback image
-            stationItem.firstChild.replaceWith(imgElement);
-            stationItem.addEventListener('click', () => {
-                handleStationClick(station, imgElement.src);
-            });
-        };
     });
 
     document.getElementById('progress-loading').style.display = 'none';
@@ -483,16 +416,6 @@ function displayStations(stations) {
     createPaginationControls(stations.length, totalPages);
 }
 
-// Function to handle station clicks
-function handleStationClick(station, imageUrl) {
-    localStorage.setItem('name', station.name);
-    localStorage.setItem('url', station.url);
-    localStorage.setItem('bit', station.bit);
-    localStorage.setItem('location', station.location);
-    localStorage.setItem('img', imageUrl);
-    localStorage.setItem('selectedCountryPaths', selectedCountryPath);
-    window.location.href = `play.html?name=${station.name}`;
-}
 
 
 function createPaginationControls(totalStations, totalPages) {
