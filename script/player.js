@@ -280,7 +280,7 @@ function setupPaginationButtons(data, totalPages) {
 
 async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 3000, chunkSize = 1000) {
     const sanitizedCountryPath = encodeURIComponent(countryPath);
-    const baseUrl2 = `${document.querySelector('meta[name="api-base-url"]').content}/query_station_limited.php.php?path=${sanitizedCountryPath}`;
+    const baseUrl2 = `${document.querySelector('meta[name="api-base-url"]').content}/query_station_limited.php?path=${sanitizedCountryPath}`;
 
     try {
         // Attempt to fetch the entire dataset at once
