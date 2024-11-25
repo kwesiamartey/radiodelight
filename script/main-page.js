@@ -329,11 +329,13 @@ function filterStations() {
 }
 
 
-function displayStations(stations) {
+displayStations(stations) {
+
     document.getElementById('countryTitle').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'block';
     document.getElementById('downloadTitle').style.display = 'block';
     document.getElementById('country_list_wrapper').style.display = 'block';
+
 
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.getElementById('paginationControls');
@@ -341,72 +343,73 @@ function displayStations(stations) {
     paginationControls.innerHTML = ''; // Clear pagination
 
     if (stations.length === 0) {
-        stationList.innerHTML = `<p>No results found.</p>`;
+        stationList.innerHTML = <p>No results found.</p>;
         return;
     }
 
     const totalPages = Math.ceil(stations.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const stationsToDisplay = stations.slice(startIndex, startIndex + 48); // Show only 48 stations
+    const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
 
     stationsToDisplay.forEach(station => {
         const stationItem = document.createElement('div');
         stationItem.className = 'station-item';
 
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-
-        // Render station name first with a placeholder for the image
-        stationItem.innerHTML = `
-            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #ddd; display: flex; justify-content: center; align-items: center;">
-                <span style="color: gray; font-size: 14px;">Loading...</span>
-            </div>
-            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
-
-        stationList.appendChild(stationItem);
-
-        const imgElement = new Image();
         const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name);
 
-        imgElement.style = "width: 100%; height: 140px; object-fit: fill;";
-        imgElement.src = logoUrl;
-        imgElement.alt = truncatedName;
+        stationItem.innerHTML =
+            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #142229;justify-content:center;align-content: center;">
+                <img style="width: 100%; height: 140px; object-fit: fill;"
+                     src="${logoUrl}"
+                     loading="lazy"
+                     alt="${truncatedName}">
+            </div>
+            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>;
 
-        // Lazy load images by deferring their loading until visible
-        imgElement.loading = "lazy";
+        const imgElement = stationItem.querySelector('img');
 
-        // Replace placeholder when the image loads
+        const loadTimeout = setTimeout(() => {
+            imgElement.src = '/img/mast2.jpg'; // Fallback image after 3 seconds
+        }, 30500);
+
         imgElement.onload = () => {
-            stationItem.firstChild.replaceWith(imgElement);
+            clearTimeout(loadTimeout);
             stationItem.addEventListener('click', () => {
-                localStorage.setItem('name', station.name);
-                localStorage.setItem('url', station.url);
-                localStorage.setItem('bit', station.bit);
-                localStorage.setItem('location', station.location);
-                localStorage.setItem('img', imgElement.src);
-                localStorage.setItem('selectedCountryPaths', selectedCountryPath);
+                //playButton.innerHTML = '▶';  // Play icon
+                //initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
+                 localStorage.setItem('name', station.name);
+                    localStorage.setItem('url', station.url);
+                    localStorage.setItem('bit', station.bit);
+                    localStorage.setItem('location', station.location);
+                    localStorage.setItem('img', imgElement.src);
+                    localStorage.setItem('selectedCountryPaths', selectedCountryPath)
 
-                window.location.href = `play.html?name=${station.name}`;
+                    // Correct usage of string interpolation with backticks
+                    window.location.href = play.html?name=${station.name};
             });
         };
 
-        // Set a fallback image if loading fails
         imgElement.onerror = () => {
-            imgElement.src = '/img/mast.jpg'; // Default fallback image
-            stationItem.firstChild.replaceWith(imgElement);
+            clearTimeout(loadTimeout);
+            imgElement.src = '/img/mast.jpg';
             stationItem.addEventListener('click', () => {
+                //playButton.innerHTML = '▶';  // Play icon
+                //initAudioPlayer(station.url, 'mast.jpg', station.name, station.bit, station.location);
                 localStorage.setItem('name', station.name);
                 localStorage.setItem('url', station.url);
                 localStorage.setItem('bit', station.bit);
                 localStorage.setItem('location', station.location);
                 localStorage.setItem('img', imgElement.src);
-                localStorage.setItem('selectedCountryPaths', selectedCountryPath);
+                localStorage.setItem('selectedCountryPaths', selectedCountryPath)
 
-                window.location.href = `play.html?name=${station.name}`;
+                // Correct usage of string interpolation with backticks
+                window.location.href = play.html?name=${station.name};
             });
         };
-    });
 
-    document.getElementById('progress-loading').style.display = 'none';
+        stationList.appendChild(stationItem);
+    });
 
     createPaginationControls(stations.length, totalPages);
 }
