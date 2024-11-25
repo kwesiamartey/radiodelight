@@ -1,4 +1,4 @@
-<script>
+
     // Retrieve data from localStorage
     const name = localStorage.getItem('name');
     const url = localStorage.getItem('url');
@@ -821,5 +821,5 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
         loadCountries();
         fetchStations();
     };
-</script>
+
 
