@@ -494,7 +494,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
     // Handle image load errors
     stationLogo.onerror = () => handleImageError(stationLogo, stationName);
     // Handle specific bit conditions for popups
-    if (bit === '00') {
+  /*  if (bit === '00') {
         audio.pause();
         playButton.innerHTML = '▶';  // Play icon
         openPopupWithData(stationName, image, url);
@@ -504,7 +504,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
         playButton.innerHTML = '▶';  // Play icon
         openPeacefmPopupWithData(stationName, image, url);
         return;
-    }
+    }*/
 
     // Reset HLS and audio element for fresh playback
     if (typeof hls !== 'undefined' && hls !== null) {
@@ -578,7 +578,7 @@ function showSpinner(show) {
             // Play/pause functionality with icons
 playButton.addEventListener('click', () => {
 
-              if (bit === '00') {
+             /* if (bit === '00') {
                     audio.pause();
                     playButton.innerHTML = '▶';  // Play icon
                     openPopupWithData(name, img, url);
@@ -589,7 +589,7 @@ playButton.addEventListener('click', () => {
                     playButton.innerHTML = '▶';  // Play icon
                     openPeacefmPopupWithData(name, img, url);
                     return;
-              }
+              }*/
 
 
 
