@@ -329,7 +329,7 @@ function filterStations() {
 }
 
 
-displayStations(stations) {
+function displayStations(stations) {
 
     document.getElementById('countryTitle').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'block';
