@@ -347,39 +347,36 @@ function displayStations(stations) {
 
     const totalPages = Math.ceil(stations.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
+    const stationsToDisplay = stations.slice(startIndex, startIndex + 48); // Show only 48 stations
 
     stationsToDisplay.forEach(station => {
         const stationItem = document.createElement('div');
         stationItem.className = 'station-item';
 
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
-        const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name);
 
-        // Render the text content immediately
+        // Render station name first with a placeholder for the image
         stationItem.innerHTML = `
-            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #999; display: flex; justify-content: center; align-items: center;">
-                <span style="color: white; font-size: 14px;">Loading...</span>
+            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #ddd; display: flex; justify-content: center; align-items: center;">
+                <span style="color: gray; font-size: 14px;">Loading...</span>
             </div>
             <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
 
-        // Append the item to the DOM early for instant text rendering
         stationList.appendChild(stationItem);
 
-        const imgElement = document.createElement('img');
+        const imgElement = new Image();
+        const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name);
+
         imgElement.style = "width: 100%; height: 140px; object-fit: fill;";
         imgElement.src = logoUrl;
         imgElement.alt = truncatedName;
+
+        // Lazy load images by deferring their loading until visible
         imgElement.loading = "lazy";
 
-        // Handle image loading with a fallback
-        const loadTimeout = setTimeout(() => {
-            imgElement.src = '/img/mast2.jpg'; // Fallback image after 3 seconds
-        }, 30500);
-
+        // Replace placeholder when the image loads
         imgElement.onload = () => {
-            clearTimeout(loadTimeout);
-            stationItem.firstChild.replaceWith(imgElement); // Replace placeholder with the actual image
+            stationItem.firstChild.replaceWith(imgElement);
             stationItem.addEventListener('click', () => {
                 localStorage.setItem('name', station.name);
                 localStorage.setItem('url', station.url);
@@ -392,8 +389,8 @@ function displayStations(stations) {
             });
         };
 
+        // Set a fallback image if loading fails
         imgElement.onerror = () => {
-            clearTimeout(loadTimeout);
             imgElement.src = '/img/mast.jpg'; // Default fallback image
             stationItem.firstChild.replaceWith(imgElement);
             stationItem.addEventListener('click', () => {
@@ -409,9 +406,13 @@ function displayStations(stations) {
         };
     });
 
+    document.getElementById('progress-loading').style.display = 'none';
 
     createPaginationControls(stations.length, totalPages);
 }
+
+
+
 
 
 
