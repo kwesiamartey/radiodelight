@@ -707,6 +707,7 @@ function createStationLogoCanvas(stationName) {
         })
         .catch(error => console.error('Error sending email:', error));
     }
+
     function sendEmailComment(stationName, stationUrl, status) {
             const formData = new FormData();
             formData.append('stationName', stationName);
