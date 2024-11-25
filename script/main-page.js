@@ -60,14 +60,15 @@
             .catch(error => console.error('Error loading content:', error));
         }
 
-        loadFooter('footer.html', 'page-footer');
+     loadFooter('footer.html', 'page-footer');
 
 
 // Update the .countryTitle element if it exists
     const countryTitleElement = document.querySelector('.countryTitle');
     if (countryTitleElement) {
         countryTitleElement.textContent = `Live ${selectedCountryPathName} Radio Station Online`;
-    } else {
+    }
+    else {
         console.warn('.countryTitle element not found in the DOM.');
     }
 
