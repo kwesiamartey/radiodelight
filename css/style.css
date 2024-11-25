@@ -193,7 +193,6 @@ text-decoration: none;
          z-index: 1000; /* Ensures header stays above other content */
          display: flex;
          align-items: center;
-         padding: 10px;
      }
       #web_title h4{
           margin-botom:0px;
@@ -243,14 +242,17 @@ text-decoration: none;
      }
 
       #searchInput{
-          background-color:#c4c4c4;
-          border-color: #c4c4c4;
-          border-radius:50px;
-          color:#333;
-          margin-left:40px;
-          margin-right:12px;
-          padding-left:12px;
-          width:50%;
+                background-color: #c4c4c4;
+                border-color: #c4c4c4;
+                border-radius: 50px;
+                color: #333;
+                margin-left: 40px;
+                margin-right: 12px;
+                /* padding-left: 12px; */
+                align-items: center;
+                width: 50%;
+                margin: 10px 40px;
+                height: 40px;
       }
 
           /* Center the pagination controls */
