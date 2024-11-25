@@ -74,18 +74,6 @@
     }
 
 
-    // Update audio volume when the slider is adjusted
-    volumeControl.addEventListener('input', function () {
-        audio.volume = this.value;
-        console.log(`Volume set to: ${Math.round(this.value * 100)}%`);
-    });
-
-    // Optional: Display the volume level as a percentage
-    volumeControl.addEventListener('input', function () {
-        this.title = `Volume: ${Math.round(this.value * 100)}%`;
-    });
-
-
  // Function to show tooltip
   function showTooltip(event, text) {
     let tooltip = document.createElement('div');
