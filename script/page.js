@@ -9,8 +9,6 @@
     let currentPage1 = 1;
     const itemsPerPage1 = 40; // Number of countries per page
     const progress = document.getElementById('progress');
-    const playButton = document.querySelector('.play-button');
-    const volumeControl = document.getElementById('volumeControl');
     let isPlaying = false; // Track the play/pause state
     let stationDetailsGlobal = "";
 
