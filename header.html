@@ -1,6 +1,43 @@
 <html>
     <head>
-        <link rel="stylesheet" href="css/style.css">
+        <style>
+            #top-header{
+                    position:fixed;
+                    background-color: #142229; /* Green */
+                    color: white;
+                    position: fixed; /* Fixed at the top */
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    z-index: 1000; /* Ensures header stays above other content */
+                    display: flex;
+                    align-items: center;
+                }
+                       /* header row: Player */
+                     .player-header{
+                         background-color: #142229; /* Green */
+                         color: white;
+                         width:100%;
+                         left: 0;
+                         right: 0;
+                         z-index: 1000; /* Ensures header stays above other content */
+                         display: flex;
+                         align-items: center;
+                     }
+                  #searchInput{
+                        background-color: #c4c4c4;
+                        border-color: #c4c4c4;
+                        border-radius: 50px;
+                        color: #333;
+                        margin-left: 40px;
+                        margin-right: 12px;
+                        /* padding-left: 12px; */
+                        align-items: center;
+                        width: 50%;
+                        margin: 10px 40px;
+                        height: 40px;
+            }
+        </style>
     </head>
     <body>
     <div id="top-header" style="display: flex; flex-direction: column; background-color: #142229;">
