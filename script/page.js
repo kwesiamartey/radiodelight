@@ -16,6 +16,33 @@
 
     const selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || "Austria";
 
+        /**
+     * Function to fetch and insert HTML content into a target element
+     * @param {string} url - The URL of the HTML file to fetch
+     * @param {string} targetId - The ID of the target element to inject content into
+     */
+    function loadContent(url, targetId) {
+      fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
+          }
+          return response.text();
+        })
+        .then(data => {
+          const targetElement = document.getElementById(targetId);
+          if (targetElement) {
+            targetElement.innerHTML = data;
+          } else {
+            console.error(`Element with ID "${targetId}" not found.`);
+          }
+        })
+        .catch(error => console.error('Error loading content:', error));
+    }
+
+    loadContent('header.html', 'head-top');
+
+
 // Update the .countryTitle element if it exists
     const countryTitleElement = document.querySelector('.countryTitle');
     if (countryTitleElement) {
