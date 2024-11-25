@@ -687,9 +687,6 @@ function createStationLogoCanvas(stationName) {
                 sendEmailNotification(stationName, url, 'error');
 }
 
-    
-    
-
     function sendEmailNotification(stationName, stationUrl, status) {
         const formData = new FormData();
         formData.append('stationName', stationName);
@@ -710,14 +707,10 @@ function createStationLogoCanvas(stationName) {
         })
         .catch(error => console.error('Error sending email:', error));
     }
-
-
-
-
      /**
          * Sanitize user input by escaping special characters.
          */
-        function sanitizeInput(input) {
+    function sanitizeInput(input) {
             const map = {
                 '&': '&amp;',
                 '<': '&lt;',
@@ -748,8 +741,8 @@ function createStationLogoCanvas(stationName) {
 
 
 
-    function submitForm(event) {
-    event.preventDefault(); // Prevent default form submission
+    function submitForm() {
+
 
     const stationName = sanitizeInput(document.getElementById('stationName').value.trim());
     const title = sanitizeInput(document.getElementById('title').value.trim());
