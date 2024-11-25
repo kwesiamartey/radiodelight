@@ -579,11 +579,15 @@ function showSpinner(show) {
 playButton.addEventListener('click', () => {
 
               if (bit === '00') {
-                    openPopupWithData(stationName, image, url);
+                    audio.pause();
+                    playButton.innerHTML = '▶';  // Play icon
+                    openPopupWithData(name, img, url);
                     return;
               }
               else if (bit === '001') {
-                    openPeacefmPopupWithData(stationName, image, url);
+                    audio.pause();
+                    playButton.innerHTML = '▶';  // Play icon
+                    openPeacefmPopupWithData(name, img, url);
                     return;
               }
               else if (!isPlaying) {
