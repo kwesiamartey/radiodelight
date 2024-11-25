@@ -1,67 +1,31 @@
+ let stationData = []; // Store stations here to avoid multiple fetches
+    let selectedCountryPath = localStorage.getItem('selectedCountryPath') || "AustriaRadioList.json";
 
-    // Retrieve data from localStorage
-    const name = localStorage.getItem('name');
-    const url = localStorage.getItem('url');
-    const bit = localStorage.getItem('bit');
-    const location1 = localStorage.getItem('location');
-    const img = localStorage.getItem('img');
-    const selectedCountryPath1 = localStorage.getItem('selectedCountryPaths');
-    let stationData = []; // Store stations here to avoid multiple fetches
-    const selectedCountryPath = selectedCountryPath1 || "germanyRadioList.json";
     //let selectedCountryPath = '';
-    const audio = new Audio();
+   const audio = new Audio();
     let hls;
     let currentPage = 1;
-    const itemsPerPage = 18;
+    const itemsPerPage = 48;
     let currentPage1 = 1;
-    const itemsPerPage1 = 24; // Number of countries per page
+    const itemsPerPage1 = 40; // Number of countries per page
     const progress = document.getElementById('progress');
     const playButton = document.querySelector('.play-button');
     const volumeControl = document.getElementById('volumeControl');
     let isPlaying = false; // Track the play/pause state
     let stationDetailsGlobal = "";
-    document.getElementById('footerr').style.display = 'block';
-    document.getElementById('countryTitle').style.display = 'block';
-    document.querySelector('.countryTitle').style.display = 'block';
-    document.getElementById('downloadTitle').style.display = 'block';
-    document.getElementById('country_list_wrapper').style.display = 'block';
-         // Update UI with station information playing
-    const stationLogo = document.getElementById('stationLogo');
-    const breadcrumbs = document.getElementById('breadcrumbs');
-    document.getElementById('breadcrumbs').style.display = 'block';
-    document.querySelector('.countryTitle').style.display = 'none';
-     document.querySelector('.playing-station-wrap').style.display = 'block';
-    document.querySelector('.footer-div-wraaper').style.display = 'block';
+
+    const selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || "Austria";
+
+// Update the .countryTitle element if it exists
+    const countryTitleElement = document.querySelector('.countryTitle');
+    if (countryTitleElement) {
+        countryTitleElement.textContent = `Live ${selectedCountryPathName} Radio Station Online`;
+    } else {
+        console.warn('.countryTitle element not found in the DOM.');
+    }
 
     // Set initial volume (based on the slider's default value)
     audio.volume = volumeControl.value;
-
-    /**
- * Function to fetch and insert HTML content into a target element
- * @param {string} url - The URL of the HTML file to fetch
- * @param {string} targetId - The ID of the target element to inject content into
- */
-function loadContent(url, targetId) {
-  fetch(url)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
-      }
-      return response.text();
-    })
-    .then(data => {
-      const targetElement = document.getElementById(targetId);
-      if (targetElement) {
-        targetElement.innerHTML = data;
-      } else {
-        console.error(`Element with ID "${targetId}" not found.`);
-      }
-    })
-    .catch(error => console.error('Error loading content:', error));
-}
-
-loadContent('header.html', 'head-top');
-
 
     // Update audio volume when the slider is adjusted
     volumeControl.addEventListener('input', function () {
@@ -73,9 +37,6 @@ loadContent('header.html', 'head-top');
     volumeControl.addEventListener('input', function () {
         this.title = `Volume: ${Math.round(this.value * 100)}%`;
     });
-
-
-
 
 
  // Function to show tooltip
@@ -142,17 +103,17 @@ function renderCountryList(data, page, totalPages) {
              audio.pause();
              playButton.innerHTML = '▶';  // Play icon
              isPlaying = false; // Play icon
-            //document.getElementById('breadcrumbs').style.display = 'none';
-            //document.querySelector('.playing-station-wrap').style.display = 'none';
-            //document.querySelector('.footer-div-wraaper').style.display = 'none';
-            //selectedCountryPath = country.url;
-            //fetchStations(selectedCountryPath);
-            localStorage.setItem('selectedCountryPathName', country.name)
-            localStorage.setItem('selectedCountryPath', country.url)
+            document.getElementById('breadcrumbs').style.display = 'none';
+            document.querySelector('.playing-station-wrap').style.display = 'none';
+            document.querySelector('.footer-div-wraaper').style.display = 'none';
+            selectedCountryPath = country.url;
+            fetchStations(selectedCountryPath);
+           // Retrieve the selected country name from localStorage or use a fallback
 
-            // Correct usage of string interpolation with backticks
-             window.location.href = `index.html?name=${country.name}`;
-            document.querySelector('.countryTitle').textContent = `Live ${country.name} Radio Station Online`;
+
+            // Update the .countryTitle element if it exists
+            const countryTitleElement = document.querySelector('.countryTitle');
+            countryTitleElement.textContent = `Live ${country.name} Radio Station Online`;
         });
         countryList.appendChild(listItem);
     }
@@ -258,9 +219,9 @@ function setupPaginationButtons(data, totalPages) {
 
 
 
-async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 3000, chunkSize = 1000) {
+async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 5000, chunkSize = 1000) {
     const sanitizedCountryPath = encodeURIComponent(countryPath);
-    const baseUrl2 = `${document.querySelector('meta[name="api-base-url"]').content}/query_stations.php?path=${sanitizedCountryPath}`;
+    const baseUrl2 =  `${document.querySelector('meta[name="api-base-url"]').content}/query_stations.php?path=${sanitizedCountryPath}`;
 
     try {
         // Attempt to fetch the entire dataset at once
@@ -288,7 +249,7 @@ async function fetchStationsInChunks(baseUrl, chunkSize) {
             const response = await fetch(url);
             if (!response.ok) throw new Error('Network response was not ok');
             const chunk = await response.json();
-            console.log('Fetched chunk:', chunk);  // Log the fetched chunk
+
 
             if (chunk.length === 0) break;
 
@@ -307,22 +268,30 @@ async function fetchStationsInChunks(baseUrl, chunkSize) {
 
 
 // Function to fetch data with retries
-async function fetchWithRetry(url, retries, delay) {
+async function fetchWithRetry(url, retries = 3, delay = 3000) {
     for (let attempt = 0; attempt < retries; attempt++) {
         try {
+            console.log(`Fetching attempt ${attempt + 1} for URL: ${url}`);
             const response = await fetch(url);
-            if (!response.ok) throw new Error('Network response was not ok');
+            console.log('Response status:', response.status);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('API Error Response:', errorText);
+                throw new Error(`Fetch failed with status ${response.status}: ${errorText}`);
+            }
+
             const data = await response.json();
 
-            // Filter out stations with the name "Local Fm"
             return data.filter(station => station.name !== 'Local Fm');
         } catch (error) {
-            console.warn(`Attempt ${attempt + 1} failed. Retrying...`);
+            console.warn(`Attempt ${attempt + 1} failed:`, error.message);
             if (attempt < retries - 1) await new Promise(res => setTimeout(res, delay));
-            else throw error; // Throw error if all retries fail
+            else throw error; // Rethrow after last attempt
         }
     }
 }
+
 
 // Function for chunk loading
 function filterStations() {
@@ -336,6 +305,13 @@ function filterStations() {
 
 
 function displayStations(stations) {
+    document.getElementById('footerr').style.display = 'block';
+    document.getElementById('countryTitle').style.display = 'block';
+    document.querySelector('.countryTitle').style.display = 'block';
+    document.getElementById('downloadTitle').style.display = 'block';
+    document.getElementById('country_list_wrapper').style.display = 'block';
+
+
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.getElementById('paginationControls');
     stationList.innerHTML = ''; // Clear current list
@@ -346,15 +322,10 @@ function displayStations(stations) {
         return;
     }
 
-    // Sort stations in descending order by name
-    stations.sort((a, b) => b.name.localeCompare(a.name)); // Reverse alphabetical order
-
-    // Calculate pagination details
     const totalPages = Math.ceil(stations.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
 
-    // Render stations
     stationsToDisplay.forEach(station => {
         const stationItem = document.createElement('div');
         stationItem.className = 'station-item';
@@ -380,8 +351,17 @@ function displayStations(stations) {
         imgElement.onload = () => {
             clearTimeout(loadTimeout);
             stationItem.addEventListener('click', () => {
-                playButton.innerHTML = '▶';  // Play icon
-                initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
+                //playButton.innerHTML = '▶';  // Play icon
+                //initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
+                 localStorage.setItem('name', station.name);
+                    localStorage.setItem('url', station.url);
+                    localStorage.setItem('bit', station.bit);
+                    localStorage.setItem('location', station.location);
+                    localStorage.setItem('img', imgElement.src);
+                    localStorage.setItem('selectedCountryPaths', selectedCountryPath)
+
+                    // Correct usage of string interpolation with backticks
+                    window.location.href = `play.html?name=${station.name}`;
             });
         };
 
@@ -389,18 +369,26 @@ function displayStations(stations) {
             clearTimeout(loadTimeout);
             imgElement.src = 'mast.jpg';
             stationItem.addEventListener('click', () => {
-                playButton.innerHTML = '▶';  // Play icon
-                initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
+                //playButton.innerHTML = '▶';  // Play icon
+                //initAudioPlayer(station.url, 'mast.jpg', station.name, station.bit, station.location);
+                localStorage.setItem('name', station.name);
+                localStorage.setItem('url', station.url);
+                localStorage.setItem('bit', station.bit);
+                localStorage.setItem('location', station.location);
+                localStorage.setItem('img', imgElement.src);
+                localStorage.setItem('selectedCountryPaths', selectedCountryPath)
+
+                // Correct usage of string interpolation with backticks
+                window.location.href = `play.html?name=${station.name}`;
             });
         };
 
         stationList.appendChild(stationItem);
     });
 
+    document.getElementById('progress-loading').style.display = 'none';
+
     createPaginationControls(stations.length, totalPages);
-
-    initAudioPlayer(url, img, name, bit, location1)
-
 }
 
 
@@ -463,9 +451,17 @@ function createPaginationControls(totalStations, totalPages) {
         });
     }
 }
-//initAudioPlayer(url, img, name, bit, location1)
+
 
 function initAudioPlayer(url, image, stationName, bit, country) {
+
+     // Update UI with station information
+    const stationLogo = document.getElementById('stationLogo');
+    const breadcrumbs = document.getElementById('breadcrumbs');
+    document.getElementById('breadcrumbs').style.display = 'block';
+    document.querySelector('.countryTitle').style.display = 'none';
+     document.querySelector('.playing-station-wrap').style.display = 'block';
+    document.querySelector('.footer-div-wraaper').style.display = 'block';
     stationLogo.src = image;
     stationLogo.style.display = 'block';
     breadcrumbs.textContent = `Radio station | ${country} | ${stationName}`;
@@ -508,7 +504,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                     });
                     hls.on(Hls.Events.ERROR, (event, data) => {
                         showSpinner(false); // Hide the spinner on error
-                        //showCustomError('Error, Try again later.');
+                        showCustomError('Error, Try again later.');
                         const stationDetails = `${stationName} (${country}) (web)`;
                         handlePlaybackError(stationDetails, url, 'error')
                     });
@@ -519,12 +515,11 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                         showSpinner(false); // Hide the spinner when audio is ready
                     });
                      const stationDetails = `${stationName} (${country}) (Mobile)`;
-                     sendEmailNotification(stationDetails, url, 'success')
+                     sendEmailNotification(stationDetails, audioUrl, 'success')
                 } else {
-                    showSpinner(false); // Hide the spinner on error
-                    //showCustomError('Error, Try again later.');
+                    showCustomError('Error, Try again later.');
                     const stationDetails = `${stationName} (${country}) (Mobile)`;
-                    handlePlaybackError(stationDetails, url, 'error')
+                    handlePlaybackError(stationDetails, audioUrl, 'error')
                     return;
                 }
             } else {
@@ -533,16 +528,18 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                     showSpinner(false); // Hide the spinner when audio is ready
                 });
                 const stationDetails = `${stationName} (${country}) (Mobile)`;
-                     sendEmailNotification(stationDetails, url, 'success')
+                     sendEmailNotification(stationDetails, audioUrl, 'success')
             }
 
             // Handle error events for unsupported formats
             audio.addEventListener('error', function() {
                 showSpinner(false); // Hide the spinner on error
-                //showCustomError('Error, Try again later.');
+                showCustomError('Error, Try again later.');
                 const stationDetails = `${stationName} (${country}) (web)`;
                 handlePlaybackError(stationDetails, url, 'error')
             });
+
+
 
 }
 
@@ -660,66 +657,6 @@ function createStationLogoCanvas(stationName) {
 
 
 
-
-     /**
-         * Sanitize user input by escaping special characters.
-         */
-        function sanitizeInput(input) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#x27;',
-                "/": '&#x2F;',
-            };
-            return input.replace(/[&<>"'/]/g, (char) => map[char]);
-        }
-
-
-
-
-          /**
-         * Show toast notification.
-         */
-      function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('show');
-
-            // Hide the toast after 3 seconds
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
-
-
-    function submitForm(event) {
-    event.preventDefault(); // Prevent default form submission
-
-    const stationName = sanitizeInput(document.getElementById('stationName').value.trim());
-    const title = sanitizeInput(document.getElementById('title').value.trim());
-    const message = sanitizeInput(document.getElementById('message').value.trim());
-
-    if (!stationName || !title || !message) {
-        alert("All fields are required!");
-        return false;
-    }
-
-    // Call email notification function with sanitized inputs
-    sendEmailNotification(stationName, title, message);
-
-    // Show toast notification
-    showToast("Message sent successfully!");
-
-    // Clear the form after submission
-    document.getElementById('emailForm').reset();
-    return true;
-}
-
-
-
 function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
     // Validate the audio URL
     if (!audioUrl || typeof audioUrl !== 'string' || !audioUrl.startsWith('http')) {
@@ -821,5 +758,3 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
         loadCountries();
         fetchStations();
     };
-
-
