@@ -267,7 +267,6 @@ function setupPaginationButtons(data, totalPages) {
 }
 
 
-
 async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 5000, chunkSize = 1000) {
     const sanitizedCountryPath = encodeURIComponent(countryPath);
     const baseUrl2 =  `${document.querySelector('meta[name="api-base-url"]').content}/query_stations.php?path=${sanitizedCountryPath}`;
@@ -354,7 +353,7 @@ function filterStations() {
 
 
 function displayStations(stations) {
-    document.getElementById('footerr').style.display = 'block';
+
     document.getElementById('countryTitle').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'block';
     document.getElementById('downloadTitle').style.display = 'block';
