@@ -134,17 +134,9 @@ function renderCountryList(data, page, totalPages) {
         listItem.addEventListener('mouseenter', (event) => showTooltip(event, country.name));
         listItem.addEventListener('mouseleave', hideTooltip);
         listItem.addEventListener('click', () => {
-             audio.pause();
-             playButton.innerHTML = '▶';  // Play icon
-             isPlaying = false; // Play icon
-            document.getElementById('breadcrumbs').style.display = 'none';
-            document.querySelector('.playing-station-wrap').style.display = 'none';
-            document.querySelector('.footer-div-wraaper').style.display = 'none';
             selectedCountryPath = country.url;
             fetchStations(selectedCountryPath);
            // Retrieve the selected country name from localStorage or use a fallback
-
-
             // Update the .countryTitle element if it exists
             const countryTitleElement = document.querySelector('.countryTitle');
             countryTitleElement.textContent = `Live ${country.name} Radio Station Online`;
