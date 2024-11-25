@@ -99,16 +99,6 @@ text-decoration: none;
          margin:auto;
 }
 
-.footer-div-wraaper {
-         width: 100%;
-         margin-bottom: 18px;
-         z-index: 1000;
-          margin-right:auto;
-         margin-left:auto;
-         justify-content: center;
-         align-items: center;
-}
-
 .player-container {
          display: flex;
          flex-direction: row;
