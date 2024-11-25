@@ -272,17 +272,19 @@ form {
                               <!-- Centered Volume Control -->
                               <div class="col" style=" display: flex; align-items: center; justify-content: center;height:34px;">
                                   <div class="row d-flex align-items-center justify-content-center w-100">
-                                      <i class="bi bi-volume-off-fill text-white" style="margin-right: 10px;"></i>
-                                      <input
-                                              class="form-range"
-                                              style="width: 80%;"
-                                              type="range"
-                                              id="volumeControl"
-                                              min="0"
-                                              max="1"
-                                              step="0.01"
-                                              value="1"
-                                      >
+                                      <div class="d-flex align-items-center" style="width: 80%;">
+                                          <i class="bi bi-volume-off-fill text-white" style="margin-right: 10px; font-size: 1.5rem;"></i>
+                                          <input
+                                                  class="form-range"
+                                                  style="flex-grow: 1;"
+                                                  type="range"
+                                                  id="volumeControl"
+                                                  min="0"
+                                                  max="1"
+                                                  step="0.01"
+                                                  value="1"
+                                          >
+                                      </div>
                                   </div>
                               </div>
                           </div>
