@@ -415,7 +415,7 @@ function displayStations(stations) {
             clearTimeout(loadTimeout);
             imgElement.src = '/img/mast.jpg';
             stationItem.addEventListener('click', () => {
-               localStorage.setItem('name', station.name);
+            localStorage.setItem('name', station.name);
                                 localStorage.setItem('url', station.url);
                                 localStorage.setItem('bit', station.bit);
                                 localStorage.setItem('location', station.location);
@@ -606,12 +606,12 @@ playButton.addEventListener('click', () => {
 
 
               if (!isPlaying) {
-                    /*audio.play();
+                    audio.play();
                     playButton.innerHTML = '||';  // Pause icon
                     showSpinner(false); // Hide the spinner when playing starts
                     isPlaying = true;
-                    sendEmailNotification(stationDetailsGlobal, audio.src, 'success')*/
-                    initAudioPlayer(url, img, name, bit, location1)
+                    sendEmailNotification(stationDetailsGlobal, audio.src, 'success')
+                    //initAudioPlayer(url, img, name, bit, location1)
 
               } else {
                     audio.pause();
