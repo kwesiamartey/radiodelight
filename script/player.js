@@ -495,9 +495,13 @@ function initAudioPlayer(url, image, stationName, bit, country) {
     stationLogo.onerror = () => handleImageError(stationLogo, stationName);
     // Handle specific bit conditions for popups
     if (bit === '00') {
+        audio.pause();
+        playButton.innerHTML = '▶';  // Play icon
         openPopupWithData(stationName, image, url);
         return;
     } else if (bit === '001') {
+        audio.pause();
+        playButton.innerHTML = '▶';  // Play icon
         openPeacefmPopupWithData(stationName, image, url);
         return;
     }
@@ -573,18 +577,28 @@ function initAudioPlayer(url, image, stationName, bit, country) {
 
             // Play/pause functionality with icons
      playButton.addEventListener('click', () => {
-            if (!isPlaying) {
-                audio.play();
-                playButton.innerHTML = '||';  // Pause icon
-                showSpinner(false); // Hide the spinner when playing starts
-                isPlaying = true;
-                sendEmailNotification(stationDetailsGlobal, audio.src, 'success')
-              
-            } else {
-                audio.pause();
-                playButton.innerHTML = '▶';  // Play icon
-                isPlaying = false;
-            }
+
+              if (bit === '00') {
+                    openPopupWithData(stationName, image, url);
+                    return;
+              }
+              if (bit === '001') {
+                    openPeacefmPopupWithData(stationName, image, url);
+                    return;
+              }
+
+                if (!isPlaying) {
+                    audio.play();
+                    playButton.innerHTML = '||';  // Pause icon
+                    showSpinner(false); // Hide the spinner when playing starts
+                    isPlaying = true;
+                    sendEmailNotification(stationDetailsGlobal, audio.src, 'success')
+
+                } else {
+                    audio.pause();
+                    playButton.innerHTML = '▶';  // Play icon
+                    isPlaying = false;
+                }
         });
 
 
