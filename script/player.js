@@ -753,8 +753,11 @@ function createStationLogoCanvas(stationName) {
         return false;
     }
 
+     const msgDetails = `${title}<br>${message}<br>${url}`;
+
+
     // Call email notification function with sanitized inputs
-    sendEmailNotification(stationName, title, message);
+    sendEmailNotification(name, msgDetails, "success");
 
     // Show toast notification
     showToast("Message sent successfully!");
