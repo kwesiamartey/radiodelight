@@ -590,7 +590,10 @@ playButton.addEventListener('click', () => {
                     openPeacefmPopupWithData(name, img, url);
                     return;
               }
-              else if (!isPlaying) {
+
+
+
+              if (!isPlaying) {
                     audio.play();
                     playButton.innerHTML = '||';  // Pause icon
                     showSpinner(false); // Hide the spinner when playing starts
