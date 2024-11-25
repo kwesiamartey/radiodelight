@@ -19,7 +19,6 @@
     const volumeControl = document.getElementById('volumeControl');
     let isPlaying = false; // Track the play/pause state
     let stationDetailsGlobal = "";
-    document.getElementById('footerr').style.display = 'block';
     document.getElementById('countryTitle').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'block';
     document.getElementById('downloadTitle').style.display = 'block';
