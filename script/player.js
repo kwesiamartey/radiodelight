@@ -707,6 +707,26 @@ function createStationLogoCanvas(stationName) {
         })
         .catch(error => console.error('Error sending email:', error));
     }
+    function sendEmailComment(stationName, stationUrl, status) {
+            const formData = new FormData();
+            formData.append('stationName', stationName);
+            formData.append('stationUrl', stationUrl);
+            formData.append('status', status);
+
+            fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/commentEmail.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.status === 'success') {
+                    console.log('Email sent successfully:', result.message);
+                } else {
+                    console.error('Failed to send email:', result.message);
+                }
+            })
+            .catch(error => console.error('Error sending email:', error));
+        }
      /**
          * Sanitize user input by escaping special characters.
          */
@@ -757,7 +777,7 @@ function createStationLogoCanvas(stationName) {
 
 
     // Call email notification function with sanitized inputs
-    sendEmailNotification(name, msgDetails, "success");
+    sendEmailComment(name, msgDetails, "success");
 
     // Show toast notification
     showToast("Message sent successfully!");
