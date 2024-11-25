@@ -153,67 +153,58 @@
 
 </head>
 <body>
-
    <div id="head-top"></div>
     <!-- Additional info section under player-header -->
-    <div id="foo" style=" display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;">
-        <div class="progress-ring2" id="progress-loading" style="display:block;"></div>
-    </div>
-    <!-- Centered "mmi" Element -->
+    <div id="foo" style=" display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;"><div class="progress-ring2" id="progress-loading" style="display:block;"></div></div>
+   <div class="container">
 
+       <div id="errorModal" class="modal">
+           <div class="modal-content">
+               <span class="close-button" id="closeModal">&times;</span>
+               <p id="errorMessage">The station is currently unavailable. Please try using a different browser, such as Mozilla Firefox or Chrome, or check back in an hour as we work to resolve the issue.</p>
+           </div>
+       </div>
 
-<!--wrapper-->
-<div class="wrapper">
+       <div style="background-color:rgb(77, 100, 111); display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;margin-bottom: 21px;">
+           <span id="breadcrumbs" style="width:100%;padding:4px;margin:0px;font-size:13px;color:#fff;display:none;">Radio Station |  </span>
+       </div>
+       <h1 class="countryTitle" style="display: none;">Live Austria Radio Station Online</h1>
+       <div class="row">
+           <div class="col-md-9">
 
-    <div id="errorModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" id="closeModal">&times;</span>
-            <p id="errorMessage">The station is currently unavailable. Please try using a different browser, such as Mozilla Firefox or Chrome, or check back in an hour as we work to resolve the issue.</p>
-        </div>
-    </div>
+               <div id="stationListContent" class="station-grid"></div>
+               <br><br>
+               <div id="paginationControls"></div>
+               <br><br><br><br><br>
+           </div>
+           <div class="col-md-3">
+               <div id="country_list_wrapper" style="background-color:rgb(77, 100, 111);padding:12px;display:none;">
+                   <p id="countryTitle" style="display: none;background-color:#1c313a;padding:6px 12px;border-radius:4px;">Discover by Countries</p>
+                   <ul id="countryList" class="country-grid"></ul>
+                   <br>
+                   <div id="paginationControls1"></div>
+                   <br>
+                   <p id="downloadTitle" style="display: none;background-color:#1c313a;padding:6px 12px;border-radius:4px;">Download mobile app</p>
+                   <a href="https://play.google.com/store/apps/details?id=com.lornamobileappsdev.moldova">
+                       <img src="get_playstore.jpeg" style="width:100%; height:auto"/>
+                   </a>
+               </div>
 
-    <div class="container">
-        <div style="background-color:rgb(77, 100, 111); display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;margin-bottom: 21px;">
-            <span id="breadcrumbs" style="width:100%;padding:4px;margin:0px;font-size:13px;color:#fff;display:none;">Radio Station |  </span>
-        </div>
-        <h1 class="countryTitle" style="display: none;">Live Austria Radio Station Online</h1>
-        <div class="row">
-            <div class="col-md-9">
-
-                <div id="stationListContent" class="station-grid"></div>
-                <br><br>
-                <div id="paginationControls"></div>
-                <br><br><br><br><br>
-            </div>
-            <div class="col-md-3">
-                <div id="country_list_wrapper" style="background-color:rgb(77, 100, 111);padding:12px;display:none;">
-                    <p id="countryTitle" style="display: none;background-color:#1c313a;padding:6px 12px;border-radius:4px;">Discover by Countries</p>
-                    <ul id="countryList" class="country-grid"></ul>
-                    <br>
-                    <div id="paginationControls1"></div>
-                    <br>
-                    <p id="downloadTitle" style="display: none;background-color:#1c313a;padding:6px 12px;border-radius:4px;">Download mobile app</p>
-                    <a href="https://play.google.com/store/apps/details?id=com.lornamobileappsdev.moldova">
-                        <img src="get_playstore.jpeg" style="width:100%; height:auto"/>
-                    </a>
-                </div>
-
-                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966"
-                        crossorigin="anonymous"></script>
-                <ins class="adsbygoogle"
-                     style="display:block; text-align:center;"
-                     data-ad-layout="in-article"
-                     data-ad-format="fluid"
-                     data-ad-client="ca-pub-3366131354604966"
-                     data-ad-slot="7400832150"></ins>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-                </br>
-            </div>
-        </div>
-    </div>
-</div><!--wrapper ends here-->
+               <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966"
+                       crossorigin="anonymous"></script>
+               <ins class="adsbygoogle"
+                    style="display:block; text-align:center;"
+                    data-ad-layout="in-article"
+                    data-ad-format="fluid"
+                    data-ad-client="ca-pub-3366131354604966"
+                    data-ad-slot="7400832150"></ins>
+               <script>
+                   (adsbygoogle = window.adsbygoogle || []).push({});
+               </script>
+               </br>
+           </div>
+       </div>
+   </div>
    <div id="page-footer"></div>
 <!-- Include HLS.js for .m3u8 support -->
 <script src="https://cdn.jsdelivr.net/npm/howler"></script>
