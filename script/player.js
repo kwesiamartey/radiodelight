@@ -62,6 +62,28 @@ function loadContent(url, targetId) {
 loadContent('header.html', 'head-top');
 
 
+     function loadFooter(url, targetId) {
+          fetch(url)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
+              }
+              return response.text();
+            })
+            .then(data => {
+              const targetElement = document.getElementById(targetId);
+              if (targetElement) {
+                targetElement.innerHTML = data;
+              } else {
+                console.error(`Element with ID "${targetId}" not found.`);
+              }
+            })
+            .catch(error => console.error('Error loading content:', error));
+        }
+
+        loadFooter('footer.html', 'page-footer');
+
+
     // Update audio volume when the slider is adjusted
     volumeControl.addEventListener('input', function () {
         audio.volume = this.value;

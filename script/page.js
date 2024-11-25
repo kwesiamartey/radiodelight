@@ -43,6 +43,28 @@
     loadContent('header.html', 'head-top');
 
 
+     function loadFooter(url, targetId) {
+          fetch(url)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
+              }
+              return response.text();
+            })
+            .then(data => {
+              const targetElement = document.getElementById(targetId);
+              if (targetElement) {
+                targetElement.innerHTML = data;
+              } else {
+                console.error(`Element with ID "${targetId}" not found.`);
+              }
+            })
+            .catch(error => console.error('Error loading content:', error));
+        }
+
+        loadFooter('footer.html', 'page-footer');
+
+
 // Update the .countryTitle element if it exists
     const countryTitleElement = document.querySelector('.countryTitle');
     if (countryTitleElement) {
@@ -480,121 +502,6 @@ function createPaginationControls(totalStations, totalPages) {
 }
 
 
-function initAudioPlayer(url, image, stationName, bit, country) {
-
-     // Update UI with station information
-    const stationLogo = document.getElementById('stationLogo');
-    const breadcrumbs = document.getElementById('breadcrumbs');
-    document.getElementById('breadcrumbs').style.display = 'block';
-    document.querySelector('.countryTitle').style.display = 'none';
-     document.querySelector('.playing-station-wrap').style.display = 'block';
-    document.querySelector('.footer-div-wraaper').style.display = 'block';
-    stationLogo.src = image;
-    stationLogo.style.display = 'block';
-    breadcrumbs.textContent = `Radio station | ${country} | ${stationName}`;
-    stationDetailsGlobal = `${stationName} (${country}) (web)`;
-
-    // Handle image load errors
-    stationLogo.onerror = () => handleImageError(stationLogo, stationName);
-    // Handle specific bit conditions for popups
-    if (bit === '00') {
-        openPopupWithData(stationName, image, url);
-        return;
-    } else if (bit === '001') {
-        openPeacefmPopupWithData(stationName, image, url);
-        return;
-    }
-
-    // Reset HLS and audio element for fresh playback
-    if (typeof hls !== 'undefined' && hls !== null) {
-        hls.destroy();
-        hls = null;
-    }
-
-            audio.src = url;
-            const audioExtension = url.split('.').pop().toLowerCase();
-
-            // Show the spinner when loading starts
-            showSpinner(true);
-
-            // If it's an HLS (m3u8) stream, use HLS.js
-            if (audioExtension === 'm3u8') {
-                if (Hls.isSupported()) {
-                    if (hls) {
-                        hls.destroy(); // Destroy the previous instance if any
-                    }
-                    hls = new Hls();
-                    hls.loadSource(url);
-                    hls.attachMedia(audio);
-                    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                        showSpinner(false); // Hide the spinner once the audio is ready
-                    });
-                    hls.on(Hls.Events.ERROR, (event, data) => {
-                        showSpinner(false); // Hide the spinner on error
-                        showCustomError('Error, Try again later.');
-                        const stationDetails = `${stationName} (${country}) (web)`;
-                        handlePlaybackError(stationDetails, url, 'error')
-                    });
-                } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
-                    // For Safari or native HLS support
-                    audio.src = audioUrl;
-                    audio.addEventListener('canplay', () => {
-                        showSpinner(false); // Hide the spinner when audio is ready
-                    });
-                     const stationDetails = `${stationName} (${country}) (Mobile)`;
-                     sendEmailNotification(stationDetails, audioUrl, 'success')
-                } else {
-                    showCustomError('Error, Try again later.');
-                    const stationDetails = `${stationName} (${country}) (Mobile)`;
-                    handlePlaybackError(stationDetails, audioUrl, 'error')
-                    return;
-                }
-            } else {
-                // Use native HTML5 audio for other formats
-                audio.addEventListener('canplay', () => {
-                    showSpinner(false); // Hide the spinner when audio is ready
-                });
-                const stationDetails = `${stationName} (${country}) (Mobile)`;
-                     sendEmailNotification(stationDetails, audioUrl, 'success')
-            }
-
-            // Handle error events for unsupported formats
-            audio.addEventListener('error', function() {
-                showSpinner(false); // Hide the spinner on error
-                showCustomError('Error, Try again later.');
-                const stationDetails = `${stationName} (${country}) (web)`;
-                handlePlaybackError(stationDetails, url, 'error')
-            });
-
-
-
-}
-
-   // Show or hide the spinner
-    function showSpinner(show) {
-            progress.style.display = show ? 'block' : 'none';
-    }
-
-            // Play/pause functionality with icons
-     playButton.addEventListener('click', () => {
-            if (!isPlaying) {
-                audio.play();
-                playButton.innerHTML = '||';  // Pause icon
-                showSpinner(false); // Hide the spinner when playing starts
-                isPlaying = true;
-                sendEmailNotification(stationDetailsGlobal, audio.src, 'success')
-
-            } else {
-                audio.pause();
-                playButton.innerHTML = '▶';  // Play icon
-                isPlaying = false;
-            }
-        });
-
-
-
-
-
 function createStationLogoCanvas(stationName) {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
@@ -635,55 +542,6 @@ function createStationLogoCanvas(stationName) {
 }
 
 
-    function handlePlaybackError(url, stationName) {
-                progress.style.display = 'none';
-                const modal = document.getElementById('errorModal');
-                const closeModal = document.getElementById('closeModal');
-
-                // Display the modal
-                modal.style.display = 'block';
-
-                // Close the modal when the close button is clicked
-                closeModal.onclick = function () {
-                    modal.style.display = 'none';
-                };
-
-                // Close the modal when the user clicks outside of it
-                window.onclick = function (event) {
-                    if (event.target === modal) {
-                        modal.style.display = 'none';
-                    }
-                };
-
-                sendEmailNotification(stationName, url, 'error');
-}
-
-
-
-
-    function sendEmailNotification(stationName, stationUrl, status) {
-        const formData = new FormData();
-        formData.append('stationName', stationName);
-        formData.append('stationUrl', stationUrl);
-        formData.append('status', status);
-
-        fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/sendEmail.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(result => {
-            if (result.status === 'success') {
-                console.log('Email sent successfully:', result.message);
-            } else {
-                console.error('Failed to send email:', result.message);
-            }
-        })
-        .catch(error => console.error('Error sending email:', error));
-    }
-
-
-
 function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
     // Validate the audio URL
     if (!audioUrl || typeof audioUrl !== 'string' || !audioUrl.startsWith('http')) {
@@ -701,85 +559,6 @@ function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
         popupWindow.focus();
     }
 }
-
-
-function openPopupWithData(stationName, logoUrl, audioUrl) {
-    // Open a new window for the popup
-    const popupWindow = window.open("", "_blank", "width=300,height=700");
-    // Check if the popup was blocked by the browser
-    if (!popupWindow) {
-        alert("Popup blocked! Please allow popups for this site.");
-        return;
-    }
-
-    // Define the HTML structure and styling for the popup content
-    const popupContent = `
-        <!DOCTYPE html>
-        <html>
-            <head>
-                <title>${stationName} - Radio Station</title>
-                <style>
-                    body { font-family: Arial, sans-serif; padding: 20px; text-align: center; background-color: #f9f9f9; }
-                    h1 { color: #333; font-size: 1.2em; margin-top: 10px; }
-                    img { width: 100px; height: 100px; border-radius: 50%; margin-bottom: 15px; }
-                    audio { width: 100%; margin-top: 20px; }
-                    .container { display: flex; flex-direction: column; align-items: center; }
-                    .close-button { margin-top: 20px; padding: 8px 16px; font-size: 1em; cursor: pointer; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <img src="${logoUrl}" alt="${stationName} Logo">
-                    <h1>${stationName}</h1>
-
-                    <!-- Audio player for station -->
-                    <video controls autoplay>
-                        <source src="${audioUrl}" type="audio/mpeg">
-                        Your browser does not support the audio element.
-                    </video>
-
-                    <!-- Close button -->
-                    <button class="close-button" onclick="window.close()">Close</button>
-
-                    <!-- Ad container -->
-                    <ins class="adsbygoogle"
-                         style="display:block; text-align:center;"
-                         data-ad-layout="in-article"
-                         data-ad-format="fluid"
-                         data-ad-client="ca-pub-3366131354604966"
-                         data-ad-slot="3488022788"></ins>
-                </div>
-            </body>
-        </html>
-    `;
-
-    // Write the initial HTML content to the popup
-    popupWindow.document.write(popupContent);
-
-    // Add the Google Ads script asynchronously after the HTML content is loaded
-    const adScript = popupWindow.document.createElement("script");
-    adScript.async = true;
-    adScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966";
-    adScript.crossOrigin = "anonymous";
-    popupWindow.document.body.appendChild(adScript);
-
-    // Initialize the Google ad once the script loads
-    adScript.onload = () => {
-        const inlineScript = popupWindow.document.createElement("script");
-        inlineScript.textContent = "(adsbygoogle = window.adsbygoogle || []).push({});";
-        popupWindow.document.body.appendChild(inlineScript);
-    };
-
-    // Optional: Focus on the popup window
-    popupWindow.focus();
-}
-
-
-
-
-
-
-
 
     window.onload = () => {
         loadCountries();
