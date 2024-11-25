@@ -219,23 +219,8 @@ form {
 </head>
 <body>
 
-<div id="top-header" style="display: flex; flex-direction: column; background-color: #142229;">
-    <div class="container">
-        <div class="player-header">
-            <!-- Menu icon (if needed) -->
-            <!-- <span class="menu-icon" onclick="toggleMenu()">☰</span> -->
+  <div id="head-top"></div>
 
-            <!-- Logo and Title -->
-            <a href="index.html">
-                <img id="Logo" src="https://radiosdelight.com/fav_icon.jpg" alt="Station Logo">
-            </a>
-            <h3 class="mt-1 mb-2 text-white">Radios</h3>
-
-            <!-- Search bar -->
-            <input type="text" id="searchInput" placeholder="Search stations" oninput="filterStations()">
-        </div>
-    </div>
-</div>
   <!-- Additional info section under player-header -->
   <div id="foo" style=" display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;">
 
@@ -407,6 +392,20 @@ form {
     // Set initial volume (based on the slider's default value)
     audio.volume = volumeControl.value;
 
+
+    <script>
+    fetch('header.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('head-top').innerHTML = data;
+      })
+      .catch(error => console.error('Error loading content:', error));
+</script>
+
+
+
+
+
     // Update audio volume when the slider is adjusted
     volumeControl.addEventListener('input', function () {
         audio.volume = this.value;
@@ -417,6 +416,9 @@ form {
     volumeControl.addEventListener('input', function () {
         this.title = `Volume: ${Math.round(this.value * 100)}%`;
     });
+
+
+
 
 
  // Function to show tooltip
