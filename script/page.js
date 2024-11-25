@@ -73,8 +73,6 @@
         console.warn('.countryTitle element not found in the DOM.');
     }
 
-    // Set initial volume (based on the slider's default value)
-    audio.volume = volumeControl.value;
 
     // Update audio volume when the slider is adjusted
     volumeControl.addEventListener('input', function () {
