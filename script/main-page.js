@@ -357,8 +357,8 @@ function displayStations(stations) {
         const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name);
 
         stationItem.innerHTML = `
-            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: white;justify-content:center;align-content: center;">
-                <img style="width: 100%; height: 140px; object-fit: fill;"
+            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #142229;justify-content:center;align-content: center;">
+                <img style="width: 100%; height: 140px; object-fit: fill;background-color: #ffffff;"
                      src="${logoUrl}"
                      loading="lazy"
                      alt="${truncatedName}">
