@@ -330,21 +330,25 @@ function filterStations() {
 
 
 function displayStations(stations) {
-
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.getElementById('paginationControls');
     stationList.innerHTML = ''; // Clear current list
     paginationControls.innerHTML = ''; // Clear pagination
 
     if (stations.length === 0) {
-        stationList.innerHTML = <p>No results found.</p>;
+        stationList.innerHTML = `<p>No results found.</p>`;
         return;
     }
 
+    // Sort stations in descending order by name
+    stations.sort((a, b) => b.name.localeCompare(a.name)); // Reverse alphabetical order
+
+    // Calculate pagination details
     const totalPages = Math.ceil(stations.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
 
+    // Render stations
     stationsToDisplay.forEach(station => {
         const stationItem = document.createElement('div');
         stationItem.className = 'station-item';
@@ -352,14 +356,14 @@ function displayStations(stations) {
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
         const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name);
 
-        stationItem.innerHTML =
-            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #999;justify-content:center;align-content: center;">
+        stationItem.innerHTML = `
+            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: white;justify-content:center;align-content: center;">
                 <img style="width: 100%; height: 140px; object-fit: fill;"
                      src="${logoUrl}"
                      loading="lazy"
                      alt="${truncatedName}">
             </div>
-            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>;
+            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
 
         const imgElement = stationItem.querySelector('img');
 
@@ -370,17 +374,14 @@ function displayStations(stations) {
         imgElement.onload = () => {
             clearTimeout(loadTimeout);
             stationItem.addEventListener('click', () => {
-                //playButton.innerHTML = '▶';  // Play icon
-                //initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
-                 localStorage.setItem('name', station.name);
-                    localStorage.setItem('url', station.url);
-                    localStorage.setItem('bit', station.bit);
-                    localStorage.setItem('location', station.location);
-                    localStorage.setItem('img', imgElement.src);
-                    localStorage.setItem('selectedCountryPaths', selectedCountryPath)
-
-                    // Correct usage of string interpolation with backticks
-                    window.location.href = play.html?name=${station.name};
+                   localStorage.setItem('name', station.name);
+                                    localStorage.setItem('url', station.url);
+                                    localStorage.setItem('bit', station.bit);
+                                    localStorage.setItem('location', station.location);
+                                    localStorage.setItem('img', imgElement.src);
+                                    localStorage.setItem('selectedCountryPaths', selectedCountryPath)
+                playButton.innerHTML = '▶';  // Play icon
+                initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
             });
         };
 
@@ -388,17 +389,14 @@ function displayStations(stations) {
             clearTimeout(loadTimeout);
             imgElement.src = '/img/mast.jpg';
             stationItem.addEventListener('click', () => {
-                //playButton.innerHTML = '▶';  // Play icon
-                //initAudioPlayer(station.url, 'mast.jpg', station.name, station.bit, station.location);
-                localStorage.setItem('name', station.name);
-                localStorage.setItem('url', station.url);
-                localStorage.setItem('bit', station.bit);
-                localStorage.setItem('location', station.location);
-                localStorage.setItem('img', imgElement.src);
-                localStorage.setItem('selectedCountryPaths', selectedCountryPath)
-
-                // Correct usage of string interpolation with backticks
-                window.location.href = play.html?name=${station.name};
+            localStorage.setItem('name', station.name);
+                                localStorage.setItem('url', station.url);
+                                localStorage.setItem('bit', station.bit);
+                                localStorage.setItem('location', station.location);
+                                localStorage.setItem('img', imgElement.src);
+                                localStorage.setItem('selectedCountryPaths', selectedCountryPath)
+                playButton.innerHTML = '▶';  // Play icon
+                initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
             });
         };
 
@@ -406,10 +404,8 @@ function displayStations(stations) {
     });
 
     createPaginationControls(stations.length, totalPages);
+
 }
-
-
-
 
 function createPaginationControls(totalStations, totalPages) {
     const paginationControls = document.getElementById('paginationControls');
