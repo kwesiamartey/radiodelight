@@ -290,8 +290,6 @@ async function fetchStationsInChunks(baseUrl, chunkSize) {
     return filteredStations;
 }
 
-
-
 // Function to fetch data with retries
 async function fetchWithRetry(url, retries = 3, delay = 3000) {
     for (let attempt = 0; attempt < retries; attempt++) {
@@ -317,7 +315,6 @@ async function fetchWithRetry(url, retries = 3, delay = 3000) {
     }
 }
 
-
 // Function for chunk loading
 function filterStations() {
     const query = document.getElementById('searchInput').value.toLowerCase();
@@ -327,7 +324,6 @@ function filterStations() {
     currentPage = 1; // Reset to first page on filter
     displayStations(filteredStations);
 }
-
 
 function displayStations(stations) {
     const stationList = document.getElementById('stationListContent');
