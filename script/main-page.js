@@ -16,34 +16,37 @@
 
     const selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || "Italy";
 
-    function loadStationPlaceholders(){
-            // Generate 48 placeholders dynamically
-            stationListContent.innerHTML = Array.from({ length: 48 })
-                .map(() => `
-                    <div class="station-item">
-                        <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #142229; justify-content: center; align-content: center;">
-                            <div style="width: 100%; height: 140px; background-color: #142229;"></div>
-                        </div>
-                        <span style="display: inline-block; padding: 4px; background-color: #e0e0e0; width: 80%; height: 16px; border-radius: 4px;"></span>
+
+
+
+    function loadStationPlaceholders() {
+        // Generate 48 placeholders dynamically with shimmer effect
+        stationListContent.innerHTML = Array.from({ length: 48 })
+            .map(() => `
+                <div class="station-item shimmer">
+                    <div class="shimmer-box">
+                        <div class="shimmer-content"></div>
                     </div>
-                `)
-                .join('');
+                    <span class="shimmer-text"></span>
+                </div>
+            `)
+            .join('');
     }
 
-     function loadCountryPlaceholders(){
-             // Generate 48 placeholders dynamically
-              countryList.innerHTML = Array.from({ length: 32 })
-                        .map(() => `
-                            <div class="countryList">
-                                <div style="width: 100%; height: 38px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #142229; justify-content: center; align-content: center;">
-                                    <div style="width: 100%; height: 40px; background-color: #142229;"></div>
-                                </div>
-                                <span style="display: inline-block; padding: 4px; background-color: #e0e0e0; width: 100%; height: 16px; border-radius: 4px;"></span>
-                            </div>
-                        `)
-                        .join('');
 
-        }
+ function loadCountryPlaceholders() {
+     // Generate 32 placeholders dynamically with shimmer effect
+     countryList.innerHTML = Array.from({ length: 32 })
+         .map(() => `
+             <div class="countryList shimmer1">
+                 <div class="shimmer-box1">
+                     <div class="shimmer-content1"></div>
+                 </div>
+                 <span class="shimmer-text1"></span>
+             </div>
+         `)
+         .join('');
+ }
 
         /**
      * Function to fetch and insert HTML content into a target element
@@ -275,7 +278,6 @@ function setupPaginationButtons(data, totalPages) {
     }
 }
 
-
 async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 5000, chunkSize = 1000) {
     const sanitizedCountryPath = encodeURIComponent(countryPath);
     const baseUrl2 =  `${document.querySelector('meta[name="api-base-url"]').content}/query_stations.php?path=${sanitizedCountryPath}`;
@@ -401,7 +403,7 @@ function displayStations(stations) {
 
         const loadTimeout = setTimeout(() => {
             imgElement.src = '/img/mast.jpg'; // Fallback image after 5 seconds
-        }, 5000);
+        }, 9000);
 
         imgElement.onload = () => {
             clearTimeout(loadTimeout);

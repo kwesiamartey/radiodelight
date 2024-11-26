@@ -37,36 +37,35 @@
 
 
 
-    function loadStationPlaceholders(){
-                  // Generate 48 placeholders dynamically
-                  stationListContent.innerHTML = Array.from({ length: 48 })
-                      .map(() => `
-                          <div class="station-item">
-                              <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #142229; justify-content: center; align-content: center;">
-                                  <div style="width: 100%; height: 140px; background-color: #142229;"></div>
-                              </div>
-                              <span style="display: inline-block; padding: 4px; background-color: #e0e0e0; width: 80%; height: 16px; border-radius: 4px;"></span>
-                          </div>
-                      `)
-                      .join('');
-          }
-
-    function loadCountryPlaceholders(){
-                   // Generate 48 placeholders dynamically
-                    countryList.innerHTML = Array.from({ length: 32 })
-                              .map(() => `
-                                  <div class="countryList">
-                                      <div style="width: 100%; height: 38px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #142229; justify-content: center; align-content: center;">
-                                          <div style="width: 100%; height: 40px; background-color: #142229;"></div>
-                                      </div>
-                                      <span style="display: inline-block; padding: 4px; background-color: #e0e0e0; width: 100%; height: 16px; border-radius: 4px;"></span>
-                                  </div>
-                              `)
-                              .join('');
-
-              }
+   function loadStationPlaceholders() {
+           // Generate 48 placeholders dynamically with shimmer effect
+           stationListContent.innerHTML = Array.from({ length: 48 })
+               .map(() => `
+                   <div class="station-item shimmer">
+                       <div class="shimmer-box">
+                           <div class="shimmer-content"></div>
+                       </div>
+                       <span class="shimmer-text"></span>
+                   </div>
+               `)
+               .join('');
+       }
 
 
+    function loadCountryPlaceholders() {
+        // Generate 32 placeholders dynamically with shimmer effect
+        countryList.innerHTML = Array.from({ length: 32 })
+            .map(() => `
+                <div class="countryList shimmer">
+                    <div class="shimmer-box1">
+                        <div class="shimmer-content1"></div>
+                    </div>
+                    <span class="shimmer-text1"></span>
+                </div>
+            `)
+            .join('');
+
+}
    /**
    * Function to fetch and insert HTML content into a target element
    * @param {string} url - The URL of the HTML file to fetch
@@ -456,7 +455,7 @@ function displayStations(stations) {
 
         const loadTimeout = setTimeout(() => {
             imgElement.src = '/img/mast2.jpg'; // Fallback image after 3 seconds
-        }, 30500);
+        }, 9000);
 
         imgElement.onload = () => {
             clearTimeout(loadTimeout);

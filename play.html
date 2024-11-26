@@ -166,21 +166,105 @@
            background-color: #1c313a;  /* Set background color */
          }
 
-.footer-div-wraaper {
-      width: 100%;
-       height: 146px;
-      margin-bottom: 18px;
-      z-index: 1000;
-       margin-right:auto;
-      margin-left:auto;
-      justify-content: center;
-      align-items: center;
-}
+        .footer-div-wraaper {
+              width: 100%;
+               height: 146px;
+              margin-bottom: 18px;
+              z-index: 1000;
+               margin-right:auto;
+              margin-left:auto;
+              justify-content: center;
+              align-items: center;
+        }
 
-.p-m-player-v{
-      width:200px;
-      margin:auto;
-}
+        .p-m-player-v{
+              width:200px;
+              margin:auto;
+        }
+                /* Shimmer Animation */
+        @keyframes shimmer {
+            0% {
+                background-position: -200px 0;
+            }
+            100% {
+                background-position: 200px 0;
+            }
+        }
+
+        .station-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Box Placeholder */
+        .shimmer-box {
+            width: 100%;
+            height: 138px;
+            border-radius: 5px 5px 0 0;
+            position: relative;
+            overflow: hidden;
+            background-color: #142229;
+        }
+
+        .shimmer-content {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(90deg, #142229 25%, #1c313a 50%, #142229 75%);
+            background-size: 400px 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        /* Text Placeholder */
+        .shimmer-text {
+            display: inline-block;
+            padding: 4px;
+            background: linear-gradient(90deg, #e0e0e0 25%, #f5f5f5 50%, #e0e0e0 75%);
+            background-size: 400px 100%;
+            animation: shimmer 1.5s infinite;
+            width: 80%;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+
+    .countryList {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Box Placeholder */
+    .shimmer-box1 {
+        width: 100%;
+        height: 38px;
+        border-radius: 5px;
+        position: relative;
+        overflow: hidden;
+        background-color: #142229;
+    }
+
+    .shimmer-content1 {
+        width: 100%;
+        height: 40px;
+        background: linear-gradient(90deg, #142229 25%, #1c313a 50%, #142229 75%);
+        background-size: 400px 100%;
+        animation: shimmer 1.5s infinite;
+    }
+
+    /* Text Placeholder */
+    .shimmer-text1 {
+        display: inline-block;
+        padding: 4px;
+        background: linear-gradient(90deg, #e0e0e0 25%, #f5f5f5 50%, #e0e0e0 75%);
+        background-size: 400px 100%;
+        animation: shimmer 1.5s infinite;
+        width: 100%;
+        height: 16px;
+        border-radius: 4px;
+    }
 
 </style>
 </head>
@@ -204,7 +288,7 @@
 
               <!------- the player start here ---->
               <div class="footer-div-wraaper">
-                  <div class="col playing-station-wrap" style="background-color: #142229; display: none; align-items: center; justify-content: center;margin:auto;">
+                  <div class="col playing-station-wrap" style="background-color: #142229; display: none; align-items: center; justify-content: center;margin:auto;border-radius: 0px 6px 6px 0px;">
                       <div class="row" style="display: flex; align-items: center; height: auto; width: 100%;">
 
                           <!-- First column: Station Image -->
