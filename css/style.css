@@ -8,16 +8,11 @@
          justify-content: center; /* Center horizontally */
          align-items: center;     /* Center vertically if needed */
          flex-direction: column;
-         margin-top: 50px; /* Match the height of #top-header */
+         margin-top: 36px; /* Match the height of #top-header */
      }
    .container{
      width:75%
  }
-
-
-
-
-
 
 .progress-ring2 {
          width: 43px;

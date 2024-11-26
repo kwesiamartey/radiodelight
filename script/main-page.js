@@ -7,7 +7,7 @@
     let currentPage = 1;
     const itemsPerPage = 48;
     let currentPage1 = 1;
-    const itemsPerPage1 = 40; // Number of countries per page
+    const itemsPerPage1 = 24; // Number of countries per page
     const progress = document.getElementById('progress');
     let isPlaying = false; // Track the play/pause state
     let stationDetailsGlobal = "";
@@ -337,7 +337,7 @@ function displayStations(stations) {
         return;
     }
 
-    const itemsPerPage = 10;  // Example value
+    const itemsPerPage = 48;  // Example value
     const currentPage = 1;    // Example value
 
     // Sort stations in descending order by name
@@ -371,32 +371,47 @@ function displayStations(stations) {
             imgElement.src = '/img/mast2.jpg'; // Fallback image after 5 seconds
         }, 5000);
 
-        imgElement.onload = () => {
-            clearTimeout(loadTimeout);
-        };
+      imgElement.onload = () => {
+                  clearTimeout(loadTimeout);
+                  stationItem.addEventListener('click', () => {
+                      //playButton.innerHTML = '▶';  // Play icon
+                      //initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
+                       localStorage.setItem('name', station.name);
+                          localStorage.setItem('url', station.url);
+                          localStorage.setItem('bit', station.bit);
+                          localStorage.setItem('location', station.location);
+                          localStorage.setItem('img', imgElement.src);
+                          localStorage.setItem('selectedCountryPaths', selectedCountryPath)
 
-        imgElement.onerror = () => {
-            clearTimeout(loadTimeout);
-            imgElement.src = '/img/mast.jpg';
-        };
+                          // Correct usage of string interpolation with backticks
+                          window.location.href = `play.html?name=${station.name}`;
+                  });
+              };
 
-        const clickListener = () => {
-            localStorage.setItem('name', station.name);
-            localStorage.setItem('url', station.url);
-            localStorage.setItem('bit', station.bit);
-            localStorage.setItem('location', station.location);
-            localStorage.setItem('img', imgElement.src);
-            localStorage.setItem('selectedCountryPaths', selectedCountryPath);
-            playButton.innerHTML = '▶';  // Play icon
-            initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
-        };
+              imgElement.onerror = () => {
+                  clearTimeout(loadTimeout);
+                  imgElement.src = 'mast.jpg';
+                  stationItem.addEventListener('click', () => {
+                      //playButton.innerHTML = '▶';  // Play icon
+                      //initAudioPlayer(station.url, 'mast.jpg', station.name, station.bit, station.location);
+                      localStorage.setItem('name', station.name);
+                      localStorage.setItem('url', station.url);
+                      localStorage.setItem('bit', station.bit);
+                      localStorage.setItem('location', station.location);
+                      localStorage.setItem('img', imgElement.src);
+                      localStorage.setItem('selectedCountryPaths', selectedCountryPath)
 
-        stationItem.addEventListener('click', clickListener);
+                      // Correct usage of string interpolation with backticks
+                      window.location.href = `play.html?name=${station.name}`;
+                  });
+              };
 
-        stationList.appendChild(stationItem);
-    });
+              stationList.appendChild(stationItem);
+          });
 
-    createPaginationControls(stations.length, totalPages);
+
+
+          createPaginationControls(stations.length, totalPages);
 }
 
 
