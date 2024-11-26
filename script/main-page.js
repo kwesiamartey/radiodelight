@@ -331,12 +331,6 @@ function filterStations() {
 
 function displayStations(stations) {
 
-    document.getElementById('countryTitle').style.display = 'block';
-    document.querySelector('.countryTitle').style.display = 'block';
-    document.getElementById('downloadTitle').style.display = 'block';
-    document.getElementById('country_list_wrapper').style.display = 'block';
-
-
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.getElementById('paginationControls');
     stationList.innerHTML = ''; // Clear current list
