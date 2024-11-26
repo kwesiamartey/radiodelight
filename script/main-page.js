@@ -411,8 +411,6 @@ function displayStations(stations) {
         stationList.appendChild(stationItem);
     });
 
-    document.getElementById('progress-loading').style.display = 'none';
-
     createPaginationControls(stations.length, totalPages);
 }
 
