@@ -1,19 +1,3 @@
- html, body {
-         margin: 0;
-         padding: 0;
-         font-family: "Open Sans", sans-serif;
-         background-color: #1c313a;
-         overflow-x: hidden; /* Prevent horizontal scrolling */
-         display: flex;
-         justify-content: center; /* Center horizontally */
-         align-items: center;     /* Center vertically if needed */
-         flex-direction: column;
-         margin-top: 36px; /* Match the height of #top-header */
-     }
-   .container{
-     width:75%
- }
-
 .progress-ring2 {
          width: 43px;
          height: 43px;
@@ -90,7 +74,6 @@ text-decoration: none;
 }
 
 
-
 .player-container {
          display: flex;
          flex-direction: row;
@@ -128,7 +111,7 @@ text-decoration: none;
      }
 
 
-     #countryList li{
+ #countryList li{
 
        margin:0px;
          height:60px;
@@ -149,8 +132,6 @@ text-decoration: none;
          text-decoration: none;
          margin-right: 10px;
      }
-
-
 
 
       #web_title h4{

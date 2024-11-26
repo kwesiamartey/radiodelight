@@ -368,7 +368,7 @@ function displayStations(stations) {
         const imgElement = stationItem.querySelector('img');
 
         const loadTimeout = setTimeout(() => {
-            imgElement.src = '/img/mast2.jpg'; // Fallback image after 5 seconds
+            imgElement.src = '/img/mast.jpg'; // Fallback image after 5 seconds
         }, 5000);
 
       imgElement.onload = () => {
@@ -390,7 +390,7 @@ function displayStations(stations) {
 
               imgElement.onerror = () => {
                   clearTimeout(loadTimeout);
-                  imgElement.src = 'mast.jpg';
+                  imgElement.src = '/img/mast.jpg';
                   stationItem.addEventListener('click', () => {
                       //playButton.innerHTML = '▶';  // Play icon
                       //initAudioPlayer(station.url, 'mast.jpg', station.name, station.bit, station.location);

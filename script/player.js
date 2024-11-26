@@ -34,6 +34,35 @@
     // Set initial volume (based on the slider's default value)
     audio.volume = volumeControl.value;
 
+
+
+
+   /**
+   * Function to fetch and insert HTML content into a target element
+   * @param {string} url - The URL of the HTML file to fetch
+   * @param {string} targetId - The ID of the target element to inject content into
+   */
+  function loadContent(url, targetId) {
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
+        }
+        return response.text();
+      })
+      .then(data => {
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+          targetElement.innerHTML = data;
+        } else {
+          console.error(`Element with ID "${targetId}" not found.`);
+        }
+      })
+      .catch(error => console.error('Error loading content:', error));
+  }
+
+  loadContent('comment.html', 'commenting');
+
     /**
  * Function to fetch and insert HTML content into a target element
  * @param {string} url - The URL of the HTML file to fetch
@@ -243,6 +272,8 @@ function setupPaginationButtons(data, totalPages) {
             addPageButton(totalPages);
         }
     }
+
+
 
     // Next button
     const nextButton = document.createElement('button');

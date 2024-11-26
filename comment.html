@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <style>
+        <style>
+
+
+
+  form {
+           max-width: 100%;
+           padding: 20px;
+           border: 1px solid #ccc;
+           border-radius: 5px;
+
+       }
+
+       label {
+           display: block;
+           margin: 10px 0 5px;
+       }
+       textarea, btnButton {
+           width: 100%;
+           padding: 10px;
+           margin-bottom: 15px;
+           border: 1px solid #ccc;
+           border-radius: 4px;
+       }
+       #title{
+           width: 100%;
+           padding: 10px;
+           margin-bottom: 15px;
+           border: 1px solid #ccc;
+           border-radius: 4px;
+       }
+       #stationName{
+           width: 100%;
+           padding: 10px;
+           margin-bottom: 15px;
+           border: 1px solid #ccc;
+           border-radius: 4px;
+       }
+       .btnButton {
+           background-color: #007BFF;
+           color: white;
+           border: none;
+           padding:10px 20px;
+           border-radius:12px;
+           cursor: pointer;
+       }
+       .btnButton:hover {
+           background-color: #0056b3;
+       }
+        /* Toast Styles */
+       .toast {
+           visibility: hidden;
+           min-width: 250px;
+           margin-left: -125px;
+           background-color: #333;
+           color: white;
+           text-align: center;
+           border-radius: 5px;
+           padding: 15px;
+           position: fixed;
+           z-index: 1;
+           left: 50%;
+           bottom: 30px;
+           font-size: 16px;
+           opacity: 0;
+           transition: opacity 0.5s, visibility 0.5s;
+       }
+       .toast.show {
+           visibility: visible;
+           opacity: 1;
+       }
+    </style>
+
+</head>
+<body>
+<div id="container">
+    <h1 class="mt-1 mb-2 text-white">Send Comment</h1>
+    <form id="emailForm" onsubmit="submitForm(event); return false;">
+        <label class="mt-1 mb-2 text-white" for="stationName">Station Name</label>
+        <input type="text" id="stationName" placeholder="Enter station name" required />
+
+        <label class="mt-1 mb-2 text-white" for="title">Title</label>
+        <input type="text" id="title" placeholder="Enter comment title" required />
+
+        <label class="mt-1 mb-2 text-white" for="message">Message</label>
+        <textarea id="message" placeholder="Enter comment message" rows="5" required></textarea>
+        <br><br>
+        <button class="btnButton" type="button" onclick="submitForm()">Send Email</button>
+    </form>
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Message sent successfully!</div>
+</div>
+</body>
+
+</html>

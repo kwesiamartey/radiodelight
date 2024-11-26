@@ -152,7 +152,9 @@
 
     <style>
         html,body {
-            padding-top: 36px; /* Space for fixed header */
+            font-family: "Open Sans", sans-serif;
+            background-color: #1c313a;
+            margin-top: 74px; /* Match the height of #top-header */
             font-family: "Open Sans", sans-serif;
             background-color: #1c313a;
         }
@@ -179,7 +181,7 @@
 <main class="container my-4" >
     <div class="row">
         <!-- Main Content -->
-        <section class="col-md-9 p-3">
+        <section class="col-md-9 p-2">
             <div id="stationListContent" class="station-grid"></div>
             <br><br>
             <div id="paginationControls"></div>
@@ -187,7 +189,7 @@
         </section>
 
         <!-- Sidebar -->
-        <aside class="col-md-3  p-3">
+        <aside class="col-md-3  p-2">
             <div id="country_list_wrapper" style="background-color:rgb(77, 100, 111);padding:12px;display:block;height:auto;">
                 <p id="countryTitle" style="display: block;background-color:#1c313a;padding:6px 12px;border-radius:4px;">Discover by Countries</p>
                 <ul id="countryList" class="country-grid"></ul>
@@ -217,7 +219,7 @@
 </main>
 
 <!-- Footer -->
-<footer class="bg-dark text-light py-3">
+<footer style="background-color: rgb(77, 100, 111);" class=" text-light py-3">
     <div id="page-footer"></div>
 </footer>
 
