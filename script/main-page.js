@@ -7,10 +7,37 @@
     let currentPage = 1;
     const itemsPerPage = 48;
     let currentPage1 = 1;
-    const itemsPerPage1 = 24; // Number of countries per page
+    const itemsPerPage1 = 32; // Number of countries per page
     const progress = document.getElementById('progress');
     let isPlaying = false; // Track the play/pause state
     let stationDetailsGlobal = "";
+    const stationListContent = document.getElementById('stationListContent');
+    const countryList = document.getElementById('countryList');
+    // Generate 48 placeholders dynamically
+    stationListContent.innerHTML = Array.from({ length: 48 })
+        .map(() => `
+            <div class="station-item">
+                <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #142229; justify-content: center; align-content: center;">
+                    <div style="width: 100%; height: 140px; background-color: #142229;"></div>
+                </div>
+                <span style="display: inline-block; padding: 4px; background-color: #e0e0e0; width: 80%; height: 16px; border-radius: 4px;"></span>
+            </div>
+        `)
+        .join('');
+
+        // Generate 48 placeholders dynamically
+        countryList.innerHTML = Array.from({ length: 32 })
+            .map(() => `
+                <div class="countryList">
+                    <div style="width: 100%; height: 38px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #142229; justify-content: center; align-content: center;">
+                        <div style="width: 100%; height: 40px; background-color: #142229;"></div>
+                    </div>
+                    <span style="display: inline-block; padding: 4px; background-color: #e0e0e0; width: 100%; height: 16px; border-radius: 4px;"></span>
+                </div>
+            `)
+            .join('');
+
+
 
     const selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || "Austria";
 
@@ -105,7 +132,7 @@
 
 
 function loadCountries() {
-const sanitizedCountryPath = encodeURIComponent('query_countries.php');
+const sanitizedCountryPath = encodeURIComponent('test_countries.php');
 const baseUrl = `${document.querySelector('meta[name="api-base-url"]').content}/${sanitizedCountryPath}`;
 
     fetch(baseUrl)
@@ -130,7 +157,7 @@ function renderCountryList(data, page, totalPages) {
     for (let i = startIndex; i < endIndex; i++) {
         const country = data[i];
         const listItem = document.createElement('li');
-        listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag" style="width:50px;height:45px;">`;
+        listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag" style="width:100%;height:40px;">`;
         listItem.addEventListener('mouseenter', (event) => showTooltip(event, country.name));
         listItem.addEventListener('mouseleave', hideTooltip);
         listItem.addEventListener('click', () => {
@@ -246,7 +273,7 @@ function setupPaginationButtons(data, totalPages) {
 
 async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 5000, chunkSize = 1000) {
     const sanitizedCountryPath = encodeURIComponent(countryPath);
-    const baseUrl2 =  `${document.querySelector('meta[name="api-base-url"]').content}/query_stations.php?path=${sanitizedCountryPath}`;
+    const baseUrl2 =  `${document.querySelector('meta[name="api-base-url"]').content}/test_get_station.php?path=${sanitizedCountryPath}`;
 
     try {
         // Attempt to fetch the entire dataset at once
@@ -326,6 +353,7 @@ function filterStations() {
 }
 
 
+
 function displayStations(stations) {
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.getElementById('paginationControls');
@@ -340,8 +368,7 @@ function displayStations(stations) {
     const itemsPerPage = 48;  // Example value
     const currentPage = 1;    // Example value
 
-    // Sort stations in descending order by name
-    stations.sort((a, b) => b.name.localeCompare(a.name)); // Reverse alphabetical order
+    // No sorting, stations remain in the order received from the server
 
     // Calculate pagination details
     const totalPages = Math.ceil(stations.length / itemsPerPage);
@@ -371,48 +398,41 @@ function displayStations(stations) {
             imgElement.src = '/img/mast.jpg'; // Fallback image after 5 seconds
         }, 5000);
 
-      imgElement.onload = () => {
-                  clearTimeout(loadTimeout);
-                  stationItem.addEventListener('click', () => {
-                      //playButton.innerHTML = '▶';  // Play icon
-                      //initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
-                       localStorage.setItem('name', station.name);
-                          localStorage.setItem('url', station.url);
-                          localStorage.setItem('bit', station.bit);
-                          localStorage.setItem('location', station.location);
-                          localStorage.setItem('img', imgElement.src);
-                          localStorage.setItem('selectedCountryPaths', selectedCountryPath)
+        imgElement.onload = () => {
+            clearTimeout(loadTimeout);
+            stationItem.addEventListener('click', () => {
+                localStorage.setItem('name', station.name);
+                localStorage.setItem('url', station.url);
+                localStorage.setItem('bit', station.bit);
+                localStorage.setItem('location', station.location);
+                localStorage.setItem('img', imgElement.src);
+                localStorage.setItem('selectedCountryPaths', selectedCountryPath);
 
-                          // Correct usage of string interpolation with backticks
-                          window.location.href = `play.html?name=${station.name}`;
-                  });
-              };
+                window.location.href = `play.html?name=${station.name}`;
+            });
+        };
 
-              imgElement.onerror = () => {
-                  clearTimeout(loadTimeout);
-                  imgElement.src = '/img/mast.jpg';
-                  stationItem.addEventListener('click', () => {
-                      //playButton.innerHTML = '▶';  // Play icon
-                      //initAudioPlayer(station.url, 'mast.jpg', station.name, station.bit, station.location);
-                      localStorage.setItem('name', station.name);
-                      localStorage.setItem('url', station.url);
-                      localStorage.setItem('bit', station.bit);
-                      localStorage.setItem('location', station.location);
-                      localStorage.setItem('img', imgElement.src);
-                      localStorage.setItem('selectedCountryPaths', selectedCountryPath)
+        imgElement.onerror = () => {
+            clearTimeout(loadTimeout);
+            imgElement.src = '/img/mast.jpg';
+            stationItem.addEventListener('click', () => {
+                localStorage.setItem('name', station.name);
+                localStorage.setItem('url', station.url);
+                localStorage.setItem('bit', station.bit);
+                localStorage.setItem('location', station.location);
+                localStorage.setItem('img', imgElement.src);
+                localStorage.setItem('selectedCountryPaths', selectedCountryPath);
 
-                      // Correct usage of string interpolation with backticks
-                      window.location.href = `play.html?name=${station.name}`;
-                  });
-              };
+                window.location.href = `play.html?name=${station.name}`;
+            });
+        };
 
-              stationList.appendChild(stationItem);
-          });
+        stationList.appendChild(stationItem);
+    });
 
-
-
-          createPaginationControls(stations.length, totalPages);
+    createPaginationControls(stations.length, totalPages);
 }
+
 
 
 

@@ -13,7 +13,7 @@
     let currentPage = 1;
     const itemsPerPage = 18;
     let currentPage1 = 1;
-    const itemsPerPage1 = 24; // Number of countries per page
+    const itemsPerPage1 = 32; // Number of countries per page
     const progress = document.getElementById('progress');
     const playButton = document.querySelector('.play-button');
     const volumeControl = document.getElementById('volumeControl');
@@ -33,6 +33,33 @@
 
     // Set initial volume (based on the slider's default value)
     audio.volume = volumeControl.value;
+
+
+        const stationListContent = document.getElementById('stationListContent');
+        const countryList = document.getElementById('countryList');
+        // Generate 48 placeholders dynamically
+        stationListContent.innerHTML = Array.from({ length: 18 })
+            .map(() => `
+                <div class="station-item">
+                    <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #142229; justify-content: center; align-content: center;">
+                        <div style="width: 100%; height: 140px; background-color: #142229;"></div>
+                    </div>
+                    <span style="display: inline-block; padding: 4px; background-color: #e0e0e0; width: 80%; height: 16px; border-radius: 4px;"></span>
+                </div>
+            `)
+            .join('');
+
+            // Generate 48 placeholders dynamically
+            countryList.innerHTML = Array.from({ length: 32 })
+                .map(() => `
+                    <div class="countryList">
+                        <div style="width: 100%; height: 38px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #142229; justify-content: center; align-content: center;">
+                            <div style="width: 100%; height: 40px; background-color: #142229;"></div>
+                        </div>
+                        <span style="display: inline-block; padding: 4px; background-color: #e0e0e0; width: 100%; height: 16px; border-radius: 4px;"></span>
+                    </div>
+                `)
+                .join('');
 
 
 
