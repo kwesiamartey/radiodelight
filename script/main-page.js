@@ -132,7 +132,7 @@
 
 
 function loadCountries() {
-const sanitizedCountryPath = encodeURIComponent('test_countries.php');
+const sanitizedCountryPath = encodeURIComponent('query_countries.php');
 const baseUrl = `${document.querySelector('meta[name="api-base-url"]').content}/${sanitizedCountryPath}`;
 
     fetch(baseUrl)
@@ -273,7 +273,7 @@ function setupPaginationButtons(data, totalPages) {
 
 async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 5000, chunkSize = 1000) {
     const sanitizedCountryPath = encodeURIComponent(countryPath);
-    const baseUrl2 =  `${document.querySelector('meta[name="api-base-url"]').content}/test_get_station.php?path=${sanitizedCountryPath}`;
+    const baseUrl2 =  `${document.querySelector('meta[name="api-base-url"]').content}/query_stations.php?path=${sanitizedCountryPath}`;
 
     try {
         // Attempt to fetch the entire dataset at once
