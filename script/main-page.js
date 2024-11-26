@@ -330,7 +330,7 @@ function filterStations() {
 
 
 function displayStations(stations) {
-
+    document.getElementById('footerr').style.display = 'block';
     document.getElementById('countryTitle').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'block';
     document.getElementById('downloadTitle').style.display = 'block';
@@ -359,8 +359,8 @@ function displayStations(stations) {
         const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name);
 
         stationItem.innerHTML = `
-            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #142229;justify-content:center;align-content: center;">
-                <img style="width: 100%; height: 140px; object-fit: fill;background-color:#fff;"
+            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: white;justify-content:center;align-content: center;">
+                <img style="width: 100%; height: 140px; object-fit: fill;"
                      src="${logoUrl}"
                      loading="lazy"
                      alt="${truncatedName}">
@@ -370,7 +370,7 @@ function displayStations(stations) {
         const imgElement = stationItem.querySelector('img');
 
         const loadTimeout = setTimeout(() => {
-            imgElement.src = '/img/mast2.jpg'; // Fallback image after 3 seconds
+            imgElement.src = 'mast2.jpg'; // Fallback image after 3 seconds
         }, 30500);
 
         imgElement.onload = () => {
@@ -392,7 +392,7 @@ function displayStations(stations) {
 
         imgElement.onerror = () => {
             clearTimeout(loadTimeout);
-            imgElement.src = '/img/mast.jpg';
+            imgElement.src = 'mast.jpg';
             stationItem.addEventListener('click', () => {
                 //playButton.innerHTML = '▶';  // Play icon
                 //initAudioPlayer(station.url, 'mast.jpg', station.name, station.bit, station.location);
@@ -411,10 +411,10 @@ function displayStations(stations) {
         stationList.appendChild(stationItem);
     });
 
-    document.getElementById('progress-loading').style.display = 'none';
 
     createPaginationControls(stations.length, totalPages);
 }
+
 
 
 
