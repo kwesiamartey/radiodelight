@@ -17,8 +17,6 @@
     const selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || "Italy";
 
 
-
-
     function loadStationPlaceholders() {
         // Generate 48 placeholders dynamically with shimmer effect
         stationListContent.innerHTML = Array.from({ length: 48 })
@@ -34,7 +32,7 @@
     }
 
 
- function loadCountryPlaceholders() {
+    function loadCountryPlaceholders() {
      // Generate 32 placeholders dynamically with shimmer effect
      countryList.innerHTML = Array.from({ length: 32 })
          .map(() => `
@@ -72,7 +70,7 @@
         .catch(error => console.error('Error loading content:', error));
     }
 
-    loadContent('header.html', 'head-top');
+
 
 
      function loadFooter(url, targetId) {
@@ -93,8 +91,6 @@
             })
             .catch(error => console.error('Error loading content:', error));
         }
-
-     loadFooter('footer.html', 'page-footer');
 
 
 // Update the .countryTitle element if it exists
@@ -563,8 +559,11 @@ function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
 }
 
     window.onload = () => {
+       loadContent('header.html', 'head-top');
+        loadFooter('footer.html', 'page-footer');
         loadStationPlaceholders()
         loadCountryPlaceholders()
         loadCountries();
         fetchStations();
+
     };

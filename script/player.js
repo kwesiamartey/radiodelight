@@ -51,7 +51,6 @@
                .join('');
        }
 
-
     function loadCountryPlaceholders() {
         // Generate 32 placeholders dynamically with shimmer effect
         countryList.innerHTML = Array.from({ length: 32 })
@@ -90,14 +89,13 @@
       .catch(error => console.error('Error loading content:', error));
   }
 
-  loadContent('comment.html', 'commenting');
 
     /**
  * Function to fetch and insert HTML content into a target element
  * @param {string} url - The URL of the HTML file to fetch
  * @param {string} targetId - The ID of the target element to inject content into
  */
-function loadContent(url, targetId) {
+ function loadContent(url, targetId) {
   fetch(url)
     .then(response => {
       if (!response.ok) {
@@ -115,8 +113,6 @@ function loadContent(url, targetId) {
     })
     .catch(error => console.error('Error loading content:', error));
 }
-
-loadContent('header.html', 'head-top');
 
 
      function loadFooter(url, targetId) {
@@ -138,8 +134,6 @@ loadContent('header.html', 'head-top');
             .catch(error => console.error('Error loading content:', error));
         }
 
-        loadFooter('footer.html', 'page-footer');
-
 
     // Update audio volume when the slider is adjusted
     volumeControl.addEventListener('input', function () {
@@ -154,7 +148,6 @@ loadContent('header.html', 'head-top');
 
 
 
- initAudioPlayer(url, img, name, bit, location1)
 
  // Function to show tooltip
   function showTooltip(event, text) {
@@ -941,4 +934,8 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
         loadCountryPlaceholders()
         loadCountries();
         fetchStations();
+        loadFooter('footer.html', 'page-footer');
+        loadContent('comment.html', 'commenting');
+        loadContent('header.html', 'head-top');
+        initAudioPlayer(url, img, name, bit, location1)
     };
