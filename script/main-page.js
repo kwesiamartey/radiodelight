@@ -1,5 +1,5 @@
  let stationData = []; // Store stations here to avoid multiple fetches
-    let selectedCountryPath = localStorage.getItem('selectedCountryPath') || "AustriaRadioList.json";
+    let selectedCountryPath = localStorage.getItem('selectedCountryPath') || "italyRadioList.json";
 
     //let selectedCountryPath = '';
    const audio = new Audio();
@@ -13,33 +13,37 @@
     let stationDetailsGlobal = "";
     const stationListContent = document.getElementById('stationListContent');
     const countryList = document.getElementById('countryList');
-    // Generate 48 placeholders dynamically
-    stationListContent.innerHTML = Array.from({ length: 48 })
-        .map(() => `
-            <div class="station-item">
-                <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #142229; justify-content: center; align-content: center;">
-                    <div style="width: 100%; height: 140px; background-color: #142229;"></div>
-                </div>
-                <span style="display: inline-block; padding: 4px; background-color: #e0e0e0; width: 80%; height: 16px; border-radius: 4px;"></span>
-            </div>
-        `)
-        .join('');
 
-        // Generate 48 placeholders dynamically
-        countryList.innerHTML = Array.from({ length: 32 })
-            .map(() => `
-                <div class="countryList">
-                    <div style="width: 100%; height: 38px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #142229; justify-content: center; align-content: center;">
-                        <div style="width: 100%; height: 40px; background-color: #142229;"></div>
+    const selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || "Italy";
+
+    function loadStationPlaceholders(){
+            // Generate 48 placeholders dynamically
+            stationListContent.innerHTML = Array.from({ length: 48 })
+                .map(() => `
+                    <div class="station-item">
+                        <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #142229; justify-content: center; align-content: center;">
+                            <div style="width: 100%; height: 140px; background-color: #142229;"></div>
+                        </div>
+                        <span style="display: inline-block; padding: 4px; background-color: #e0e0e0; width: 80%; height: 16px; border-radius: 4px;"></span>
                     </div>
-                    <span style="display: inline-block; padding: 4px; background-color: #e0e0e0; width: 100%; height: 16px; border-radius: 4px;"></span>
-                </div>
-            `)
-            .join('');
+                `)
+                .join('');
+    }
 
+     function loadCountryPlaceholders(){
+             // Generate 48 placeholders dynamically
+              countryList.innerHTML = Array.from({ length: 32 })
+                        .map(() => `
+                            <div class="countryList">
+                                <div style="width: 100%; height: 38px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #142229; justify-content: center; align-content: center;">
+                                    <div style="width: 100%; height: 40px; background-color: #142229;"></div>
+                                </div>
+                                <span style="display: inline-block; padding: 4px; background-color: #e0e0e0; width: 100%; height: 16px; border-radius: 4px;"></span>
+                            </div>
+                        `)
+                        .join('');
 
-
-    const selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || "Austria";
+        }
 
         /**
      * Function to fetch and insert HTML content into a target element
@@ -132,7 +136,7 @@
 
 
 function loadCountries() {
-const sanitizedCountryPath = encodeURIComponent('query_countries.php');
+const sanitizedCountryPath = encodeURIComponent('test_countries.php');
 const baseUrl = `${document.querySelector('meta[name="api-base-url"]').content}/${sanitizedCountryPath}`;
 
     fetch(baseUrl)
@@ -161,6 +165,7 @@ function renderCountryList(data, page, totalPages) {
         listItem.addEventListener('mouseenter', (event) => showTooltip(event, country.name));
         listItem.addEventListener('mouseleave', hideTooltip);
         listItem.addEventListener('click', () => {
+            loadStationPlaceholders()
             selectedCountryPath = country.url;
             fetchStations(selectedCountryPath);
            // Retrieve the selected country name from localStorage or use a fallback
@@ -273,7 +278,7 @@ function setupPaginationButtons(data, totalPages) {
 
 async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 5000, chunkSize = 1000) {
     const sanitizedCountryPath = encodeURIComponent(countryPath);
-    const baseUrl2 =  `${document.querySelector('meta[name="api-base-url"]').content}/query_stations.php?path=${sanitizedCountryPath}`;
+    const baseUrl2 =  `${document.querySelector('meta[name="api-base-url"]').content}/test_get_station.php?path=${sanitizedCountryPath}`;
 
     try {
         // Attempt to fetch the entire dataset at once
@@ -556,6 +561,8 @@ function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
 }
 
     window.onload = () => {
+        loadStationPlaceholders()
+        loadCountryPlaceholders()
         loadCountries();
         fetchStations();
     };

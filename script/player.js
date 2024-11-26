@@ -30,38 +30,41 @@
     document.querySelector('.countryTitle').style.display = 'none';
      document.querySelector('.playing-station-wrap').style.display = 'block';
     document.querySelector('.footer-div-wraaper').style.display = 'block';
-
+    const stationListContent = document.getElementById('stationListContent');
+    const countryList = document.getElementById('countryList');
     // Set initial volume (based on the slider's default value)
     audio.volume = volumeControl.value;
 
 
-        const stationListContent = document.getElementById('stationListContent');
-        const countryList = document.getElementById('countryList');
-        // Generate 48 placeholders dynamically
-        stationListContent.innerHTML = Array.from({ length: 18 })
-            .map(() => `
-                <div class="station-item">
-                    <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #142229; justify-content: center; align-content: center;">
-                        <div style="width: 100%; height: 140px; background-color: #142229;"></div>
-                    </div>
-                    <span style="display: inline-block; padding: 4px; background-color: #e0e0e0; width: 80%; height: 16px; border-radius: 4px;"></span>
-                </div>
-            `)
-            .join('');
 
-            // Generate 48 placeholders dynamically
-            countryList.innerHTML = Array.from({ length: 32 })
-                .map(() => `
-                    <div class="countryList">
-                        <div style="width: 100%; height: 38px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #142229; justify-content: center; align-content: center;">
-                            <div style="width: 100%; height: 40px; background-color: #142229;"></div>
-                        </div>
-                        <span style="display: inline-block; padding: 4px; background-color: #e0e0e0; width: 100%; height: 16px; border-radius: 4px;"></span>
-                    </div>
-                `)
-                .join('');
+    function loadStationPlaceholders(){
+                  // Generate 48 placeholders dynamically
+                  stationListContent.innerHTML = Array.from({ length: 48 })
+                      .map(() => `
+                          <div class="station-item">
+                              <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #142229; justify-content: center; align-content: center;">
+                                  <div style="width: 100%; height: 140px; background-color: #142229;"></div>
+                              </div>
+                              <span style="display: inline-block; padding: 4px; background-color: #e0e0e0; width: 80%; height: 16px; border-radius: 4px;"></span>
+                          </div>
+                      `)
+                      .join('');
+          }
 
+    function loadCountryPlaceholders(){
+                   // Generate 48 placeholders dynamically
+                    countryList.innerHTML = Array.from({ length: 32 })
+                              .map(() => `
+                                  <div class="countryList">
+                                      <div style="width: 100%; height: 38px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: #142229; justify-content: center; align-content: center;">
+                                          <div style="width: 100%; height: 40px; background-color: #142229;"></div>
+                                      </div>
+                                      <span style="display: inline-block; padding: 4px; background-color: #e0e0e0; width: 100%; height: 16px; border-radius: 4px;"></span>
+                                  </div>
+                              `)
+                              .join('');
 
+              }
 
 
    /**
@@ -910,8 +913,7 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
                          data-ad-slot="3488022788"></ins>
                 </div>
             </body>
-        </html>
-    `;
+        </html>`;
 
     // Write the initial HTML content to the popup
     popupWindow.document.write(popupContent);
@@ -932,9 +934,12 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
 
     // Optional: Focus on the popup window
     popupWindow.focus();
-}
+
+   }
 
     window.onload = () => {
+        loadStationPlaceholders()
+        loadCountryPlaceholders()
         loadCountries();
         fetchStations();
     };
