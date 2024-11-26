@@ -2,14 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta charset="UTF-8">
-    <link rel="preload" href="/css/style.css" as="style" onload="this.onload=null;this.rel='stylesheet';">
-    <noscript><link rel="stylesheet" href="/css/style.css"></noscript>
-    <link rel="stylesheet" href="/css/style.css" media="print" onload="this.onload=null;this.media='all';">
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+
     <!-- Metadata -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,13 +12,17 @@
     <meta name="keywords" content="radio, online radio stations, worldwide radio, live radio, Ghana radio, free online FM radio, music stations, usa, canada, france, Australia, radio,dab,dab+,music,digital radio,Radios Delight,Radio Delighte,music you want to hear,soul,London,Manachester,Soul Music,north london,london radio,london soul,online,listen online,birmingham">
     <meta name="author" content="Radios Delight">
     <link rel="canonical" href="https://radiosdelight.com/">
-    <link rel="icon" type="image/png" href="/img/fav_icon.jpg">
+    <link rel="icon" type="image/png" href="https://radiosdelight.com/fav_icon.jpg">
 
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@700&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <!-- Ads -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966" crossorigin="anonymous"></script>
@@ -131,12 +129,12 @@
 
 
     <!-- Favicons -->
-    <link rel="icon" href="/img/fav_icon.jpg" sizes="any">
-    <link rel="icon" type="/img/fav_icon.jpg" href="/img/fav_icon.jpg" sizes="32x32">
-    <link rel="apple-touch-icon" sizes="180x180" href="/img/fav_icon.jpg">
-    <link rel="mask-icon" href="/img/fav_icon.jpg" >
+    <link rel="icon" href="https://radiosdelight.com/fav_icon.jpg" sizes="any">
+    <link rel="icon" type="https://radiosdelight.com/fav_icon.jpg" href="https://radiosdelight.com/" sizes="32x32">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://radiosdelight.com/">
+    <link rel="mask-icon" href="https://radiosdelight.com/fav_icon.jpg" >
     <link rel="manifest" href="manifest.json">
-
+    <link rel="stylesheet" href="css/style.css">
 
     <script type="application/ld+json">
         {
@@ -148,208 +146,917 @@
             "publisher": {
                 "@type": "Organization",
                 "name": "Radios",
-                "logo": "/img/fav_icon.jpg"
+                "logo": "https://radiosdelight.com/fav_icon.jpg"
             }
         }
     </script>
-    <style>
-
-        html, body {
-             margin: 0;
-             padding: 0;
-             font-family: "Open Sans", sans-serif;
-             background-color: #1c313a;
-             overflow-x: hidden; /* Prevent horizontal scrolling */
-             display: flex;
-             justify-content: center; /* Center horizontally */
-             align-items: center;     /* Center vertically if needed */
-             flex-direction: column;
-             margin-top: 50px; /* Match the height of #top-header */
-         }
-    .footer-div-wraaper {
-             width: 100%;
-              height: 146px;
-             margin-bottom: 18px;
-             z-index: 1000;
-              margin-right:auto;
-             margin-left:auto;
-             justify-content: center;
-             align-items: center;
-    }
 
 
-    .p-m-player-v{
-             width:200px;
-             margin:auto;
-    }
-
-    form {
-                max-width: 100%;
-                padding: 20px;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-
-            }
-
-
-            label {
-                display: block;
-                margin: 10px 0 5px;
-            }
-            input, textarea, btnButton {
-                width: 100%;
-                padding: 10px;
-                margin-bottom: 15px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-            }
-            .btnButton {
-                background-color: #007BFF;
-                color: white;
-                border: none;
-                cursor: pointer;
-            }
-            .btnButton:hover {
-                background-color: #0056b3;
-            }
-             /* Toast Styles */
-            .toast {
-                visibility: hidden;
-                min-width: 250px;
-                margin-left: -125px;
-                background-color: #333;
-                color: white;
-                text-align: center;
-                border-radius: 5px;
-                padding: 15px;
-                position: fixed;
-                z-index: 1;
-                left: 50%;
-                bottom: 30px;
-                font-size: 16px;
-                opacity: 0;
-                transition: opacity 0.5s, visibility 0.5s;
-            }
-            .toast.show {
-                visibility: visible;
-                opacity: 1;
-            }
-    </style>
 </head>
 <body>
 <div id="head-top"></div>
 <!-- Additional info section under player-header -->
-<div id="foo" style=" display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;"></div>
+<div id="foo" style=" display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;">
+    <div class="progress-ring2" id="progress-loading" style="display:block;"></div>
+</div>
 <!-- Centered "mmi" Element -->
-<div class="container" >
-    <div style="background-color:rgb(77, 100, 111); display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;margin-bottom: 21px;">
-        <span id="breadcrumbs" style="width:100%;padding:4px;margin:0px;font-size:13px;color:#fff;display:none;">Radio Station |  </span>
-    </div>
-    <h1 class="countryTitle" style="display: none;">Live Germany Radio Station Online</h1>
-    <div class="row">
-        <div class="col-md-9">
+</div>
 
-            <!------- the player start here ---->
-            <div class="footer-div-wraaper">
-                <div class="col playing-station-wrap" style="background-color: #142229; display: none; align-items: center; justify-content: center;margin:auto;">
-                    <div class="row" style="display: flex; align-items: center; height: auto; width: 100%;">
 
-                        <!-- First column: Station Image -->
-                        <div class="col-5 ">
-                            <img id="stationLogo" class="station-image" src="/img/placeholder.jpg" alt="Station Logo" style="display: block; object-fit: fill;">
-                        </div>
+<!--wrapper-->
+<div class="wrapper">
 
-                        <!-- Second column: Play button and progress ring -->
-                        <div class="col-7" >
-                            <!-- Centered Play Control -->
-                            <div class="col" style="display: flex; align-items: center; justify-content: center;">
-                                <div class="play-control" style="display: flex; align-items: center; justify-content: center;">
-                                    <div class="progress-ring" id="progress"></div>
-                                    <button class="play-button" >▶</button>
+    <div class="content">
+
+        <!----modal----->
+
+        <div id="errorModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button" id="closeModal">&times;</span>
+                <p id="errorMessage">The station is currently unavailable. Please try using a different browser, such as Mozilla Firefox or Chrome, or check back in an hour as we work to resolve the issue.</p>
+            </div>
+        </div>
+
+
+
+        <div class="container" style="width:75v" >
+            <div style="background-color:rgb(77, 100, 111); display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;margin-bottom: 21px;">
+                <span id="breadcrumbs" style="width:100%;padding:4px;margin:0px;font-size:13px;color:#fff;display:none;">Radio Station |  </span>
+            </div>
+            <h1 class="countryTitle" style="display: none;">Live Austria Radio Station Online</h1>
+            <div class="row">
+                <div class="col-md-9">
+
+                    <!------- the player start here ---->
+                    <div class="footer-div-wraaper" style="display:none;">
+                        <div class="col playing-station-wrap" style="background-color: #142229; display: none; align-items: center; justify-content: center;margin:auto;">
+                            <div class="row" style="display: flex; align-items: center; height: auto; width: 100%;">
+
+                                <!-- First column: Station Image -->
+                                <div class="col-2 " style="width:180px;">
+                                    <img id="stationLogo" class="station-image" src="https://via.placeholder.com/60" alt="Station Logo" style="display: block; object-fit: fill;">
                                 </div>
-                            </div>
 
-                            <!-- Centered Volume Control -->
-                            <div class="col" style=" display: flex; align-items: center; justify-content: center;height:34px;">
-                                <div class="row d-flex align-items-center justify-content-center w-100">
-                                    <div class="d-flex align-items-center" style="width: 100%;">
-                                        <i class="bi bi-volume-off-fill text-white" style="margin-right: 10px; font-size: 1.5rem;"></i>
-                                        <input
-                                                class="form-range"
-                                                style="flex-grow: 1;border:none;"
-                                                type="range"
-                                                id="volumeControl"
-                                                min="0"
-                                                max="1"
-                                                step="0.01"
-                                                value="1"
-                                        >
+                                <!-- Second column: Play button and progress ring -->
+                                <div class="col-10 p-m-player-v" style="padding-top:10px;">
+                                    <!-- Centered Play Control -->
+                                    <div class="col" style="display: flex; align-items: center; justify-content: center;">
+                                        <div class="play-control" style="display: flex; align-items: center; justify-content: center;">
+                                            <div class="progress-ring" id="progress"></div>
+                                            <button class="play-button" >▶</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Centered Volume Control -->
+                                    <div class="col" style=" display: flex; align-items: center; justify-content: center;">
+                                        <input style="width: 50%; margin: 14px 12px; display: flex; align-items: center; justify-content: center;" type="range" id="volumeControl" min="0" max="1" step="0.01" value="1" >
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!----------the player ends here ------->
+
+
+
+                    <div id="stationListContent" class="station-grid"></div>
+                    <br><br>
+                    <div id="paginationControls"></div>
+                    <br><br><br><br><br><br><br>
+                </div>
+                <div class="col-md-3">
+                    <div id="country_list_wrapper" style="background-color:rgb(77, 100, 111);padding:12px;display:none;">
+                        <p id="countryTitle" style="display: none;background-color:#1c313a;padding:6px 12px;border-radius:4px;">Discover by Countries</p>
+                        <ul id="countryList" class="country-grid"></ul>
+                        <br>
+                        <div id="paginationControls1"></div>
+                        <br>
+                        <p id="downloadTitle" style="display: none;background-color:#1c313a;padding:6px 12px;border-radius:4px;">Download mobile app</p>
+                        <a href="https://play.google.com/store/apps/details?id=com.lornamobileappsdev.moldova">
+                            <img src="get_playstore.jpeg" style="width:100%; height:auto"/>
+                        </a>
+                    </div>
+
+                    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966"
+                            crossorigin="anonymous"></script>
+                    <ins class="adsbygoogle"
+                         style="display:block; text-align:center;"
+                         data-ad-layout="in-article"
+                         data-ad-format="fluid"
+                         data-ad-client="ca-pub-3366131354604966"
+                         data-ad-slot="7400832150"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                    </br></br></br></br><br><br>
                 </div>
             </div>
-            <!----------the player ends here ------->
-
-            <p class="mt-1 mb-2 text-white">You may also like</p>
-            <div id="stationListContent" class="station-grid"></div>
-            <br><br>
-            <div id="paginationControls" style="display:none;"></div>
-            <h1 class="mt-1 mb-2 text-white">Send Comment</h1>
-            <form id="emailForm" onsubmit="submitForm(event); return false;">
-                <label class="mt-1 mb-2 text-white" for="stationName">Station Name</label>
-                <input type="text" id="stationName" placeholder="Enter station name" required />
-
-                <label class="mt-1 mb-2 text-white" for="title">Title</label>
-                <input type="text" id="title" placeholder="Enter comment title" required />
-
-                <label class="mt-1 mb-2 text-white" for="message">Message</label>
-                <textarea id="message" placeholder="Enter comment message" rows="5" required></textarea>
-                <br>
-                <button class="btnButton" type="button" onclick="submitForm()">Send Email</button>
-            </form>
-            <!-- Toast Notification -->
-            <div id="toast" class="toast">Message sent successfully!</div>
-            <br>
         </div>
-        <div class="col-md-3">
-            <div id="country_list_wrapper" style="background-color:rgb(77, 100, 111);padding:12px;display:none;">
-                <p id="countryTitle" style="display: none;background-color:#1c313a;padding:6px 12px;border-radius:4px;">Discover by Countries</p>
-                <ul id="countryList" class="country-grid"></ul>
-                <br>
-                <div id="paginationControls1"></div>
-                <br>
-                <p id="downloadTitle" style="display: none;background-color:#1c313a;padding:6px 12px;border-radius:4px;">Download mobile app</p>
-                <a href="https://play.google.com/store/apps/details?id=com.lornamobileappsdev.moldova">
-                    <img src="get_playstore.jpeg" style="width:100%; height:auto"/>
-                </a>
-                <br>
-                <br>
-                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966"
-                        crossorigin="anonymous"></script>
-                <ins class="adsbygoogle"
-                     style="display:block; text-align:center;"
-                     data-ad-layout="in-article"
-                     data-ad-format="fluid"
-                     data-ad-client="ca-pub-3366131354604966"
-                     data-ad-slot="7400832150"></ins>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
 
+
+        <!--footer-->
+        <div class="row" id="footerr" style="padding:30px; background-color:#34444c; display: none;">
+            <div class="container">
+                <div class="row">
+                    <!-- Left Section: Radio FM USA Description -->
+                    <div class="col-md-6" style="color: #ccc;">
+                        <h5>Radio Delight</h5>
+                        <h2 span style="font-size:13px;">Explore the finest global radio experience with our free online app, offering seamless access to over 22000 FM/AM stations featuring live broadcasts of news, sports, and music. Stay informed on the latest events in the US and enjoy a wide variety of music genres. Whether you're into pop, rock, or classical, we've got something for every taste.</h2>
+                        <p></p>
+                    </div>
+
+                    <!-- Right Section: Top Radio Stations -->
+                    <div class="col-md-6" style="color: #ccc;">
+                        <h5>Top Radio Countries</h5>
+                        <ul class="list-unstyled">
+                            <li>1. USA</li>
+                            <li>2. Canada</li>
+                            <li>3. Finland</li>
+                            <li>4. Albania</li>
+                            <li>5. UK</li>
+                        </ul>
+                    </div>
+                    <div class="row mt-5" style="color: #ccc;">
+                        <div class="col text-center footer-links">
+                            <a href="privacy.html" style="color: #ccc;font-size:14px;">Privacy Policy</a> ·
+                            <a href="privacy.html" style="color: #ccc;font-size:14px;">Terms of Service</a> ·
+                            <a href="about-us.html" style="color: #ccc;font-size:14px;">About Us</a> ·
+                            <a href="contact-us.html" style="color: #ccc;font-size:14px;">Contact Us</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Footer Section -->
+                <div class="row mt-5" style="color: #ccc;"> </div>
             </div>
-
         </div>
-    </div>
-</div>
 
+    </div><!--content ends-->
+
+</div><!--wrapper ends here-->
+
+
+<script>
+    let stationData = []; // Store stations here to avoid multiple fetches
+    let selectedCountryPath = localStorage.getItem('selectedCountryPath') || "AustriaRadioList.json";
+
+    //let selectedCountryPath = '';
+   const audio = new Audio();
+    let hls;
+    let currentPage = 1;
+    const itemsPerPage = 48;
+    let currentPage1 = 1;
+    const itemsPerPage1 = 40; // Number of countries per page
+    const progress = document.getElementById('progress');
+    const playButton = document.querySelector('.play-button');
+    const volumeControl = document.getElementById('volumeControl');
+    let isPlaying = false; // Track the play/pause state
+    let stationDetailsGlobal = "";
+
+    const selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || "Austria";
+
+// Update the .countryTitle element if it exists
+    const countryTitleElement = document.querySelector('.countryTitle');
+    if (countryTitleElement) {
+        countryTitleElement.textContent = `Live ${selectedCountryPathName} Radio Station Online`;
+    } else {
+        console.warn('.countryTitle element not found in the DOM.');
+    }
+
+    // Set initial volume (based on the slider's default value)
+    audio.volume = volumeControl.value;
+
+    // Update audio volume when the slider is adjusted
+    volumeControl.addEventListener('input', function () {
+        audio.volume = this.value;
+        console.log(`Volume set to: ${Math.round(this.value * 100)}%`);
+    });
+
+    // Optional: Display the volume level as a percentage
+    volumeControl.addEventListener('input', function () {
+        this.title = `Volume: ${Math.round(this.value * 100)}%`;
+    });
+
+
+ // Function to show tooltip
+  function showTooltip(event, text) {
+    let tooltip = document.createElement('div');
+    tooltip.className = 'tooltip';
+    tooltip.textContent = text;
+    document.body.appendChild(tooltip);
+
+    // Position the tooltip near the mouse cursor
+    const tooltipOffset = 10;
+    tooltip.style.left = `${event.pageX + tooltipOffset}px`;
+    tooltip.style.top = `${event.pageY + tooltipOffset}px`;
+
+    // Make the tooltip visible
+    requestAnimationFrame(() => {
+      tooltip.style.opacity = '1';
+    });
+
+    // Store the tooltip element for removal later
+    event.target._tooltip = tooltip;
+  }
+
+  // Function to hide tooltip
+  function hideTooltip(event) {
+    const tooltip = event.target._tooltip;
+    if (tooltip) {
+      tooltip.remove();
+      event.target._tooltip = null;
+    }
+  }
+
+
+function loadCountries() {
+const sanitizedCountryPath = encodeURIComponent('query_countries.php');
+const baseUrl = `${document.querySelector('meta[name="api-base-url"]').content}/${sanitizedCountryPath}`;
+
+    fetch(baseUrl)
+        .then(response => response.ok ? response.json() : Promise.reject())
+        .then(data => {
+            const totalPages = Math.ceil(data.length / itemsPerPage1);
+            renderCountryList(data, currentPage1, totalPages);
+            setupPaginationButtons(data, totalPages);
+        })
+        .catch(error => console.error('Error fetching country data:', error));
+}
+
+function renderCountryList(data, page, totalPages) {
+    const countryList = document.getElementById('countryList');
+    countryList.innerHTML = ''; // Clear the current list
+
+    // Determine the start and end indices for the current page
+    const startIndex = (page - 1) * itemsPerPage1;
+    const endIndex = Math.min(startIndex + itemsPerPage1, data.length);
+
+    // Display countries for the current page
+    for (let i = startIndex; i < endIndex; i++) {
+        const country = data[i];
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `<img class="img" src="${country.flag}" alt="${country.name} Flag" style="width:50px;height:45px;">`;
+        listItem.addEventListener('mouseenter', (event) => showTooltip(event, country.name));
+        listItem.addEventListener('mouseleave', hideTooltip);
+        listItem.addEventListener('click', () => {
+             audio.pause();
+             playButton.innerHTML = '▶';  // Play icon
+             isPlaying = false; // Play icon
+            document.getElementById('breadcrumbs').style.display = 'none';
+            document.querySelector('.playing-station-wrap').style.display = 'none';
+            document.querySelector('.footer-div-wraaper').style.display = 'none';
+            selectedCountryPath = country.url;
+            fetchStations(selectedCountryPath);
+           // Retrieve the selected country name from localStorage or use a fallback
+
+
+            // Update the .countryTitle element if it exists
+            const countryTitleElement = document.querySelector('.countryTitle');
+            countryTitleElement.textContent = `Live ${country.name} Radio Station Online`;
+        });
+        countryList.appendChild(listItem);
+    }
+}
+
+function setupPaginationButtons(data, totalPages) {
+    const paginationControls = document.getElementById('paginationControls1');
+    paginationControls.innerHTML = ''; // Clear any existing controls
+
+    const maxVisibleButtons = 3; // Number of visible buttons around the current page
+    const ellipsis = '...';
+
+    // Previous button
+    const prevButton = document.createElement('button');
+    prevButton.textContent = '<<';
+    prevButton.disabled = currentPage1 === 1;
+    prevButton.addEventListener('click', () => {
+        if (currentPage1 > 1) {
+            currentPage1--;
+            renderCountryList(data, currentPage1, totalPages);
+            setupPaginationButtons(data, totalPages); // Refresh pagination buttons
+        }
+    });
+    paginationControls.appendChild(prevButton);
+
+    // Page number buttons
+    if (totalPages <= maxVisibleButtons + 2) {
+        // If total pages are few, display all
+        for (let i = 1; i <= totalPages; i++) {
+            addPageButton(i);
+        }
+    } else {
+        // Handle case when total pages are more than the visible buttons
+        let startPage, endPage;
+
+        if (currentPage1 <= maxVisibleButtons) {
+            // Near the beginning
+            startPage = 1;
+            endPage = maxVisibleButtons;
+        } else if (currentPage1 + maxVisibleButtons - 1 >= totalPages) {
+            // Near the end
+            startPage = totalPages - maxVisibleButtons + 1;
+            endPage = totalPages;
+        } else {
+            // Somewhere in the middle
+            startPage = currentPage1 - Math.floor(maxVisibleButtons / 2);
+            endPage = currentPage1 + Math.floor(maxVisibleButtons / 2);
+        }
+
+        // Show the first page and ellipsis if needed
+        if (startPage > 1) {
+            addPageButton(1);
+            if (startPage > 2) {
+                addEllipsis();
+            }
+        }
+
+        // Display range of page numbers
+        for (let i = startPage; i <= endPage; i++) {
+            addPageButton(i);
+        }
+
+        // Show the last page and ellipsis if needed
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                addEllipsis();
+            }
+            addPageButton(totalPages);
+        }
+    }
+
+    // Next button
+    const nextButton = document.createElement('button');
+    nextButton.textContent = '>>';
+    nextButton.disabled = currentPage1 === totalPages;
+    nextButton.addEventListener('click', () => {
+        if (currentPage1 < totalPages) {
+            currentPage1++;
+            renderCountryList(data, currentPage1, totalPages);
+            setupPaginationButtons(data, totalPages); // Refresh pagination buttons
+        }
+    });
+    paginationControls.appendChild(nextButton);
+
+    function addPageButton(page) {
+        const pageButton = document.createElement('button');
+        pageButton.textContent = page;
+        pageButton.disabled = page === currentPage1;
+        pageButton.addEventListener('click', () => {
+            currentPage1 = page;
+            renderCountryList(data, currentPage1, totalPages);
+            setupPaginationButtons(data, totalPages); // Refresh pagination buttons
+        });
+        paginationControls.appendChild(pageButton);
+    }
+
+    function addEllipsis() {
+        const ellipsisSpan = document.createElement('span');
+        ellipsisSpan.textContent = ellipsis;
+        paginationControls.appendChild(ellipsisSpan);
+    }
+}
+
+
+
+async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 5000, chunkSize = 1000) {
+    const sanitizedCountryPath = encodeURIComponent(countryPath);
+    const baseUrl2 =  `${document.querySelector('meta[name="api-base-url"]').content}/query_stations.php?path=${sanitizedCountryPath}`;
+
+    try {
+        // Attempt to fetch the entire dataset at once
+        stationData = await fetchWithRetry(baseUrl2, retries, delay);
+
+        // If data is successfully fetched, display it
+        displayStations(stationData);
+    } catch (error) {
+        console.warn('Failed to fetch entire dataset, switching to chunked loading...');
+
+        // If fetching the entire dataset fails, use chunked loading
+        stationData = await fetchStationsInChunks(baseUrl2, chunkSize);
+        displayStations(stationData);
+    }
+}
+
+
+async function fetchStationsInChunks(baseUrl, chunkSize) {
+    let allStations = [];
+    let offset = 0;
+
+    while (true) {
+        const url = `${baseUrl}&offset=${offset}&limit=${chunkSize}`;
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const chunk = await response.json();
+
+
+            if (chunk.length === 0) break;
+
+            allStations = allStations.concat(chunk);
+            offset += chunkSize;
+        } catch (error) {
+            console.error(`Error fetching chunk at offset ${offset}:`, error);
+            break;
+        }
+    }
+
+    const filteredStations = allStations.filter(station => station.name !== 'Local Fm');
+    return filteredStations;
+}
+
+
+
+// Function to fetch data with retries
+async function fetchWithRetry(url, retries = 3, delay = 3000) {
+    for (let attempt = 0; attempt < retries; attempt++) {
+        try {
+            console.log(`Fetching attempt ${attempt + 1} for URL: ${url}`);
+            const response = await fetch(url);
+            console.log('Response status:', response.status);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('API Error Response:', errorText);
+                throw new Error(`Fetch failed with status ${response.status}: ${errorText}`);
+            }
+
+            const data = await response.json();
+
+            return data.filter(station => station.name !== 'Local Fm');
+        } catch (error) {
+            console.warn(`Attempt ${attempt + 1} failed:`, error.message);
+            if (attempt < retries - 1) await new Promise(res => setTimeout(res, delay));
+            else throw error; // Rethrow after last attempt
+        }
+    }
+}
+
+
+// Function for chunk loading
+function filterStations() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    const filteredStations = stationData.filter(station =>
+        station.name.toLowerCase().includes(query)
+    );
+    currentPage = 1; // Reset to first page on filter
+    displayStations(filteredStations);
+}
+
+
+function displayStations(stations) {
+    document.getElementById('footerr').style.display = 'block';
+    document.getElementById('countryTitle').style.display = 'block';
+    document.querySelector('.countryTitle').style.display = 'block';
+    document.getElementById('downloadTitle').style.display = 'block';
+    document.getElementById('country_list_wrapper').style.display = 'block';
+
+
+    const stationList = document.getElementById('stationListContent');
+    const paginationControls = document.getElementById('paginationControls');
+    stationList.innerHTML = ''; // Clear current list
+    paginationControls.innerHTML = ''; // Clear pagination
+
+    if (stations.length === 0) {
+        stationList.innerHTML = `<p>No results found.</p>`;
+        return;
+    }
+
+    const totalPages = Math.ceil(stations.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
+
+    stationsToDisplay.forEach(station => {
+        const stationItem = document.createElement('div');
+        stationItem.className = 'station-item';
+
+        const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
+        const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name);
+
+        stationItem.innerHTML = `
+            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: white;justify-content:center;align-content: center;">
+                <img style="width: 100%; height: 140px; object-fit: fill;"
+                     src="${logoUrl}"
+                     loading="lazy"
+                     alt="${truncatedName}">
+            </div>
+            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
+
+        const imgElement = stationItem.querySelector('img');
+
+        const loadTimeout = setTimeout(() => {
+            imgElement.src = 'mast2.jpg'; // Fallback image after 3 seconds
+        }, 30500);
+
+        imgElement.onload = () => {
+            clearTimeout(loadTimeout);
+            stationItem.addEventListener('click', () => {
+                //playButton.innerHTML = '▶';  // Play icon
+                //initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
+                 localStorage.setItem('name', station.name);
+                    localStorage.setItem('url', station.url);
+                    localStorage.setItem('bit', station.bit);
+                    localStorage.setItem('location', station.location);
+                    localStorage.setItem('img', imgElement.src);
+                    localStorage.setItem('selectedCountryPaths', selectedCountryPath)
+
+                    // Correct usage of string interpolation with backticks
+                    window.location.href = `play.html?name=${station.name}`;
+            });
+        };
+
+        imgElement.onerror = () => {
+            clearTimeout(loadTimeout);
+            imgElement.src = 'mast.jpg';
+            stationItem.addEventListener('click', () => {
+                //playButton.innerHTML = '▶';  // Play icon
+                //initAudioPlayer(station.url, 'mast.jpg', station.name, station.bit, station.location);
+                localStorage.setItem('name', station.name);
+                localStorage.setItem('url', station.url);
+                localStorage.setItem('bit', station.bit);
+                localStorage.setItem('location', station.location);
+                localStorage.setItem('img', imgElement.src);
+                localStorage.setItem('selectedCountryPaths', selectedCountryPath)
+
+                // Correct usage of string interpolation with backticks
+                window.location.href = `play.html?name=${station.name}`;
+            });
+        };
+
+        stationList.appendChild(stationItem);
+    });
+
+    document.getElementById('progress-loading').style.display = 'none';
+
+    createPaginationControls(stations.length, totalPages);
+}
+
+
+
+function createPaginationControls(totalStations, totalPages) {
+    const paginationControls = document.getElementById('paginationControls');
+    paginationControls.innerHTML = ''; // Clear previous controls
+
+    // Display page info (e.g., "Page 1 of 27")
+    const pageInfo = document.createElement('span');
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    paginationControls.appendChild(pageInfo);
+
+    // Helper function to create clickable buttons
+    const createButton = (text, onClick) => {
+        const button = document.createElement('span');
+        button.textContent = text;
+        button.style.cursor = 'pointer';
+        button.style.margin = '0 5px';
+        button.onclick = onClick;
+        paginationControls.appendChild(button);
+    };
+
+    // Previous button
+    if (currentPage > 1) {
+        createButton('<<', () => {
+            currentPage--;
+            displayStations(stationData);
+        });
+    }
+
+    // Show the first 3 pages, then ellipsis, and last page
+    for (let i = 1; i <= totalPages; i++) {
+        if (i === currentPage) {
+            const currentPageButton = document.createElement('span');
+            currentPageButton.textContent = i;
+            currentPageButton.style.fontWeight = 'bold';
+            currentPageButton.style.margin = '0 5px';
+            paginationControls.appendChild(currentPageButton);
+        } else if (i <= 3 || i === totalPages) {
+            // Display first 3 pages or the last page
+            createButton(i, () => {
+                currentPage = i;
+                displayStations(stationData);
+            });
+        } else if (i === 4) {
+            // Add ellipsis after the first 3 pages
+            const ellipsis = document.createElement('span');
+            ellipsis.textContent = '...';
+            ellipsis.style.margin = '0 5px';
+            paginationControls.appendChild(ellipsis);
+        }
+    }
+
+    // Next button
+    if (currentPage < totalPages) {
+        createButton('>>', () => {
+            currentPage++;
+            displayStations(stationData);
+        });
+    }
+}
+
+
+function initAudioPlayer(url, image, stationName, bit, country) {
+
+     // Update UI with station information
+    const stationLogo = document.getElementById('stationLogo');
+    const breadcrumbs = document.getElementById('breadcrumbs');
+    document.getElementById('breadcrumbs').style.display = 'block';
+    document.querySelector('.countryTitle').style.display = 'none';
+     document.querySelector('.playing-station-wrap').style.display = 'block';
+    document.querySelector('.footer-div-wraaper').style.display = 'block';
+    stationLogo.src = image;
+    stationLogo.style.display = 'block';
+    breadcrumbs.textContent = `Radio station | ${country} | ${stationName}`;
+    stationDetailsGlobal = `${stationName} (${country}) (web)`;
+
+    // Handle image load errors
+    stationLogo.onerror = () => handleImageError(stationLogo, stationName);
+    // Handle specific bit conditions for popups
+    if (bit === '00') {
+        openPopupWithData(stationName, image, url);
+        return;
+    } else if (bit === '001') {
+        openPeacefmPopupWithData(stationName, image, url);
+        return;
+    }
+
+    // Reset HLS and audio element for fresh playback
+    if (typeof hls !== 'undefined' && hls !== null) {
+        hls.destroy();
+        hls = null;
+    }
+
+            audio.src = url;
+            const audioExtension = url.split('.').pop().toLowerCase();
+
+            // Show the spinner when loading starts
+            showSpinner(true);
+
+            // If it's an HLS (m3u8) stream, use HLS.js
+            if (audioExtension === 'm3u8') {
+                if (Hls.isSupported()) {
+                    if (hls) {
+                        hls.destroy(); // Destroy the previous instance if any
+                    }
+                    hls = new Hls();
+                    hls.loadSource(url);
+                    hls.attachMedia(audio);
+                    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                        showSpinner(false); // Hide the spinner once the audio is ready
+                    });
+                    hls.on(Hls.Events.ERROR, (event, data) => {
+                        showSpinner(false); // Hide the spinner on error
+                        showCustomError('Error, Try again later.');
+                        const stationDetails = `${stationName} (${country}) (web)`;
+                        handlePlaybackError(stationDetails, url, 'error')
+                    });
+                } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+                    // For Safari or native HLS support
+                    audio.src = audioUrl;
+                    audio.addEventListener('canplay', () => {
+                        showSpinner(false); // Hide the spinner when audio is ready
+                    });
+                     const stationDetails = `${stationName} (${country}) (Mobile)`;
+                     sendEmailNotification(stationDetails, audioUrl, 'success')
+                } else {
+                    showCustomError('Error, Try again later.');
+                    const stationDetails = `${stationName} (${country}) (Mobile)`;
+                    handlePlaybackError(stationDetails, audioUrl, 'error')
+                    return;
+                }
+            } else {
+                // Use native HTML5 audio for other formats
+                audio.addEventListener('canplay', () => {
+                    showSpinner(false); // Hide the spinner when audio is ready
+                });
+                const stationDetails = `${stationName} (${country}) (Mobile)`;
+                     sendEmailNotification(stationDetails, audioUrl, 'success')
+            }
+
+            // Handle error events for unsupported formats
+            audio.addEventListener('error', function() {
+                showSpinner(false); // Hide the spinner on error
+                showCustomError('Error, Try again later.');
+                const stationDetails = `${stationName} (${country}) (web)`;
+                handlePlaybackError(stationDetails, url, 'error')
+            });
+
+
+
+}
+
+   // Show or hide the spinner
+    function showSpinner(show) {
+            progress.style.display = show ? 'block' : 'none';
+    }
+
+            // Play/pause functionality with icons
+     playButton.addEventListener('click', () => {
+            if (!isPlaying) {
+                audio.play();
+                playButton.innerHTML = '||';  // Pause icon
+                showSpinner(false); // Hide the spinner when playing starts
+                isPlaying = true;
+                sendEmailNotification(stationDetailsGlobal, audio.src, 'success')
+
+            } else {
+                audio.pause();
+                playButton.innerHTML = '▶';  // Play icon
+                isPlaying = false;
+            }
+        });
+
+
+
+
+
+function createStationLogoCanvas(stationName) {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+
+    canvas.height = 140;
+    canvas.width = 140;
+
+    // Generate a random background color
+    const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+    context.fillStyle = randomColor;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Get initials and limit them to a maximum of 3 characters
+    const initials = stationName
+        .split(' ')
+        .map(word => word.charAt(0))
+        .join('')
+        .toUpperCase()
+        .slice(0, 3); // Limit initials to 3 characters
+
+    // Set text properties
+    context.fillStyle = '#fff';
+    context.textAlign = 'center';
+    context.fontWeight=600;
+    context.font = "60px 'Montserrat', sans-serif";
+    context.textBaseline = 'middle';
+
+    // Add shadow to the text
+    context.shadowColor = '#333';
+    context.shadowOffsetX = 2;
+    context.shadowOffsetY = 2;
+    context.shadowBlur = 5;
+
+    // Draw the initials in the center of the canvas
+    context.fillText(initials, canvas.width / 2, canvas.height / 2);
+
+    return canvas.toDataURL();
+}
+
+
+    function handlePlaybackError(url, stationName) {
+                progress.style.display = 'none';
+                const modal = document.getElementById('errorModal');
+                const closeModal = document.getElementById('closeModal');
+
+                // Display the modal
+                modal.style.display = 'block';
+
+                // Close the modal when the close button is clicked
+                closeModal.onclick = function () {
+                    modal.style.display = 'none';
+                };
+
+                // Close the modal when the user clicks outside of it
+                window.onclick = function (event) {
+                    if (event.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                };
+
+                sendEmailNotification(stationName, url, 'error');
+}
+
+
+
+
+    function sendEmailNotification(stationName, stationUrl, status) {
+        const formData = new FormData();
+        formData.append('stationName', stationName);
+        formData.append('stationUrl', stationUrl);
+        formData.append('status', status);
+
+        fetch('https://lornamobileappsdev.uk/mobileAppsWebsite/sendEmail.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.status === 'success') {
+                console.log('Email sent successfully:', result.message);
+            } else {
+                console.error('Failed to send email:', result.message);
+            }
+        })
+        .catch(error => console.error('Error sending email:', error));
+    }
+
+
+
+function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
+    // Validate the audio URL
+    if (!audioUrl || typeof audioUrl !== 'string' || !audioUrl.startsWith('http')) {
+        alert("Invalid audio URL.");
+        return;
+    }
+
+    // Open the URL directly in a new popup window
+    const popupWindow = window.open(audioUrl, "_blank", "width=300,height=500");
+
+    // Check if the popup was blocked
+    if (!popupWindow) {
+        alert("Popup blocked! Please allow popups for this site.");
+    } else {
+        popupWindow.focus();
+    }
+}
+
+
+function openPopupWithData(stationName, logoUrl, audioUrl) {
+    // Open a new window for the popup
+    const popupWindow = window.open("", "_blank", "width=300,height=700");
+    // Check if the popup was blocked by the browser
+    if (!popupWindow) {
+        alert("Popup blocked! Please allow popups for this site.");
+        return;
+    }
+
+    // Define the HTML structure and styling for the popup content
+    const popupContent = `
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <title>${stationName} - Radio Station</title>
+                <style>
+                    body { font-family: Arial, sans-serif; padding: 20px; text-align: center; background-color: #f9f9f9; }
+                    h1 { color: #333; font-size: 1.2em; margin-top: 10px; }
+                    img { width: 100px; height: 100px; border-radius: 50%; margin-bottom: 15px; }
+                    audio { width: 100%; margin-top: 20px; }
+                    .container { display: flex; flex-direction: column; align-items: center; }
+                    .close-button { margin-top: 20px; padding: 8px 16px; font-size: 1em; cursor: pointer; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <img src="${logoUrl}" alt="${stationName} Logo">
+                    <h1>${stationName}</h1>
+
+                    <!-- Audio player for station -->
+                    <video controls autoplay>
+                        <source src="${audioUrl}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </video>
+
+                    <!-- Close button -->
+                    <button class="close-button" onclick="window.close()">Close</button>
+
+                    <!-- Ad container -->
+                    <ins class="adsbygoogle"
+                         style="display:block; text-align:center;"
+                         data-ad-layout="in-article"
+                         data-ad-format="fluid"
+                         data-ad-client="ca-pub-3366131354604966"
+                         data-ad-slot="3488022788"></ins>
+                </div>
+            </body>
+        </html>
+    `;
+
+    // Write the initial HTML content to the popup
+    popupWindow.document.write(popupContent);
+
+    // Add the Google Ads script asynchronously after the HTML content is loaded
+    const adScript = popupWindow.document.createElement("script");
+    adScript.async = true;
+    adScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966";
+    adScript.crossOrigin = "anonymous";
+    popupWindow.document.body.appendChild(adScript);
+
+    // Initialize the Google ad once the script loads
+    adScript.onload = () => {
+        const inlineScript = popupWindow.document.createElement("script");
+        inlineScript.textContent = "(adsbygoogle = window.adsbygoogle || []).push({});";
+        popupWindow.document.body.appendChild(inlineScript);
+    };
+
+    // Optional: Focus on the popup window
+    popupWindow.focus();
+}
+
+    window.onload = () => {
+        loadCountries();
+        fetchStations();
+    };
+</script>
+<!-- Include HLS.js for .m3u8 support -->
 <div id="page-footer"></div>
 <!-- Include HLS.js for .m3u8 support -->
 <script src="https://cdn.jsdelivr.net/npm/howler"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 <script src="/script/player.js"></script>
+
 </body>
 </html>
