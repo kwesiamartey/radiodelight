@@ -330,13 +330,6 @@ function filterStations() {
 
 
 function displayStations(stations) {
-    document.getElementById('footerr').style.display = 'block';
-    document.getElementById('countryTitle').style.display = 'block';
-    document.querySelector('.countryTitle').style.display = 'block';
-    document.getElementById('downloadTitle').style.display = 'block';
-    document.getElementById('country_list_wrapper').style.display = 'block';
-
-
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.getElementById('paginationControls');
     stationList.innerHTML = ''; // Clear current list
@@ -347,10 +340,15 @@ function displayStations(stations) {
         return;
     }
 
+    // Sort stations in descending order by name
+    stations.sort((a, b) => b.name.localeCompare(a.name)); // Reverse alphabetical order
+
+    // Calculate pagination details
     const totalPages = Math.ceil(stations.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const stationsToDisplay = stations.slice(startIndex, startIndex + itemsPerPage);
 
+    // Render stations
     stationsToDisplay.forEach(station => {
         const stationItem = document.createElement('div');
         stationItem.className = 'station-item';
@@ -370,49 +368,43 @@ function displayStations(stations) {
         const imgElement = stationItem.querySelector('img');
 
         const loadTimeout = setTimeout(() => {
-            imgElement.src = 'mast2.jpg'; // Fallback image after 3 seconds
+            imgElement.src = '/img/mast2.jpg'; // Fallback image after 3 seconds
         }, 30500);
 
         imgElement.onload = () => {
             clearTimeout(loadTimeout);
             stationItem.addEventListener('click', () => {
-                //playButton.innerHTML = '▶';  // Play icon
-                //initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
-                 localStorage.setItem('name', station.name);
-                    localStorage.setItem('url', station.url);
-                    localStorage.setItem('bit', station.bit);
-                    localStorage.setItem('location', station.location);
-                    localStorage.setItem('img', imgElement.src);
-                    localStorage.setItem('selectedCountryPaths', selectedCountryPath)
-
-                    // Correct usage of string interpolation with backticks
-                    window.location.href = `play.html?name=${station.name}`;
+                   localStorage.setItem('name', station.name);
+                                    localStorage.setItem('url', station.url);
+                                    localStorage.setItem('bit', station.bit);
+                                    localStorage.setItem('location', station.location);
+                                    localStorage.setItem('img', imgElement.src);
+                                    localStorage.setItem('selectedCountryPaths', selectedCountryPath)
+                playButton.innerHTML = '▶';  // Play icon
+                initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
             });
         };
 
         imgElement.onerror = () => {
             clearTimeout(loadTimeout);
-            imgElement.src = 'mast.jpg';
+            imgElement.src = '/img/mast.jpg';
             stationItem.addEventListener('click', () => {
-                //playButton.innerHTML = '▶';  // Play icon
-                //initAudioPlayer(station.url, 'mast.jpg', station.name, station.bit, station.location);
-                localStorage.setItem('name', station.name);
-                localStorage.setItem('url', station.url);
-                localStorage.setItem('bit', station.bit);
-                localStorage.setItem('location', station.location);
-                localStorage.setItem('img', imgElement.src);
-                localStorage.setItem('selectedCountryPaths', selectedCountryPath)
-
-                // Correct usage of string interpolation with backticks
-                window.location.href = `play.html?name=${station.name}`;
+            localStorage.setItem('name', station.name);
+                                localStorage.setItem('url', station.url);
+                                localStorage.setItem('bit', station.bit);
+                                localStorage.setItem('location', station.location);
+                                localStorage.setItem('img', imgElement.src);
+                                localStorage.setItem('selectedCountryPaths', selectedCountryPath)
+                playButton.innerHTML = '▶';  // Play icon
+                initAudioPlayer(station.url, imgElement.src, station.name, station.bit, station.location);
             });
         };
 
         stationList.appendChild(stationItem);
     });
 
-
     createPaginationControls(stations.length, totalPages);
+
 }
 
 
