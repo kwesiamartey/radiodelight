@@ -155,55 +155,120 @@
 
 
 </head>
-<body>
-   <div id="head-top"></div>
-    <!-- Additional info section under player-header -->
-    <div id="foo" style=" display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;"></div>
-   <div class="container">
 
-       <div style="background-color:rgb(77, 100, 111); display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;margin-bottom: 21px;">
-           <span id="breadcrumbs" style="width:100%;padding:4px;margin:0px;font-size:13px;color:#fff;display:none;">Radio Station |  </span>
-       </div>
-       <h1 class="countryTitle" style="display: block;">Live Austria Radio Station Online</h1>
-       <div class="row">
-           <div class="col-md-9">
+<div id="top-header" style="display: flex; flex-direction: column; background-color: #142229;">
+    <div class="container">
+        <div class="player-header">
+            <!-- Menu icon (if needed) -->
+            <!-- <span class="menu-icon" onclick="toggleMenu()">☰</span> -->
 
-               <div id="stationListContent" class="station-grid"></div>
-               <br><br>
-               <div id="paginationControls"></div>
-               <br><br><br><br><br>
-           </div>
-           <div class="col-md-3">
-               <div id="country_list_wrapper" style="background-color:rgb(77, 100, 111);padding:12px;display:block;">
-                   <p id="countryTitle" style="display: block;background-color:#1c313a;padding:6px 12px;border-radius:4px;">Discover by Countries</p>
-                   <ul id="countryList" class="country-grid"></ul>
-                   <br>
-                   <div id="paginationControls1"></div>
-                   <br>
-                   <p id="downloadTitle" style="display: block;background-color:#1c313a;padding:6px 12px;border-radius:4px;">Download mobile app</p>
-                   <a href="https://play.google.com/store/apps/details?id=com.lornamobileappsdev.moldova">
-                       <img src="get_playstore.jpeg" style="width:100%; height:auto"/>
-                   </a>
-                   <br>
-                   <br>
-                   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966"
-                           crossorigin="anonymous"></script>
-                   <ins class="adsbygoogle"
-                        style="display:block; text-align:center;"
-                        data-ad-layout="in-article"
-                        data-ad-format="fluid"
-                        data-ad-client="ca-pub-3366131354604966"
-                        data-ad-slot="7400832150"></ins>
-                   <script>
-                       (adsbygoogle = window.adsbygoogle || []).push({});
-                   </script>
+            <!-- Logo and Title -->
+            <a href="index.html">
+                <img id="Logo" src="https://radiosdelight.com/fav_icon.jpg" alt="Station Logo">
+            </a>
+            <h3 id="web_title">Radios</h3>
 
-               </div>
+            <!-- Search bar -->
+            <input type="text" id="searchInput" placeholder="Search stations" oninput="filterStations()">
+        </div>
+    </div>
+</div>
+<!-- Additional info section under player-header -->
+<div id="foo" style=" display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;">
+    <div class="progress-ring2" id="progress-loading" style="display:block;"></div>
+</div>
+<!-- Centered "mmi" Element -->
+</div>
 
-           </div>
-       </div>
-   </div>
-   <div id="page-footer"></div>
+
+<!--wrapper-->
+<div class="wrapper">
+
+    <div class="content">
+        <div class="container" style="width:75v" >
+            <div style="background-color:rgb(77, 100, 111); display: flex; align-items: center; justify-content: center; padding: 0px; width: 100%;margin-bottom: 21px;">
+                <span id="breadcrumbs" style="width:100%;padding:4px;margin:0px;font-size:13px;color:#fff;">Radio Station |  </span>
+            </div>
+            <h1 class="countryTitle">Live Austria Radio Station Online</h1>
+            <div class="row">
+                <div class="col-md-9">
+
+                    <div id="stationListContent" class="station-grid"></div>
+                    <br><br>
+                    <div id="paginationControls"></div>
+                    <br><br><br><br><br><br><br>
+                </div>
+                <div class="col-md-3">
+                    <div id="country_list_wrapper" style="background-color:rgb(77, 100, 111);padding:12px;">
+                        <p id="countryTitle" style="display: none;background-color:#1c313a;padding:6px 12px;border-radius:4px;">Discover by Countries</p>
+                        <ul id="countryList" class="country-grid"></ul>
+                        <br>
+                        <div id="paginationControls1"></div>
+                        <br>
+                        <p id="downloadTitle" style="display: none;background-color:#1c313a;padding:6px 12px;border-radius:4px;">Download mobile app</p>
+                        <a href="https://play.google.com/store/apps/details?id=com.lornamobileappsdev.moldova">
+                            <img src="get_playstore.jpeg" style="width:100%; height:auto"/>
+                        </a>
+                    </div>
+
+                    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966"
+                            crossorigin="anonymous"></script>
+                    <ins class="adsbygoogle"
+                         style="display:block; text-align:center;"
+                         data-ad-layout="in-article"
+                         data-ad-format="fluid"
+                         data-ad-client="ca-pub-3366131354604966"
+                         data-ad-slot="7400832150"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                    </br></br></br></br><br><br>
+                </div>
+            </div>
+        </div>
+
+
+        <!--footer-->
+        <div class="row" id="footerr" style="padding:30px; background-color:#34444c; display: none;">
+            <div class="container">
+                <div class="row">
+                    <!-- Left Section: Radio FM USA Description -->
+                    <div class="col-md-6" style="color: #ccc;">
+                        <h5>Radio Delight</h5>
+                        <h2 span style="font-size:13px;">Explore the finest global radio experience with our free online app, offering seamless access to over 22000 FM/AM stations featuring live broadcasts of news, sports, and music. Stay informed on the latest events in the US and enjoy a wide variety of music genres. Whether you're into pop, rock, or classical, we've got something for every taste.</h2>
+                        <p></p>
+                    </div>
+
+                    <!-- Right Section: Top Radio Stations -->
+                    <div class="col-md-6" style="color: #ccc;">
+                        <h5>Top Radio Countries</h5>
+                        <ul class="list-unstyled">
+                            <li>1. USA</li>
+                            <li>2. Canada</li>
+                            <li>3. Finland</li>
+                            <li>4. Albania</li>
+                            <li>5. UK</li>
+                        </ul>
+                    </div>
+                    <div class="row mt-5" style="color: #ccc;">
+                        <div class="col text-center footer-links">
+                            <a href="privacy.html" style="color: #ccc;font-size:14px;">Privacy Policy</a> ·
+                            <a href="privacy.html" style="color: #ccc;font-size:14px;">Terms of Service</a> ·
+                            <a href="about-us.html" style="color: #ccc;font-size:14px;">About Us</a> ·
+                            <a href="contact-us.html" style="color: #ccc;font-size:14px;">Contact Us</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Footer Section -->
+                <div class="row mt-5" style="color: #ccc;"> </div>
+            </div>
+        </div>
+
+    </div><!--content ends-->
+
+</div><!--wrapper ends here-->
+
+
 <!-- Include HLS.js for .m3u8 support -->
 <script src="https://cdn.jsdelivr.net/npm/howler"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
