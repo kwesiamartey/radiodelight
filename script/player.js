@@ -765,9 +765,9 @@ function sendEmailComment(stationName, stationUrl, status) {
             .catch(error => console.error('Error sending email:', error));
  }
 
- /**
+/**
          * Sanitize user input by escaping special characters.
- */
+*/
 function sanitizeInput(input) {
             const map = {
                 '&': '&amp;',
@@ -779,9 +779,6 @@ function sanitizeInput(input) {
             };
             return input.replace(/[&<>"'/]/g, (char) => map[char]);
 }
-
-
-
 
 /**
      * Show toast notification.
@@ -914,12 +911,16 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
    }
 
     window.onload = () => {
-        loadStationPlaceholders()
-        loadCountryPlaceholders()
-        loadCountries();
-        fetchStations();
         loadFooter('footer.html', 'page-footer');
         loadContent('comment.html', 'commenting');
         loadContent('header.html', 'head-top');
-        initAudioPlayer(url, img, name, bit, location1)
+
+        setTimeout(() => {
+            loadStationPlaceholders()
+            loadCountryPlaceholders()
+            loadCountries();
+            fetchStations();
+            initAudioPlayer(url, img, name, bit, location1)
+        }, 2000); // Delay of 2000ms (2 seconds)
+
     };
