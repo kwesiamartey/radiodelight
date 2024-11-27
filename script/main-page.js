@@ -561,9 +561,10 @@ function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
  window.onload = () => {
        loadContent('header.html', 'head-top');
         loadFooter('footer.html', 'page-footer');
-        loadStationPlaceholders()
-        loadCountryPlaceholders()
-        loadCountries();
-        fetchStations();
-
+        setTimeout(() => {
+             loadStationPlaceholders()
+                  loadCountryPlaceholders()
+                  loadCountries();
+                  fetchStations();
+        }, 2000); // Delay of 2000ms (2 seconds)
     };
