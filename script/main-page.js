@@ -51,7 +51,7 @@
      * @param {string} url - The URL of the HTML file to fetch
      * @param {string} targetId - The ID of the target element to inject content into
      */
-    function loadContent(url, targetId) {
+   function loadContent(url, targetId) {
       fetch(url)
         .then(response => {
           if (!response.ok) {
@@ -71,9 +71,7 @@
     }
 
 
-
-
-     function loadFooter(url, targetId) {
+   function loadFooter(url, targetId) {
           fetch(url)
             .then(response => {
               if (!response.ok) {
@@ -274,6 +272,10 @@ function setupPaginationButtons(data, totalPages) {
     }
 }
 
+
+
+
+
 async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 5000, chunkSize = 1000) {
     const sanitizedCountryPath = encodeURIComponent(countryPath);
     const baseUrl2 =  `${document.querySelector('meta[name="api-base-url"]').content}/query_stations.php?path=${sanitizedCountryPath}`;
@@ -292,7 +294,6 @@ async function fetchStations(countryPath = selectedCountryPath, retries = 3, del
         displayStations(stationData);
     }
 }
-
 
 async function fetchStationsInChunks(baseUrl, chunkSize) {
     let allStations = [];
@@ -356,7 +357,6 @@ function filterStations() {
 }
 
 
-
 function displayStations(stations) {
     const stationList = document.getElementById('stationListContent');
     const paginationControls = document.getElementById('paginationControls');
@@ -368,8 +368,7 @@ function displayStations(stations) {
         return;
     }
 
-    const itemsPerPage = 48;  // Example value
-    const currentPage = 1;    // Example value
+
 
     // No sorting, stations remain in the order received from the server
 
@@ -437,9 +436,6 @@ function displayStations(stations) {
 }
 
 
-
-
-
 function createPaginationControls(totalStations, totalPages) {
     const paginationControls = document.getElementById('paginationControls');
     paginationControls.innerHTML = ''; // Clear previous controls
@@ -500,6 +496,9 @@ function createPaginationControls(totalStations, totalPages) {
 }
 
 
+
+
+
 function createStationLogoCanvas(stationName) {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
@@ -558,7 +557,8 @@ function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
     }
 }
 
-    window.onload = () => {
+
+ window.onload = () => {
        loadContent('header.html', 'head-top');
         loadFooter('footer.html', 'page-footer');
         loadStationPlaceholders()

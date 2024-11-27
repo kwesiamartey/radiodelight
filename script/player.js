@@ -115,7 +115,7 @@
 }
 
 
-     function loadFooter(url, targetId) {
+ function loadFooter(url, targetId) {
           fetch(url)
             .then(response => {
               if (!response.ok) {
@@ -147,10 +147,8 @@
     });
 
 
-
-
  // Function to show tooltip
-  function showTooltip(event, text) {
+function showTooltip(event, text) {
     let tooltip = document.createElement('div');
     tooltip.className = 'tooltip';
     tooltip.textContent = text;
@@ -171,7 +169,7 @@
   }
 
   // Function to hide tooltip
-  function hideTooltip(event) {
+function hideTooltip(event) {
     const tooltip = event.target._tooltip;
     if (tooltip) {
       tooltip.remove();
@@ -179,7 +177,6 @@
     }
   }
 
-    
 function loadCountries() {
 const sanitizedCountryPath = encodeURIComponent('query_countries.php');
 const baseUrl = `${document.querySelector('meta[name="api-base-url"]').content}/${sanitizedCountryPath}`;
@@ -250,12 +247,14 @@ function setupPaginationButtons(data, totalPages) {
     paginationControls.appendChild(prevButton);
 
     // Page number buttons
-    if (totalPages <= maxVisibleButtons + 2) {
+    if (totalPages <= maxVisibleButtons + 2)
+     {
         // If total pages are few, display all
         for (let i = 1; i <= totalPages; i++) {
             addPageButton(i);
         }
-    } else {
+    }
+    else {
         // Handle case when total pages are more than the visible buttons
         let startPage, endPage;
 
@@ -295,8 +294,6 @@ function setupPaginationButtons(data, totalPages) {
         }
     }
 
-
-
     // Next button
     const nextButton = document.createElement('button');
     nextButton.textContent = '>>';
@@ -328,8 +325,6 @@ function setupPaginationButtons(data, totalPages) {
         paginationControls.appendChild(ellipsisSpan);
     }
 }
-
-
 
 async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 3000, chunkSize = 1000) {
     const sanitizedCountryPath = encodeURIComponent(countryPath);
@@ -377,8 +372,6 @@ async function fetchStationsInChunks(baseUrl, chunkSize) {
     return filteredStations;
 }
 
-    
-
 // Function to fetch data with retries
 async function fetchWithRetry(url, retries, delay) {
     for (let attempt = 0; attempt < retries; attempt++) {
@@ -406,7 +399,6 @@ function filterStations() {
     currentPage = 1; // Reset to first page on filter
     displayStations(filteredStations);
 }
-
 
 function displayStations(stations) {
     const stationList = document.getElementById('stationListContent');
@@ -486,8 +478,6 @@ function displayStations(stations) {
 
 }
 
-
-
 function createPaginationControls(totalStations, totalPages) {
     const paginationControls = document.getElementById('paginationControls');
     paginationControls.innerHTML = ''; // Clear previous controls
@@ -546,8 +536,8 @@ function createPaginationControls(totalStations, totalPages) {
         });
     }
 }
-//initAudioPlayer(url, img, name, bit, location1)
 
+//initAudioPlayer(url, img, name, bit, location1)
 function initAudioPlayer(url, image, stationName, bit, country) {
     stationLogo.src = image;
     stationLogo.style.display = 'block';
@@ -638,7 +628,7 @@ function showSpinner(show) {
             progress.style.display = show ? 'block' : 'none';
 }
 
-            // Play/pause functionality with icons
+// Play/pause functionality with icons
 playButton.addEventListener('click', () => {
 
              /* if (bit === '00') {
@@ -669,9 +659,7 @@ playButton.addEventListener('click', () => {
                     playButton.innerHTML = '▶';  // Play icon
                     isPlaying = false;
               }
-        });
-
-
+});
 
 function createStationLogoCanvas(stationName) {
     const canvas = document.createElement('canvas');
@@ -712,8 +700,7 @@ function createStationLogoCanvas(stationName) {
     return canvas.toDataURL();
 }
 
-
-    function handlePlaybackError(url, stationName) {
+function handlePlaybackError(url, stationName) {
                 progress.style.display = 'none';
                 const modal = document.getElementById('errorModal');
                 const closeModal = document.getElementById('closeModal');
@@ -736,7 +723,7 @@ function createStationLogoCanvas(stationName) {
                 sendEmailNotification(stationName, url, 'error');
 }
 
-    function sendEmailNotification(stationName, stationUrl, status) {
+function sendEmailNotification(stationName, stationUrl, status) {
         const formData = new FormData();
         formData.append('stationName', stationName);
         formData.append('stationUrl', stationUrl);
@@ -755,9 +742,9 @@ function createStationLogoCanvas(stationName) {
             }
         })
         .catch(error => console.error('Error sending email:', error));
-    }
+}
 
-    function sendEmailComment(stationName, stationUrl, status) {
+function sendEmailComment(stationName, stationUrl, status) {
             const formData = new FormData();
             formData.append('stationName', stationName);
             formData.append('stationUrl', stationUrl);
@@ -776,11 +763,12 @@ function createStationLogoCanvas(stationName) {
                 }
             })
             .catch(error => console.error('Error sending email:', error));
-        }
-     /**
+ }
+
+ /**
          * Sanitize user input by escaping special characters.
-         */
-    function sanitizeInput(input) {
+ */
+function sanitizeInput(input) {
             const map = {
                 '&': '&amp;',
                 '<': '&lt;',
@@ -790,15 +778,15 @@ function createStationLogoCanvas(stationName) {
                 "/": '&#x2F;',
             };
             return input.replace(/[&<>"'/]/g, (char) => map[char]);
-        }
+}
 
 
 
 
-          /**
-         * Show toast notification.
-         */
-      function showToast(message) {
+/**
+     * Show toast notification.
+*/
+function showToast(message) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
             toast.classList.add('show');
@@ -807,11 +795,9 @@ function createStationLogoCanvas(stationName) {
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);
-        }
+}
 
-
-
-    function submitForm() {
+function submitForm() {
 
 
     const stationName = sanitizeInput(document.getElementById('stationName').value.trim());
@@ -836,8 +822,6 @@ function createStationLogoCanvas(stationName) {
     document.getElementById('emailForm').reset();
     return true;
 }
-
-
 
 function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
     // Validate the audio URL
