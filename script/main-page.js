@@ -368,8 +368,6 @@ function displayStations(stations) {
         return;
     }
 
-
-
     // No sorting, stations remain in the order received from the server
 
     // Calculate pagination details
