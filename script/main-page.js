@@ -558,13 +558,21 @@ function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
 }
 
 
- window.onload = () => {
-       loadContent('header.html', 'head-top');
-        loadFooter('footer.html', 'page-footer');
-        setTimeout(() => {
-             loadStationPlaceholders()
-                  loadCountryPlaceholders()
-                  loadCountries();
-                  fetchStations();
-        }, 2000); // Delay of 2000ms (2 seconds)
-    };
+// Main function with async/await
+window.onload = async () => {
+    try {
+        // Load header and footer first
+        await loadContent('header.html', 'head-top');
+        await loadFooter('footer.html', 'page-footer');
+
+        console.log("Header and Footer loaded");
+
+        // Load other content after header and footer are ready
+        loadStationPlaceholders();
+        loadCountryPlaceholders();
+        loadCountries();
+        fetchStations();
+    } catch (error) {
+        console.error(error);
+    }
+};

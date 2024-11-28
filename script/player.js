@@ -911,17 +911,33 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
    }
 
     window.onload = () => {
-        loadContent('header.html', 'head-top');
-       loadFooter('footer.html', 'page-footer');
-        loadContent('comment.html', 'commenting');
+
 
 
         setTimeout(() => {
-            loadStationPlaceholders()
-            loadCountryPlaceholders()
-            loadCountries();
-            fetchStations();
+
             initAudioPlayer(url, img, name, bit, location1)
         }, 2000); // Delay of 2000ms (2 seconds)
 
+    };
+
+
+    // Main function with async/await
+    window.onload = async () => {
+        try {
+            // Load header and footer first
+            await loadContent('header.html', 'head-top');
+            await loadFooter('footer.html', 'page-footer');
+            await loadContent('comment.html', 'commenting');
+
+            console.log("Header and Footer loaded");
+
+            // Load other content after header and footer are ready
+             loadStationPlaceholders()
+              loadCountryPlaceholders()
+              loadCountries();
+              fetchStations();
+        } catch (error) {
+            console.error(error);
+        }
     };
