@@ -542,7 +542,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
     stationLogo.src = image;
     stationLogo.style.display = 'block';
     breadcrumbs.textContent = `Radio station | ${country} | ${stationName}`;
-    stationDetailsGlobal = `${stationName} (${country}) (web)`;
+    stationDetailsGlobal = `${stationName} (${country}) (Web)`;
 
     // Handle image load errors
     stationLogo.onerror = () => handleImageError(stationLogo, stationName);
@@ -586,7 +586,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                     hls.on(Hls.Events.ERROR, (event, data) => {
                         showSpinner(false); // Hide the spinner on error
                         //showCustomError('Error, Try again later.');
-                        const stationDetails = `${stationName} (${country}) (web)`;
+                        const stationDetails = `${stationName} (${country}) (Web)`;
                         handlePlaybackError(stationDetails, url, 'error')
                     });
                 } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
@@ -595,12 +595,12 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                     audio.addEventListener('canplay', () => {
                         showSpinner(false); // Hide the spinner when audio is ready
                     });
-                     const stationDetails = `${stationName} (${country}) (Mobile)`;
+                     const stationDetails = `${stationName} (${country}) (Web)`;
                      sendEmailNotification(stationDetails, url, 'success')
                 } else {
                     showSpinner(false); // Hide the spinner on error
                     //showCustomError('Error, Try again later.');
-                    const stationDetails = `${stationName} (${country}) (Mobile)`;
+                    const stationDetails = `${stationName} (${country}) (Web)`;
                     handlePlaybackError(stationDetails, url, 'error')
                     return;
                 }
@@ -609,7 +609,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                 audio.addEventListener('canplay', () => {
                     showSpinner(false); // Hide the spinner when audio is ready
                 });
-                const stationDetails = `${stationName} (${country}) (Mobile)`;
+                const stationDetails = `${stationName} (${country}) (Web)`;
                      sendEmailNotification(stationDetails, url, 'success')
             }
 
@@ -617,7 +617,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
             audio.addEventListener('error', function() {
                 showSpinner(false); // Hide the spinner on error
                 //showCustomError('Error, Try again later.');
-                const stationDetails = `${stationName} (${country}) (web)`;
+                const stationDetails = `${stationName} (${country}) (Web)`;
                 handlePlaybackError(stationDetails, url, 'error')
             });
 
