@@ -910,16 +910,6 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
 
    }
 
-    window.onload = () => {
-
-        setTimeout(() => {
-
-            initAudioPlayer(url, img, name, bit, location1)
-        }, 2000); // Delay of 2000ms (2 seconds)
-
-    };
-
-
     // Main function with async/await
     window.onload = async () => {
         try {
@@ -931,7 +921,7 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
             console.log("Header and Footer loaded");
 
             // Load other content after header and footer are ready
-            initAudioPlayer(url, image, name, bit, location)
+            initAudioPlayer(url, img, name, bit, location1)
              loadStationPlaceholders()
               loadCountryPlaceholders()
               loadCountries();
