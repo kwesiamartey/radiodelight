@@ -36,6 +36,9 @@
     audio.volume = volumeControl.value;
 
 
+   loadFooter('footer.html', 'page-footer');
+   loadContent('comment.html', 'commenting');
+   loadContent('header.html', 'head-top');
 
    function loadStationPlaceholders() {
            // Generate 48 placeholders dynamically with shimmer effect
@@ -911,10 +914,6 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
    }
 
     window.onload = () => {
-        loadFooter('footer.html', 'page-footer');
-        loadContent('comment.html', 'commenting');
-        loadContent('header.html', 'head-top');
-
         setTimeout(() => {
             loadStationPlaceholders()
             loadCountryPlaceholders()

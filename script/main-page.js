@@ -15,6 +15,8 @@
     const countryList = document.getElementById('countryList');
 
     const selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || "Italy";
+    loadContent('header.html', 'head-top');
+            loadFooter('footer.html', 'page-footer');
 
 
     function loadStationPlaceholders() {
@@ -495,10 +497,6 @@ function createPaginationControls(totalStations, totalPages) {
     }
 }
 
-
-
-
-
 function createStationLogoCanvas(stationName) {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
@@ -538,7 +536,6 @@ function createStationLogoCanvas(stationName) {
     return canvas.toDataURL();
 }
 
-
 function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
     // Validate the audio URL
     if (!audioUrl || typeof audioUrl !== 'string' || !audioUrl.startsWith('http')) {
@@ -559,8 +556,6 @@ function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
 
 
  window.onload = () => {
-       loadContent('header.html', 'head-top');
-        loadFooter('footer.html', 'page-footer');
         setTimeout(() => {
              loadStationPlaceholders()
                   loadCountryPlaceholders()
