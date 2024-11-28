@@ -912,8 +912,6 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
 
     window.onload = () => {
 
-
-
         setTimeout(() => {
 
             initAudioPlayer(url, img, name, bit, location1)
@@ -933,6 +931,7 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
             console.log("Header and Footer loaded");
 
             // Load other content after header and footer are ready
+            initAudioPlayer(url, image, name, bit, location)
              loadStationPlaceholders()
               loadCountryPlaceholders()
               loadCountries();

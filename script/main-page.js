@@ -494,9 +494,6 @@ function createPaginationControls(totalStations, totalPages) {
 }
 
 
-
-
-
 function createStationLogoCanvas(stationName) {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
@@ -554,6 +551,14 @@ function openPeacefmPopupWithData(stationName, logoUrl, audioUrl) {
         popupWindow.focus();
     }
 }
+
+
+
+
+
+
+
+
 
 
 // Main function with async/await
