@@ -917,11 +917,11 @@ function openPopupWithData(stationName, logoUrl, audioUrl) {
             await loadContent('header.html', 'head-top');
             await loadFooter('footer.html', 'page-footer');
             await loadContent('comment.html', 'commenting');
-
+            await initAudioPlayer(url, img, name, bit, location1)
             console.log("Header and Footer loaded");
 
             // Load other content after header and footer are ready
-            initAudioPlayer(url, img, name, bit, location1)
+
              loadStationPlaceholders()
               loadCountryPlaceholders()
               loadCountries();
