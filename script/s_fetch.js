@@ -61,4 +61,4 @@ function fetchStationData(stationName) {
 }
 
 // Example: Fetch data for the station "1940s Radio Station"
-fetchStationData('1940s Radio Station');
+fetchStationData('Adom 106.3 Fm');
