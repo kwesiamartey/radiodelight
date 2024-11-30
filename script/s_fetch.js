@@ -1,9 +1,18 @@
-// Function to get the station name from the URL
+/ Function to get the station name from the URL or localStorage
 function getStationNameFromUrl() {
     const params = new URLSearchParams(window.location.search);
-    return params.get("name"); // This will return the station name,
-}
 
+    // Check if station name is in localStorage
+    if (localStorage.getItem('name')) {
+        return localStorage.getItem('name'); // Return the station name from localStorage
+    } else {
+        const stationName = params.get("name"); // Otherwise, get the name from the URL
+        if (stationName) {
+            localStorage.setItem('name', stationName); // Save it to localStorage for future use
+        }
+        return stationName; // Return the station name from URL
+    }
+}
 
 /**
  * Fetch station details and log them to the console.
@@ -49,7 +58,11 @@ function fetchStationData(stationName) {
                   "name": station.location
               },
               "description": `Tune in and listen to ${station.name} Radio live on RadiosDelight.com. Enjoy the best internet radio experience for free.`,
-              "logo": station.logo
+              "logo": station.logo,
+              "address": {
+                      "@type": "PostalAddress",
+                      "addressCountry": station.location
+                  }
           };
 
             // Log structured data to the console
@@ -67,8 +80,10 @@ function fetchStationData(stationName) {
                  });
 }
 
-// Get station name from the URL and fetch its data
+// Get station name from the URL or localStorage and fetch its data
 const stationName = getStationNameFromUrl();
 if (stationName) {
     fetchStationData(stationName);
+} else {
+    console.error("No station name found in URL or localStorage.");
 }
