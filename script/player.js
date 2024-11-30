@@ -28,8 +28,6 @@
     const breadcrumbs = document.getElementById('breadcrumbs');
     document.getElementById('breadcrumbs').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'none';
-     document.querySelector('.playing-station-wrap').style.display = 'block';
-    document.querySelector('.footer-div-wraaper').style.display = 'block';
     const stationListContent = document.getElementById('stationListContent');
     const countryList = document.getElementById('countryList');
     // Set initial volume (based on the slider's default value)
@@ -427,14 +425,15 @@ function displayStations(stations) {
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
         const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name);
 
-        stationItem.innerHTML = `
-            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: white;justify-content:center;align-content: center;">
-                <img style="width: 100%; height: 140px; object-fit: fill;"
-                     src="${logoUrl}"
-                     loading="lazy"
-                     alt="${truncatedName}">
-            </div>
-            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
+          stationItem.innerHTML = `
+                             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 text-center d-flex flex-column align-items-center" style="width: 100%; height: 140px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: white;">
+                                 <img style="width: 100%; height: 142px; object-fit: fill;"
+                                      src="${logoUrl}"
+                                      loading="lazy"
+                                      alt="${truncatedName}">
+                             </div>
+                             <div class="mt-1 mb-2 d-flex align-items-center justify-content-center" style="width:100%;height37px;color:#eee;" >${truncatedName}</div>`;
+
 
         const imgElement = stationItem.querySelector('img');
 

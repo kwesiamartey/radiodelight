@@ -168,6 +168,8 @@ function renderCountryList(data, page, totalPages) {
            // Retrieve the selected country name from localStorage or use a fallback
             // Update the .countryTitle element if it exists
             const countryTitleElement = document.querySelector('.countryTitle');
+            localStorage.setItem('selectedCountryPathName', country.name)
+            localStorage.setItem('selectedCountryPath', country.url)
             countryTitleElement.textContent = `Live ${country.name} Radio Station Online`;
         });
         countryList.appendChild(listItem);
@@ -271,10 +273,6 @@ function setupPaginationButtons(data, totalPages) {
         paginationControls.appendChild(ellipsisSpan);
     }
 }
-
-
-
-
 
 async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 5000, chunkSize = 1000) {
     const sanitizedCountryPath = encodeURIComponent(countryPath);
@@ -383,14 +381,16 @@ function displayStations(stations) {
         const truncatedName = station.name.length > 13 ? station.name.slice(0, 13) + '...' : station.name;
         const logoUrl = station.logo && station.logo.trim() !== '' ? station.logo : createStationLogoCanvas(station.name);
 
-        stationItem.innerHTML = `
-            <div style="width: 100%; height: 138px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: white; justify-content: center; align-content: center;">
-                <img style="width: 100%; height: 140px; object-fit: fill;"
-                     src="${logoUrl}"
-                     loading="lazy"
-                     alt="${truncatedName}">
-            </div>
-            <span style="display: inline-block; padding: 4px;">${truncatedName}</span>`;
+
+               stationItem.innerHTML = `
+                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 text-center d-flex flex-column align-items-center" style="width: 100%; height: 140px; border-radius: 5px 5px 0px 0px; position: relative; overflow: hidden; background-color: white;">
+                            <img style="width: 100%; height: 142px; object-fit: fill;"
+                                 src="${logoUrl}"
+                                 loading="lazy"
+                                 alt="${truncatedName}">
+                        </div>
+                        <div class="mt-1 mb-2 d-flex align-items-center justify-content-center" style="width:100%;height37px;color:#eee;" >${truncatedName}</div>`;
+
 
         const imgElement = stationItem.querySelector('img');
 

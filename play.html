@@ -195,7 +195,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
         }
 
         /* Box Placeholder */
@@ -287,12 +286,12 @@
           <div class="col-md-9">
 
               <!------- the player start here ---->
-              <div class="footer-div-wraaper">
-                  <div class="col playing-station-wrap" style="background-color: #142229; display: none; align-items: center; justify-content: center;margin:auto;border-radius: 0px 6px 6px 0px;">
-                      <div class="row" style="display: flex; align-items: center; height: auto; width: 100%;">
+              <div class="container d-flex justify-content-center align-items-center">
+                  <div class="col-xl-5 col-lg-5 col-md-8 col-sm-10 col-xs-11 col-12 mb-3">
+                      <div class="row" style="display: flex; align-items: center; height: auto;;background-color: #142229;">
 
                           <!-- First column: Station Image -->
-                          <div class="col-5 ">
+                          <div class="col-5 " style="padding:0px;">
                               <img id="stationLogo" class="station-image" src="/img/placeholder.jpg" alt="Station Logo" style="display: block; object-fit: fill;">
                           </div>
 
@@ -329,8 +328,8 @@
                   </div>
               </div>
               <!----------the player ends here ------->
-
-              <p class="mt-1 mb-2 text-white">You may also like</p>
+              <br>
+              <div class="mt-1 mb-2 text-white" >You may also like</div>
               <div id="stationListContent" class="station-grid" ></div>
               <br><br>
               <div id="paginationControls" style="display:none;"></div>
@@ -367,10 +366,12 @@
       </div>
   </div>
 
-  <!-- Footer -->
-  <footer style="background-color: rgb(77, 100, 111); height:374px;" class=" text-light py-3">
-      <div id="page-footer"></div>
-  </footer>
+<!-- Footer -->
+<footer style="background-color: rgb(77, 100, 111);" class="text-light py-3">
+    <div id="page-footer">
+
+    </div>
+</footer>
 <!-- Include HLS.js for .m3u8 support -->
 <script src="https://cdn.jsdelivr.net/npm/howler"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>

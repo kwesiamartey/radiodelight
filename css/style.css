@@ -119,8 +119,7 @@ text-decoration: none;
 
 
  #countryList li{
-
-       margin:0px;
+         margin:0px;
          height:60px;
     }
 
@@ -191,18 +190,18 @@ text-decoration: none;
 
 
           /* Center the pagination controls */
- #paginationControls {
-     display: flex;
-     color:white;
-     justify-content: center; /* Centers the controls horizontally */
-     align-items: center; /* Aligns items vertically in the center */
-     margin-top: 10px; /* Optional, to add some spacing */
- }
+     #paginationControls {
+         display: flex;
+         color:white;
+         justify-content: center; /* Centers the controls horizontally */
+         align-items: center; /* Aligns items vertically in the center */
+         margin-top: 10px; /* Optional, to add some spacing */
+     }
 
- #paginationControls span {
-     margin: 0 5px;
-     cursor: pointer;
- }
+     #paginationControls span {
+         margin: 0 5px;
+         cursor: pointer;
+     }
 
     .img {
          width: 100%; /* Set width */
@@ -359,8 +358,6 @@ text-decoration: none;
 
       .countryTitle{
           color: white;
-          margin-bottom:20px;
-          margin-top: 20px;
           text-align: center;
           font-weight:700;
           font-size:2.0rem;
@@ -566,9 +563,9 @@ text-decoration: none;
 
 
  @media only screen and (min-width: 435) and (max-width: 600px){
-.container{
-        width:100%
- }
+    .container{
+            width:100%
+     }
 
      .player-container {
          flex-direction: column;
