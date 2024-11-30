@@ -23,30 +23,27 @@ function fetchStationData(stationName) {
             // Assuming the response is an array with one station object
             const station = data[0];
 
-            // Log station details to the console
-            console.log('Station Name:', station.name);
-            console.log('Location:', station.location);
-            console.log('Bitrate:', station.url);
-            console.log('Logo URL:', station.logo);
-            console.log('Stream URL:', station.url);
+              localStorage.setItem('name', station.name);
+              localStorage.setItem('url', station.url);
+              localStorage.setItem('bit', station.bit);
+              localStorage.setItem('location', station.location);
+              localStorage.setItem('img', station.logo);
+              localStorage.setItem('selectedCountryPaths', selectedCountryPath);
 
             // Create structured data
-            const structuredData = {
-                "@context": "https://schema.org",
-                "@type": "RadioStation",
-                "name": station.name,
+          const structuredData = {
+              "@context": "https://schema.org",
+              "@type": "RadioStation",
+              "name": station.name,
               "url": `https://radiosdelight.com/play.html?name=${encodeURIComponent(station.name)}`,
-                "broadcastFrequency": station.url,
-                "areaServed": {
-                    "@type": "Place",
-                    "name": station.location
-                },
-                "audio": {
-                    "@type": "AudioObject",
-                    "contentUrl": station.url
-                },
-                "logo": station.logo
-            };
+              "broadcastFrequency": station.url,
+              "areaServed": {
+                  "@type": "Place",
+                  "name": station.location
+              },
+              "description": `Tune in and listen to ${station.name} Radio live on RadiosDelight.com. Enjoy the best internet radio experience for free.`,
+              "logo": station.logo
+          };
 
             // Log structured data to the console
                      console.log('Structured Data:', JSON.stringify(structuredData, null, 2));
