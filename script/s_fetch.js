@@ -1,3 +1,10 @@
+// Function to get the station name from the URL
+function getStationNameFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("name"); // This will return the station name,
+}
+
+
 /**
  * Fetch station details and log them to the console.
  * @param {string} stationName - The name of the radio station.
@@ -60,5 +67,8 @@ function fetchStationData(stationName) {
                  });
 }
 
-// Example: Fetch data for the station "1940s Radio Station"
-fetchStationData('Adom 106.3 Fm');
+// Get station name from the URL and fetch its data
+const stationName = getStationNameFromUrl();
+if (stationName) {
+    fetchStationData(stationName);
+}
