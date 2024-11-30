@@ -23,14 +23,6 @@ function fetchStationData(stationName) {
             // Assuming the response is an array with one station object
             const station = data[0];
 
-
-               localStorage.setItem('name', station.name);
-               localStorage.setItem('url', station.url);
-               localStorage.setItem('bit', station.bit);
-               localStorage.setItem('location', station.location);
-               localStorage.setItem('img', imgElement.src);
-               localStorage.setItem('selectedCountryPaths', selectedCountryPath);
-
             // Log station details to the console
             console.log('Station Name:', station.name);
             console.log('Location:', station.location);
@@ -57,18 +49,18 @@ function fetchStationData(stationName) {
             };
 
             // Log structured data to the console
-            console.log('Structured Data:', JSON.stringify(structuredData, null, 2));
+                     console.log('Structured Data:', JSON.stringify(structuredData, null, 2));
 
-            // Dynamically add structured data to the page
-            const ldScript = document.getElementById('structured-data') || document.createElement('script');
-            ldScript.type = 'application/ld+json';
-            ldScript.id = 'structured-data';
-            ldScript.textContent = JSON.stringify(structuredData);
-            document.head.appendChild(ldScript);
-        })
-        .catch(error => {
-            console.error('Error fetching station data:', error);
-        });
+                     // Dynamically add structured data to the page
+                     const ldScript = document.getElementById('structured-data') || document.createElement('script');
+                     ldScript.type = 'application/ld+json';
+                     ldScript.id = 'structured-data';
+                     ldScript.textContent = JSON.stringify(structuredData);
+                     document.head.appendChild(ldScript);
+                 })
+                 .catch(error => {
+                     console.error('Error fetching station data:', error);
+                 });
 }
 
 // Example: Fetch data for the station "1940s Radio Station"
