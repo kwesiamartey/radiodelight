@@ -1,4 +1,4 @@
-/ Function to get the station name from the URL or localStorage
+// Function to get the station name from the URL or localStorage
 function getStationNameFromUrl() {
     const params = new URLSearchParams(window.location.search);
 
