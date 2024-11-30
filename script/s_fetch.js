@@ -66,7 +66,7 @@ function fetchStationData(stationName) {
           };
 
             // Log structured data to the console
-                     console.log('Structured Data:', JSON.stringify(structuredData, null, 2));
+
 
                      // Dynamically add structured data to the page
                      const ldScript = document.getElementById('structured-data') || document.createElement('script');
