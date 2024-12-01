@@ -34,7 +34,6 @@
     audio.volume = volumeControl.value;
 
 
-
    async function loadStationPlaceholders() {
            // Generate 48 placeholders dynamically with shimmer effect
            stationListContent.innerHTML = Array.from({ length: 48 })
@@ -132,7 +131,6 @@
             .catch(error => console.error('Error loading content:', error));
         }
 
-
     // Update audio volume when the slider is adjusted
     volumeControl.addEventListener('input', function () {
         audio.volume = this.value;
@@ -176,7 +174,7 @@ function hideTooltip(event) {
   }
 
 function loadCountries() {
-const sanitizedCountryPath = encodeURIComponent('query_countries.php');
+const sanitizedCountryPath = encodeURIComponent('test_countries.php');
 const baseUrl = `${document.querySelector('meta[name="api-base-url"]').content}/${sanitizedCountryPath}`;
 
     fetch(baseUrl)
@@ -326,7 +324,7 @@ function setupPaginationButtons(data, totalPages) {
 
 async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 3000, chunkSize = 1000) {
     const sanitizedCountryPath = encodeURIComponent(countryPath);
-    const baseUrl2 = `${document.querySelector('meta[name="api-base-url"]').content}/query_stations.php?path=${sanitizedCountryPath}`;
+    const baseUrl2 = `${document.querySelector('meta[name="api-base-url"]').content}/test_get_station.php?path=${sanitizedCountryPath}`;
 
     try {
         // Attempt to fetch the entire dataset at once
@@ -604,44 +602,91 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                     return;
                 }
             } else {
-                // Use native HTML5 audio for other formats
-                audio.addEventListener('canplay', () => {
-                    showSpinner(false); // Hide the spinner when audio is ready
-                });
-                const stationDetails = `${stationName} (${country}) (Web)`;
-                     sendEmailNotification(stationDetails, url, 'success')
+
+                createAudioPlayer(url, country)
             }
 
-            // Handle error events for unsupported formats
-            audio.addEventListener('error', function() {
-                showSpinner(false); // Hide the spinner on error
-                //showCustomError('Error, Try again later.');
-                const stationDetails = `${stationName} (${country}) (Web)`;
-                handlePlaybackError(stationDetails, url, 'error')
-            });
+
 
 }
 
-   // Show or hide the spinner
+
+//*************************************************************************
+
+
+/**
+ * Creates an audio player with specified audio sources.
+ * @param {Array} audioUrls - An array of objects containing audio URL and type.
+ */
+function createAudioPlayer(audioUrls, country) {
+        configureAudioPlayer();
+        attachAudioSources(audio, audioUrls);
+        handleAudioEvents(country);
+        appendAudioToDocument(audio);
+        return audio;
+}
+
+/**
+ * Configures the audio player with default settings.
+ */
+function configureAudioPlayer() {
+    audio.controls = false; // Hide playback controls
+    audio.autoplay = false; // Automatically play audio
+}
+
+/**
+ * Attaches audio sources to the audio player.
+ * @param {HTMLAudioElement} audio - The audio element.
+ * @param {Array} audioUrls - An array of objects containing audio URL and type.
+ */
+function attachAudioSources(audio, audioUrls) {
+    const source = document.createElement("source");
+    source.src = url;
+    audio.appendChild(source);
+
+}
+
+/**
+ * Attaches event listeners to the audio player.
+ */
+function handleAudioEvents(country) {
+    audio.addEventListener("canplay", () => {
+        showSpinner(false); // Hide the spinner when the audio is ready
+    });
+      // Handle error events for unsupported formats
+    audio.addEventListener('error', function() {
+          showSpinner(false); // Hide the spinner on error
+          //showCustomError('Error, Try again later.');
+          const stationDetails = `${stationName} (${country}) (Web)`;
+          handlePlaybackError(stationDetails, url, 'error')
+    });
+}
+
+/**
+ * Appends the audio player to the document body.
+ * @param {HTMLAudioElement} audio - The audio element.
+ */
+function appendAudioToDocument(audio) {
+    document.body.appendChild(audio);
+}
+
+/**
+ * Shows or hides the spinner.
+ * @param {boolean} show - Whether to show or hide the spinner.
+ */
 function showSpinner(show) {
-            progress.style.display = show ? 'block' : 'none';
+    const progress = document.getElementById('progress');
+    if (progress) {
+        progress.style.display = show ? "block" : "none";
+    }
 }
+
+
+
+//*************************************************************************
 
 // Play/pause functionality with icons
 playButton.addEventListener('click', () => {
-
-             /* if (bit === '00') {
-                    audio.pause();
-                    playButton.innerHTML = '▶';  // Play icon
-                    openPopupWithData(name, img, url);
-                    return;
-              }
-              else if (bit === '001') {
-                    audio.pause();
-                    playButton.innerHTML = '▶';  // Play icon
-                    openPeacefmPopupWithData(name, img, url);
-                    return;
-              }*/
 
 
 
@@ -700,11 +745,9 @@ function createStationLogoCanvas(stationName) {
 }
 
 function handlePlaybackError(url, stationName) {
-                progress.style.display = 'none';
+      progress.style.display = 'none';
 
-                alert("We couldnt play this station, please check back later");
-            
-                sendEmailNotification(stationName, url, 'error');
+      sendEmailNotification(stationName, url, 'error');
 }
 
 function sendEmailNotification(stationName, stationUrl, status) {
@@ -750,7 +793,7 @@ function sendEmailComment(stationName, stationUrl, status) {
  }
 
 /**
-         * Sanitize user input by escaping special characters.
+  * Sanitize user input by escaping special characters.
 */
 function sanitizeInput(input) {
             const map = {
@@ -765,7 +808,7 @@ function sanitizeInput(input) {
 }
 
 /**
-     * Show toast notification.
+  * Show toast notification.
 */
 function showToast(message) {
             const toast = document.getElementById('toast');
