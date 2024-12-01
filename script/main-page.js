@@ -379,7 +379,7 @@ function updateSearchActionSchema(query, filteredStationsLoaction) {
         const updatedSearchAction = {
             "@context": "https://schema.org",
             "@type": "SearchAction",
-             "target": `https://radiosdelight.com.gh/play?search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(filteredStationsLoaction)}`,
+"target": `https://radiosdelight.com/play.html?name=${encodeURIComponent(query)}&search=${encodeURIComponent(query)}&location=${encodeURIComponent(filteredStationsLoaction)}`,
             "query-input": "required name=search_term_string"
         };
  console.log(JSON.stringify(updatedSearchAction, null, 2));
