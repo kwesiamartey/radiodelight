@@ -347,17 +347,24 @@ async function fetchWithRetry(url, retries = 3, delay = 3000) {
 // Function for chunk loading
 function filterStations() {
     const query = document.getElementById('searchInput').value.toLowerCase();
-    const filteredStationsLoaction = stationData.filter(station =>
-            station.location.toLowerCase().includes(query)
 
-        );
-     updateSearchActionSchema(query, filteredStationsLoaction);
+
+
     const filteredStations = stationData.filter(station =>
         station.name.toLowerCase().includes(query)
 
     );
     currentPage = 1; // Reset to first page on filter
-    displayStations(filteredStations);
+
+
+     displayStations(filteredStations);
+
+    if (filteredStations.length > 0) {
+        updateSearchActionSchema(filteredStations[0].name, filteredStations[0].location);
+    } else {
+        updateSearchActionSchema(filteredStations.name, filteredStations.location);
+    }
+
 
 }
 
@@ -372,7 +379,7 @@ function updateSearchActionSchema(query, filteredStationsLoaction) {
         const updatedSearchAction = {
             "@context": "https://schema.org",
             "@type": "SearchAction",
-            "target": `https://radiosdelight.com.gh/play?search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(filteredStationsLoaction)}`,
+             "target": `https://radiosdelight.com.gh/play?search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(filteredStationsLoaction)}`,
             "query-input": "required name=search_term_string"
         };
  console.log(JSON.stringify(updatedSearchAction, null, 2));
