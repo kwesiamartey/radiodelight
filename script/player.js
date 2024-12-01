@@ -35,7 +35,7 @@
 
 
 
-   function loadStationPlaceholders() {
+   async function loadStationPlaceholders() {
            // Generate 48 placeholders dynamically with shimmer effect
            stationListContent.innerHTML = Array.from({ length: 48 })
                .map(() => `
@@ -49,7 +49,7 @@
                .join('');
        }
 
-    function loadCountryPlaceholders() {
+    async function loadCountryPlaceholders() {
         // Generate 32 placeholders dynamically with shimmer effect
         countryList.innerHTML = Array.from({ length: 32 })
             .map(() => `
