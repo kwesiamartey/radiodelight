@@ -347,7 +347,11 @@ async function fetchWithRetry(url, retries = 3, delay = 3000) {
 // Function for chunk loading
 function filterStations() {
     const query = document.getElementById('searchInput').value.toLowerCase();
-     updateSearchActionSchema(query);
+    const filteredStationsLoaction = stationData.filter(station =>
+            station.location.toLowerCase().includes(query)
+
+        );
+     updateSearchActionSchema(query, filteredStationsLoaction);
     const filteredStations = stationData.filter(station =>
         station.name.toLowerCase().includes(query)
 
@@ -359,15 +363,16 @@ function filterStations() {
 
 
 
-function updateSearchActionSchema(query) {
+function updateSearchActionSchema(query, filteredStationsLoaction) {
     const searchActionScript = document.getElementById('search-action');
 
     if (searchActionScript) {
         // Update the target URL in the structured data
+
         const updatedSearchAction = {
             "@context": "https://schema.org",
             "@type": "SearchAction",
-            "target": `https://radio.com.gh/search?q=${encodeURIComponent(query)}`,
+            "target": `https://radiosdelight.com.gh/play?search?q=${encodeURIComponent(query)}&location=${encodeURIComponent(filteredStationsLoaction)}`
             "query-input": "required name=search_term_string"
         };
  console.log(JSON.stringify(updatedSearchAction, null, 2));
