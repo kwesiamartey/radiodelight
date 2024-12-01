@@ -17,7 +17,7 @@
     const selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || "Italy";
 
 
-    function loadStationPlaceholders() {
+    async function loadStationPlaceholders() {
         // Generate 48 placeholders dynamically with shimmer effect
         stationListContent.innerHTML = Array.from({ length: 48 })
             .map(() => `
@@ -32,7 +32,7 @@
     }
 
 
-    function loadCountryPlaceholders() {
+    async function loadCountryPlaceholders() {
      // Generate 32 placeholders dynamically with shimmer effect
      countryList.innerHTML = Array.from({ length: 32 })
          .map(() => `
@@ -133,7 +133,7 @@
 
 
 function loadCountries() {
-const sanitizedCountryPath = encodeURIComponent('query_countries.php');
+const sanitizedCountryPath = encodeURIComponent('test_countries.php');
 const baseUrl = `${document.querySelector('meta[name="api-base-url"]').content}/${sanitizedCountryPath}`;
 
     fetch(baseUrl)
@@ -276,7 +276,7 @@ function setupPaginationButtons(data, totalPages) {
 
 async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 5000, chunkSize = 1000) {
     const sanitizedCountryPath = encodeURIComponent(countryPath);
-    const baseUrl2 =  `${document.querySelector('meta[name="api-base-url"]').content}/query_stations.php?path=${sanitizedCountryPath}`;
+    const baseUrl2 =  `${document.querySelector('meta[name="api-base-url"]').content}/test_get_station.php?path=${sanitizedCountryPath}`;
 
     try {
         // Attempt to fetch the entire dataset at once

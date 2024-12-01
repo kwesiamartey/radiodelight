@@ -93,7 +93,7 @@
  * @param {string} url - The URL of the HTML file to fetch
  * @param {string} targetId - The ID of the target element to inject content into
  */
- function loadContent(url, targetId) {
+ async function loadContent(url, targetId) {
   fetch(url)
     .then(response => {
       if (!response.ok) {
@@ -113,7 +113,7 @@
 }
 
 
- function loadFooter(url, targetId) {
+ async function loadFooter(url, targetId) {
           fetch(url)
             .then(response => {
               if (!response.ok) {
@@ -176,7 +176,7 @@ function hideTooltip(event) {
   }
 
 function loadCountries() {
-const sanitizedCountryPath = encodeURIComponent('query_countries.php');
+const sanitizedCountryPath = encodeURIComponent('test_countries.php');
 const baseUrl = `${document.querySelector('meta[name="api-base-url"]').content}/${sanitizedCountryPath}`;
 
     fetch(baseUrl)
@@ -326,7 +326,7 @@ function setupPaginationButtons(data, totalPages) {
 
 async function fetchStations(countryPath = selectedCountryPath, retries = 3, delay = 3000, chunkSize = 1000) {
     const sanitizedCountryPath = encodeURIComponent(countryPath);
-    const baseUrl2 = `${document.querySelector('meta[name="api-base-url"]').content}/query_station_limited.php?path=${sanitizedCountryPath}`;
+    const baseUrl2 = `${document.querySelector('meta[name="api-base-url"]').content}/test_get_station.php?path=${sanitizedCountryPath}`;
 
     try {
         // Attempt to fetch the entire dataset at once
@@ -701,23 +701,8 @@ function createStationLogoCanvas(stationName) {
 
 function handlePlaybackError(url, stationName) {
                 progress.style.display = 'none';
-                const modal = document.getElementById('errorModal');
-                const closeModal = document.getElementById('closeModal');
-            
-                // Display the modal
-                modal.style.display = 'block';
-            
-                // Close the modal when the close button is clicked
-                closeModal.onclick = function () {
-                    modal.style.display = 'none';
-                };
-            
-                // Close the modal when the user clicks outside of it
-                window.onclick = function (event) {
-                    if (event.target === modal) {
-                        modal.style.display = 'none';
-                    }
-                };
+
+                alert("We couldnt play this station, please check back later");
             
                 sendEmailNotification(stationName, url, 'error');
 }
