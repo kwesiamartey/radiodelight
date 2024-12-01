@@ -48,6 +48,14 @@
         <!-- Placeholder for JSON-LD structured data -->
         <script id="structured-data" type="application/ld+json"></script>
     </noscript>
+    <script type="application/ld+json" id="search-action">
+        {
+            "@context": "https://schema.org",
+            "@type": "SearchAction",
+            "target": "https://radio.com.gh/search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    </script>
 
     <!-- Ads -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3366131354604966" crossorigin="anonymous"></script>

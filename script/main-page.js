@@ -347,11 +347,33 @@ async function fetchWithRetry(url, retries = 3, delay = 3000) {
 // Function for chunk loading
 function filterStations() {
     const query = document.getElementById('searchInput').value.toLowerCase();
+     updateSearchActionSchema(query);
     const filteredStations = stationData.filter(station =>
         station.name.toLowerCase().includes(query)
+
     );
     currentPage = 1; // Reset to first page on filter
     displayStations(filteredStations);
+
+}
+
+
+
+function updateSearchActionSchema(query) {
+    const searchActionScript = document.getElementById('search-action');
+
+    if (searchActionScript) {
+        // Update the target URL in the structured data
+        const updatedSearchAction = {
+            "@context": "https://schema.org",
+            "@type": "SearchAction",
+            "target": `https://radio.com.gh/search?q=${encodeURIComponent(query)}`,
+            "query-input": "required name=search_term_string"
+        };
+
+        // Update the script tag content with the new search query
+        searchActionScript.textContent = JSON.stringify(updatedSearchAction);
+    }
 }
 
 
