@@ -370,7 +370,7 @@ function updateSearchActionSchema(query) {
             "target": `https://radio.com.gh/search?q=${encodeURIComponent(query)}`,
             "query-input": "required name=search_term_string"
         };
-
+ console.log(JSON.stringify(updatedSearchAction, null, 2));
         // Update the script tag content with the new search query
         searchActionScript.textContent = JSON.stringify(updatedSearchAction);
     }
