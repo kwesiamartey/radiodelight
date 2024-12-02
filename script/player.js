@@ -445,7 +445,12 @@ function displayStations(stations) {
         imgElement.onload = () => {
             clearTimeout(loadTimeout);
             stationItem.addEventListener('click', () => {
-                                    document.getElementById("p_player").scrollIntoView({ behavior: "smooth" });
+
+                                      window.scrollTo({
+                                           top: targetPosition,
+                                           behavior: "smooth"
+                                       });
+             
                                     localStorage.setItem('name', station.name);
                                     localStorage.setItem('url', station.url);
                                     localStorage.setItem('bit', station.bit);
@@ -461,7 +466,12 @@ function displayStations(stations) {
             clearTimeout(loadTimeout);
             imgElement.src = '/img/mast.jpg';
             stationItem.addEventListener('click', () => {
-                                 document.getElementById("p_player").scrollIntoView({ behavior: "smooth" });
+
+                                     window.scrollTo({
+                                           top: targetPosition,
+                                           behavior: "smooth"
+                                       });
+             
                                 localStorage.setItem('name', station.name);
                                 localStorage.setItem('url', station.url);
                                 localStorage.setItem('bit', station.bit);
