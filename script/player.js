@@ -28,7 +28,6 @@
     const breadcrumbs = document.getElementById('breadcrumbs');
     document.getElementById('breadcrumbs').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'none';
-    document.getElementById('country_list_wrapper') = "none"
     const stationListContent = document.getElementById('stationListContent');
     const countryList = document.getElementById('countryList');
     // Set initial volume (based on the slider's default value)
@@ -51,7 +50,6 @@
        }
 
     async function loadCountryPlaceholders() {
-     document.getElementById('country_list_wrapper') = "block"
         // Generate 32 placeholders dynamically with shimmer effect
         countryList.innerHTML = Array.from({ length: 32 })
             .map(() => `
@@ -63,7 +61,8 @@
                 </div>
             `)
             .join('');
-   }
+
+}
    /**
    * Function to fetch and insert HTML content into a target element
    * @param {string} url - The URL of the HTML file to fetch
@@ -94,8 +93,7 @@
  * @param {string} url - The URL of the HTML file to fetch
  * @param {string} targetId - The ID of the target element to inject content into
  */
-
-async function loadContent(url, targetId) {
+ async function loadContent(url, targetId) {
   fetch(url)
     .then(response => {
       if (!response.ok) {
@@ -446,10 +444,7 @@ function displayStations(stations) {
         imgElement.onload = () => {
             clearTimeout(loadTimeout);
             stationItem.addEventListener('click', () => {
-
-                                    
-             
-                                    localStorage.setItem('name', station.name);
+                   localStorage.setItem('name', station.name);
                                     localStorage.setItem('url', station.url);
                                     localStorage.setItem('bit', station.bit);
                                     localStorage.setItem('location', station.location);
@@ -464,10 +459,7 @@ function displayStations(stations) {
             clearTimeout(loadTimeout);
             imgElement.src = '/img/mast.jpg';
             stationItem.addEventListener('click', () => {
-
-                               
-             
-                                localStorage.setItem('name', station.name);
+            localStorage.setItem('name', station.name);
                                 localStorage.setItem('url', station.url);
                                 localStorage.setItem('bit', station.bit);
                                 localStorage.setItem('location', station.location);
@@ -604,7 +596,6 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                     });
                      const stationDetails = `${stationName} (${country}) (Web)`;
                      sendEmailNotification(stationDetails, url, 'success')
-                     showSpinner(false);
                 } else {
                     showSpinner(false); // Hide the spinner on error
                     //showCustomError('Error, Try again later.');
@@ -639,6 +630,21 @@ function showSpinner(show) {
 // Play/pause functionality with icons
 playButton.addEventListener('click', () => {
 
+             /* if (bit === '00') {
+                    audio.pause();
+                    playButton.innerHTML = '▶';  // Play icon
+                    openPopupWithData(name, img, url);
+                    return;
+              }
+              else if (bit === '001') {
+                    audio.pause();
+                    playButton.innerHTML = '▶';  // Play icon
+                    openPeacefmPopupWithData(name, img, url);
+                    return;
+              }*/
+
+
+
               if (!isPlaying) {
                     audio.play();
                     playButton.innerHTML = '||';  // Pause icon
@@ -651,7 +657,7 @@ playButton.addEventListener('click', () => {
                     audio.pause();
                     playButton.innerHTML = '▶';  // Play icon
                     isPlaying = false;
-         }
+              }
 });
 
 function createStationLogoCanvas(stationName) {
@@ -695,6 +701,9 @@ function createStationLogoCanvas(stationName) {
 
 function handlePlaybackError(url, stationName) {
                 progress.style.display = 'none';
+
+                alert("We couldnt play this station, please check back later");
+            
                 sendEmailNotification(stationName, url, 'error');
 }
 
