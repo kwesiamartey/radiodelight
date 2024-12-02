@@ -28,6 +28,7 @@
     const breadcrumbs = document.getElementById('breadcrumbs');
     document.getElementById('breadcrumbs').style.display = 'block';
     document.querySelector('.countryTitle').style.display = 'none';
+    document.getElementById('country_list_wrapper') = "none"
     const stationListContent = document.getElementById('stationListContent');
     const countryList = document.getElementById('countryList');
     // Set initial volume (based on the slider's default value)
