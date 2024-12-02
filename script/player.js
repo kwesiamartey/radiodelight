@@ -604,6 +604,7 @@ function initAudioPlayer(url, image, stationName, bit, country) {
                     });
                      const stationDetails = `${stationName} (${country}) (Web)`;
                      sendEmailNotification(stationDetails, url, 'success')
+                     showSpinner(false);
                 } else {
                     showSpinner(false); // Hide the spinner on error
                     //showCustomError('Error, Try again later.');
