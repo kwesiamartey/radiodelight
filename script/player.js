@@ -50,6 +50,7 @@
        }
 
     async function loadCountryPlaceholders() {
+     document.getElementById('country_list_wrapper') = "block"
         // Generate 32 placeholders dynamically with shimmer effect
         countryList.innerHTML = Array.from({ length: 32 })
             .map(() => `
@@ -61,8 +62,7 @@
                 </div>
             `)
             .join('');
-
-}
+   }
    /**
    * Function to fetch and insert HTML content into a target element
    * @param {string} url - The URL of the HTML file to fetch
