@@ -701,8 +701,6 @@ function createStationLogoCanvas(stationName) {
 
 function handlePlaybackError(url, stationName) {
                 progress.style.display = 'none';
-
-                alert("We couldnt play this station, please check back later");
             
                 sendEmailNotification(stationName, url, 'error');
 }
