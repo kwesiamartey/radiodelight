@@ -93,7 +93,8 @@
  * @param {string} url - The URL of the HTML file to fetch
  * @param {string} targetId - The ID of the target element to inject content into
  */
- async function loadContent(url, targetId) {
+
+async function loadContent(url, targetId) {
   fetch(url)
     .then(response => {
       if (!response.ok) {
@@ -444,7 +445,8 @@ function displayStations(stations) {
         imgElement.onload = () => {
             clearTimeout(loadTimeout);
             stationItem.addEventListener('click', () => {
-                   localStorage.setItem('name', station.name);
+                                    document.getElementById("p_player").scrollIntoView({ behavior: "smooth" });
+                                    localStorage.setItem('name', station.name);
                                     localStorage.setItem('url', station.url);
                                     localStorage.setItem('bit', station.bit);
                                     localStorage.setItem('location', station.location);
@@ -459,7 +461,8 @@ function displayStations(stations) {
             clearTimeout(loadTimeout);
             imgElement.src = '/img/mast.jpg';
             stationItem.addEventListener('click', () => {
-            localStorage.setItem('name', station.name);
+                                 document.getElementById("p_player").scrollIntoView({ behavior: "smooth" });
+                                localStorage.setItem('name', station.name);
                                 localStorage.setItem('url', station.url);
                                 localStorage.setItem('bit', station.bit);
                                 localStorage.setItem('location', station.location);
