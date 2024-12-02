@@ -446,10 +446,7 @@ function displayStations(stations) {
             clearTimeout(loadTimeout);
             stationItem.addEventListener('click', () => {
 
-                                      window.scrollTo({
-                                           top: targetPosition,
-                                           behavior: "smooth"
-                                       });
+                                    document.getElementById("targetDiv").scrollIntoView({ behavior: "smooth", block: "start" });
              
                                     localStorage.setItem('name', station.name);
                                     localStorage.setItem('url', station.url);
@@ -467,10 +464,7 @@ function displayStations(stations) {
             imgElement.src = '/img/mast.jpg';
             stationItem.addEventListener('click', () => {
 
-                                     window.scrollTo({
-                                           top: targetPosition,
-                                           behavior: "smooth"
-                                       });
+                                document.getElementById("targetDiv").scrollIntoView({ behavior: "smooth", block: "start" });
              
                                 localStorage.setItem('name', station.name);
                                 localStorage.setItem('url', station.url);
