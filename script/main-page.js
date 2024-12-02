@@ -13,7 +13,7 @@
     let stationDetailsGlobal = "";
     const stationListContent = document.getElementById('stationListContent');
     const countryList = document.getElementById('countryList');
-    document.getElementById('country_list_wrapper') = "none"
+
     const selectedCountryPathName = localStorage.getItem('selectedCountryPathName') || "Italy";
 
 
