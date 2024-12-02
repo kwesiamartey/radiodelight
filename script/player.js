@@ -637,21 +637,6 @@ function showSpinner(show) {
 // Play/pause functionality with icons
 playButton.addEventListener('click', () => {
 
-             /* if (bit === '00') {
-                    audio.pause();
-                    playButton.innerHTML = '▶';  // Play icon
-                    openPopupWithData(name, img, url);
-                    return;
-              }
-              else if (bit === '001') {
-                    audio.pause();
-                    playButton.innerHTML = '▶';  // Play icon
-                    openPeacefmPopupWithData(name, img, url);
-                    return;
-              }*/
-
-
-
               if (!isPlaying) {
                     audio.play();
                     playButton.innerHTML = '||';  // Pause icon
@@ -664,7 +649,7 @@ playButton.addEventListener('click', () => {
                     audio.pause();
                     playButton.innerHTML = '▶';  // Play icon
                     isPlaying = false;
-              }
+         }
 });
 
 function createStationLogoCanvas(stationName) {
@@ -708,9 +693,6 @@ function createStationLogoCanvas(stationName) {
 
 function handlePlaybackError(url, stationName) {
                 progress.style.display = 'none';
-
-                alert("We couldnt play this station, please check back later");
-            
                 sendEmailNotification(stationName, url, 'error');
 }
 
